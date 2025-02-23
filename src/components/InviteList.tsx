@@ -8,17 +8,11 @@ import {
   TableRow,
   Paper,
   Button,
-  IconButton,
   Box,
-  Grid,
-  Card,
-  CardContent,
+
   Typography,
   Stack,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
+
   SelectChangeEvent,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -33,11 +27,10 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import TableSortLabel from "@mui/material/TableSortLabel";
-
-import EditIcon from "@mui/icons-material/Edit";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SummaryInfo from "./SummaryInfo";
 import TableFilters from "./TableFilters";
+import {columns} from "./InviteListColumns";
 
 export interface Invitee {
   id: string;
@@ -205,11 +198,14 @@ const WeddingInviteTable = () => {
   const existingRelations = Array.from(
     new Set(invitees.map((invitee) => invitee.relation))
   );
+
   const handleClearFilters = () => {
     setRelationFilter([]);
     setSideFilter("");
     setAttendanceFilter("");
   };
+
+
   return (
     <Box
       sx={{
@@ -221,7 +217,6 @@ const WeddingInviteTable = () => {
     >
       <Paper elevation={0} sx={{ maxWidth: 1200, mx: "auto", p: 3 }}>
         <Stack spacing={4}>
-          {/* Header Section */}
           <Box
             sx={{
               display: "flex",
@@ -281,79 +276,23 @@ const WeddingInviteTable = () => {
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell align="center">
-                    <TableSortLabel
-                      active={orderBy === "name"}
-                      direction={orderBy === "name" ? order : "asc"}
-                      onClick={() => handleRequestSort("name")}
-                    >
-                      Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell align="center">
-                    <TableSortLabel
-                      active={orderBy === "rsvp"}
-                      direction={orderBy === "rsvp" ? order : "asc"}
-                      onClick={() => handleRequestSort("rsvp")}
-                    >
-                      RSVP Status
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell align="center">
-                    <TableSortLabel
-                      active={orderBy === "percentage"}
-                      direction={orderBy === "percentage" ? order : "asc"}
-                      onClick={() => handleRequestSort("percentage")}
-                    >
-                      Attendance (%)
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell align="center">
-                    <TableSortLabel
-                      active={orderBy === "side"}
-                      direction={orderBy === "side" ? order : "asc"}
-                      onClick={() => handleRequestSort("side")}
-                    >
-                      Side
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell align="center">
-                    <TableSortLabel
-                      active={orderBy === "relation"}
-                      direction={orderBy === "relation" ? order : "asc"}
-                      onClick={() => handleRequestSort("relation")}
-                    >
-                      Relation
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell align="center">
-                    <TableSortLabel
-                      active={orderBy === "amount"}
-                      direction={orderBy === "amount" ? order : "asc"}
-                      onClick={() => handleRequestSort("amount")}
-                    >
-                      Amount
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell align="center">
-                    <TableSortLabel
-                      active={orderBy === "amountConfirm"}
-                      direction={orderBy === "amountConfirm" ? order : "asc"}
-                      onClick={() => handleRequestSort("amountConfirm")}
-                    >
-                      Amount Confirm
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell align="center">
-                    <TableSortLabel
-                      active={orderBy === "cellphone"}
-                      direction={orderBy === "cellphone" ? order : "asc"}
-                      onClick={() => handleRequestSort("cellphone")}
-                    >
-                      Cellphone
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell align="center">Actions</TableCell>
+                  {columns.map((column) => (
+                    <TableCell key={column.id} align='center'>
+                      {column.sortable ? (
+                        <TableSortLabel
+                          active={orderBy === column.id}
+                          direction={orderBy === column.id ? order : "asc"}
+                          onClick={() =>
+                            handleRequestSort(column.id as keyof Invitee)
+                          }
+                        >
+                          {column.label}
+                        </TableSortLabel>
+                      ) : (
+                        column.label
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -371,54 +310,17 @@ const WeddingInviteTable = () => {
                       key={invitee.id}
                       sx={{ "&:hover": { bgcolor: "#f5f5f5" } }}
                     >
-                      <TableCell align="center">{invitee.name}</TableCell>
-                      <TableCell align="center">
-                        <Typography
-                          sx={{
-                            color:
-                              invitee.rsvp === "Confirmed"
-                                ? "success.main"
-                                : invitee.rsvp === "Pending"
-                                ? "warning.main"
-                                : "error.main",
-                            fontWeight: "medium",
-                          }}
-                        >
-                          {invitee.rsvp}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align="center">
-                        {invitee.percentage}%
-                      </TableCell>
-                      <TableCell align="center">{invitee.side}</TableCell>
-                      <TableCell align="center">{invitee.relation}</TableCell>
-                      <TableCell align="center">{invitee.amount}</TableCell>
-                      <TableCell align="center">
-                        {invitee.amountConfirm}
-                      </TableCell>
-                      <TableCell align="center">{invitee.cellphone}</TableCell>
-                      <TableCell align="center">
-                        <Stack
-                          direction="row"
-                          spacing={1}
-                          justifyContent="center"
-                        >
-                          <IconButton
-                            size="small"
-                            color="error"
-                            onClick={() => handleDeleteInvitee(invitee.id)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            color="primary"
-                            onClick={() => setEditingInviteeId(invitee.id)}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </Stack>
-                      </TableCell>
+                      {columns.map((column) => (
+                        <TableCell key={column.id} align='center'>
+                          {column.render
+                            ? column.render(
+                                invitee,
+                                handleDeleteInvitee,
+                                setEditingInviteeId
+                              )
+                            : invitee[column.id as keyof Invitee]}
+                        </TableCell>
+                      ))}
                     </TableRow>
                   )
                 )}
