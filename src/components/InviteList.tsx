@@ -9,10 +9,8 @@ import {
   Paper,
   Button,
   Box,
-
   Typography,
   Stack,
-
   SelectChangeEvent,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -30,7 +28,8 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SummaryInfo from "./SummaryInfo";
 import TableFilters from "./TableFilters";
-import {columns} from "./InviteListColumns";
+import { columns } from "./InviteListColumns";
+import AddGuestsDialog from "./AddGuestsDialog";
 
 export interface Invitee {
   id: string;
@@ -53,6 +52,7 @@ const WeddingInviteTable = () => {
   const [relationFilter, setRelationFilter] = useState<string[]>([]);
   const [sideFilter, setSideFilter] = useState<string>("");
   const [attendanceFilter, setAttendanceFilter] = useState<number | "">("");
+  const [isAddGuestsDialogOpen, setIsAddGuestsDialogOpen] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -123,7 +123,7 @@ const WeddingInviteTable = () => {
       rsvp: "Pending",
       percentage: 0,
       side: "חתן",
-      relation: "Close Family",
+      relation: "",
       amount: 0,
       amountConfirm: 0,
       cellphone: "",
@@ -205,6 +205,13 @@ const WeddingInviteTable = () => {
     setAttendanceFilter("");
   };
 
+  const handleAddGuestsDialogOpen = () => {
+    setIsAddGuestsDialogOpen(true);
+  };
+
+  const handleAddGuestsDialogClose = () => {
+    setIsAddGuestsDialogOpen(false);
+  };
 
   return (
     <Box
@@ -234,14 +241,14 @@ const WeddingInviteTable = () => {
             <Button
               variant="contained"
               startIcon={<PersonAddIcon />}
-              onClick={handleAddInvitee}
+              onClick={handleAddGuestsDialogOpen}
               sx={{
                 bgcolor: "#9c27b0",
                 "&:hover": { bgcolor: "#7b1fa2" },
                 borderRadius: 2,
               }}
             >
-              Add New Guest
+              Add New Guests
             </Button>
           </Box>
 
@@ -277,7 +284,7 @@ const WeddingInviteTable = () => {
               <TableHead>
                 <TableRow>
                   {columns.map((column) => (
-                    <TableCell key={column.id} align='center'>
+                    <TableCell key={column.id} align="center">
                       {column.sortable ? (
                         <TableSortLabel
                           active={orderBy === column.id}
@@ -311,7 +318,7 @@ const WeddingInviteTable = () => {
                       sx={{ "&:hover": { bgcolor: "#f5f5f5" } }}
                     >
                       {columns.map((column) => (
-                        <TableCell key={column.id} align='center'>
+                        <TableCell key={column.id} align="center">
                           {column.render
                             ? column.render(
                                 invitee,
@@ -341,6 +348,12 @@ const WeddingInviteTable = () => {
           </TableContainer>
         </Stack>
       </Paper>
+      <AddGuestsDialog
+        open={isAddGuestsDialogOpen}
+        onClose={handleAddGuestsDialogClose}
+        onSave={handleSaveNewInvitee}
+        relationOptions={existingRelations}
+      />
     </Box>
   );
 };
