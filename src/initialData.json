@@ -1,0 +1,1666 @@
+[
+  {
+    "name": "רחל  טנא",
+    "side": "חתן",
+    "relation": "משפחה קרובה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "משה  טנא",
+    "side": "חתן",
+    "relation": "משפחה קרובה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "מנו  טנא",
+    "side": "חתן",
+    "relation": "משפחה קרובה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "צור  טנא",
+    "side": "חתן",
+    "relation": "משפחה קרובה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "מור  טנא ",
+    "side": "חתן",
+    "relation": "משפחה קרובה",
+    "amount": "3",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "מרדכי  קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אלגרה קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "זוהר קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "גלית קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "מידן קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "4",
+    "percentage": "100",
+    "amountConfirm": "4"
+  },
+  {
+    "name": "לידר קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "מיתר קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "שלומי קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "טל קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "יהלי קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "4",
+    "percentage": "100",
+    "amountConfirm": "4"
+  },
+  {
+    "name": "אליה קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אתי קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "נוהר קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "4",
+    "percentage": "100",
+    "amountConfirm": "4"
+  },
+  {
+    "name": "נגוהה קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "3",
+    "percentage": "100",
+    "amountConfirm": "3"
+  },
+  {
+    "name": "הילה קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "4",
+    "percentage": "100",
+    "amountConfirm": "4"
+  },
+  {
+    "name": "רונן קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "נורית קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "שיר קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "מאיה קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "תומר קדוש",
+    "side": "חתן",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "בעז יכין",
+    "side": "כלה",
+    "relation": "משפחה קרובה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "נורים יכין",
+    "side": "כלה",
+    "relation": "משפחה קרובה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אדם יכין",
+    "side": "כלה",
+    "relation": "משפחה קרובה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "יהושע יכין",
+    "side": "כלה",
+    "relation": "משפחה קרובה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "לטיפה יכין",
+    "side": "כלה",
+    "relation": "משפחה קרובה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "גשם יכין",
+    "side": "כלה",
+    "relation": "משפחה קרובה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "סול יכין",
+    "side": "כלה",
+    "relation": "משפחה קרובה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "מאיה יכין",
+    "side": "כלה",
+    "relation": "משפחה קרובה",
+    "amount": "3",
+    "percentage": "100",
+    "amountConfirm": "3"
+  },
+  {
+    "name": "רוני שלב",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "75",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אופל גולן",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "2",
+    "percentage": "75",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "חנה יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "מוני ומינה יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "2",
+    "percentage": "20",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "פולה יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "2",
+    "percentage": "20",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "הדס שוקרון",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "7",
+    "percentage": "50",
+    "amountConfirm": "7"
+  },
+  {
+    "name": "רפאל יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "0",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אורה יעקבי",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "יונתן יעקבי",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "3",
+    "percentage": "100",
+    "amountConfirm": "3"
+  },
+  {
+    "name": "אמילי יעקבי",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "נעם יעקבי",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "זינא יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "50",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אמילין יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "4",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "דורון יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "יערה יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "דקל יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "שקד יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אדם יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "אליה יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "3",
+    "percentage": "100",
+    "amountConfirm": "3"
+  },
+  {
+    "name": "איילה יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אביטל פרודובסקי",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "2",
+    "percentage": "50",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "עדן  יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "אילן יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "יובל יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "איתן יכין",
+    "side": "כלה",
+    "relation": "משפחה מורחבת",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "נעמה רום ",
+    "side": "כלה",
+    "relation": " חברים קרובים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "מאיה שרף",
+    "side": "כלה",
+    "relation": " חברים קרובים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "רוני גולדנר",
+    "side": "כלה",
+    "relation": " חברים קרובים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "זהר וינמן",
+    "side": "כלה",
+    "relation": " חברים קרובים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "מיקה  ביבלש",
+    "side": "כלה",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אריאל גרשון",
+    "side": "כלה",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "יעל מלמד",
+    "side": "כלה",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "מעיין ",
+    "side": "כלה",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "גימבה ",
+    "side": "כלה",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "20",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "לילך  ארבר",
+    "side": "כלה",
+    "relation": " חברים קרובים",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "יולי חודורוב",
+    "side": "כלה",
+    "relation": " חברים קרובים",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "שלי חודורוב",
+    "side": "כלה",
+    "relation": " חברים קרובים",
+    "amount": "2",
+    "percentage": "75",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "ניר פילק",
+    "side": "כלה",
+    "relation": " חברים קרובים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "יואב פרנקל",
+    "side": "כלה",
+    "relation": " חברים קרובים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "נעם  חשמן",
+    "side": "כלה",
+    "relation": " חברים קרובים",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "מור וזאנה",
+    "side": "כלה",
+    "relation": " חברים קרובים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "יובל רבינא",
+    "side": "כלה",
+    "relation": " חברים קרובים",
+    "amount": "1",
+    "percentage": "50",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "חן מורן",
+    "side": "כלה",
+    "relation": "חברים רחוקים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "טל אוהב שלום ",
+    "side": "כלה",
+    "relation": " חברים קרובים",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "גאיה אריאלי",
+    "side": "כלה",
+    "relation": "חברים רחוקים",
+    "amount": "2",
+    "percentage": "50",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "אריאל הרול",
+    "side": "כלה",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "תמר בן דוד",
+    "side": "כלה",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "מאיה ליסק",
+    "side": "כלה",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "הדס סיטרין",
+    "side": "כלה",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "ראות ביטון",
+    "side": "כלה",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "איתי צפריר",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "3",
+    "percentage": "100",
+    "amountConfirm": "3"
+  },
+  {
+    "name": "ניב בראון",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "3",
+    "percentage": "100",
+    "amountConfirm": "3"
+  },
+  {
+    "name": "אסף סלומון",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "עומר צור",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "יניב ויסני",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "עידו ויזנפלד",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "אלון רוייטמן",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "גל  מגן",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "אלון שטופמן",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "יעל לובין",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "3",
+    "percentage": "100",
+    "amountConfirm": "3"
+  },
+  {
+    "name": "הגר אלקלעי",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "נועה בוייקיס",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "3",
+    "percentage": "100",
+    "amountConfirm": "3"
+  },
+  {
+    "name": "ניב ספקטור",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "עומר  ספקטור",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "נעמה ארטשיק",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "3",
+    "percentage": "100",
+    "amountConfirm": "3"
+  },
+  {
+    "name": "ניב סוויסה",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "3",
+    "percentage": "100",
+    "amountConfirm": "3"
+  },
+  {
+    "name": "בן ינאי",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "איתמר הופמן",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "ג'ורדן מזרחי",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "תום פז",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "יובל גרוברמן",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "ליאור ברקן",
+    "side": "חתן",
+    "relation": "שהם",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "עמית מרקו",
+    "side": "חתן",
+    "relation": "מכינה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "נעמה כהן מורן",
+    "side": "חתן",
+    "relation": "מכינה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "עומר טאובר",
+    "side": "חתן",
+    "relation": "מכינה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "נועה בן דוד",
+    "side": "חתן",
+    "relation": "מכינה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "יעל  פלק",
+    "side": "חתן",
+    "relation": "מכינה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "עמרי שוחט",
+    "side": "חתן",
+    "relation": "מכינה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "סהר לרוס",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "רביד ברקת",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "שחר  מזיא",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "אייל  קירש",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "עופרי מדר",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "מיכאל אלבו",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "רועי קליין",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "עומר וייצמן",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "רותם כץ",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "יובל קורנבלום",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "דרור עציוני",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "יונתן יונסון",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אריאל אהרון",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "רן  דאך",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "בארי פייקוב",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אורן כהן  ",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "שחר  אמיר",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "חננאל לזר",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "עמרי שניידר",
+    "side": "חתן",
+    "relation": "צוות",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "איילת  בירן",
+    "side": "חתן",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "לילך  ",
+    "side": "חתן",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "שיר טננבאום",
+    "side": "חתן",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "עמית יעקב",
+    "side": "חתן",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "עידו זיו",
+    "side": "חתן",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "עידו שטראוך",
+    "side": "חתן",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "תומר ",
+    "side": "חתן",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "אופיר מינץ",
+    "side": "חתן",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "נועם ",
+    "side": "חתן",
+    "relation": "לימודים",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אביטל ",
+    "side": "חתן",
+    "relation": "לימודים",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "בר ",
+    "side": "חתן",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "אלון ברנד",
+    "side": "חתן",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "אורון לאופמן",
+    "side": "חתן",
+    "relation": "לימודים",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "גב קריגר",
+    "side": "חתן",
+    "relation": "לימודים",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "עידו כסלו",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "חגית ",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "מקס ",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "שרה הולט",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "יובל בן עטר",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "ניר אבני",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "דניאל נחשוני",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "נפתלי אייזקס",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אסף דולמן",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אביחי ",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "יובל סמית'",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "יונתן קורח",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אמיר בן עטר",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "בר דובי",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "מארק ",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "נתלי ",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "עופר בן עטר",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "יפתח נבו",
+    "side": "חתן",
+    "relation": "עבודה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אלי  דוגווקר",
+    "side": "כלה",
+    "relation": "עבודה",
+    "amount": "4",
+    "percentage": "100",
+    "amountConfirm": "4"
+  },
+  {
+    "name": "ורו שקד",
+    "side": "כלה",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "גלינה ",
+    "side": "כלה",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "רות  צור",
+    "side": "כלה",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "מאיר מוהבן",
+    "side": "כלה",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "אבי מונסנגו",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "דוד מונסנגו מונסנגו",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "גסטון  כהן",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "אפי כהן",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "בלנקה טנא",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "צור טנא",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "אביתר טנא",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "ענת אפלבוים",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "צביקה ועירית ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "אבי ורבקה ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "לימור ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "חגית וגדי ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "דיאנה ושאול  צרפתי",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "ירון צרפתי",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "ליאור צרפתי",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "אורי ואורלי  אפרת",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "דליה ואלון סלע ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "דניה ומויישיק גלילי",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "הדר ואורי  צפריר",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "זהרה וגיל ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "טל ו ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "יעל ומור ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "רוני קריין",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "רותי ורובי  קפלן",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "דפני ויובל בן עוזר",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "נחמה אביטל ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "אופירה ביטון",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "סיגל ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "ורד ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "שרון ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "לילך ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "פאר ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "סימונה ומנחם  הלוי",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "נחמה וניסים ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "ענת ויוסי אפלבוים אפלבוים",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "עפרה ונתנאל ברקן ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "נורית טרביטיש ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "צ'ריל קמפר ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "1",
+    "percentage": "100",
+    "amountConfirm": "1"
+  },
+  {
+    "name": "ציפי ויוסי  אקרמן",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "2",
+    "percentage": "100",
+    "amountConfirm": "2"
+  },
+  {
+    "name": "עבודה אבא ",
+    "side": "חתן",
+    "relation": "חברים של משפחה",
+    "amount": "8",
+    "percentage": "100",
+    "amountConfirm": "8"
+  },
+  {
+    "name": " ",
+    "side": "",
+    "relation": "",
+    "amount": "",
+    "percentage": "100",
+    "amountConfirm": ""
+  }
+]
