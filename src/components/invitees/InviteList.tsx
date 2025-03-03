@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditableRow from "./EditableRow";
-import { db } from "../api/firebaseConfig";
+import { db } from "../../api/firebaseConfig";
 import {
   collection,
   onSnapshot,
