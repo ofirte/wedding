@@ -32,6 +32,16 @@ export const columns: Column<Invitee>[] = [
         {invitee.rsvp}
       </Typography>
     ),
+    filterConfig: {
+      id: "rsvp",
+      label: "RSVP Status",
+      type: "single",
+      options: [
+        { value: "Confirmed", label: "Confirmed" },
+        { value: "Pending", label: "Pending" },
+        { value: "Declined", label: "Declined" }
+      ]
+    }
   },
   {
     id: "percentage",
@@ -42,9 +52,7 @@ export const columns: Column<Invitee>[] = [
       id: "percentage",
       label: "Attendance",
       type: "single",
-      value: "",
       options: [
-        { value: "", label: "All" },
         { value: "25", label: "≤ 25%" },
         { value: "50", label: "≤ 50%" },
         { value: "75", label: "≤ 75%" },
@@ -61,9 +69,7 @@ export const columns: Column<Invitee>[] = [
       id: "side",
       label: "Side",
       type: "single",
-      value: "",
       options: [
-        { value: "", label: "All Sides" },
         { value: "חתן", label: "חתן" },
         { value: "כלה", label: "כלה" }
       ]
@@ -78,8 +84,19 @@ export const columns: Column<Invitee>[] = [
       id: "relation",
       label: "Relation",
       type: "multiple",
-      value: [],
-      options: []
+      // Dynamic options - passed as a function that processes the data
+      options: (data: Invitee[]) => {
+        // Extract unique relation values from data
+        const uniqueRelations = Array.from(
+          new Set(data.map(invitee => invitee.relation))
+        ).filter(Boolean); // Remove empty values
+        
+        // Convert to required format
+        return uniqueRelations.map(relation => ({
+          value: relation,
+          label: relation
+        }));
+      }
     }
   },
   {

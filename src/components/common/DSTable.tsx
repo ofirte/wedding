@@ -2,17 +2,16 @@ import {
   Paper,
   Table,
   TableBody,
-  TableCell,
   TableContainer,
-  TableHead,
-  TableRow,
-  TableSortLabel,
 } from "@mui/material";
-import { FC, useState, useEffect } from "react";
-import { FilterConfig } from "./DSTableFilters";
+import { FC, useState, useEffect, useMemo } from "react";
+import { FilterConfig, FilterState } from "./DSTableFilters";
 import DSTableFilters from "./DSTableFilters";
+import TableHeader from "./TableHeader";
+import TableContent from "./TableContent";
+import { applyFilters, sortData, resolveFilterOptions } from "./DSTableUtils";
 
-export type Column<T> = {
+export type Column<T extends { id: string  | number}> = {
   render: (row: T) => React.ReactNode;
   id: string;
   label: string;
@@ -21,7 +20,7 @@ export type Column<T> = {
   filterConfig?: FilterConfig;
 };
 
-type DSTableProps<T> = {
+type DSTableProps<T extends { id: string | number; }> = {
   columns: Column<T>[];
   data: T[];
   onRowDelete?: (row: T) => void;
@@ -33,126 +32,92 @@ type Order = "asc" | "desc";
 const DSTable: FC<DSTableProps<any>> = ({ columns, data, onDisplayedDataChange }) => {
   const [orderBy, setOrderBy] = useState<string>("");
   const [order, setOrder] = useState<Order>("asc");
-  const [sortedData, setSortedData] = useState<any[]>(data);
-  const [filteredData, setFilteredData] = useState<any[]>(data);
-  
-  const columnFilters = columns
-    .filter(column => column.filterConfig)
-    .map(column => column.filterConfig!);
+  const [displayedData, setDisplayedData] = useState<any[]>(data);
+  const [filterStates, setFilterStates] = useState<FilterState[]>([]);
 
+  // Extract filter configurations from columns
+  const filterConfigs = useMemo(() => 
+    columns
+      .filter(column => column.filterConfig)
+      .map(column => column.filterConfig!)
+  , [columns]);
+
+  // Initialize filter states when filter configs change
+  useEffect(() => {
+    setFilterStates(filterConfigs.map(config => ({
+      id: config.id,
+      value: [],
+      resolvedOptions: resolveFilterOptions(config, data)
+    })));
+  }, [filterConfigs]);
+
+  // Update options when data changes
+  useEffect(() => {
+    if (data.length === 0) return;
+    
+    setFilterStates(prevStates => 
+      prevStates.map(state => {
+        const config = filterConfigs.find(c => c.id === state.id);
+        if (!config || !config.options) return state;
+        
+        return {
+          ...state,
+          resolvedOptions: resolveFilterOptions(config, data)
+        };
+      })
+    );
+  }, [data, filterConfigs]);
+
+  // Handle sorting changes
   const handleRequestSort = (columnId: string) => {
     const isAsc = orderBy === columnId && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(columnId);
   };
 
-  const handleFilterChange = (filterId: string, newValue: any) => {    
-    columns.forEach(column => {
-      if (column.filterConfig && column.filterConfig.id === filterId) {
-        column.filterConfig.value = newValue;
-      }
-    });
-    applyFilters();
+  // Handle filter value changes
+  const handleFilterChange = (filterId: string, newValue: any[]) => {
+    setFilterStates(prevStates => 
+      prevStates.map(state => 
+        state.id === filterId 
+          ? { ...state, value: newValue } 
+          : state
+      )
+    );
   };
 
+  // Clear all filters
   const handleClearFilters = () => {
-    columns.forEach(column => {
-      if (column.filterConfig) {
-        column.filterConfig.value = column.filterConfig.type === "multiple" ? [] : "";
-      }
-    });
-    applyFilters();
+    setFilterStates(prevStates => 
+      prevStates.map(state => ({ ...state, value: [] }))
+    );
   };
 
-  const applyFilters = () => {
-    const activeFilters = columns
-      .filter(column => column.filterConfig)
-      .map(column => column.filterConfig!)
-      .filter(filter => {
-        if (Array.isArray(filter.value)) return filter.value.length > 0;
-        return filter.value !== "" && filter.value !== null && filter.value !== undefined;
-      });
-
-    if (activeFilters.length === 0) {
-      setFilteredData(data);
-      return;
-    }
-
-    const filtered = data.filter(item => {
-      return activeFilters.every(filter => {
-        if (filter.type === "multiple") {
-          return filter.value.length === 0 || filter.value.includes(item[filter.id]);
-        } else if (filter.type === "range") {
-          return true;
-        } else {
-          return filter.value === "" || item[filter.id] === filter.value;
-        }
-      });
-    });
-
-    setFilteredData(filtered);
-
-  };
-
+  // Process data through filters and sorting
   useEffect(() => {
-    if (!orderBy) {
-      setSortedData(filteredData);
-      return;
+    // Apply filters and sorting
+    let processedData = applyFilters(data, filterStates);
+    processedData = sortData(processedData, columns, orderBy, order);
+    
+    // Update state and notify parent
+    setDisplayedData(processedData);
+    
+    if (onDisplayedDataChange) {
+      onDisplayedDataChange(processedData);
     }
-
-    const column = columns.find((col) => col.id === orderBy);
-    if (!column || !column.sortable) {
-      setSortedData(filteredData);
-      return;
-    }
-
-    const sorted = [...filteredData].sort((a, b) => {
-      // Use custom sort function if provided
-      if (column.sortFn) {
-        return order === "asc" ? column.sortFn(a, b) : column.sortFn(b, a);
-      }
-
-      // Default sort based on string comparison
-      const aValue = a[orderBy] || "";
-      const bValue = b[orderBy] || "";
-
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return order === "asc"
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      }
-
-      return order === "asc"
-        ? aValue > bValue
-          ? 1
-          : -1
-        : bValue > aValue
-        ? 1
-        : -1;
-    });
-
-    setSortedData(sorted);
-  }, [filteredData, orderBy, order, columns]);
-
-  useEffect(() => {
-    applyFilters();
-  }, [data]);
-
-  useEffect(() => {
-    onDisplayedDataChange?.(filteredData);
-  }, [filteredData]);
-
-  const hasFilters = columns.some(column => column.filterConfig);
+  }, [data, filterStates, orderBy, order, columns, onDisplayedDataChange]);
 
   return (
     <>
-      {hasFilters && (
+      {filterConfigs.length > 0 && (
         <DSTableFilters
-          filters={columnFilters}
+          filters={filterStates}
+          filterConfigs={filterConfigs}
           onFilterChange={handleFilterChange}
           onClearFilters={handleClearFilters}
         />
       )}
+      
       <TableContainer
         component={Paper}
         elevation={2}
@@ -167,46 +132,15 @@ const DSTable: FC<DSTableProps<any>> = ({ columns, data, onDisplayedDataChange }
         }}
       >
         <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell key={column.id} align="center">
-                  {column.sortable ? (
-                    <TableSortLabel
-                      active={orderBy === column.id}
-                      direction={orderBy === column.id ? order : "asc"}
-                      onClick={() => handleRequestSort(column.id)}
-                    >
-                      {column.label}
-                    </TableSortLabel>
-                  ) : (
-                    column.label
-                  )}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
+          <TableHeader 
+            columns={columns}
+            orderBy={orderBy}
+            order={order}
+            onRequestSort={handleRequestSort}
+          />
+          
           <TableBody>
-            {sortedData.length > 0 ? (
-              sortedData.map((rowData, index) => (
-                <TableRow
-                  key={rowData.id || index}
-                  sx={{ "&:hover": { bgcolor: "#f5f5f5" } }}
-                >
-                  {columns.map((column) => (
-                    <TableCell key={column.id} align="center">
-                      {column.render(rowData)}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} align="center">
-                  No data available
-                </TableCell>
-              </TableRow>
-            )}
+            <TableContent columns={columns} data={displayedData} />
           </TableBody>
         </Table>
       </TableContainer>
