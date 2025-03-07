@@ -35,14 +35,12 @@ const DSTable: FC<DSTableProps<any>> = ({ columns, data, onDisplayedDataChange }
   const [displayedData, setDisplayedData] = useState<any[]>(data);
   const [filterStates, setFilterStates] = useState<FilterState[]>([]);
 
-  // Extract filter configurations from columns
   const filterConfigs = useMemo(() => 
     columns
       .filter(column => column.filterConfig)
       .map(column => column.filterConfig!)
   , [columns]);
 
-  // Initialize filter states when filter configs change
   useEffect(() => {
     setFilterStates(filterConfigs.map(config => ({
       id: config.id,
@@ -51,7 +49,6 @@ const DSTable: FC<DSTableProps<any>> = ({ columns, data, onDisplayedDataChange }
     })));
   }, [filterConfigs]);
 
-  // Update options when data changes
   useEffect(() => {
     if (data.length === 0) return;
     
@@ -68,14 +65,12 @@ const DSTable: FC<DSTableProps<any>> = ({ columns, data, onDisplayedDataChange }
     );
   }, [data, filterConfigs]);
 
-  // Handle sorting changes
   const handleRequestSort = (columnId: string) => {
     const isAsc = orderBy === columnId && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(columnId);
   };
 
-  // Handle filter value changes
   const handleFilterChange = (filterId: string, newValue: any[]) => {
     setFilterStates(prevStates => 
       prevStates.map(state => 
@@ -86,25 +81,19 @@ const DSTable: FC<DSTableProps<any>> = ({ columns, data, onDisplayedDataChange }
     );
   };
 
-  // Clear all filters
   const handleClearFilters = () => {
     setFilterStates(prevStates => 
       prevStates.map(state => ({ ...state, value: [] }))
     );
   };
 
-  // Process data through filters and sorting
   useEffect(() => {
-    // Apply filters and sorting
-    let processedData = applyFilters(data, filterStates);
-    processedData = sortData(processedData, columns, orderBy, order);
+    const filteredData = applyFilters(data, filterStates);
+    const sortedFilteredData = sortData(filteredData, columns, orderBy, order);
     
-    // Update state and notify parent
-    setDisplayedData(processedData);
-    
-    if (onDisplayedDataChange) {
-      onDisplayedDataChange(processedData);
-    }
+    setDisplayedData(sortedFilteredData);
+    onDisplayedDataChange?.(sortedFilteredData);
+
   }, [data, filterStates, orderBy, order, columns, onDisplayedDataChange]);
 
   return (
