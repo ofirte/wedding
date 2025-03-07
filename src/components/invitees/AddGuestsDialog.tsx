@@ -7,11 +7,6 @@ import {
   Button,
   Box,
   Paper,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
   TextField,
   MenuItem,
   Grid,
@@ -19,6 +14,7 @@ import {
 } from "@mui/material";
 import { columns } from "./InviteListColumns";
 import { Invitee } from "./InviteList";
+import DSTable from "../common/DSTable"; // Adjust the import path accordingly
 
 const defaultInvitee: Invitee = {
   id: "",
@@ -203,48 +199,10 @@ const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
         </Box>
         {/* Table Section Showing All Added Guests */}
         <Paper variant="outlined">
-          <Table>
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell key={column.id} align={"center"}>
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {newInvitees.length > 0 ? (
-                newInvitees.map((invitee) => (
-                  <TableRow key={invitee.id}>
-                    {columns.map((column) => (
-                      <TableCell key={column.id} align={"center"}>
-                        {column.render
-                          ? column.id === "actions"
-                            ? column.render(
-                                invitee,
-                                handleDeleteInvitee,
-                                handleEditInvitee
-                              )
-                            : column.render(
-                                invitee,
-                                () => {},
-                                () => {}
-                              )
-                          : invitee[column.id as keyof Invitee]}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={columns.length} align="center">
-                    No guests added.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+          <DSTable
+            columns={columns}
+            data={newInvitees}
+          />
         </Paper>
       </DialogContent>
       <DialogActions>
