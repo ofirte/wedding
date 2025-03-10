@@ -1,10 +1,8 @@
 import React from "react";
 import { Invitee } from "./InviteList";
 import Typography from "@mui/material/Typography";
-import { IconButton, Stack } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import { Column } from "../common/DSTable";
+import InviteeListActionCell from "./InviteeListActionCell";
 
 export const columns: Column<Invitee>[] = [
   {
@@ -39,9 +37,9 @@ export const columns: Column<Invitee>[] = [
       options: [
         { value: "Confirmed", label: "Confirmed" },
         { value: "Pending", label: "Pending" },
-        { value: "Declined", label: "Declined" }
-      ]
-    }
+        { value: "Declined", label: "Declined" },
+      ],
+    },
   },
   {
     id: "percentage",
@@ -56,9 +54,9 @@ export const columns: Column<Invitee>[] = [
         { value: "25", label: "≤ 25%" },
         { value: "50", label: "≤ 50%" },
         { value: "75", label: "≤ 75%" },
-        { value: "100", label: "≤ 100%" }
-      ]
-    }
+        { value: "100", label: "≤ 100%" },
+      ],
+    },
   },
   {
     id: "side",
@@ -71,9 +69,9 @@ export const columns: Column<Invitee>[] = [
       type: "single",
       options: [
         { value: "חתן", label: "חתן" },
-        { value: "כלה", label: "כלה" }
-      ]
-    }
+        { value: "כלה", label: "כלה" },
+      ],
+    },
   },
   {
     id: "relation",
@@ -84,20 +82,17 @@ export const columns: Column<Invitee>[] = [
       id: "relation",
       label: "Relation",
       type: "multiple",
-      // Dynamic options - passed as a function that processes the data
       options: (data: Invitee[]) => {
-        // Extract unique relation values from data
         const uniqueRelations = Array.from(
-          new Set(data.map(invitee => invitee.relation))
-        ).filter(Boolean); // Remove empty values
-        
-        // Convert to required format
-        return uniqueRelations.map(relation => ({
+          new Set(data.map((invitee) => invitee.relation))
+        ).filter(Boolean);
+
+        return uniqueRelations.map((relation) => ({
           value: relation,
-          label: relation
+          label: relation,
         }));
-      }
-    }
+      },
+    },
   },
   {
     id: "amount",
@@ -122,22 +117,10 @@ export const columns: Column<Invitee>[] = [
     label: "Actions",
     sortable: false,
     render: (invitee: Invitee) => (
-      <Stack direction="row" spacing={1} justifyContent="center">
-        <IconButton
-          size="small"
-          color="error"
-          // onClick={() => handleDeleteInvitee(invitee.id)}
-        >
-          <DeleteIcon />
-        </IconButton>
-        <IconButton
-          size="small"
-          color="primary"
-          // onClick={() => setEditingInviteeId(invitee.id)}
-        >
-          <EditIcon />
-        </IconButton>
-      </Stack>
+      <InviteeListActionCell
+        invitee={invitee}
+
+      />
     ),
   },
 ];

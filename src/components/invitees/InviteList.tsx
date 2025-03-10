@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Typography,
-  Stack,
-} from "@mui/material";
+import { Box, Button, Typography, Stack } from "@mui/material";
 import { db } from "../../api/firebaseConfig";
 import {
   collection,
@@ -12,13 +7,13 @@ import {
   addDoc,
   updateDoc,
   doc,
-  deleteDoc,
 } from "firebase/firestore";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SummaryInfo from "./SummaryInfo";
 import { columns } from "./InviteListColumns";
 import AddGuestsDialog from "./AddGuestsDialog";
 import DSTable from "../common/DSTable";
+import InviteeListActionCell from "./InviteeListActionCell";
 
 export interface Invitee {
   id: string;
@@ -35,81 +30,57 @@ export interface Invitee {
 const WeddingInviteTable = () => {
   const [invitees, setInvitees] = useState<Invitee[]>([]);
   const [displayedInvitees, setDisplayedInvitees] = useState<Invitee[]>([]);
-  const [editingInviteeId, setEditingInviteeId] = useState<string | null>(null);
-  const [newInvitee, setNewInvitee] = useState<Invitee | null>(null);
-  const [isAddGuestsDialogOpen, setIsAddGuestsDialogOpen] = useState(false);
-  const [tableColumns, setTableColumns] = useState(columns);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingInvitee, setEditingInvitee] = useState<Invitee | null>(null);
 
-  const handleEditInvitee = async (updatedInvitee: Invitee) => {
+  const handleDialogOpen = () => {
+    setEditingInvitee(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    setEditingInvitee(null);
+  };
+
+  const handleEditStart = (invitee: Invitee) => {
+    setEditingInvitee(invitee);
+    setIsDialogOpen(true);
+  };
+
+  const handleSaveInvitee = async (invitee: Invitee) => {
     try {
-      const inviteeRef = doc(db, "invitee", updatedInvitee.id);
-      await updateDoc(inviteeRef, {
-        name: updatedInvitee.name,
-        rsvp: updatedInvitee.rsvp ?? "",
-        percentage: updatedInvitee.percentage,
-        side: updatedInvitee.side,
-        relation: updatedInvitee.relation,
-        amount: updatedInvitee.amount,
-        amountConfirm: updatedInvitee.amountConfirm,
-        cellphone: updatedInvitee.cellphone ?? "",
-      });
-      setEditingInviteeId(null);
+      if (editingInvitee) {
+        // Update existing invitee
+        const inviteeRef = doc(db, "invitee", editingInvitee.id);
+        await updateDoc(inviteeRef, {
+          name: invitee.name,
+          rsvp: invitee.rsvp,
+          percentage: invitee.percentage,
+          side: invitee.side,
+          relation: invitee.relation,
+          amount: invitee.amount,
+          amountConfirm: invitee.amountConfirm,
+          cellphone: invitee.cellphone,
+        });
+      } else {
+        // Add new invitee
+        await addDoc(collection(db, "invitee"), {
+          name: invitee.name,
+          rsvp: invitee.rsvp,
+          percentage: invitee.percentage,
+          side: invitee.side,
+          relation: invitee.relation,
+          amount: invitee.amount,
+          amountConfirm: invitee.amountConfirm,
+          cellphone: invitee.cellphone,
+        });
+      }
+      setIsDialogOpen(false);
+      setEditingInvitee(null);
     } catch (error) {
-      console.error("Error updating invitee: ", error);
+      console.error("Error saving invitee: ", error);
     }
-  };
-
-  const handleDeleteInvitee = async (id: string) => {
-    try {
-      await deleteDoc(doc(db, "invitee", id));
-    } catch (error) {
-      console.error("Error deleting invitee: ", error);
-    }
-  };
-
-  const handleAddInvitee = () => {
-    const newId = invitees.length
-      ? (parseInt(invitees[invitees.length - 1].id) + 1).toString()
-      : "1";
-    setNewInvitee({
-      id: newId,
-      name: "",
-      rsvp: "Pending",
-      percentage: 0,
-      side: "חתן",
-      relation: "",
-      amount: 0,
-      amountConfirm: 0,
-      cellphone: "",
-    });
-    setEditingInviteeId(newId);
-  };
-
-  const handleSaveNewInvitee = async (invitee: Invitee) => {
-    try {
-      await addDoc(collection(db, "invitee"), {
-        name: invitee.name,
-        rsvp: invitee.rsvp,
-        percentage: invitee.percentage,
-        side: invitee.side,
-        relation: invitee.relation,
-        amount: invitee.amount,
-        amountConfirm: invitee.amountConfirm,
-        cellphone: invitee.cellphone,
-      });
-      setNewInvitee(null);
-      setEditingInviteeId(null);
-    } catch (error) {
-      console.error("Error adding invitee: ", error);
-    }
-  };
-
-  const handleAddGuestsDialogOpen = () => {
-    setIsAddGuestsDialogOpen(true);
-  };
-
-  const handleAddGuestsDialogClose = () => {
-    setIsAddGuestsDialogOpen(false);
   };
 
   useEffect(() => {
@@ -131,30 +102,6 @@ const WeddingInviteTable = () => {
           };
         });
         setInvitees(inviteesData);
-        
-        // Update relation filter options dynamically based on invitees
-        const existingRelations = Array.from(
-          new Set(inviteesData.map((invitee) => invitee.relation))
-        );
-        
-        // Find relation column and update its filterConfig options
-        const updatedColumns = tableColumns.map(column => {
-          if (column.id === "relation" && column.filterConfig) {
-            return {
-              ...column,
-              filterConfig: {
-                ...column.filterConfig,
-                options: existingRelations.map(relation => ({
-                  value: relation,
-                  label: relation
-                }))
-              }
-            };
-          }
-          return column;
-        });
-        
-        setTableColumns(updatedColumns);
       },
       (error) => {
         if (error.code === "permission-denied") {
@@ -169,7 +116,7 @@ const WeddingInviteTable = () => {
 
   const existingRelations = Array.from(
     new Set(invitees.map((invitee) => invitee.relation))
-  );
+  ).filter(Boolean);
 
   return (
     <Box
@@ -199,7 +146,7 @@ const WeddingInviteTable = () => {
             <Button
               variant="contained"
               startIcon={<PersonAddIcon />}
-              onClick={handleAddGuestsDialogOpen}
+              onClick={handleDialogOpen}
               sx={{
                 bgcolor: "#9c27b0",
                 "&:hover": { bgcolor: "#7b1fa2" },
@@ -209,20 +156,30 @@ const WeddingInviteTable = () => {
               Add New Guests
             </Button>
           </Box>
-
           <SummaryInfo invitees={displayedInvitees} />
-
-          <DSTable columns={tableColumns} data={invitees} 
-            onDisplayedDataChange={
-              (displayedData) => setDisplayedInvitees(displayedData)
-            }
+          <DSTable
+            columns={columns.map((col) =>
+              col.id === "actions"
+                ? {
+                    ...col,
+                    render: (invitee: Invitee) => (
+                      <InviteeListActionCell
+                        invitee={invitee}
+                        onEditStart={handleEditStart}
+                      />
+                    ),
+                  }
+                : col
+            )}
+            data={invitees}
+            onDisplayedDataChange={setDisplayedInvitees}
           />
         </Stack>
       </Box>
       <AddGuestsDialog
-        open={isAddGuestsDialogOpen}
-        onClose={handleAddGuestsDialogClose}
-        onSave={handleSaveNewInvitee}
+        open={isDialogOpen}
+        onClose={handleDialogClose}
+        onSave={handleSaveInvitee}
         relationOptions={existingRelations}
       />
     </Box>
