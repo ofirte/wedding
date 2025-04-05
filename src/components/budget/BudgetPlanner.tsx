@@ -9,7 +9,7 @@ import {
   addDoc,
   updateDoc,
   doc,
-  deleteDoc
+  deleteDoc,
 } from "firebase/firestore";
 import BudgetSummary from "./BudgetSummary";
 import BudgetTable from "./BudgetTable";
@@ -98,12 +98,12 @@ const BudgetPlanner = () => {
   // Open dialog for editing an existing item
   const handleEdit = (item: BudgetItem) => {
     setEditingItem(item);
-    setNewItem({ 
+    setNewItem({
       name: item.name,
       group: item.group,
       expectedPrice: item.expectedPrice,
       actualPrice: item.actualPrice,
-      downPayment: item.downPayment
+      downPayment: item.downPayment,
     });
     setOpen(true);
   };

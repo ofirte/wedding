@@ -20,10 +20,7 @@ const BudgetTable: React.FC<BudgetTableProps> = ({
 
   return (
     <Box sx={{ marginTop: 2 }}>
-      <DSTable
-        columns={columns}
-        data={items}
-      />
+      <DSTable columns={columns} data={items} />
     </Box>
   );
 };
