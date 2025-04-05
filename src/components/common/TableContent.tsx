@@ -16,6 +16,8 @@ interface TableContentProps<T extends { id: string | number }> {
 }
 
 const TableContent = <T extends { id: string | number }>({ columns, data }: TableContentProps<T>) => {
+    console.log("TableContent data", data);
+
     if (data.length === 0) {
         return (
             <TableRow>
@@ -25,7 +27,6 @@ const TableContent = <T extends { id: string | number }>({ columns, data }: Tabl
             </TableRow>
         );
     }
-
     return (
         <>
             {data.map((rowData) => (

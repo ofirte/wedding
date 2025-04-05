@@ -8,31 +8,34 @@ export interface FilterConfig {
   id: string;
   type: "single" | "multiple";
   label: string;
-  options?: {
-    value: any;
-    label: string;
-  }[] | ((data: any[]) => { value: any; label: string }[]);
+  options?:
+    | {
+        value: any;
+        label: string;
+      }[]
+    | ((data: any[]) => { value: any; label: string }[]);
   displayFormat?: (value: any) => string;
+}
+
+export interface ResolvedFilterConfig extends FilterConfig {
+  resolvedOptions: { value: any; label: string }[];
 }
 
 export interface FilterState {
   id: string;
   value: any[];
-  resolvedOptions?: { value: any; label: string }[];
 }
 
 interface DSTableFiltersProps {
   filters: FilterState[];
-  filterConfigs: FilterConfig[];
-  onFilterChange: (filterId: string, newValue: any[]) => void;
-  onClearFilters: () => void;
+  filterConfigs: ResolvedFilterConfig[];
+  setFilterStates: React.Dispatch<React.SetStateAction<FilterState[]>>;
 }
 
 const DSTableFilters: React.FC<DSTableFiltersProps> = ({
   filters,
   filterConfigs,
-  onFilterChange,
-  onClearFilters,
+  setFilterStates,
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const open = Boolean(anchorEl);
@@ -45,12 +48,35 @@ const DSTableFilters: React.FC<DSTableFiltersProps> = ({
     setAnchorEl(null);
   };
 
+  const handleFilterChange = (filterId: string, newValue: any[]) => {
+    setFilterStates((prevStates) => {
+      const existingFilterIndex = prevStates.findIndex(
+        (state) => state.id === filterId
+      );
+
+      if (existingFilterIndex === -1) {
+        return [...prevStates, { id: filterId, value: newValue }];
+      } else {
+        if (newValue.length === 0) {
+          return prevStates.filter((state) => state.id !== filterId);
+        }
+        return prevStates.map((state) =>
+          state.id === filterId ? { ...state, value: newValue } : state
+        );
+      }
+    });
+  };
+
+  const handleClearFilters = () => {
+    setFilterStates([]);
+  };
+
   const handleRemoveFilterValue = (filterId: string, value: any) => {
     const filter = filters.find((f) => f.id === filterId);
     if (!filter) return;
-    
+
     const newValues = filter.value.filter((v) => v !== value);
-    onFilterChange(filterId, newValues);
+    handleFilterChange(filterId, newValues);
   };
 
   const getActiveFiltersCount = () => {
@@ -68,29 +94,29 @@ const DSTableFilters: React.FC<DSTableFiltersProps> = ({
           color={getActiveFiltersCount() > 0 ? "primary" : "inherit"}
           sx={{ height: 32 }}
         >
-          Filters {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}
+          Filters{" "}
+          {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}
         </Button>
-        
-        <FilterChips 
-          filters={filters} 
-          filterConfigs={filterConfigs}
+
+        <FilterChips
+          filters={filters}
           onRemoveFilterValue={handleRemoveFilterValue}
         />
-        
+
         {getActiveFiltersCount() > 0 && (
-          <Button size="small" onClick={onClearFilters} sx={{ height: 32 }}>
+          <Button size="small" onClick={handleClearFilters} sx={{ height: 32 }}>
             Clear all
           </Button>
         )}
       </Stack>
-      
-      <FilterPopover 
+
+      <FilterPopover
         open={open}
         anchorEl={anchorEl}
         onClose={handleCloseFilters}
         filters={filters}
         filterConfigs={filterConfigs}
-        onFilterChange={onFilterChange}
+        onFilterChange={handleFilterChange}
       />
     </Box>
   );

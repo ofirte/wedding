@@ -163,10 +163,7 @@ const WeddingInviteTable = () => {
                 ? {
                     ...col,
                     render: (invitee: Invitee) => (
-                      <InviteeListActionCell
-                        invitee={invitee}
-                        onEditStart={handleEditStart}
-                      />
+                      <InviteeListActionCell invitee={invitee} />
                     ),
                   }
                 : col

@@ -34,7 +34,7 @@ const InviteeListActionCell: React.FC<InviteeListActionCellProps> = ({
       <IconButton
         size="small"
         color="primary"
-        onClick={() => onEditStart(invitee)}
+        onClick={() => {}}
         aria-label="Edit invitee"
       >
         <EditIcon />

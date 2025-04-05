@@ -1,13 +1,22 @@
 // BudgetPlanner.tsx - Main Container Component
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Paper, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { db } from "../../api/firebaseConfig";
+import {
+  collection,
+  onSnapshot,
+  addDoc,
+  updateDoc,
+  doc,
+  deleteDoc
+} from "firebase/firestore";
 import BudgetSummary from "./BudgetSummary";
 import BudgetTable from "./BudgetTable";
 import BudgetItemDialog from "./BudgetItemDialog";
 
 export type BudgetItem = {
-  id: number;
+  id: string;
   name: string;
   group: string;
   expectedPrice: number;
@@ -32,26 +41,8 @@ const BudgetPlanner = () => {
     "Other",
   ];
 
-  // Initial state
-  const [items, setItems] = useState<BudgetItem[]>([
-    {
-      id: 1,
-      name: "Venue Rental",
-      group: "Venue",
-      expectedPrice: 5000,
-      actualPrice: 5200,
-      downPayment: 2000,
-    },
-    {
-      id: 2,
-      name: "Catering (per person)",
-      group: "Catering",
-      expectedPrice: 75,
-      actualPrice: 80,
-      downPayment: 1000,
-    },
-  ]);
-
+  // State
+  const [items, setItems] = useState<BudgetItem[]>([]);
   const [open, setOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<BudgetItem | null>(null);
   const [newItem, setNewItem] = useState({
@@ -61,6 +52,35 @@ const BudgetPlanner = () => {
     actualPrice: 0,
     downPayment: 0,
   });
+
+  // Fetch budget items from Firebase
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "budget"),
+      (snapshot) => {
+        const budgetItems = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            name: data.name,
+            group: data.group,
+            expectedPrice: data.expectedPrice,
+            actualPrice: data.actualPrice,
+            downPayment: data.downPayment,
+          };
+        });
+        setItems(budgetItems);
+      },
+      (error) => {
+        if (error.code === "permission-denied") {
+          console.error("Error fetching budget items: ", error.message);
+        } else {
+          console.error("Error fetching budget items: ", error);
+        }
+      }
+    );
+    return () => unsubscribe();
+  }, []);
 
   // Open dialog for adding a new item
   const handleAddNew = () => {
@@ -78,7 +98,13 @@ const BudgetPlanner = () => {
   // Open dialog for editing an existing item
   const handleEdit = (item: BudgetItem) => {
     setEditingItem(item);
-    setNewItem({ ...item });
+    setNewItem({ 
+      name: item.name,
+      group: item.group,
+      expectedPrice: item.expectedPrice,
+      actualPrice: item.actualPrice,
+      downPayment: item.downPayment
+    });
     setOpen(true);
   };
 
@@ -96,24 +122,41 @@ const BudgetPlanner = () => {
   };
 
   // Save the new or edited item
-  const handleSave = () => {
-    if (editingItem) {
-      // Update existing item
-      setItems(
-        items.map((item) =>
-          item.id === editingItem.id ? { ...newItem, id: item.id } : item
-        )
-      );
-    } else {
-      // Add new item
-      setItems([...items, { ...newItem, id: Date.now() }]);
+  const handleSave = async () => {
+    try {
+      if (editingItem) {
+        // Update existing item
+        const itemRef = doc(db, "budget", editingItem.id);
+        await updateDoc(itemRef, {
+          name: newItem.name,
+          group: newItem.group,
+          expectedPrice: newItem.expectedPrice,
+          actualPrice: newItem.actualPrice,
+          downPayment: newItem.downPayment,
+        });
+      } else {
+        // Add new item
+        await addDoc(collection(db, "budget"), {
+          name: newItem.name,
+          group: newItem.group,
+          expectedPrice: newItem.expectedPrice,
+          actualPrice: newItem.actualPrice,
+          downPayment: newItem.downPayment,
+        });
+      }
+      setOpen(false);
+    } catch (error) {
+      console.error("Error saving budget item: ", error);
     }
-    setOpen(false);
   };
 
   // Delete an item
-  const handleDelete = (id: number) => {
-    setItems(items.filter((item) => item.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "budget", id));
+    } catch (error) {
+      console.error("Error deleting budget item: ", error);
+    }
   };
 
   // Calculate totals

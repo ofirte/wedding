@@ -13,14 +13,14 @@ import {
   Divider,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { FilterConfig, FilterState } from "./DSTableFilters";
+import { ResolvedFilterConfig, FilterState } from "./DSTableFilters";
 
 interface FilterPopoverProps {
   open: boolean;
   anchorEl: HTMLButtonElement | null;
   onClose: () => void;
   filters: FilterState[];
-  filterConfigs: FilterConfig[];
+  filterConfigs: ResolvedFilterConfig[];
   onFilterChange: (filterId: string, newValue: any[]) => void;
 }
 
@@ -37,16 +37,14 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
 }) => {
   const handleFilterChange = (filterId: string, event: SelectChangeEvent<any>) => {
     const newValue = event.target.value;
-    const filterConfig = filterConfigs.find((config: FilterConfig) => config.id === filterId);
+    const filterConfig = filterConfigs.find((config: ResolvedFilterConfig) => config.id === filterId);
     
     // Always handle as array for consistency
     const valueAsArray = filterConfig?.type === "multiple" 
       ? newValue 
       : newValue === "" ? [] : [newValue];
-    
     onFilterChange(filterId, valueAsArray);
   };
-
   return (
     <Popover
       open={open}
@@ -80,17 +78,15 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
         
         <Divider />
         
-        {filters.map((filter: FilterState) => {
-          const filterConfig = filterConfigs.find((config: FilterConfig) => config.id === filter.id);
-          if (!filterConfig) return null;
-
+        {filterConfigs.map((filterConfig: ResolvedFilterConfig) => {
+          const filterValues = filters.find((f) => f.id === filterConfig.id);
           return (
-            <FormControl key={filter.id} fullWidth size="small">
+            <FormControl key={filterConfig.id} fullWidth size="small">
               <InputLabel>{filterConfig.label}</InputLabel>
               <Select
                 multiple={filterConfig.type === "multiple"}
-                value={filterConfig.type === "multiple" ? filter.value : filter.value[0] || ""}
-                onChange={(e) => handleFilterChange(filter.id, e)}
+                value={filterConfig.type === "multiple" ? filterValues?.value ?? [] : filterValues?.value?.[0] || ""}
+                onChange={(e) => handleFilterChange(filterConfig.id, e)}
                 label={filterConfig.label}
                 renderValue={
                   filterConfig.type === "multiple"
@@ -104,7 +100,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                   </MenuItem>
                 )}
                 
-                {filter.resolvedOptions?.map((option) => (
+                {filterConfig.resolvedOptions?.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>

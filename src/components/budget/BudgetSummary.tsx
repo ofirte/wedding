@@ -1,7 +1,6 @@
 // BudgetSummary.tsx
 import React from "react";
 import { Box, Typography, Paper, Grid2 as Grid } from "@mui/material";
-import { r } from "react-router/dist/development/fog-of-war-Cm1iXIp7";
 
 type SummaryProps = {
   totals: {
