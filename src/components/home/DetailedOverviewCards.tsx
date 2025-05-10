@@ -2,6 +2,7 @@ import React from "react";
 import { Grid2 as Grid } from "@mui/material";
 import BudgetOverviewCard from "./BudgetOverviewCard";
 import GuestListCard from "./GuestListCard";
+import TaskOverviewCard from "./TaskOverviewCard";
 
 interface DetailedOverviewCardsProps {
   budgetStats: {
@@ -15,22 +16,28 @@ interface DetailedOverviewCardsProps {
     pending: number;
     declined: number;
   };
+  taskStats: {
+    total: number;
+    completed: number;
+    percentage: number;
+  };
 }
 
 const DetailedOverviewCards: React.FC<DetailedOverviewCardsProps> = ({
   budgetStats,
   guestStats,
+  taskStats,
 }) => {
   return (
     <Grid container spacing={3} sx={{ mb: 4 }}>
-      {/* Budget Overview */}
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <BudgetOverviewCard budgetStats={budgetStats} />
       </Grid>
-
-      {/* Guest List Overview */}
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <GuestListCard guestStats={guestStats} />
+      </Grid>
+      <Grid size={{ xs: 12, md: 4 }}>
+        <TaskOverviewCard taskStats={taskStats} />
       </Grid>
     </Grid>
   );

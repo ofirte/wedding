@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Box,
-  useTheme,
-  LinearProgress,
-  styled,
-} from "@mui/material";
+import { Box, useTheme, LinearProgress, styled } from "@mui/material";
 import { useNavigate } from "react-router";
 import WeddingCountdownBanner from "./WeddingCountdownBanner";
 import StatCards from "./StatCards";
@@ -80,6 +75,7 @@ const Home: React.FC = () => {
       <DetailedOverviewCards
         budgetStats={budgetStats}
         guestStats={guestStats}
+        taskStats={taskStats}
       />
     </Box>
   );

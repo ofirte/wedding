@@ -73,6 +73,7 @@ const StatCards: React.FC<StatCardsProps> = ({
           value={`${taskStats.completed}/${taskStats.total}`}
           subtitle={`${taskStats.percentage}% completed`}
           color="success"
+          onClick={() => navigate("/tasks")}
         />
       </Grid>
 
