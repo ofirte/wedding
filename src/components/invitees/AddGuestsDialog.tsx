@@ -97,7 +97,9 @@ const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>Add New Guests</DialogTitle>
+      <DialogTitle sx={{ bgcolor: "info.light", color: "info.contrastText" }}>
+        Add New Guests
+      </DialogTitle>
       <DialogContent>
         {/* Form Section for Adding / Editing a Guest */}
         <Box mb={3}>
@@ -199,10 +201,7 @@ const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
         </Box>
         {/* Table Section Showing All Added Guests */}
         <Paper variant="outlined">
-          <DSTable
-            columns={columns}
-            data={newInvitees}
-          />
+          <DSTable columns={columns} data={newInvitees} />
         </Paper>
       </DialogContent>
       <DialogActions>

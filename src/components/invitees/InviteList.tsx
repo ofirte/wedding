@@ -86,12 +86,21 @@ const WeddingInviteTable = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        bgcolor: "#fafafa",
+
         py: 4,
         px: { xs: 2, md: 4 },
       }}
     >
-      <Box sx={{ maxWidth: 1200, mx: "auto", p: 3 }}>
+      <Box
+        sx={{
+          maxWidth: 1200,
+          mx: "auto",
+          p: 3,
+          bgcolor: "background.paper",
+          borderRadius: 2,
+          boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+        }}
+      >
         <Stack spacing={4}>
           <Box
             sx={{
@@ -103,7 +112,7 @@ const WeddingInviteTable = () => {
             <Typography
               variant="h4"
               component="h1"
-              sx={{ fontWeight: "bold", color: "#1a237e" }}
+              sx={{ fontWeight: "bold", color: "info.dark" }}
             >
               Wedding Guest Management
             </Typography>
@@ -111,9 +120,8 @@ const WeddingInviteTable = () => {
               variant="contained"
               startIcon={<PersonAddIcon />}
               onClick={handleDialogOpen}
+              color="info"
               sx={{
-                bgcolor: "#9c27b0",
-                "&:hover": { bgcolor: "#7b1fa2" },
                 borderRadius: 2,
               }}
             >

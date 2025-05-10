@@ -87,7 +87,7 @@ const Budget_OverviewCard: React.FC = () => {
         <StyledLinearProgress
           variant="determinate"
           value={(budgetStats.spent / budgetStats.total) * 100}
-          color="secondary"
+          color="primary"
         />
       </Box>
 

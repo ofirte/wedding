@@ -1,12 +1,5 @@
-
 import React from "react";
-import {
-  Grid,
-  Card,
-  CardContent,
-  Typography,
-  Stack,
-} from "@mui/material";
+import { Grid, Card, CardContent, Typography, Stack } from "@mui/material";
 import PeopleIcon from "@mui/icons-material/People";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingIcon from "@mui/icons-material/Pending";
@@ -24,9 +17,12 @@ const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
         <Card elevation={2}>
           <CardContent>
             <Stack spacing={1} alignItems="center">
-              <PeopleIcon sx={{ fontSize: 40, color: "#1a237e" }} />
+              <PeopleIcon sx={{ fontSize: 40, color: "info.dark" }} />
               <Typography variant="h5" component="div">
-                {invitees.reduce((acc, i) => acc + parseInt(i.amount.toString()), 0)}
+                {invitees.reduce(
+                  (acc, i) => acc + parseInt(i.amount.toString()),
+                  0
+                )}
               </Typography>
               <Typography color="text.secondary">Total Guests</Typography>
             </Stack>
@@ -37,7 +33,7 @@ const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
         <Card elevation={2}>
           <CardContent>
             <Stack spacing={1} alignItems="center">
-              <CheckCircleIcon sx={{ fontSize: 40, color: "#2e7d32" }} />
+              <CheckCircleIcon sx={{ fontSize: 40, color: "success.main" }} />
               <Typography variant="h5" component="div">
                 {invitees.filter((i) => i.rsvp === "Confirmed").length}
               </Typography>
@@ -50,7 +46,7 @@ const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
         <Card elevation={2}>
           <CardContent>
             <Stack spacing={1} alignItems="center">
-              <PendingIcon sx={{ fontSize: 40, color: "#ed6c02" }} />
+              <PendingIcon sx={{ fontSize: 40, color: "warning.main" }} />
               <Typography variant="h5" component="div">
                 {invitees.filter((i) => i.rsvp === "Pending").length}
               </Typography>
@@ -63,7 +59,7 @@ const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
         <Card elevation={2}>
           <CardContent>
             <Stack spacing={1} alignItems="center">
-              <CancelIcon sx={{ fontSize: 40, color: "#d32f2f" }} />
+              <CancelIcon sx={{ fontSize: 40, color: "error.main" }} />
               <Typography variant="h5" component="div">
                 {invitees.filter((i) => i.rsvp === "Declined").length}
               </Typography>

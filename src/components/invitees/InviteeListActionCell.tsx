@@ -33,7 +33,7 @@ const InviteeListActionCell: React.FC<InviteeListActionCellProps> = ({
       </IconButton>
       <IconButton
         size="small"
-        color="primary"
+        color="info"
         onClick={() => {}}
         aria-label="Edit invitee"
       >

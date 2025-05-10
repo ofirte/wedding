@@ -75,7 +75,7 @@ const StatCards: React.FC<StatCardsProps> = ({ daysRemaining }) => {
           title="Budget"
           value={formatCurrency(budgetStats.spent)}
           subtitle={`of ${formatCurrency(budgetStats.total)}`}
-          color="secondary"
+          color="info"
           onClick={() => navigate("/budget")}
         />
       </Grid>

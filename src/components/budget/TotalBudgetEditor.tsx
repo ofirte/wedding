@@ -49,7 +49,7 @@ const TotalBudgetEditor: React.FC<TotalBudgetEditorProps> = ({
         alignItems: "center",
         justifyContent: "center",
         mb: 2,
-        bgcolor: "#f0f4ff",
+        bgcolor: "sage.main",
         padding: 2,
         borderRadius: 1,
       }}

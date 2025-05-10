@@ -45,8 +45,8 @@ const Sidebar: React.FC = () => {
       <Box
         sx={{
           padding: 2,
-          backgroundColor: theme.palette.primary.light,
-          color: theme.palette.primary.contrastText,
+          backgroundColor: theme.palette.sage.light,
+          color: theme.palette.sage.contrastText,
         }}
       >
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
@@ -69,7 +69,7 @@ const Sidebar: React.FC = () => {
             >
               <ListItemIcon
                 sx={{
-                  color: theme.palette.primary.light,
+                  color: theme.palette.sage.dark,
                   minWidth: 40,
                 }}
               >

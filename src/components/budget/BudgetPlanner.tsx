@@ -5,6 +5,7 @@ import {
   Paper,
   Button,
   CircularProgress,
+  useTheme,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { db } from "../../api/firebaseConfig";
@@ -33,6 +34,9 @@ export type BudgetItem = {
 };
 
 const BudgetPlanner = () => {
+  // Access theme
+  const theme = useTheme();
+
   // Example budget groups
   const budgetGroups = [
     "Venue",
@@ -193,13 +197,14 @@ const BudgetPlanner = () => {
   // Render loading, error, or content
   return (
     <Box sx={{ padding: 4 }}>
+      {" "}
       <Paper
         elevation={3}
         sx={{
           padding: 3,
           backgroundColor: "#fafafa",
           borderRadius: 2,
-          borderTop: "8px solid #9c88ff",
+          borderTop: `8px solid ${theme.palette.primary.main}`,
         }}
       >
         <Typography
@@ -208,7 +213,7 @@ const BudgetPlanner = () => {
           sx={{
             fontFamily: '"Playfair Display", serif',
             textAlign: "center",
-            color: "#424242",
+            color: theme.palette.primary.contrastText,
             marginBottom: 3,
           }}
         >
@@ -228,9 +233,10 @@ const BudgetPlanner = () => {
           onClick={handleAddNew}
           sx={{
             marginBottom: 3,
-            backgroundColor: "#9c88ff",
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.contrastText,
             "&:hover": {
-              backgroundColor: "#8c78ef",
+              backgroundColor: theme.palette.primary.dark,
             },
           }}
         >
@@ -239,7 +245,7 @@ const BudgetPlanner = () => {
 
         {isLoading ? (
           <Box sx={{ display: "flex", justifyContent: "center", padding: 2 }}>
-            <CircularProgress sx={{ color: "#9c88ff" }} />
+            <CircularProgress sx={{ color: theme.palette.primary.main }} />
           </Box>
         ) : isError ? (
           <Typography color="error" align="center">
