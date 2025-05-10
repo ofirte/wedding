@@ -1,19 +1,19 @@
-// filepath: /Users/ofirtene/Projects/wedding-plan/src/components/home/Task_OverviewCard.tsx
+// filepath: /Users/ofirtene/Projects/wedding-plan/src/components/home/Guest_OverviewCard.tsx
 import React from "react";
 import {
-  Typography,
   Box,
-  Divider,
-  LinearProgress,
-  styled,
+  Typography,
   Paper,
   Button,
+  Divider,
   useTheme,
   Stack,
+  LinearProgress,
+  styled,
 } from "@mui/material";
 import { ArrowForward as ArrowIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router";
-import useTasks from "../../hooks/tasks/useTasks";
+import { useInvitees } from "../../hooks/invitees/useInvitees";
 
 // Styled LinearProgress for better visualization
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -25,23 +25,16 @@ const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
 }));
 
-const Task_OverviewCard: React.FC = () => {
+const Guest_OverviewCard: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { tasks } = useTasks();
-
-  const totalTasks = tasks.length;
-  const completedTasks = tasks.filter((task) => task.completed).length;
-  const percentage =
-    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-  const inProgressTasks = tasks.filter((task) => !!task.assignedTo).length;
-  const pendingTasks = totalTasks - completedTasks - inProgressTasks;
-  const taskStats = {
-    total: totalTasks,
-    completed: completedTasks,
-    inProgress: inProgressTasks,
-    pending: pendingTasks,
-    percentage: percentage,
+  const { data: guests } = useInvitees();
+  
+  const guestStats = {
+    total: guests?.reduce((acc, i) => acc + parseInt(i.amount.toString()), 0) || 0,
+    confirmed: guests?.filter((guest) => guest.rsvp === "confirmed").length || 0,
+    pending: guests?.filter((guest) => guest.rsvp === "pending").length || 0,
+    declined: guests?.filter((guest) => guest.rsvp === "declined").length || 0,
   };
 
   return (
@@ -60,32 +53,38 @@ const Task_OverviewCard: React.FC = () => {
         alignItems="center"
         mb={2}
       >
-        <Typography variant="h6">Task Progress</Typography>
+        <Typography variant="h6">Guest List</Typography>
         <Button
           size="small"
           endIcon={<ArrowIcon />}
-          onClick={() => navigate("/tasks")}
+          onClick={() => navigate("/invite")}
         >
           Details
         </Button>
       </Box>
 
       <Box sx={{ mb: 3 }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+        <Box display="flex" justifyContent="space-between" mb={1}>
           <Typography variant="body2" color="text.secondary">
-            {taskStats.completed} of {taskStats.total} tasks completed
+            Response Rate
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {taskStats.percentage}%
+          <Typography variant="body2" fontWeight="medium">
+            {guestStats.confirmed + guestStats.declined} / {guestStats.total}{" "}
+            guests
           </Typography>
         </Box>
         <StyledLinearProgress
           variant="determinate"
-          value={taskStats.percentage}
+          value={
+            ((guestStats.confirmed + guestStats.declined) / guestStats.total) *
+            100
+          }
           color="primary"
         />
       </Box>
+
       <Divider sx={{ my: 2 }} />
+
       <Stack direction="row" spacing={2}>
         <Box
           flex={1}
@@ -97,9 +96,9 @@ const Task_OverviewCard: React.FC = () => {
           }}
         >
           <Typography variant="body2" fontWeight="medium" gutterBottom>
-            Completed
+            Confirmed
           </Typography>
-          <Typography variant="h6">{taskStats.completed}</Typography>
+          <Typography variant="h6">{guestStats.confirmed}</Typography>
         </Box>
 
         <Box
@@ -112,9 +111,9 @@ const Task_OverviewCard: React.FC = () => {
           }}
         >
           <Typography variant="body2" fontWeight="medium" gutterBottom>
-            Ongoing
+            Pending
           </Typography>
-          <Typography variant="h6">{taskStats.inProgress}</Typography>
+          <Typography variant="h6">{guestStats.pending}</Typography>
         </Box>
 
         <Box
@@ -127,13 +126,13 @@ const Task_OverviewCard: React.FC = () => {
           }}
         >
           <Typography variant="body2" fontWeight="medium" gutterBottom>
-            Pending
+            Declined
           </Typography>
-          <Typography variant="h6">{taskStats.pending}</Typography>
+          <Typography variant="h6">{guestStats.declined}</Typography>
         </Box>
       </Stack>
     </Paper>
   );
 };
 
-export default Task_OverviewCard;
+export default Guest_OverviewCard;

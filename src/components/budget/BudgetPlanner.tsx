@@ -16,9 +16,11 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { useBudgetItems } from "../../hooks/budget/useBudgetItems";
+import { useTotalBudget } from "../../hooks/budget/useTotalBudget";
 import BudgetSummary from "./BudgetSummary";
 import BudgetTable from "./BudgetTable";
 import BudgetItemDialog from "./BudgetItemDialog";
+import TotalBudgetEditor from "./TotalBudgetEditor";
 
 export type BudgetItem = {
   id: string;
@@ -62,6 +64,13 @@ const BudgetPlanner = () => {
 
   // Fetch budget items using TanStack Query
   const { data: budgetItems, isLoading, isError } = useBudgetItems();
+
+  // Fetch total budget using the new hook
+  const {
+    totalBudget,
+    setTotalBudget,
+    isLoading: isTotalBudgetLoading,
+  } = useTotalBudget();
 
   // Update state when data changes
   React.useEffect(() => {
@@ -174,6 +183,11 @@ const BudgetPlanner = () => {
     );
   };
 
+  // Handle saving total budget
+  const handleSaveTotalBudget = (newBudget: number) => {
+    setTotalBudget(newBudget);
+  };
+
   const totals = calculateTotals();
 
   // Render loading, error, or content
@@ -201,7 +215,12 @@ const BudgetPlanner = () => {
           Wedding Budget Planner
         </Typography>
 
-        <BudgetSummary totals={totals} />
+        <TotalBudgetEditor
+          totalBudget={totalBudget}
+          isLoading={isTotalBudgetLoading}
+          onSaveTotalBudget={handleSaveTotalBudget}
+        />
+        <BudgetSummary totals={totals} totalBudget={totalBudget} />
 
         <Button
           variant="contained"

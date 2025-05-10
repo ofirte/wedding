@@ -8,40 +8,54 @@ import {
   CheckCircleOutline as TaskIcon,
   AccessTime as TimeIcon,
 } from "@mui/icons-material";
-
+import { useInvitees } from "../../hooks/invitees/useInvitees";
+import { useBudgetItems } from "../../hooks/budget/useBudgetItems";
+import { useTotalBudget } from "../../hooks/budget/useTotalBudget";
+import useTasks from "../../hooks/tasks/useTasks";
 // Utility function to format currency
 const formatCurrency = (amount: number): string => {
   return "₪" + amount.toLocaleString();
 };
 
 interface StatCardsProps {
-  guestStats: {
-    total: number;
-    confirmed: number;
-    pending: number;
-    declined: number;
-  };
-  budgetStats: {
-    total: number;
-    spent: number;
-    remaining: number;
-  };
-  taskStats: {
-    total: number;
-    completed: number;
-    percentage: number;
-  };
   daysRemaining: number;
 }
 
-const StatCards: React.FC<StatCardsProps> = ({
-  guestStats,
-  budgetStats,
-  taskStats,
-  daysRemaining,
-}) => {
+const StatCards: React.FC<StatCardsProps> = ({ daysRemaining }) => {
   const navigate = useNavigate();
+  const { data: guests } = useInvitees();
+  const { data: budget } = useBudgetItems();
+  const { totalBudget } = useTotalBudget();
+  const { tasks } = useTasks();
 
+  const guestStats = {
+    total:
+      guests?.reduce((acc, i) => acc + parseInt(i.amount.toString()), 0) || 0,
+    confirmed:
+      guests?.filter((guest) => guest.rsvp === "confirmed").length || 0,
+    pending: guests?.filter((guest) => guest.rsvp === "pending").length || 0,
+    declined: guests?.filter((guest) => guest.rsvp === "declined").length || 0,
+  };
+
+  const totalSpent =
+    budget?.reduce((acc, i) => acc + parseInt(i.actualPrice.toString()), 0) ||
+    0;
+  const remainingBudget = totalBudget - totalSpent;
+  const budgetStats = {
+    total: totalBudget,
+    spent: totalSpent,
+    remaining: remainingBudget,
+  };
+
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((task) => task.completed).length;
+  const percentage =
+    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  const taskStats = {
+    total: totalTasks,
+    completed: completedTasks,
+    percentage: percentage,
+  };
   return (
     <Grid container spacing={3} sx={{ mb: 4 }}>
       <Grid size={{ xs: 4, md: 3 }}>

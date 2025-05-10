@@ -9,9 +9,10 @@ type SummaryProps = {
     downPayment: number;
     remaining: number;
   };
+  totalBudget?: number;
 };
 
-const BudgetSummary: React.FC<SummaryProps> = ({ totals }) => {
+const BudgetSummary: React.FC<SummaryProps> = ({ totals, totalBudget = 0 }) => {
   // Format currency
   const formatCurrency = (amount: number) => {
     return "₪" + amount.toLocaleString();
@@ -54,8 +55,8 @@ const BudgetSummary: React.FC<SummaryProps> = ({ totals }) => {
       color: "#e6fff0",
     },
     {
-      title: "Remaining Balance",
-      value: formatCurrency(totals.remaining),
+      title: "Remaining Budget",
+      value: formatCurrency(totalBudget - totals.actual),
       color: "#fff8e6",
     },
   ];

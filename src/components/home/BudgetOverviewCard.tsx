@@ -1,3 +1,4 @@
+// filepath: /Users/ofirtene/Projects/wedding-plan/src/components/home/Budget_OverviewCard.tsx
 import React from "react";
 import {
   Box,
@@ -12,6 +13,9 @@ import {
 } from "@mui/material";
 import { ArrowForward as ArrowIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router";
+import { useBudgetItems } from "../../hooks/budget/useBudgetItems";
+import { useTotalBudget } from "../../hooks/budget/useTotalBudget";
+
 // Styled LinearProgress for better visualization
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -27,19 +31,22 @@ const formatCurrency = (amount: number): string => {
   return "₪" + amount.toLocaleString();
 };
 
-interface BudgetOverviewCardProps {
-  budgetStats: {
-    total: number;
-    spent: number;
-    remaining: number;
-  };
-}
-
-const BudgetOverviewCard: React.FC<BudgetOverviewCardProps> = ({
-  budgetStats,
-}) => {
+const Budget_OverviewCard: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { data: budget } = useBudgetItems();
+  const { totalBudget } = useTotalBudget();
+
+  const totalSpent =
+    budget?.reduce((acc, i) => acc + parseInt(i.actualPrice.toString()), 0) ||
+    0;
+  const remainingBudget = totalBudget - totalSpent;
+
+  const budgetStats = {
+    total: totalBudget,
+    spent: totalSpent,
+    remaining: remainingBudget,
+  };
 
   return (
     <Paper
@@ -113,4 +120,4 @@ const BudgetOverviewCard: React.FC<BudgetOverviewCardProps> = ({
   );
 };
 
-export default BudgetOverviewCard;
+export default Budget_OverviewCard;

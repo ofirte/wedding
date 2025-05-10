@@ -1,3 +1,4 @@
+// filepath: /Users/ofirtene/Projects/wedding-plan/src/components/home/Guest_OverviewCard.tsx
 import React from "react";
 import {
   Box,
@@ -12,6 +13,7 @@ import {
 } from "@mui/material";
 import { ArrowForward as ArrowIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router";
+import { useInvitees } from "../../hooks/invitees/useInvitees";
 
 // Styled LinearProgress for better visualization
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -23,18 +25,19 @@ const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
 }));
 
-interface GuestListCardProps {
-  guestStats: {
-    total: number;
-    confirmed: number;
-    pending: number;
-    declined: number;
-  };
-}
-
-const GuestListCard: React.FC<GuestListCardProps> = ({ guestStats }) => {
+const Guest_OverviewCard: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { data: guests } = useInvitees();
+
+  const guestStats = {
+    total:
+      guests?.reduce((acc, i) => acc + parseInt(i.amount.toString()), 0) || 0,
+    confirmed:
+      guests?.filter((guest) => guest.rsvp === "confirmed").length || 0,
+    pending: guests?.filter((guest) => guest.rsvp === "pending").length || 0,
+    declined: guests?.filter((guest) => guest.rsvp === "declined").length || 0,
+  };
 
   return (
     <Paper
@@ -134,4 +137,4 @@ const GuestListCard: React.FC<GuestListCardProps> = ({ guestStats }) => {
   );
 };
 
-export default GuestListCard;
+export default Guest_OverviewCard;

@@ -118,10 +118,10 @@ const TaskList: React.FC<TaskListProps> = ({
         task.description?.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
-      if (!a.assignedTo && b.assignedTo) return -1;
-      if (a.assignedTo && !b.assignedTo) return 1;
       if (!a.completed && b.completed) return -1;
       if (a.completed && !b.completed) return 1;
+      if (!a.assignedTo && b.assignedTo) return -1;
+      if (a.assignedTo && !b.assignedTo) return 1;
       return 0;
     });
 
