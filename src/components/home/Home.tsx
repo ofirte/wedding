@@ -18,6 +18,7 @@ import StatCards from "./StatCards";
 import DetailedOverviewCards from "./DetailedOverviewCards";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { useBudgetItems } from "../../hooks/budget/useBudgetItems";
+import useTasks from "../../hooks/tasks/useTasks";
 
 // Styled LinearProgress for better visualization
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -45,6 +46,7 @@ const Home: React.FC = () => {
   const daysRemaining = calculateDaysRemaining();
   const { data: guests, isLoading: guestsLoading } = useInvitees();
   const { data: budget, isLoading: budgetLoading } = useBudgetItems();
+  const { tasks } = useTasks();
   const guestStats = {
     total:
       guests?.reduce((acc, i) => acc + parseInt(i.amount.toString()), 0) || 0,
@@ -65,11 +67,14 @@ const Home: React.FC = () => {
     spent: totalSpent,
     remaining: remainingBudget,
   };
-
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((task) => task.completed).length;
+  const percentage =
+    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
   const taskStats = {
-    total: 50,
-    completed: 28,
-    percentage: 56,
+    total: totalTasks,
+    completed: completedTasks,
+    percentage: percentage,
   };
 
   // Format currency for budget display

@@ -4,6 +4,7 @@ import App from "./App";
 import WeddingInviteTable from "./components/invitees/InviteList";
 import BudgetPlanner from "./components/budget/BudgetPlanner";
 import Home from "./components/home/Home";
+import TaskManager from "./components/tasks/TaskManager";
 
 const AppRoutes: FC = () => {
   return (
@@ -12,6 +13,7 @@ const AppRoutes: FC = () => {
         <Route index element={<Home />} />
         <Route path="/invite" element={<WeddingInviteTable />} />
         <Route path="/budget" element={<BudgetPlanner />} />
+        <Route path="/tasks" element={<TaskManager />} />
       </Route>
     </Routes>
   );

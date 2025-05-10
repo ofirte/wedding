@@ -10,7 +10,12 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { Home as HomeIcon, List as ListIcon, Money as MoneyIcon } from "@mui/icons-material";
+import {
+  Home as HomeIcon,
+  List as ListIcon,
+  Money as MoneyIcon,
+  Assignment as TaskIcon,
+} from "@mui/icons-material";
 
 const Sidebar: React.FC = () => {
   const theme = useTheme();
@@ -19,6 +24,7 @@ const Sidebar: React.FC = () => {
     { text: "Home", icon: <HomeIcon />, path: "/" },
     { text: "Invite List", icon: <ListIcon />, path: "/invite" },
     { text: "Budget Planner", icon: <MoneyIcon />, path: "/budget" },
+    { text: "Tasks", icon: <TaskIcon />, path: "/tasks" },
   ];
 
   return (
