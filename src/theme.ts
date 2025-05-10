@@ -39,7 +39,15 @@ const infoColors = {
   contrastText: "#FFFFFF", // White text for good contrast
 };
 
-// Create a theme instance with sage colors
+// Define cream colors for backgrounds
+const creamColors = {
+  light: "#FFF8E7", // Lightest cream for main backgrounds
+  main: "#F5EFE0", // Main cream color
+  dark: "#E8E0CC", // Slightly darker cream for accents
+  contrastText: "#333333", // Dark text for good contrast on cream
+};
+
+// Create a theme instance with sage colors and cream background
 const theme = createTheme({
   palette: {
     primary: {
@@ -66,6 +74,13 @@ const theme = createTheme({
       dark: sageColors.dark,
       contrastText: sageColors.contrastText,
     },
+    // Expose cream colors for easier access
+    cream: {
+      light: creamColors.light,
+      main: creamColors.main,
+      dark: creamColors.dark,
+      contrastText: creamColors.contrastText,
+    },
     // Custom status colors that match our sage theme
     status: {
       success: statusColors.success,
@@ -73,13 +88,12 @@ const theme = createTheme({
       error: statusColors.error,
     },
   },
-  // You can add more theme customizations here as needed
 });
 
-// Add the sage colors to the theme type to make TypeScript aware of them
 declare module "@mui/material/styles" {
   interface Palette {
     sage: Palette["primary"];
+    cream: Palette["primary"];
     status: {
       success: Palette["primary"];
       pending: Palette["primary"];
@@ -88,6 +102,7 @@ declare module "@mui/material/styles" {
   }
   interface PaletteOptions {
     sage?: PaletteOptions["primary"];
+    cream?: PaletteOptions["primary"];
     status?: {
       success?: PaletteOptions["primary"];
       pending?: PaletteOptions["primary"];

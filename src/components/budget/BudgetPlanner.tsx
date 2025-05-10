@@ -233,10 +233,10 @@ const BudgetPlanner = () => {
           onClick={handleAddNew}
           sx={{
             marginBottom: 3,
-            backgroundColor: theme.palette.primary.main,
-            color: theme.palette.primary.contrastText,
+            backgroundColor: theme.palette.info.main,
+            color: theme.palette.info.contrastText,
             "&:hover": {
-              backgroundColor: theme.palette.primary.dark,
+              backgroundColor: theme.palette.info.dark,
             },
           }}
         >
