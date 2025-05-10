@@ -1,4 +1,11 @@
-import { Paper, Table, TableBody, TableContainer } from "@mui/material";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableContainer,
+  Button,
+  Box,
+} from "@mui/material";
 import { FC, useState, useEffect, useMemo } from "react";
 import {
   ResolvedFilterConfig,
@@ -9,6 +16,8 @@ import DSTableFilters from "./DSTableFilters";
 import TableHeader from "./TableHeader";
 import TableContent from "./TableContent";
 import { applyFilters, sortData, resolveFilterOptions } from "./DSTableUtils";
+import { useExcelExport } from "../../utils/ExcelUtils";
+import DownloadIcon from "@mui/icons-material/Download";
 
 export type Column<T extends { id: string | number }> = {
   render: (row: T) => React.ReactNode;
@@ -24,6 +33,8 @@ type DSTableProps<T extends { id: string | number }> = {
   data: T[];
   onRowDelete?: (row: T) => void;
   onDisplayedDataChange?: (data: T[]) => void;
+  showExport?: boolean;
+  exportFilename?: string;
 };
 
 type Order = "asc" | "desc";
@@ -32,6 +43,8 @@ const DSTable: FC<DSTableProps<any>> = ({
   columns,
   data,
   onDisplayedDataChange,
+  showExport = false,
+  exportFilename = "export",
 }) => {
   const [orderBy, setOrderBy] = useState<string>("");
   const [order, setOrder] = useState<Order>("asc");
@@ -69,9 +82,50 @@ const DSTable: FC<DSTableProps<any>> = ({
     onFilterSortChange();
   }, [filterStates, orderBy, order, data]);
 
+  // Initialize the Excel export hook
+  const { exportData } = useExcelExport(exportFilename);
+
+  // Handle export button click
+  const handleExport = () => {
+    exportData(displayedData, columns);
+  };
+
   return (
     <>
-      {resolvedFilterConfigs.length > 0 && (
+      {(resolvedFilterConfigs.length > 0 || showExport) && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            mb: 2,
+            alignItems: "center",
+          }}
+        >
+          {resolvedFilterConfigs.length > 0 && (
+            <Box sx={{ flex: 1 }}>
+              <DSTableFilters
+                filters={filterStates}
+                filterConfigs={resolvedFilterConfigs}
+                setFilterStates={setFilterStates}
+              />
+            </Box>
+          )}
+
+          {showExport && (
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<DownloadIcon />}
+              onClick={handleExport}
+              sx={{ ml: 2 }}
+            >
+              Export to Excel
+            </Button>
+          )}
+        </Box>
+      )}
+
+      {resolvedFilterConfigs.length > 0 && !showExport && (
         <DSTableFilters
           filters={filterStates}
           filterConfigs={resolvedFilterConfigs}

@@ -142,6 +142,8 @@ const WeddingInviteTable = () => {
             )}
             data={invitees}
             onDisplayedDataChange={setDisplayedInvitees}
+            showExport={true}
+            exportFilename="invitees-data"
           />
         </Stack>
       </Box>
