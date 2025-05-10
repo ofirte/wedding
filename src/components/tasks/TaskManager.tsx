@@ -7,6 +7,7 @@ import {
   Tabs,
   Tab,
   Divider,
+  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import TaskList from "./TaskList";
@@ -23,8 +24,15 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 
 const TaskManager: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
-  const { tasks, addTask, deleteTask, updateTask, assignTask, completeTask } =
-    useTasks();
+  const {
+    tasks = [],
+    isUpdating,
+    addTask,
+    deleteTask,
+    updateTask,
+    assignTask,
+    completeTask,
+  } = useTasks();
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -65,10 +73,15 @@ const TaskManager: React.FC = () => {
           <Divider />
 
           <Box sx={{ mt: 2 }}>
-            <TaskForm onAddTask={addTask} />
+            <TaskForm onAddTask={addTask} isSubmitting={isUpdating} />
           </Box>
 
           <Box sx={{ mt: 3 }}>
+            {isUpdating && (
+              <Box display="flex" justifyContent="center" my={2}>
+                <CircularProgress size={24} />
+              </Box>
+            )}
             <TaskList
               tasks={tasks.filter((task) => {
                 if (tabValue === 0) return true;

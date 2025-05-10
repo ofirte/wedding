@@ -8,6 +8,7 @@ import {
   InputAdornment,
   Collapse,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -21,9 +22,13 @@ import { Task } from "../../hooks/tasks/useTasks";
 
 interface TaskFormProps {
   onAddTask: (task: Omit<Task, "id">) => void;
+  isSubmitting?: boolean;
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
+const TaskForm: React.FC<TaskFormProps> = ({
+  onAddTask,
+  isSubmitting = false,
+}) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("Medium");
@@ -99,10 +104,17 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
               type="submit"
               variant="contained"
               fullWidth
-              startIcon={<AddIcon />}
+              disabled={isSubmitting}
+              startIcon={
+                isSubmitting ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  <AddIcon />
+                )
+              }
               sx={{ height: "56px" }}
             >
-              Add Task
+              {isSubmitting ? "Adding..." : "Add Task"}
             </Button>
           </Grid>
         )}
@@ -176,10 +188,17 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
                   type="submit"
                   variant="contained"
                   fullWidth
-                  startIcon={<AddIcon />}
+                  disabled={isSubmitting}
+                  startIcon={
+                    isSubmitting ? (
+                      <CircularProgress size={20} color="inherit" />
+                    ) : (
+                      <AddIcon />
+                    )
+                  }
                   sx={{ height: "56px" }}
                 >
-                  Add Task
+                  {isSubmitting ? "Adding..." : "Add Task"}
                 </Button>
               </Grid>
             </Grid>
