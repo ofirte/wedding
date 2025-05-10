@@ -69,19 +69,24 @@ const useTasks = () => {
   });
 
   // Add a new task
-  const addTask = useCallback(async (task: Omit<Task, "id">) => {
-    try {
-      setIsUpdating(true);
-      await addDoc(collection(db, "tasks"), {
-        ...task,
-        createdAt: task.createdAt || new Date().toISOString(),
-      });
-    } catch (error) {
-      console.error("Error adding task: ", error);
-    } finally {
-      setIsUpdating(false);
-    }
-  }, []);
+  const addTask = useCallback(
+    async (task: Omit<Task, "id">) => {
+      try {
+        setIsUpdating(true);
+        await addDoc(collection(db, "tasks"), {
+          ...task,
+          createdAt: task.createdAt || new Date().toISOString(),
+        });
+        // Invalidate and refetch tasks
+        queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      } catch (error) {
+        console.error("Error adding task: ", error);
+      } finally {
+        setIsUpdating(false);
+      }
+    },
+    [queryClient]
+  );
 
   // Update a task with new fields
   const updateTask = useCallback(
@@ -89,27 +94,46 @@ const useTasks = () => {
       try {
         setIsUpdating(true);
         const taskRef = doc(db, "tasks", id);
-        await updateDoc(taskRef, updatedFields);
+
+        // Remove undefined fields to prevent Firestore errors
+        const sanitizedFields = Object.entries(updatedFields).reduce(
+          (acc, [key, value]) => {
+            if (value !== undefined) {
+              acc[key] = value;
+            }
+            return acc;
+          },
+          {} as Record<string, any>
+        );
+
+        await updateDoc(taskRef, sanitizedFields);
+        // Invalidate and refetch tasks
+        queryClient.invalidateQueries({ queryKey: ["tasks"] });
       } catch (error) {
         console.error("Error updating task: ", error);
       } finally {
         setIsUpdating(false);
       }
     },
-    []
+    [queryClient]
   );
 
   // Delete a task
-  const deleteTask = useCallback(async (id: string) => {
-    try {
-      setIsUpdating(true);
-      await deleteDoc(doc(db, "tasks", id));
-    } catch (error) {
-      console.error("Error deleting task: ", error);
-    } finally {
-      setIsUpdating(false);
-    }
-  }, []);
+  const deleteTask = useCallback(
+    async (id: string) => {
+      try {
+        setIsUpdating(true);
+        await deleteDoc(doc(db, "tasks", id));
+        // Invalidate and refetch tasks
+        queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      } catch (error) {
+        console.error("Error deleting task: ", error);
+      } finally {
+        setIsUpdating(false);
+      }
+    },
+    [queryClient]
+  );
 
   // Assign a task to someone
   const assignTask = useCallback(
