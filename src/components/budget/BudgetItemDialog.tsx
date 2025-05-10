@@ -13,8 +13,12 @@ import {
   MenuItem,
   Button,
   Grid2 as Grid,
+  Typography,
 } from "@mui/material";
 import { BudgetItem } from "./BudgetPlanner";
+import { UploadFile } from "../common/UploadFile";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import { on } from "events";
 
 type BudgetItemDialogProps = {
   open: boolean;
@@ -26,6 +30,7 @@ type BudgetItemDialogProps = {
     expectedPrice: number;
     actualPrice: number;
     downPayment: number;
+    contractsUrls?: string[];
   };
   budgetGroups: string[];
   onInputChange: (
@@ -33,6 +38,8 @@ type BudgetItemDialogProps = {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => void;
+  onFileAdded: (url: string) => void;
+  onFileDeleted: (url: string) => void;
   onSave: () => void;
 };
 
@@ -44,6 +51,8 @@ const BudgetItemDialog: React.FC<BudgetItemDialogProps> = ({
   budgetGroups,
   onInputChange,
   onSave,
+  onFileAdded,
+  onFileDeleted,
 }) => {
   return (
     <Dialog open={open} onClose={onClose}>
@@ -116,6 +125,63 @@ const BudgetItemDialog: React.FC<BudgetItemDialogProps> = ({
                 onChange={onInputChange}
                 InputProps={{ inputProps: { min: 0 } }}
               />
+            </Grid>
+            <Grid component="div">
+              <Box sx={{ mt: 1, mb: 1 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                  Contract Document
+                </Typography>
+                <Box>
+                  {newItem.contractsUrls?.map((url, index) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        mb: 1,
+                        p: 1,
+                        bgcolor: "rgba(0, 0, 0, 0.04)",
+                        borderRadius: 1,
+                      }}
+                    >
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        <PictureAsPdfIcon />
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            maxWidth: "180px",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          {url.split("/").pop()?.split("_").slice(1).join("_")}
+                        </Typography>
+                      </Box>
+                      <Button
+                        color="error"
+                        size="small"
+                        onClick={() => {
+                          onFileDeleted(url);
+                        }}
+                        sx={{ minWidth: "auto", p: "4px" }}
+                      >
+                        Delete
+                      </Button>
+                    </Box>
+                  ))}
+                </Box>
+                <UploadFile
+                  onUploadComplete={onFileAdded}
+                  uploadPath="contracts"
+                  buttonText="Upload Contract"
+                  fileTypes=".pdf,.doc,.docx,.jpg,.png"
+                  buttonColor="#9c88ff"
+                  buttonHoverColor="#8c78ef"
+                />
+              </Box>
             </Grid>
           </Grid>
         </Box>

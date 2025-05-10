@@ -22,6 +22,7 @@ export type BudgetItem = {
   expectedPrice: number;
   actualPrice: number;
   downPayment: number;
+  contractsUrls?: string[];
 };
 
 const BudgetPlanner = () => {
@@ -51,6 +52,7 @@ const BudgetPlanner = () => {
     expectedPrice: 0,
     actualPrice: 0,
     downPayment: 0,
+    contractsUrls: [] as string[],
   });
 
   // Fetch budget items from Firebase
@@ -67,6 +69,7 @@ const BudgetPlanner = () => {
             expectedPrice: data.expectedPrice,
             actualPrice: data.actualPrice,
             downPayment: data.downPayment,
+            contractsUrls: data.contractsUrls,
           };
         });
         setItems(budgetItems);
@@ -91,6 +94,7 @@ const BudgetPlanner = () => {
       expectedPrice: 0,
       actualPrice: 0,
       downPayment: 0,
+      contractsUrls: [],
     });
     setOpen(true);
   };
@@ -104,6 +108,7 @@ const BudgetPlanner = () => {
       expectedPrice: item.expectedPrice,
       actualPrice: item.actualPrice,
       downPayment: item.downPayment,
+      contractsUrls: item.contractsUrls || [],
     });
     setOpen(true);
   };
@@ -115,10 +120,19 @@ const BudgetPlanner = () => {
     >
   ) => {
     const { name, value } = e.target;
-    setNewItem({
-      ...newItem,
-      [name]: name === "name" || name === "group" ? value : Number(value),
-    });
+    // Handle text fields
+    if (name === "name" || name === "group") {
+      setNewItem({
+        ...newItem,
+        [name]: value,
+      });
+    } else {
+      // Handle numeric fields
+      setNewItem({
+        ...newItem,
+        [name]: Number(value),
+      });
+    }
   };
 
   // Save the new or edited item
@@ -133,6 +147,7 @@ const BudgetPlanner = () => {
           expectedPrice: newItem.expectedPrice,
           actualPrice: newItem.actualPrice,
           downPayment: newItem.downPayment,
+          contractsUrls: newItem.contractsUrls,
         });
       } else {
         // Add new item
@@ -142,6 +157,7 @@ const BudgetPlanner = () => {
           expectedPrice: newItem.expectedPrice,
           actualPrice: newItem.actualPrice,
           downPayment: newItem.downPayment,
+          contractsUrls: newItem.contractsUrls,
         });
       }
       setOpen(false);
@@ -230,6 +246,18 @@ const BudgetPlanner = () => {
         budgetGroups={budgetGroups}
         onInputChange={handleInputChange}
         onSave={handleSave}
+        onFileAdded={(url: string) => {
+          setNewItem((prev) => ({
+            ...prev,
+            contractsUrls: [...prev.contractsUrls, url],
+          }));
+        }}
+        onFileDeleted={(url: string) => {
+          setNewItem((prev) => ({
+            ...prev,
+            contractsUrls: prev.contractsUrls.filter((u) => u !== url),
+          }));
+        }}
       />
     </Box>
   );

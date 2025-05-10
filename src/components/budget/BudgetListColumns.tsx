@@ -1,7 +1,8 @@
 import React from "react";
 import { BudgetItem } from "./BudgetPlanner";
 import { Column } from "../common/DSTable";
-import { Chip, IconButton } from "@mui/material";
+import { Chip, IconButton, Button, Box } from "@mui/material";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { formatCurrency } from "../../utils/NumberUtils";
@@ -128,6 +129,27 @@ export const createBudgetColumns = (
         sign: "₪",
       }),
   },
+  {
+    id: "contract",
+    label: "Contract",
+    sortable: false,
+    render: (item: BudgetItem) => {
+      const itemsIcons =
+        item?.contractsUrls?.map((url, index) => (
+          <IconButton
+            key={index}
+            size="small"
+            color="primary"
+            href={url}
+            target="_blank"
+          >
+            <PictureAsPdfIcon />
+          </IconButton>
+        )) ?? [];
+      return <Box>{itemsIcons?.length > 0 ? itemsIcons : "-"}</Box>;
+    },
+  },
+
   {
     id: "actions",
     label: "Actions",
