@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Box, Button, Typography, Stack } from "@mui/material";
-import { db } from "../../api/firebaseConfig";
-import {
-  collection,
-  onSnapshot,
-  addDoc,
-  updateDoc,
-  doc,
-} from "firebase/firestore";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SummaryInfo from "./SummaryInfo";
 import { columns } from "./InviteListColumns";
 import AddGuestsDialog from "./AddGuestsDialog";
 import DSTable from "../common/DSTable";
 import InviteeListActionCell from "./InviteeListActionCell";
+import { useInvitees } from "../../hooks/invitees/useInvitees";
+import { db } from "../../api/firebaseConfig";
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 
 export interface Invitee {
   id: string;
@@ -28,7 +23,7 @@ export interface Invitee {
 }
 
 const WeddingInviteTable = () => {
-  const [invitees, setInvitees] = useState<Invitee[]>([]);
+  const { data: invitees = [] } = useInvitees();
   const [displayedInvitees, setDisplayedInvitees] = useState<Invitee[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingInvitee, setEditingInvitee] = useState<Invitee | null>(null);
@@ -82,37 +77,6 @@ const WeddingInviteTable = () => {
       console.error("Error saving invitee: ", error);
     }
   };
-
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, "invitee"),
-      (snapshot) => {
-        const inviteesData = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            name: data.name,
-            rsvp: data.rsvp,
-            percentage: data.percentage,
-            side: data.side,
-            relation: data.relation,
-            amount: data.amount,
-            amountConfirm: data.amountConfirm,
-            cellphone: data.cellphone,
-          };
-        });
-        setInvitees(inviteesData);
-      },
-      (error) => {
-        if (error.code === "permission-denied") {
-          console.error("Error fetching invitees: ", error.message);
-        } else {
-          console.error("Error fetching invitees: ", error);
-        }
-      }
-    );
-    return () => unsubscribe();
-  }, []);
 
   const existingRelations = Array.from(
     new Set(invitees.map((invitee) => invitee.relation))

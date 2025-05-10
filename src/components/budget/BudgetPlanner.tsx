@@ -1,16 +1,21 @@
-// BudgetPlanner.tsx - Main Container Component
-import React, { useState, useEffect } from "react";
-import { Box, Typography, Paper, Button } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Box,
+  Typography,
+  Paper,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { db } from "../../api/firebaseConfig";
 import {
   collection,
-  onSnapshot,
   addDoc,
   updateDoc,
   doc,
   deleteDoc,
 } from "firebase/firestore";
+import { useBudgetItems } from "../../hooks/budget/useBudgetItems";
 import BudgetSummary from "./BudgetSummary";
 import BudgetTable from "./BudgetTable";
 import BudgetItemDialog from "./BudgetItemDialog";
@@ -55,35 +60,15 @@ const BudgetPlanner = () => {
     contractsUrls: [] as string[],
   });
 
-  // Fetch budget items from Firebase
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, "budget"),
-      (snapshot) => {
-        const budgetItems = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            name: data.name,
-            group: data.group,
-            expectedPrice: data.expectedPrice,
-            actualPrice: data.actualPrice,
-            downPayment: data.downPayment,
-            contractsUrls: data.contractsUrls,
-          };
-        });
-        setItems(budgetItems);
-      },
-      (error) => {
-        if (error.code === "permission-denied") {
-          console.error("Error fetching budget items: ", error.message);
-        } else {
-          console.error("Error fetching budget items: ", error);
-        }
-      }
-    );
-    return () => unsubscribe();
-  }, []);
+  // Fetch budget items using TanStack Query
+  const { data: budgetItems, isLoading, isError } = useBudgetItems();
+
+  // Update state when data changes
+  React.useEffect(() => {
+    if (budgetItems) {
+      setItems(budgetItems);
+    }
+  }, [budgetItems]);
 
   // Open dialog for adding a new item
   const handleAddNew = () => {
@@ -191,6 +176,7 @@ const BudgetPlanner = () => {
 
   const totals = calculateTotals();
 
+  // Render loading, error, or content
   return (
     <Box sx={{ padding: 4 }}>
       <Paper
@@ -232,11 +218,21 @@ const BudgetPlanner = () => {
           Add Budget Item
         </Button>
 
-        <BudgetTable
-          items={items}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+        {isLoading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", padding: 2 }}>
+            <CircularProgress sx={{ color: "#9c88ff" }} />
+          </Box>
+        ) : isError ? (
+          <Typography color="error" align="center">
+            Error loading budget data. Please try again.
+          </Typography>
+        ) : (
+          <BudgetTable
+            items={items}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        )}
       </Paper>
       <BudgetItemDialog
         open={open}
