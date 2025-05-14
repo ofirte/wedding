@@ -8,7 +8,15 @@ import DSTable from "../common/DSTable";
 import InviteeListActionCell from "./InviteeListActionCell";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { db } from "../../api/firebaseConfig";
-import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
+import { useQueryClient } from "@tanstack/react-query";
+import InviteeTable from "./InviteeTable";
 
 export interface Invitee {
   id: string;
@@ -27,7 +35,7 @@ const WeddingInviteTable = () => {
   const [displayedInvitees, setDisplayedInvitees] = useState<Invitee[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingInvitee, setEditingInvitee] = useState<Invitee | null>(null);
-
+  const queryClient = useQueryClient();
   const handleDialogOpen = () => {
     setEditingInvitee(null);
     setIsDialogOpen(true);
@@ -36,6 +44,7 @@ const WeddingInviteTable = () => {
   const handleDialogClose = () => {
     setIsDialogOpen(false);
     setEditingInvitee(null);
+    queryClient.invalidateQueries({ queryKey: ["invitees"] });
   };
 
   const handleEditStart = (invitee: Invitee) => {
@@ -46,7 +55,6 @@ const WeddingInviteTable = () => {
   const handleSaveInvitee = async (invitee: Invitee) => {
     try {
       if (editingInvitee) {
-        // Update existing invitee
         const inviteeRef = doc(db, "invitee", editingInvitee.id);
         await updateDoc(inviteeRef, {
           name: invitee.name,
@@ -59,7 +67,6 @@ const WeddingInviteTable = () => {
           cellphone: invitee.cellphone,
         });
       } else {
-        // Add new invitee
         await addDoc(collection(db, "invitee"), {
           name: invitee.name,
           rsvp: invitee.rsvp,
@@ -81,6 +88,15 @@ const WeddingInviteTable = () => {
   const existingRelations = Array.from(
     new Set(invitees.map((invitee) => invitee.relation))
   ).filter(Boolean);
+
+  const handleDelete = async (invitee: Invitee) => {
+    try {
+      await deleteDoc(doc(db, "invitee", invitee.id));
+      queryClient.invalidateQueries({ queryKey: ["invitees"] });
+    } catch (error) {
+      console.error("Error deleting invitee: ", error);
+    }
+  };
 
   return (
     <Box
@@ -129,21 +145,15 @@ const WeddingInviteTable = () => {
             </Button>
           </Box>
           <SummaryInfo invitees={displayedInvitees} />
-          <DSTable
-            columns={columns.map((col) =>
-              col.id === "actions"
-                ? {
-                    ...col,
-                    render: (invitee: Invitee) => (
-                      <InviteeListActionCell invitee={invitee} />
-                    ),
-                  }
-                : col
-            )}
-            data={invitees}
-            onDisplayedDataChange={setDisplayedInvitees}
+          <InviteeTable
+            columns={columns}
+            invitees={invitees}
+            onDeleteInvitee={handleDelete}
+            onEditInvitee={handleEditStart}
             showExport={true}
-            exportFilename="invitees-data"
+            onDisplayDataChange={(data: Invitee[]) =>
+              setDisplayedInvitees(data)
+            }
           />
         </Stack>
       </Box>
@@ -152,6 +162,7 @@ const WeddingInviteTable = () => {
         onClose={handleDialogClose}
         onSave={handleSaveInvitee}
         relationOptions={existingRelations}
+        editInvitee={editingInvitee}
       />
     </Box>
   );

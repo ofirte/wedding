@@ -8,37 +8,37 @@ import { db } from "../../api/firebaseConfig";
 
 interface InviteeListActionCellProps {
   invitee: Invitee;
+  onEditInvitee?: (invitee: Invitee) => void;
+  onDeleteInvitee?: (invitee: Invitee) => void;
 }
 
 const InviteeListActionCell: React.FC<InviteeListActionCellProps> = ({
   invitee,
+  onEditInvitee,
+  onDeleteInvitee,
 }) => {
-  const handleDelete = async () => {
-    try {
-      await deleteDoc(doc(db, "invitee", invitee.id));
-    } catch (error) {
-      console.error("Error deleting invitee: ", error);
-    }
-  };
+
 
   return (
     <Stack direction="row" spacing={1} justifyContent="center">
       <IconButton
         size="small"
         color="error"
-        onClick={handleDelete}
+        onClick={() => onDeleteInvitee?.(invitee)}
         aria-label="Delete invitee"
       >
         <DeleteIcon />
       </IconButton>
-      <IconButton
-        size="small"
-        color="info"
-        onClick={() => {}}
-        aria-label="Edit invitee"
-      >
-        <EditIcon />
-      </IconButton>
+      {onEditInvitee && (
+        <IconButton
+          size="small"
+          color="info"
+          onClick={() => onEditInvitee?.(invitee)}
+          aria-label="Edit invitee"
+        >
+          <EditIcon />
+        </IconButton>
+      )}
     </Stack>
   );
 };

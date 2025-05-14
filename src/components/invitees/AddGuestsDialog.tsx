@@ -6,15 +6,11 @@ import {
   DialogActions,
   Button,
   Box,
-  Paper,
-  TextField,
-  MenuItem,
-  Grid,
-  Autocomplete,
 } from "@mui/material";
 import { columns } from "./InviteListColumns";
 import { Invitee } from "./InviteList";
-import DSTable from "../common/DSTable"; // Adjust the import path accordingly
+import InviteeForm from "./InviteeForm";
+import InviteeTable from "./InviteeTable";
 
 const defaultInvitee: Invitee = {
   id: "",
@@ -23,18 +19,17 @@ const defaultInvitee: Invitee = {
   percentage: 0,
   side: "חתן",
   relation: "",
-  amount: 0,
+  amount: 1,
   amountConfirm: 0,
   cellphone: "",
 };
-
-const sideOptions = ["חתן", "כלה"];
 
 interface AddGuestsDialogProps {
   open: boolean;
   onClose: () => void;
   onSave: (invitee: Invitee) => void;
   relationOptions: string[];
+  editInvitee?: Invitee | null;
 }
 
 const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
@@ -42,10 +37,25 @@ const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
   onClose,
   onSave,
   relationOptions,
+  editInvitee = null,
 }) => {
   const [newInvitees, setNewInvitees] = useState<Invitee[]>([]);
   const [editingInviteeId, setEditingInviteeId] = useState<string | null>(null);
   const [draftInvitee, setDraftInvitee] = useState<Invitee>(defaultInvitee);
+
+  useEffect(() => {
+    if (editInvitee) {
+      setDraftInvitee(editInvitee);
+      if (open && !newInvitees.some((inv) => inv.id === editInvitee.id)) {
+        setNewInvitees([editInvitee]);
+        setEditingInviteeId(editInvitee.id);
+      }
+    } else if (open) {
+      setDraftInvitee(defaultInvitee);
+      setNewInvitees([]);
+      setEditingInviteeId(null);
+    }
+  }, [editInvitee, open]);
 
   const handleInputChange = (field: string, value: any) => {
     setDraftInvitee({
@@ -82,132 +92,62 @@ const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
     setDraftInvitee(defaultInvitee);
   };
 
-  const handleDeleteInvitee = (id: string) => {
-    setNewInvitees(newInvitees.filter((invitee) => invitee.id !== id));
-    if (editingInviteeId === id) {
-      setEditingInviteeId(null);
-      setDraftInvitee(defaultInvitee);
+  const handleSaveAll = () => {
+    if (
+      editInvitee &&
+      newInvitees.length === 1 &&
+      newInvitees[0].id === editInvitee.id
+    ) {
+      onSave(draftInvitee);
+    } else {
+      newInvitees.forEach((invitee) => onSave(invitee));
     }
+    onClose();
   };
 
-  const handleSaveAll = () => {
-    newInvitees.forEach((invitee) => onSave(invitee));
-    onClose();
+  const handleCancelEdit = () => {
+    setEditingInviteeId(null);
+    setDraftInvitee(defaultInvitee);
+  };
+
+  const handleDeleteInvitee = (invitee: Invitee) => {
+    setNewInvitees(newInvitees.filter((inv) => inv.id !== invitee.id));
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle sx={{ bgcolor: "info.light", color: "info.contrastText" }}>
-        Add New Guests
+        {editInvitee ? "Edit Guest" : "Add New Guests"}
       </DialogTitle>
       <DialogContent>
         {/* Form Section for Adding / Editing a Guest */}
         <Box mb={3}>
-          <Paper variant="outlined" sx={{ p: 2 }}>
-            <Box sx={{ mb: 2, fontWeight: "bold" }}>
-              {editingInviteeId ? "Edit Guest Details" : "New Guest Details"}
-            </Box>
-            <Grid container spacing={2}>
-              {columns
-                .filter((col) => col.id !== "actions")
-                .map((column) => (
-                  <Grid item xs={12} sm={6} key={column.id}>
-                    {column.id === "relation" ? (
-                      <Autocomplete
-                        freeSolo
-                        options={relationOptions}
-                        value={draftInvitee.relation}
-                        onChange={(event, newValue) =>
-                          handleInputChange(column.id, newValue)
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label={column.label}
-                            margin="normal"
-                            fullWidth
-                          />
-                        )}
-                      />
-                    ) : column.id === "side" ? (
-                      <TextField
-                        select
-                        label={column.label}
-                        value={draftInvitee.side}
-                        onChange={(e) =>
-                          handleInputChange(column.id, e.target.value)
-                        }
-                        margin="normal"
-                        fullWidth
-                      >
-                        {sideOptions.map((option) => (
-                          <MenuItem key={option} value={option}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    ) : (
-                      <TextField
-                        label={column.label}
-                        value={draftInvitee[column.id as keyof Invitee] ?? ""}
-                        onChange={(e) =>
-                          handleInputChange(column.id, e.target.value)
-                        }
-                        margin="normal"
-                        fullWidth
-                        type={
-                          ["percentage", "amount", "amountConfirm"].includes(
-                            column.id
-                          )
-                            ? "number"
-                            : "text"
-                        }
-                      />
-                    )}
-                  </Grid>
-                ))}
-            </Grid>
-            <Box mt={2}>
-              {editingInviteeId ? (
-                <>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSaveEdit}
-                  >
-                    Save Changes
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setEditingInviteeId(null);
-                      setDraftInvitee(defaultInvitee);
-                    }}
-                    sx={{ ml: 1 }}
-                  >
-                    Cancel
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleAddInvitee}
-                >
-                  Add Guest
-                </Button>
-              )}
-            </Box>
-          </Paper>
+          <InviteeForm
+            draftInvitee={draftInvitee}
+            relationOptions={relationOptions}
+            editingInviteeId={editingInviteeId}
+            handleInputChange={handleInputChange}
+            handleSaveEdit={handleSaveEdit}
+            handleAddInvitee={handleAddInvitee}
+            onCancelEdit={handleCancelEdit}
+          />
         </Box>
-        {/* Table Section Showing All Added Guests */}
-        <Paper variant="outlined">
-          <DSTable columns={columns} data={newInvitees} />
-        </Paper>
+        {/* Only show table when not editing an existing invitee */}
+        {!editInvitee && (
+          <InviteeTable
+            columns={columns}
+            invitees={newInvitees}
+            showExport={false}
+            onDeleteInvitee={handleDeleteInvitee}
+          />
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
         <Button onClick={handleSaveAll} variant="contained" color="primary">
-          Save All
+          {editInvitee && newInvitees.length === 1
+            ? "Save Changes"
+            : "Save All"}
         </Button>
       </DialogActions>
     </Dialog>
