@@ -1,4 +1,3 @@
-// filepath: /Users/ofirtene/Projects/wedding-plan/src/components/home/Budget_OverviewCard.tsx
 import React from "react";
 import {
   Box,
@@ -31,19 +30,21 @@ const formatCurrency = (amount: number): string => {
   return "₪" + amount.toLocaleString();
 };
 
-const Budget_OverviewCard: React.FC = () => {
+const BudgetOverviewCard: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { data: budget } = useBudgetItems();
-  const { totalBudget } = useTotalBudget();
+  const { data: totalBudget } = useTotalBudget();
 
   const totalSpent =
     budget?.reduce((acc, i) => acc + parseInt(i.actualPrice.toString()), 0) ||
     0;
-  const remainingBudget = totalBudget - totalSpent;
+  const remainingBudget = totalBudget?.amount
+    ? totalBudget?.amount - totalSpent
+    : 0;
 
   const budgetStats = {
-    total: totalBudget,
+    total: totalBudget?.amount ?? 0,
     spent: totalSpent,
     remaining: remainingBudget,
   };
@@ -120,4 +121,4 @@ const Budget_OverviewCard: React.FC = () => {
   );
 };
 
-export default Budget_OverviewCard;
+export default BudgetOverviewCard;

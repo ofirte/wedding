@@ -28,9 +28,7 @@ const InviteeForm: React.FC<InviteeFormProps> = ({
   relationOptions,
   editingInviteeId,
   handleInputChange,
-  handleSaveEdit,
   handleAddInvitee,
-  onCancelEdit,
 }) => {
   return (
     <Paper variant="outlined" sx={{ p: 2 }}>

@@ -75,14 +75,6 @@ const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
     setDraftInvitee(defaultInvitee);
   };
 
-  const handleEditInvitee = (id: string) => {
-    const invitee = newInvitees.find((inv) => inv.id === id);
-    if (invitee) {
-      setEditingInviteeId(id);
-      setDraftInvitee(invitee);
-    }
-  };
-
   const handleSaveEdit = () => {
     const updatedInvitees = newInvitees.map((invitee) =>
       invitee.id === editingInviteeId ? draftInvitee : invitee

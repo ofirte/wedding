@@ -1,13 +1,12 @@
 import React from "react";
 import { BudgetItem } from "./BudgetPlanner";
 import { Column } from "../common/DSTable";
-import { Chip, IconButton, Button, Box } from "@mui/material";
+import { Chip, IconButton, Box } from "@mui/material";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { formatCurrency } from "../../utils/NumberUtils";
 
-// Component for the actions cell
 type BudgetActionCellProps = {
   item: BudgetItem;
   onEdit: (item: BudgetItem) => void;

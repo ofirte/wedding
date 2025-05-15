@@ -3,10 +3,6 @@ import { Box } from "@mui/material";
 import WeddingCountdownBanner from "./WeddingCountdownBanner";
 import StatCards from "./StatCards";
 import DetailedOverviewCards from "./DetailedOverviewCards";
-import { useInvitees } from "../../hooks/invitees/useInvitees";
-import { useBudgetItems } from "../../hooks/budget/useBudgetItems";
-import { useTotalBudget } from "../../hooks/budget/useTotalBudget";
-import useTasks from "../../hooks/tasks/useTasks";
 
 // Mock wedding date - you can replace with real data later
 const weddingDate = new Date("2025-09-19");

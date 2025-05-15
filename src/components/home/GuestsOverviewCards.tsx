@@ -1,4 +1,3 @@
-// filepath: /Users/ofirtene/Projects/wedding-plan/src/components/home/Guest_OverviewCard.tsx
 import React from "react";
 import {
   Box,
@@ -25,14 +24,16 @@ const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
 }));
 
-const Guest_OverviewCard: React.FC = () => {
+const GuestOverviewCard: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { data: guests } = useInvitees();
-  
+
   const guestStats = {
-    total: guests?.reduce((acc, i) => acc + parseInt(i.amount.toString()), 0) || 0,
-    confirmed: guests?.filter((guest) => guest.rsvp === "confirmed").length || 0,
+    total:
+      guests?.reduce((acc, i) => acc + parseInt(i.amount.toString()), 0) || 0,
+    confirmed:
+      guests?.filter((guest) => guest.rsvp === "confirmed").length || 0,
     pending: guests?.filter((guest) => guest.rsvp === "pending").length || 0,
     declined: guests?.filter((guest) => guest.rsvp === "declined").length || 0,
   };
@@ -135,4 +136,4 @@ const Guest_OverviewCard: React.FC = () => {
   );
 };
 
-export default Guest_OverviewCard;
+export default GuestOverviewCard;

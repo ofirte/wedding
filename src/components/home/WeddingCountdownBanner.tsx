@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Box, Typography, Paper, Chip, useTheme } from "@mui/material";
 import {
   Favorite as HeartIcon,
@@ -20,19 +20,7 @@ const WeddingCountdownBanner: React.FC<WeddingCountdownBannerProps> = ({
     const diffTime = weddingDate.getTime() - today.getTime();
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
-
-  const [daysRemaining, setDaysRemaining] = useState<number>(
-    calculateDaysRemaining()
-  );
-
-  // Update days remaining when the component mounts
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setDaysRemaining(calculateDaysRemaining());
-    }, 86400000); // Update every 24 hours
-
-    return () => clearInterval(timer);
-  }, [weddingDate]);
+  const daysRemaining = calculateDaysRemaining();
 
   return (
     <Paper

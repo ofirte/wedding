@@ -1,10 +1,8 @@
 import React from "react";
-import { Paper } from "@mui/material";
 import { Invitee } from "./InviteList";
 import DSTable from "../common/DSTable";
 import { Column } from "../common/DSTable";
 import InviteeListActionCell from "./InviteeListActionCell";
-import { on } from "events";
 
 interface InviteeTableProps {
   columns: Column<Invitee>[];

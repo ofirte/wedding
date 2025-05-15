@@ -1,6 +1,6 @@
 // BudgetSummary.tsx
 import React from "react";
-import { Box, Typography, Paper, Grid2 as Grid, useTheme } from "@mui/material";
+import { Typography, Paper, Grid2 as Grid, useTheme } from "@mui/material";
 
 type SummaryProps = {
   totals: {

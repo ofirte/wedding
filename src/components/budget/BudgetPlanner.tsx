@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -8,20 +8,16 @@ import {
   useTheme,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { db } from "../../api/firebaseConfig";
-import {
-  collection,
-  addDoc,
-  updateDoc,
-  doc,
-  deleteDoc,
-} from "firebase/firestore";
 import { useBudgetItems } from "../../hooks/budget/useBudgetItems";
 import { useTotalBudget } from "../../hooks/budget/useTotalBudget";
+import { useCreateBudgetItem } from "../../hooks/budget/useCreateBudgetItem";
+import { useUpdateBudgetItem } from "../../hooks/budget/useUpdateBudgetItem";
+import { useDeleteBudgetItem } from "../../hooks/budget/useDeleteBudgetItem";
 import BudgetSummary from "./BudgetSummary";
 import BudgetTable from "./BudgetTable";
 import BudgetItemDialog from "./BudgetItemDialog";
 import TotalBudgetEditor from "./TotalBudgetEditor";
+import { useUpdateTotalBudget } from "../../hooks/budget/useUpdateTotalBudget";
 
 export type BudgetItem = {
   id: string;
@@ -34,10 +30,8 @@ export type BudgetItem = {
 };
 
 const BudgetPlanner = () => {
-  // Access theme
   const theme = useTheme();
 
-  // Example budget groups
   const budgetGroups = [
     "Venue",
     "Catering",
@@ -53,8 +47,6 @@ const BudgetPlanner = () => {
     "Other",
   ];
 
-  // State
-  const [items, setItems] = useState<BudgetItem[]>([]);
   const [open, setOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<BudgetItem | null>(null);
   const [newItem, setNewItem] = useState({
@@ -69,19 +61,20 @@ const BudgetPlanner = () => {
   // Fetch budget items using TanStack Query
   const { data: budgetItems, isLoading, isError } = useBudgetItems();
 
-  // Fetch total budget using the new hook
-  const {
-    totalBudget,
-    setTotalBudget,
-    isLoading: isTotalBudgetLoading,
-  } = useTotalBudget();
+  const { data: totalBudget, isLoading: isTotalBudgetLoading } =
+    useTotalBudget();
+  const { mutate: updateTotalBudget } = useUpdateTotalBudget();
 
-  // Update state when data changes
-  React.useEffect(() => {
-    if (budgetItems) {
-      setItems(budgetItems);
-    }
-  }, [budgetItems]);
+  // Budget mutations for create, update, and delete operations with loading states
+  const { mutate: createBudgetItem, isPending: isCreating } =
+    useCreateBudgetItem();
+  const { mutate: updateBudgetItem, isPending: isUpdating } =
+    useUpdateBudgetItem();
+  const { mutate: deleteBudgetItem, isPending: isDeleting } =
+    useDeleteBudgetItem();
+
+  // Combined loading state for any mutation in progress
+  const isMutating = isCreating || isUpdating || isDeleting;
 
   // Open dialog for adding a new item
   const handleAddNew = () => {
@@ -134,65 +127,54 @@ const BudgetPlanner = () => {
   };
 
   // Save the new or edited item
-  const handleSave = async () => {
-    try {
-      if (editingItem) {
-        // Update existing item
-        const itemRef = doc(db, "budget", editingItem.id);
-        await updateDoc(itemRef, {
+  const handleSave = () => {
+    if (editingItem) {
+      // Update existing item using the hook
+      updateBudgetItem({
+        id: editingItem.id,
+        data: {
           name: newItem.name,
           group: newItem.group,
           expectedPrice: newItem.expectedPrice,
           actualPrice: newItem.actualPrice,
           downPayment: newItem.downPayment,
           contractsUrls: newItem.contractsUrls,
-        });
-      } else {
-        // Add new item
-        await addDoc(collection(db, "budget"), {
-          name: newItem.name,
-          group: newItem.group,
-          expectedPrice: newItem.expectedPrice,
-          actualPrice: newItem.actualPrice,
-          downPayment: newItem.downPayment,
-          contractsUrls: newItem.contractsUrls,
-        });
-      }
+        },
+      });
       setOpen(false);
-    } catch (error) {
-      console.error("Error saving budget item: ", error);
+    } else {
+      // Add new item using the hook
+      createBudgetItem({
+        name: newItem.name,
+        group: newItem.group,
+        expectedPrice: newItem.expectedPrice,
+        actualPrice: newItem.actualPrice,
+        downPayment: newItem.downPayment,
+        contractsUrls: newItem.contractsUrls,
+      });
+      setOpen(false);
     }
   };
 
-  // Delete an item
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteDoc(doc(db, "budget", id));
-    } catch (error) {
-      console.error("Error deleting budget item: ", error);
-    }
-  };
+  const totals = useMemo(() => {
+    const calculateTotals = () => {
+      if (!budgetItems || budgetItems.length === 0) {
+        return { expected: 0, actual: 0, downPayment: 0, remaining: 0 };
+      }
 
-  // Calculate totals
-  const calculateTotals = () => {
-    return items.reduce(
-      (acc, item) => {
-        acc.expected += item.expectedPrice;
-        acc.actual += item.actualPrice;
-        acc.downPayment += item.downPayment;
-        acc.remaining += item.actualPrice - item.downPayment;
-        return acc;
-      },
-      { expected: 0, actual: 0, downPayment: 0, remaining: 0 }
-    );
-  };
-
-  // Handle saving total budget
-  const handleSaveTotalBudget = (newBudget: number) => {
-    setTotalBudget(newBudget);
-  };
-
-  const totals = calculateTotals();
+      return budgetItems.reduce(
+        (acc, item) => {
+          acc.expected += item.expectedPrice || 0;
+          acc.actual += item.actualPrice || 0;
+          acc.downPayment += item.downPayment || 0;
+          acc.remaining += (item.actualPrice || 0) - (item.downPayment || 0);
+          return acc;
+        },
+        { expected: 0, actual: 0, downPayment: 0, remaining: 0 }
+      );
+    };
+    return calculateTotals();
+  }, [budgetItems]);
 
   // Render loading, error, or content
   return (
@@ -221,16 +203,18 @@ const BudgetPlanner = () => {
         </Typography>
 
         <TotalBudgetEditor
-          totalBudget={totalBudget}
+          totalBudget={totalBudget?.amount ?? 0}
           isLoading={isTotalBudgetLoading}
-          onSaveTotalBudget={handleSaveTotalBudget}
+          onSaveTotalBudget={updateTotalBudget}
         />
-        <BudgetSummary totals={totals} totalBudget={totalBudget} />
+
+        <BudgetSummary totals={totals} totalBudget={totalBudget?.amount ?? 0} />
 
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleAddNew}
+          disabled={isMutating}
           sx={{
             marginBottom: 3,
             backgroundColor: theme.palette.info.main,
@@ -240,7 +224,7 @@ const BudgetPlanner = () => {
             },
           }}
         >
-          Add Budget Item
+          {isCreating ? "Adding..." : "Add Budget Item"}
         </Button>
 
         {isLoading ? (
@@ -253,9 +237,9 @@ const BudgetPlanner = () => {
           </Typography>
         ) : (
           <BudgetTable
-            items={items}
+            items={budgetItems || []}
             onEdit={handleEdit}
-            onDelete={handleDelete}
+            onDelete={deleteBudgetItem}
           />
         )}
       </Paper>
