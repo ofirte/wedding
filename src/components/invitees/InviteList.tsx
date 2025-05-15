@@ -4,17 +4,10 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SummaryInfo from "./SummaryInfo";
 import { columns } from "./InviteListColumns";
 import AddGuestsDialog from "./AddGuestsDialog";
-import DSTable from "../common/DSTable";
-import InviteeListActionCell from "./InviteeListActionCell";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
-import { db } from "../../api/firebaseConfig";
-import {
-  collection,
-  addDoc,
-  updateDoc,
-  doc,
-  deleteDoc,
-} from "firebase/firestore";
+import { useCreateInvitee } from "../../hooks/invitees/useCreateInvitee";
+import { useUpdateInvitee } from "../../hooks/invitees/useUpdateInvitee";
+import { useDeleteInvitee } from "../../hooks/invitees/useDeleteInvitee";
 import { useQueryClient } from "@tanstack/react-query";
 import InviteeTable from "./InviteeTable";
 
@@ -36,6 +29,12 @@ const WeddingInviteTable = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingInvitee, setEditingInvitee] = useState<Invitee | null>(null);
   const queryClient = useQueryClient();
+
+  // Use the mutation hooks
+  const { mutate: createInvitee } = useCreateInvitee();
+  const { mutate: updateInvitee } = useUpdateInvitee();
+  const { mutate: deleteInvitee } = useDeleteInvitee();
+
   const handleDialogOpen = () => {
     setEditingInvitee(null);
     setIsDialogOpen(true);
@@ -44,7 +43,6 @@ const WeddingInviteTable = () => {
   const handleDialogClose = () => {
     setIsDialogOpen(false);
     setEditingInvitee(null);
-    queryClient.invalidateQueries({ queryKey: ["invitees"] });
   };
 
   const handleEditStart = (invitee: Invitee) => {
@@ -55,19 +53,23 @@ const WeddingInviteTable = () => {
   const handleSaveInvitee = async (invitee: Invitee) => {
     try {
       if (editingInvitee) {
-        const inviteeRef = doc(db, "invitee", editingInvitee.id);
-        await updateDoc(inviteeRef, {
-          name: invitee.name,
-          rsvp: invitee.rsvp,
-          percentage: invitee.percentage,
-          side: invitee.side,
-          relation: invitee.relation,
-          amount: invitee.amount,
-          amountConfirm: invitee.amountConfirm,
-          cellphone: invitee.cellphone,
+        // Update existing invitee using the hook
+        updateInvitee({
+          id: editingInvitee.id,
+          data: {
+            name: invitee.name,
+            rsvp: invitee.rsvp,
+            percentage: invitee.percentage,
+            side: invitee.side,
+            relation: invitee.relation,
+            amount: invitee.amount,
+            amountConfirm: invitee.amountConfirm,
+            cellphone: invitee.cellphone,
+          },
         });
       } else {
-        await addDoc(collection(db, "invitee"), {
+        // Add new invitee using the hook
+        createInvitee({
           name: invitee.name,
           rsvp: invitee.rsvp,
           percentage: invitee.percentage,
@@ -91,8 +93,8 @@ const WeddingInviteTable = () => {
 
   const handleDelete = async (invitee: Invitee) => {
     try {
-      await deleteDoc(doc(db, "invitee", invitee.id));
-      queryClient.invalidateQueries({ queryKey: ["invitees"] });
+      // Delete invitee using the hook
+      deleteInvitee(invitee.id);
     } catch (error) {
       console.error("Error deleting invitee: ", error);
     }

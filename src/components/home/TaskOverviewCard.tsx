@@ -1,4 +1,4 @@
-// filepath: /Users/ofirtene/Projects/wedding-plan/src/components/home/Task_OverviewCard.tsx
+// filepath: /Users/ofirtene/Projects/wedding-plan/src/components/home/TaskOverviewCard.tsx
 import React from "react";
 import {
   Typography,
@@ -25,16 +25,17 @@ const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
 }));
 
-const Task_OverviewCard: React.FC = () => {
+const TaskOverviewCard: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { tasks } = useTasks();
+  const { data: tasks } = useTasks();
 
-  const totalTasks = tasks.length;
-  const completedTasks = tasks.filter((task) => task.completed).length;
+  const totalTasks = tasks?.length ?? 0;
+  const completedTasks = tasks?.filter((task) => task.completed).length ?? 0;
   const percentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-  const inProgressTasks = tasks.filter((task) => !!task.assignedTo).length;
+  const inProgressTasks =
+    tasks?.filter((task) => !!task.assignedTo).length ?? 0;
   const pendingTasks = totalTasks - completedTasks - inProgressTasks;
   const taskStats = {
     total: totalTasks,
@@ -136,4 +137,4 @@ const Task_OverviewCard: React.FC = () => {
   );
 };
 
-export default Task_OverviewCard;
+export default TaskOverviewCard;

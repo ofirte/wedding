@@ -26,7 +26,7 @@ const StatCards: React.FC<StatCardsProps> = ({ daysRemaining }) => {
   const { data: guests } = useInvitees();
   const { data: budget } = useBudgetItems();
   const { totalBudget } = useTotalBudget();
-  const { tasks } = useTasks();
+  const { data: tasks } = useTasks();
 
   const guestStats = {
     total:
@@ -47,8 +47,8 @@ const StatCards: React.FC<StatCardsProps> = ({ daysRemaining }) => {
     remaining: remainingBudget,
   };
 
-  const totalTasks = tasks.length;
-  const completedTasks = tasks.filter((task) => task.completed).length;
+  const totalTasks = tasks?.length || 0;
+  const completedTasks = tasks?.filter((task) => task.completed).length || 0;
   const percentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
   const taskStats = {

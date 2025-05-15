@@ -3,8 +3,6 @@ import { IconButton, Stack } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Invitee } from "./InviteList";
-import { doc, deleteDoc } from "firebase/firestore";
-import { db } from "../../api/firebaseConfig";
 
 interface InviteeListActionCellProps {
   invitee: Invitee;

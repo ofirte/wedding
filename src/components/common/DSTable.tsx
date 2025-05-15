@@ -62,7 +62,7 @@ const DSTable: FC<DSTableProps<any>> = ({
             resolvedOptions: resolveFilterOptions(config, data),
           } as ResolvedFilterConfig;
         }),
-    [columns, data?.length]
+    [columns, data]
   );
   const handleRequestSort = (columnId: string) => {
     const isAsc = orderBy === columnId && order === "asc";
@@ -70,15 +70,19 @@ const DSTable: FC<DSTableProps<any>> = ({
     setOrderBy(columnId);
   };
 
-  const onFilterSortChange = () => {
-    const filteredData = applyFilters(data, filterStates);
-    const sortedFilteredData = sortData(filteredData, columns, orderBy, order);
-
-    setDisplayedData(sortedFilteredData);
-    onDisplayedDataChange?.(sortedFilteredData);
-  };
-
   useEffect(() => {
+    const onFilterSortChange = () => {
+      const filteredData = applyFilters(data, filterStates);
+      const sortedFilteredData = sortData(
+        filteredData,
+        columns,
+        orderBy,
+        order
+      );
+
+      setDisplayedData(sortedFilteredData);
+      onDisplayedDataChange?.(sortedFilteredData);
+    };
     onFilterSortChange();
   }, [filterStates, orderBy, order, data]);
 
