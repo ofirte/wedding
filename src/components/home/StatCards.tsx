@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid2 as Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import StatCard from "./StatCard";
 import { useNavigate } from "react-router";
 import {

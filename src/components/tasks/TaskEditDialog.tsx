@@ -68,7 +68,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
       <DialogTitle>Edit Task</DialogTitle>
       <DialogContent>
         <Grid container spacing={3} sx={{ pt: 1 }}>
-          <Grid item xs={12}>
+          <Grid size={{xs:12, sm:6}}>
             <TextField
               fullWidth
               label="Task Title"
@@ -81,7 +81,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={{xs:12, sm:6}}>
             <TextField
               fullWidth
               label="Description"
@@ -93,7 +93,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+         <Grid size={{xs:12, sm:6}}>
             <TextField
               fullWidth
               select
@@ -108,7 +108,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
             </TextField>
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+      <Grid size={{xs:12, sm:6}}>
             <TextField
               fullWidth
               label="Due Date"
@@ -120,7 +120,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid size={{xs:12, sm:6}}>
             <TextField
               fullWidth
               select
@@ -136,7 +136,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
             </TextField>
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid size={{xs:12, sm:6}}>
             <FormControl component="fieldset">
               <FormLabel component="legend">Status</FormLabel>
               <RadioGroup

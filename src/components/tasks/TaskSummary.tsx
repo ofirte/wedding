@@ -57,7 +57,7 @@ const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks }) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={3} alignItems="stretch">
-        <Grid item xs={12} md={8}>
+        <Grid size={{ xs: 12, md: 8 }}>
           {/* <StatCard> */}
           <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -91,9 +91,9 @@ const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks }) => {
           {/* </StatCard> */}
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Grid container spacing={2} height="100%">
-            <Grid item xs={6} height="100%">
+            <Grid size={{ xs: 6 }} height="100%">
               <StatCard sx={{ bgcolor: "warning.light" }}>
                 <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                   <PriorityIcon sx={{ color: "warning.dark", mr: 1 }} />
@@ -114,7 +114,7 @@ const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks }) => {
               </StatCard>
             </Grid>
 
-            <Grid item xs={6} height="100%">
+            <Grid size={{ xs: 6 }} height="100%">
               <StatCard sx={{ bgcolor: "info.light" }}>
                 <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                   {/* <WatchLater sx={{ color: "info.dark", mr: 1 }} /> */}

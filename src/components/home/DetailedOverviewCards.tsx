@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid2 as Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import BudgetOverviewCard from "./BudgetOverviewCard";
 import GuestOverviewCard from "./GuestsOverviewCards";
 import TaskOverviewCard from "./TaskOverviewCard";

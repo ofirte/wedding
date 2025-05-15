@@ -9,16 +9,29 @@ import {
   Box,
   Typography,
   useTheme,
+  Button,
+  Avatar,
+  Stack,
+  ListItemButton,
 } from "@mui/material";
 import {
   Home as HomeIcon,
   List as ListIcon,
   Money as MoneyIcon,
   Assignment as TaskIcon,
+  Logout as LogoutIcon,
 } from "@mui/icons-material";
+import { useNavigate } from "react-router";
+import { useCurrentUser, useSignOut, useWeddingDetails } from "./hooks/auth";
+import { useCurrentUserWeddingId } from "./hooks/auth";
 
 const Sidebar: React.FC = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const { data: currentUser } = useCurrentUser();
+  const { data: weddingId } = useCurrentUserWeddingId();
+  const { data: weddingDetails } = useWeddingDetails(weddingId || undefined);
+  const { mutate: signOut } = useSignOut();
 
   const menuItems = [
     { text: "Home", icon: <HomeIcon />, path: "/" },
@@ -26,6 +39,20 @@ const Sidebar: React.FC = () => {
     { text: "Budget Planner", icon: <MoneyIcon />, path: "/budget" },
     { text: "Tasks", icon: <TaskIcon />, path: "/tasks" },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  // Don't render sidebar for unauthenticated users
+  if (!currentUser) {
+    return null;
+  }
 
   return (
     <Drawer
@@ -52,35 +79,59 @@ const Sidebar: React.FC = () => {
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
           The Wedding Planner
         </Typography>
+        {weddingDetails && (
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            {weddingDetails.name}
+          </Typography>
+        )}
       </Box>
+      
+      <Box sx={{ p: 2 }}>
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Avatar 
+            alt={currentUser?.displayName || 'User'} 
+            src={currentUser?.photoURL || undefined}
+            sx={{ bgcolor: theme.palette.primary.main }}
+          >
+            {currentUser?.displayName?.[0] || currentUser?.email?.[0] || 'U'}
+          </Avatar>
+          <Box sx={{ flexGrow: 1 }}>
+            <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+              {currentUser?.displayName || currentUser?.email}
+            </Typography>
+          </Box>
+        </Stack>
+      </Box>
+      
       <Divider />
       <List sx={{ py: 1 }}>
         {menuItems.map((item, index) => (
           <React.Fragment key={item.text}>
-            <ListItem
-              component="a"
-              href={item.path}
-              sx={{
-                py: 1.5,
-                "&:hover": {
-                  backgroundColor: theme.palette.action.hover,
-                },
-              }}
-            >
-              <ListItemIcon
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => navigate(item.path)}
                 sx={{
-                  color: theme.palette.sage.dark,
-                  minWidth: 40,
+                  py: 1.5,
+                  "&:hover": {
+                    backgroundColor: theme.palette.action.hover,
+                  },
                 }}
               >
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText
-                primary={item.text}
-                primaryTypographyProps={{
-                  fontWeight: "medium",
-                }}
-              />
+                <ListItemIcon
+                  sx={{
+                    color: theme.palette.sage.dark,
+                    minWidth: 40,
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={item.text}
+                  primaryTypographyProps={{
+                    fontWeight: "medium",
+                  }}
+                />
+              </ListItemButton>
             </ListItem>
             {index < menuItems.length - 1 && (
               <Divider variant="middle" sx={{ my: 0.5 }} />
@@ -88,6 +139,29 @@ const Sidebar: React.FC = () => {
           </React.Fragment>
         ))}
       </List>
+      
+      <Box sx={{ flexGrow: 1 }} />
+      <Divider />
+      
+      <Box sx={{ p: 2 }}>
+        <Button
+          variant="outlined"
+          color="inherit"
+          startIcon={<LogoutIcon />}
+          onClick={handleLogout}
+          fullWidth
+        >
+          Sign Out
+        </Button>
+        
+        {weddingId && (
+          <Box sx={{ mt: 2, textAlign: 'center' }}>
+            <Typography variant="caption" color="text.secondary">
+              Wedding ID: {weddingId}
+            </Typography>
+          </Box>
+        )}
+      </Box>
     </Drawer>
   );
 };

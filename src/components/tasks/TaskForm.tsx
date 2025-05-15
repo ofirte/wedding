@@ -73,7 +73,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={showDetails ? 12 : 8}>
+        <Grid size={{ xs: 12, sm: showDetails ? 12 : 8 }}>
           <TextField
             fullWidth
             label="New Task"
@@ -99,7 +99,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
         </Grid>
 
         {!showDetails && (
-          <Grid item xs={12} sm={4}>
+          <Grid size={{ xs: 12, sm: 4 }}>
             <Button
               type="submit"
               variant="contained"
@@ -119,10 +119,10 @@ const TaskForm: React.FC<TaskFormProps> = ({
           </Grid>
         )}
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Collapse in={showDetails}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   fullWidth
                   label="Description"
@@ -142,7 +142,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6} md={4}>
+              <Grid size={{ xs: 12, md: 4, sm: 6 }}>
                 <TextField
                   select
                   fullWidth
@@ -164,7 +164,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                 </TextField>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={4}>
+              <Grid size={{ xs: 12, md: 4, sm: 6 }}>
                 <TextField
                   fullWidth
                   label="Due Date"
@@ -183,7 +183,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                 />
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4, sm: 6 }}>
                 <Button
                   type="submit"
                   variant="contained"

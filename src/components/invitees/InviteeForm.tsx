@@ -39,7 +39,7 @@ const InviteeForm: React.FC<InviteeFormProps> = ({
         {columns
           .filter((col) => col.id !== "actions")
           .map((column) => (
-            <Grid item xs={12} sm={6} key={column.id}>
+            <Grid size={{ xs: 12, sm: 6 }} key={column.id}>
               {column.id === "relation" ? (
                 <Autocomplete
                   freeSolo

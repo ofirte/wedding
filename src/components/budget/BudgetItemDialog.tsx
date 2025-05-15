@@ -12,7 +12,7 @@ import {
   Select,
   MenuItem,
   Button,
-  Grid2 as Grid,
+  Grid,
   Typography,
 } from "@mui/material";
 import { BudgetItem } from "./BudgetPlanner";
