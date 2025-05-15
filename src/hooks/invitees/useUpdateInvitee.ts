@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateInvitee } from "../../api/invitees/inviteesApi";
 import { Invitee } from "../../components/invitees/InviteList";
+import { useWeddingMutation } from "../common";
 
 /**
  * Hook to update an invitee
@@ -9,11 +10,13 @@ import { Invitee } from "../../components/invitees/InviteList";
 export const useUpdateInvitee = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useWeddingMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<Invitee> }) =>
       updateInvitee(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["invitees"] });
+    options: {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["invitees"] });
+      },
     },
   });
 };

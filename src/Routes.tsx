@@ -17,56 +17,56 @@ const AppRoutes: FC = () => {
   return (
     <Routes>
       {/* Auth routes */}
-      <Route 
-        path="/login" 
-        element={currentUser ? <Navigate to="/" replace /> : <LoginPage />} 
+      <Route
+        path="/login"
+        element={currentUser ? <Navigate to="/" replace /> : <LoginPage />}
       />
-      <Route 
-        path="/register" 
-        element={currentUser ? <Navigate to="/" replace /> : <RegisterPage />} 
+      <Route
+        path="/register"
+        element={currentUser ? <Navigate to="/" replace /> : <RegisterPage />}
       />
-      <Route 
-        path="/setup-wedding" 
+      <Route
+        path="/setup-wedding"
         element={
           <ProtectedRoute requireWedding={false}>
             <SetupWeddingPage />
           </ProtectedRoute>
-        } 
+        }
       />
 
       {/* Protected app routes */}
       <Route path="/" element={<App />}>
-        <Route 
-          index 
+        <Route
+          index
           element={
             <ProtectedRoute>
               <Home />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/invite" 
+        <Route
+          path="/invite"
           element={
             <ProtectedRoute>
               <WeddingInviteTable />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/budget" 
+        <Route
+          path="/budget"
           element={
             <ProtectedRoute>
               <BudgetPlanner />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/tasks" 
+        <Route
+          path="/tasks"
           element={
             <ProtectedRoute>
               <TaskManager />
             </ProtectedRoute>
-          } 
+          }
         />
       </Route>
 

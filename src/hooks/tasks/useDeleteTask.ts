@@ -1,5 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {  useQueryClient } from "@tanstack/react-query";
 import { deleteTask } from "../../api/tasks/tasksApi";
+import { useWeddingMutation } from "../common";
 
 /**
  * Hook to delete a task
@@ -8,10 +9,12 @@ import { deleteTask } from "../../api/tasks/tasksApi";
 export const useDeleteTask = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useWeddingMutation({
     mutationFn: (id: string) => deleteTask(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    options: {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      },
     },
   });
 };

@@ -1,13 +1,15 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { updateTotalBudget } from "../../api/budget/budgetApi";
+import { useWeddingMutation } from "../common";
 
 export const useUpdateTotalBudget = () => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (newAmount: number) => updateTotalBudget(newAmount),
-    onSuccess: () => {
-      // Invalidate and refetch the total budget query
-      queryClient.invalidateQueries({ queryKey: ["totalBudget"] });
+  return useWeddingMutation({
+    mutationFn: (totalBudget: number) => updateTotalBudget(totalBudget),
+    options: {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["totalBudget"] });
+      },
     },
   });
 };

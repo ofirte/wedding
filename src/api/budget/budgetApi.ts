@@ -1,14 +1,4 @@
-import {
-  collection,
-  onSnapshot,
-  doc,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  getDoc,
-  setDoc,
-} from "firebase/firestore";
-import { db } from "../firebaseConfig";
+import { weddingFirebase } from "../weddingFirebaseHelpers";
 import { BudgetItem } from "../../components/budget/BudgetPlanner";
 
 // Define the type for total budget document
@@ -17,107 +7,93 @@ export interface TotalBudgetDoc {
 }
 
 /**
- * Fetches all budget items from Firebase
+ * Fetches all budget items from Firebase for the current user's wedding
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
  * @returns A Promise that resolves with an array of budget items
  */
-export const fetchBudgetItems = () =>
+export const fetchBudgetItems = (weddingId?: string) =>
   new Promise<BudgetItem[]>((resolve, reject) => {
-    const unsubscribe = onSnapshot(
-      collection(db, "budget"),
-      (snapshot) => {
-        const budgetItems = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            name: data.name,
-            group: data.group,
-            expectedPrice: data.expectedPrice,
-            actualPrice: data.actualPrice,
-            downPayment: data.downPayment,
-            contractsUrls: data.contractsUrls,
-          };
-        });
-        resolve(budgetItems);
-      },
-      (error) => {
-        if (error.code === "permission-denied") {
-          console.error("Error fetching budget items: ", error.message);
-          reject(error);
-        } else {
-          console.error("Error fetching budget items: ", error);
-          reject(error);
-        }
-      }
-    );
-
-    // Return unsubscribe function for cleanup
-    return unsubscribe;
+    weddingFirebase
+      .listenToCollection<BudgetItem>(
+        "budget",
+        (budgetItems) => resolve(budgetItems),
+        (error) => reject(error),
+        weddingId
+      )
+      .catch((error) => {
+        console.error("Error setting up budget items listener:", error);
+        resolve([]);
+      });
   });
 
 /**
- * Creates a new budget item
+ * Creates a new budget item for the current user's wedding
  * @param item Budget item to create (without ID)
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
  */
-export const createBudgetItem = async (item: Omit<BudgetItem, "id">) => {
-  return await addDoc(collection(db, "budget"), item);
+export const createBudgetItem = async (
+  item: Omit<BudgetItem, "id">,
+  weddingId?: string
+) => {
+  return await weddingFirebase.addDocument("budget", item, weddingId);
 };
 
 /**
- * Updates an existing budget item
+ * Updates an existing budget item for the current user's wedding
  * @param id ID of the budget item to update
  * @param updatedFields Fields to update in the budget item
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
  */
 export const updateBudgetItem = async (
   id: string,
-  updatedFields: Partial<BudgetItem>
+  updatedFields: Partial<BudgetItem>,
+  weddingId?: string
 ) => {
-  const itemRef = doc(db, "budget", id);
-
-  // Remove undefined fields to prevent Firestore errors
-  const sanitizedFields = Object.entries(updatedFields).reduce(
-    (acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = value;
-      }
-      return acc;
-    },
-    {} as Record<string, any>
+  return await weddingFirebase.updateDocument<BudgetItem>(
+    "budget",
+    id,
+    updatedFields,
+    weddingId
   );
-
-  return await updateDoc(itemRef, sanitizedFields);
 };
 
 /**
- * Deletes a budget item
+ * Deletes a budget item for the current user's wedding
  * @param id ID of the budget item to delete
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
  */
-export const deleteBudgetItem = async (id: string) => {
-  return await deleteDoc(doc(db, "budget", id));
+export const deleteBudgetItem = async (id: string, weddingId?: string) => {
+  return await weddingFirebase.deleteDocument("budget", id, weddingId);
 };
 
 /**
- * Fetch total budget
+ * Fetch total budget for the current user's wedding
  * Creates a default budget if none exists
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
  */
-export const fetchTotalBudget = async (): Promise<TotalBudgetDoc> => {
-  const docRef = doc(db, "settings", "totalBudget");
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    return docSnap.data() as TotalBudgetDoc;
-  } else {
-    // If no document exists, create one with a default value
-    const defaultBudget: TotalBudgetDoc = { amount: 0 };
-    await setDoc(docRef, defaultBudget);
-    return defaultBudget;
-  }
+export const fetchTotalBudget = async (
+  weddingId?: string
+): Promise<TotalBudgetDoc> => {
+  const defaultBudget: TotalBudgetDoc = { amount: 0 };
+  return weddingFirebase.getOrCreateSettings<TotalBudgetDoc>(
+    "totalBudget",
+    defaultBudget,
+    weddingId
+  );
 };
 
 /**
- * Update total budget
+ * Update total budget for the current user's wedding
  * @param amount The new budget amount
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
  */
-export const updateTotalBudget = async (amount: number): Promise<void> => {
-  const docRef = doc(db, "settings", "totalBudget");
-  return setDoc(docRef, { amount });
+export const updateTotalBudget = async (
+  amount: number,
+  weddingId?: string
+): Promise<void> => {
+  return weddingFirebase.updateSettings<TotalBudgetDoc>(
+    "totalBudget",
+    { amount },
+    weddingId
+  );
 };

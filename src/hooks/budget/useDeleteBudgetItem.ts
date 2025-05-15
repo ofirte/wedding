@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteBudgetItem } from "../../api/budget/budgetApi";
+import { useWeddingMutation } from "../common";
 
 /**
  * Hook to delete a budget item
@@ -8,10 +9,12 @@ import { deleteBudgetItem } from "../../api/budget/budgetApi";
 export const useDeleteBudgetItem = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useWeddingMutation({
     mutationFn: (id: string) => deleteBudgetItem(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["budgetItems"] });
+    options: {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["budgetItems"] });
+      },
     },
   });
 };

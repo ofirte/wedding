@@ -1,18 +1,17 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { createBudgetItem } from "../../api/budget/budgetApi";
 import { BudgetItem } from "../../components/budget/BudgetPlanner";
+import { useWeddingMutation } from "../common";
 
-/**
- * Hook to create a budget item
- * @returns Mutation result object for creating budget items
- */
 export const useCreateBudgetItem = () => {
   const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (item: Omit<BudgetItem, "id">) => createBudgetItem(item),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["budgetItems"] });
+  // Using our custom wedding mutation hook
+  return useWeddingMutation({
+    mutationFn: (newBudgetItem: Omit<BudgetItem,"id">) => createBudgetItem(newBudgetItem),
+    options: {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["budgetItems"] });
+      },
     },
   });
 };

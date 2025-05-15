@@ -1,6 +1,5 @@
-// filepath: /Users/ofirtene/Projects/wedding-plan/src/hooks/tasks/useTasks.ts
-import { useQuery } from "@tanstack/react-query";
 import { fetchTasks } from "../../api/tasks/tasksApi";
+import { useWeddingQuery } from "../common";
 
 export interface Task {
   id: string;
@@ -19,10 +18,10 @@ export interface Task {
  */
 const useTasks = () => {
   // Fetch tasks using TanStack Query
-  return useQuery({
+  return useWeddingQuery({
     queryKey: ["tasks"],
     queryFn: fetchTasks,
-    refetchOnWindowFocus: false, // Using real-time updates through onSnapshot
+    options: { refetchOnWindowFocus: false }, // Using real-time updates through onSnapshot
   });
 };
 

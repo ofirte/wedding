@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteInvitee } from "../../api/invitees/inviteesApi";
+import { useWeddingMutation } from "../common";
 
 /**
  * Hook to delete an invitee
@@ -8,10 +9,12 @@ import { deleteInvitee } from "../../api/invitees/inviteesApi";
 export const useDeleteInvitee = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useWeddingMutation({
     mutationFn: (id: string) => deleteInvitee(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["invitees"] });
+    options: {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["invitees"] });
+      },
     },
   });
 };

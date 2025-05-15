@@ -1,6 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { createTask } from "../../api/tasks/tasksApi";
 import { Task } from "./useTasks";
+
+import { useWeddingMutation } from "../common";
 
 /**
  * Hook to create a task
@@ -9,10 +11,12 @@ import { Task } from "./useTasks";
 export const useCreateTask = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useWeddingMutation({
     mutationFn: (task: Omit<Task, "id">) => createTask(task),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    options: {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      },
     },
   });
 };

@@ -1,74 +1,62 @@
-import {
-  collection,
-  onSnapshot,
-  doc,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
-import { db } from "../firebaseConfig";
+import { weddingFirebase } from "../weddingFirebaseHelpers";
 import { Invitee } from "../../components/invitees/InviteList";
 
-export const fetchInvitees = () =>
+/**
+ * Fetches all invitees from Firebase for the current user's wedding
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
+ * @returns A Promise that resolves with an array of invitees
+ */
+export const fetchInvitees = (weddingId?: string) =>
   new Promise<Invitee[]>((resolve, reject) => {
-    const unsubscribe = onSnapshot(
-      collection(db, "invitee"),
-      (snapshot) => {
-        const inviteesData = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            name: data.name,
-            rsvp: data.rsvp,
-            percentage: data.percentage,
-            side: data.side,
-            relation: data.relation,
-            amount: data.amount,
-            amountConfirm: data.amountConfirm,
-            cellphone: data.cellphone,
-          };
-        });
-        resolve(inviteesData);
-      },
-      (error) => {
-        if (error.code === "permission-denied") {
-          console.error("Error fetching invitees: ", error.message);
-          reject(error);
-        } else {
-          console.error("Error fetching invitees: ", error);
-          reject(error);
-        }
-      }
-    );
-
-    // Return unsubscribe function for cleanup
-    return unsubscribe;
+    weddingFirebase
+      .listenToCollection<Invitee>(
+        "invitees",
+        (invitees) => resolve(invitees),
+        (error) => reject(error),
+        weddingId
+      )
+      .catch((error) => {
+        console.error("Error setting up invitees listener:", error);
+        resolve([]);
+      });
   });
 
+/**
+ * Updates an existing invitee for the current user's wedding
+ * @param id ID of the invitee to update
+ * @param updatedFields Fields to update in the invitee
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
+ */
 export const updateInvitee = async (
   id: string,
-  updatedFields: Partial<Invitee>
+  updatedFields: Partial<Invitee>,
+  weddingId?: string
 ) => {
-  const inviteeRef = doc(db, "invitee", id);
-
-  // Remove undefined fields to prevent Firestore errors
-  const sanitizedFields = Object.entries(updatedFields).reduce(
-    (acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = value;
-      }
-      return acc;
-    },
-    {} as Record<string, any>
+  return await weddingFirebase.updateDocument<Invitee>(
+    "invitees",
+    id,
+    updatedFields,
+    weddingId
   );
-
-  return await updateDoc(inviteeRef, sanitizedFields);
 };
 
-export const deleteInvitee = async (id: string) => {
-  return await deleteDoc(doc(db, "invitee", id));
+/**
+ * Deletes an invitee for the current user's wedding
+ * @param id ID of the invitee to delete
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
+ */
+export const deleteInvitee = async (id: string, weddingId?: string) => {
+  return await weddingFirebase.deleteDocument("invitees", id, weddingId);
 };
 
-export const createInvitee = async (invitee: Omit<Invitee, "id">) => {
-  return await addDoc(collection(db, "invitee"), invitee);
+/**
+ * Creates a new invitee for the current user's wedding
+ * @param invitee Invitee to create (without ID)
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
+ */
+export const createInvitee = async (
+  invitee: Omit<Invitee, "id">,
+  weddingId?: string
+) => {
+  return await weddingFirebase.addDocument("invitees", invitee, weddingId);
 };

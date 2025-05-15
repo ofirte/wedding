@@ -1,33 +1,33 @@
-import React from 'react';
-import { Navigate, useLocation } from 'react-router';
-import { Box, CircularProgress } from '@mui/material';
-import { useCurrentUser, useUserHasWedding } from '../../hooks/auth';
-import { useAuth } from '../../hooks/auth/AuthContext';
+import React from "react";
+import { Navigate, useLocation } from "react-router";
+import { Box, CircularProgress } from "@mui/material";
+import { useCurrentUser } from "../../hooks/auth";
+import { useAuth } from "../../hooks/auth/AuthContext";
+import { useWedding } from "../../context/WeddingContext";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requireWedding?: boolean;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
-  children, 
-  requireWedding = true 
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requireWedding = true,
 }) => {
-  const { isLoading } = useAuth();
+  const { isLoading: isAuthLoading } = useAuth();
+  const { currentWeddingId, isLoading: isWeddingLoading } = useWedding();
   const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
-  const { data: hasWedding, isLoading: isWeddingLoading } = 
-    useUserHasWedding(currentUser?.uid);
   const location = useLocation();
 
   // Show loading while checking authentication
-  if (isLoading || isUserLoading || (requireWedding && isWeddingLoading)) {
+  if (isAuthLoading || isUserLoading || isWeddingLoading) {
     return (
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          height: '100vh' 
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
         }}
       >
         <CircularProgress />
@@ -41,7 +41,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   // If wedding is required but user has no wedding, redirect to setup
-  if (requireWedding && !hasWedding) {
+  if (requireWedding && !currentWeddingId) {
     return <Navigate to="/setup-wedding" state={{ from: location }} replace />;
   }
 

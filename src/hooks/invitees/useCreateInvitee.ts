@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createInvitee } from "../../api/invitees/inviteesApi";
 import { Invitee } from "../../components/invitees/InviteList";
+import { useWeddingMutation } from "../common";
 
 /**
  * Hook to create an invitee
@@ -9,10 +10,12 @@ import { Invitee } from "../../components/invitees/InviteList";
 export const useCreateInvitee = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useWeddingMutation({
     mutationFn: (invitee: Omit<Invitee, "id">) => createInvitee(invitee),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["invitees"] });
+    options: {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["invitees"] });
+      },
     },
   });
 };

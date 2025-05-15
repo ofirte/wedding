@@ -23,14 +23,17 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { useCurrentUser, useSignOut, useWeddingDetails } from "./hooks/auth";
-import { useCurrentUserWeddingId } from "./hooks/auth";
+import { useWedding } from "./context/WeddingContext";
+import WeddingSelector from "./components/auth/WeddingSelector";
 
 const Sidebar: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { data: currentUser } = useCurrentUser();
-  const { data: weddingId } = useCurrentUserWeddingId();
-  const { data: weddingDetails } = useWeddingDetails(weddingId || undefined);
+  const { currentWeddingId } = useWedding();
+  const { data: weddingDetails } = useWeddingDetails(
+    currentWeddingId || undefined
+  );
   const { mutate: signOut } = useSignOut();
 
   const menuItems = [
@@ -43,9 +46,9 @@ const Sidebar: React.FC = () => {
   const handleLogout = async () => {
     try {
       await signOut();
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error("Error signing out:", error);
     }
   };
 
@@ -85,24 +88,24 @@ const Sidebar: React.FC = () => {
           </Typography>
         )}
       </Box>
-      
+
       <Box sx={{ p: 2 }}>
         <Stack direction="row" spacing={2} alignItems="center">
-          <Avatar 
-            alt={currentUser?.displayName || 'User'} 
+          <Avatar
+            alt={currentUser?.displayName || "User"}
             src={currentUser?.photoURL || undefined}
             sx={{ bgcolor: theme.palette.primary.main }}
           >
-            {currentUser?.displayName?.[0] || currentUser?.email?.[0] || 'U'}
+            {currentUser?.displayName?.[0] || currentUser?.email?.[0] || "U"}
           </Avatar>
           <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+            <Typography variant="body2" sx={{ fontWeight: "medium" }}>
               {currentUser?.displayName || currentUser?.email}
             </Typography>
           </Box>
         </Stack>
       </Box>
-      
+
       <Divider />
       <List sx={{ py: 1 }}>
         {menuItems.map((item, index) => (
@@ -139,10 +142,10 @@ const Sidebar: React.FC = () => {
           </React.Fragment>
         ))}
       </List>
-      
+
       <Box sx={{ flexGrow: 1 }} />
       <Divider />
-      
+
       <Box sx={{ p: 2 }}>
         <Button
           variant="outlined"
@@ -153,14 +156,6 @@ const Sidebar: React.FC = () => {
         >
           Sign Out
         </Button>
-        
-        {weddingId && (
-          <Box sx={{ mt: 2, textAlign: 'center' }}>
-            <Typography variant="caption" color="text.secondary">
-              Wedding ID: {weddingId}
-            </Typography>
-          </Box>
-        )}
       </Box>
     </Drawer>
   );

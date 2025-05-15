@@ -1,72 +1,69 @@
-import {
-  collection,
-  onSnapshot,
-  doc,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
-import { db } from "../firebaseConfig";
+import { weddingFirebase } from "../weddingFirebaseHelpers";
 import { Task } from "../../hooks/tasks/useTasks";
 
-export const fetchTasks = () =>
+/**
+ * Fetches all tasks from Firebase for the current user's wedding
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
+ * @returns A Promise that resolves with an array of tasks
+ */
+export const fetchTasks = (weddingId?: string) =>
   new Promise<Task[]>((resolve, reject) => {
-    const unsubscribe = onSnapshot(
-      collection(db, "tasks"),
-      (snapshot) => {
-        const tasksData = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            title: data.title,
-            description: data.description,
-            priority: data.priority,
-            completed: data.completed,
-            createdAt: data.createdAt,
-            dueDate: data.dueDate,
-            assignedTo: data.assignedTo,
-          };
-        });
-        resolve(tasksData);
-      },
-      (error) => {
-        if (error.code === "permission-denied") {
-          console.error("Error fetching tasks: ", error.message);
-          reject(error);
-        } else {
-          console.error("Error fetching tasks: ", error);
-          reject(error);
-        }
-      }
-    );
-
-    // Return unsubscribe function for cleanup
-    return unsubscribe;
+    weddingFirebase
+      .listenToCollection<Task>(
+        "tasks",
+        (tasks) => resolve(tasks),
+        (error) => reject(error),
+        weddingId
+      )
+      .catch((error) => {
+        console.error("Error setting up tasks listener:", error);
+        resolve([]);
+      });
   });
 
-export const createTask = async (task: Omit<Task, "id">) => {
-  return await addDoc(collection(db, "tasks"), {
-    ...task,
-    createdAt: task.createdAt || new Date().toISOString(),
-  });
-};
-
-export const updateTask = async (id: string, updatedFields: Partial<Task>) => {
-  const taskRef = doc(db, "tasks", id);
-
-  const sanitizedFields = Object.entries(updatedFields).reduce(
-    (acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = value;
-      }
-      return acc;
+/**
+ * Creates a new task for the current user's wedding
+ * @param task Task to create (without ID)
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
+ */
+export const createTask = async (
+  task: Omit<Task, "id">,
+  weddingId?: string
+) => {
+  return await weddingFirebase.addDocument(
+    "tasks",
+    {
+      ...task,
+      createdAt: task.createdAt || new Date().toISOString(),
     },
-    {} as Record<string, any>
+    weddingId
   );
-
-  return await updateDoc(taskRef, sanitizedFields);
 };
 
-export const deleteTask = async (id: string) => {
-  return await deleteDoc(doc(db, "tasks", id));
+/**
+ * Updates an existing task for the current user's wedding
+ * @param id ID of the task to update
+ * @param updatedFields Fields to update in the task
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
+ */
+export const updateTask = async (
+  id: string,
+  updatedFields: Partial<Task>,
+  weddingId?: string
+) => {
+  return await weddingFirebase.updateDocument<Task>(
+    "tasks",
+    id,
+    updatedFields,
+    weddingId
+  );
+};
+
+/**
+ * Deletes a task for the current user's wedding
+ * @param id ID of the task to delete
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
+ */
+export const deleteTask = async (id: string, weddingId?: string) => {
+  return await weddingFirebase.deleteDocument("tasks", id, weddingId);
 };
