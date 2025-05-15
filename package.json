@@ -30,12 +30,12 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build:dev": "env-cmd -f .env.development react-scripts build",
     "build:prod": "env-cmd -f .env.production react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy:dev": "npm run build && firebase deploy --only hosting",
-    "deploy:prod": "npm run build:prod && firebase deploy --only hosting:weddingplanstudio -P production"
+    "deploy:dev": "npm run build:dev && firebase deploy --only hosting:development",
+    "deploy:prod": "npm run build:prod && firebase deploy --only hosting:production -P production"
   },
   "eslintConfig": {
     "extends": [
