@@ -1,25 +1,18 @@
-import React from "react";
-import { Navigate, useLocation } from "react-router";
+import React, { useEffect } from "react";
+import { Navigate, useLocation, Outlet, useNavigate } from "react-router";
 import { Box, CircularProgress } from "@mui/material";
 import { useCurrentUser } from "../../hooks/auth";
 import { useAuth } from "../../hooks/auth/AuthContext";
 import { useWedding } from "../../context/WeddingContext";
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-  requireWedding?: boolean;
-}
+interface ProtectedRouteProps {}
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  children,
-  requireWedding = true,
-}) => {
-  const { isLoading: isAuthLoading } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({}) => {
+  const { isLoading: isAuthLoading, weddingId: authWeddingId } = useAuth();
   const { currentWeddingId, isLoading: isWeddingLoading } = useWedding();
   const { data: currentUser, isLoading: isUserLoading } = useCurrentUser();
   const location = useLocation();
-
-  // Show loading while checking authentication
+  const navigate = useNavigate();
   if (isAuthLoading || isUserLoading || isWeddingLoading) {
     return (
       <Box
@@ -34,19 +27,23 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       </Box>
     );
   }
-
-  // If not logged in, redirect to login
   if (!currentUser) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    navigate("/login", {
+      state: { from: location },
+      replace: true,
+    });
+    return null;
+  } else if (!authWeddingId && !currentWeddingId) {
+    if (location.pathname !== "/setup-wedding") {
+      navigate("/setup-wedding", {
+        state: { from: location },
+        replace: true,
+      });
+    }
+    return <Outlet />;
   }
 
-  // If wedding is required but user has no wedding, redirect to setup
-  if (requireWedding && !currentWeddingId) {
-    return <Navigate to="/setup-wedding" state={{ from: location }} replace />;
-  }
-
-  // Render the protected content
-  return <>{children}</>;
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

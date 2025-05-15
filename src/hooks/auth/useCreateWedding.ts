@@ -1,4 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  UseMutationOptions,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { createWedding } from "../../api/auth/authApi";
 import { useWedding } from "../../context/WeddingContext";
 import { getCurrentUserData } from "../../api/auth/authApi";
@@ -7,7 +11,9 @@ import { getCurrentUserData } from "../../api/auth/authApi";
  * Hook to handle wedding creation
  * @returns Mutation result for creating a new wedding
  */
-export const useCreateWedding = () => {
+export const useCreateWedding = (
+  options?: UseMutationOptions<unknown, unknown, unknown, unknown>
+) => {
   const queryClient = useQueryClient();
   const { setCurrentWeddingId } = useWedding();
 
@@ -26,7 +32,7 @@ export const useCreateWedding = () => {
         weddingData.groomName,
         weddingData.weddingDate
       ),
-    onSuccess: async (weddingId) => {
+    onSuccess: async (weddingId, variables, context) => {
       // Set the wedding ID in our context
       setCurrentWeddingId(weddingId);
 
@@ -38,6 +44,7 @@ export const useCreateWedding = () => {
       if (userData?.weddingId) {
         queryClient.setQueryData(["currentUserWeddingId"], userData.weddingId);
       }
+      options?.onSuccess?.(weddingId, variables, context);
     },
   });
 };

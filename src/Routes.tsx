@@ -25,49 +25,21 @@ const AppRoutes: FC = () => {
         path="/register"
         element={currentUser ? <Navigate to="/" replace /> : <RegisterPage />}
       />
-      <Route
-        path="/setup-wedding"
-        element={
-          <ProtectedRoute requireWedding={false}>
-            <SetupWeddingPage />
-          </ProtectedRoute>
-        }
-      />
+
+      {/* Setup wedding route with App layout but no wedding requirement */}
+
+      <Route path="/setup-wedding" element={<ProtectedRoute />}>
+        <Route index element={<SetupWeddingPage />} />
+      </Route>
 
       {/* Protected app routes */}
       <Route path="/" element={<App />}>
-        <Route
-          index
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/invite"
-          element={
-            <ProtectedRoute>
-              <WeddingInviteTable />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/budget"
-          element={
-            <ProtectedRoute>
-              <BudgetPlanner />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/tasks"
-          element={
-            <ProtectedRoute>
-              <TaskManager />
-            </ProtectedRoute>
-          }
-        />
+        <Route element={<ProtectedRoute />}>
+          <Route index element={<Home />} />
+          <Route path="/invite" element={<WeddingInviteTable />} />
+          <Route path="/budget" element={<BudgetPlanner />} />
+          <Route path="/tasks" element={<TaskManager />} />
+        </Route>
       </Route>
 
       {/* Fallback route */}

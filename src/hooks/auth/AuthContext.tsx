@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { onAuthStateChange, getCurrentUserData } from "../../api/auth/authApi";
-import { WeddingUser } from "../../api/auth/authApi";
 
 // Define the context type
 type AuthContextType = {

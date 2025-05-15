@@ -10,10 +10,6 @@ import {
   Tab,
   Alert,
   CircularProgress,
-  Card,
-  CardContent,
-  CardActions,
-  Divider,
   Stack,
 } from "@mui/material";
 import { useNavigate } from "react-router";
@@ -62,8 +58,17 @@ const SetupWeddingPage: React.FC = () => {
   const [weddingId, setWeddingId] = useState("");
 
   const { data: currentUser } = useCurrentUser();
-  const { mutate: createWedding, isPending: isCreating } = useCreateWedding();
-  const { mutate: joinWedding, isPending: isJoining } = useJoinWedding();
+  const { mutate: createWedding, isPending: isCreating } = useCreateWedding({
+    onSuccess: () => {
+      console.log('here')
+      navigate("/");
+    },
+  });
+  const { mutate: joinWedding, isPending: isJoining } = useJoinWedding({
+    onSuccess: () => {
+      navigate("/");
+    },
+  });
   const navigate = useNavigate();
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -86,25 +91,13 @@ const SetupWeddingPage: React.FC = () => {
     }
 
     try {
-      await createWedding(
-        {
-          userId: currentUser.uid,
-          weddingName,
-          brideName: brideName || undefined,
-          groomName: groomName || undefined,
-          weddingDate: weddingDate || undefined,
-        },
-        {
-          onSuccess: () => {
-            navigate("/");
-          },
-          onError: (error: any) => {
-            setError(
-              error.message || "Failed to create wedding. Please try again."
-            );
-          },
-        }
-      );
+      createWedding({
+        userId: currentUser.uid,
+        weddingName,
+        brideName: brideName || undefined,
+        groomName: groomName || undefined,
+        weddingDate: weddingDate || undefined,
+      });
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
     }
@@ -125,20 +118,7 @@ const SetupWeddingPage: React.FC = () => {
     }
 
     try {
-      await joinWedding(
-        { userId: currentUser.uid, weddingId },
-        {
-          onSuccess: () => {
-            navigate("/");
-          },
-          onError: (error: any) => {
-            setError(
-              error.message ||
-                "Failed to join wedding. Please verify the wedding ID is correct."
-            );
-          },
-        }
-      );
+      joinWedding({ userId: currentUser.uid, weddingId });
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
     }
