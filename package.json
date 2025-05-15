@@ -40,7 +40,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deploy:dev": "npm run build:dev && firebase deploy --only hosting:development",
-    "deploy:prod": "npm run build:prod && firebase deploy --only hosting:production -P production"
+    "deploy:prod": "npm run build:prod && firebase deploy --only hosting:production -P production",
+    "migrate-wedding": "node migrateWedding.cjs"
   },
   "eslintConfig": {
     "extends": [
@@ -61,6 +62,7 @@
     ]
   },
   "devDependencies": {
-    "env-cmd": "^10.1.0"
+    "env-cmd": "^10.1.0",
+    "ts-node": "^10.9.2"
   }
 }

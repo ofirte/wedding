@@ -10,7 +10,7 @@ export const fetchInvitees = (weddingId?: string) =>
   new Promise<Invitee[]>((resolve, reject) => {
     weddingFirebase
       .listenToCollection<Invitee>(
-        "invitees",
+        "invitee",
         (invitees) => resolve(invitees),
         (error) => reject(error),
         weddingId
@@ -33,7 +33,7 @@ export const updateInvitee = async (
   weddingId?: string
 ) => {
   return await weddingFirebase.updateDocument<Invitee>(
-    "invitees",
+    "invitee",
     id,
     updatedFields,
     weddingId
@@ -46,7 +46,7 @@ export const updateInvitee = async (
  * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
  */
 export const deleteInvitee = async (id: string, weddingId?: string) => {
-  return await weddingFirebase.deleteDocument("invitees", id, weddingId);
+  return await weddingFirebase.deleteDocument("invitee", id, weddingId);
 };
 
 /**
@@ -58,5 +58,5 @@ export const createInvitee = async (
   invitee: Omit<Invitee, "id">,
   weddingId?: string
 ) => {
-  return await weddingFirebase.addDocument("invitees", invitee, weddingId);
+  return await weddingFirebase.addDocument("invitee", invitee, weddingId);
 };
