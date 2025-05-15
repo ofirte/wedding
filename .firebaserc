@@ -1,5 +1,22 @@
 {
   "projects": {
-    "default": "wedding-c89a1"
+    "default": "wedding-c89a1",
+    "production": "wedding-prod-f13a0"
+  },
+  "targets": {
+    "wedding-c89a1": {
+      "hosting": {
+        "development": [
+          "wedding-c89a1"
+        ]
+      }
+    },
+    "wedding-prod-f13a0": {
+      "hosting": {
+        "production": [
+          "weddingplanstudio"
+        ]
+      }
+    }
   }
 }
