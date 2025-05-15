@@ -25,9 +25,9 @@ const StatCards: React.FC<StatCardsProps> = ({ daysRemaining }) => {
   const navigate = useNavigate();
   const { data: guests } = useInvitees();
   const { data: budget } = useBudgetItems();
-  const { totalBudget } = useTotalBudget();
+  const { data: totalBudget } = useTotalBudget();
   const { data: tasks } = useTasks();
-
+  const totalBudgetAmount = totalBudget?.amount || 0;
   const guestStats = {
     total:
       guests?.reduce((acc, i) => acc + parseInt(i.amount.toString()), 0) || 0,
@@ -40,9 +40,11 @@ const StatCards: React.FC<StatCardsProps> = ({ daysRemaining }) => {
   const totalSpent =
     budget?.reduce((acc, i) => acc + parseInt(i.actualPrice.toString()), 0) ||
     0;
-  const remainingBudget = totalBudget - totalSpent;
+  const remainingBudget = totalBudgetAmount
+    ? totalBudgetAmount - totalSpent
+    : 0;
   const budgetStats = {
-    total: totalBudget,
+    total: totalBudgetAmount,
     spent: totalSpent,
     remaining: remainingBudget,
   };

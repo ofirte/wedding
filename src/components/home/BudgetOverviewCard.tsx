@@ -34,15 +34,17 @@ const BudgetOverviewCard: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { data: budget } = useBudgetItems();
-  const { totalBudget } = useTotalBudget();
+  const { data: totalBudget } = useTotalBudget();
 
   const totalSpent =
     budget?.reduce((acc, i) => acc + parseInt(i.actualPrice.toString()), 0) ||
     0;
-  const remainingBudget = totalBudget - totalSpent;
+  const remainingBudget = totalBudget?.amount
+    ? totalBudget?.amount - totalSpent
+    : 0;
 
   const budgetStats = {
-    total: totalBudget,
+    total: totalBudget?.amount ?? 0,
     spent: totalSpent,
     remaining: remainingBudget,
   };

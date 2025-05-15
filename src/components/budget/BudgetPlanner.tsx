@@ -17,6 +17,7 @@ import BudgetSummary from "./BudgetSummary";
 import BudgetTable from "./BudgetTable";
 import BudgetItemDialog from "./BudgetItemDialog";
 import TotalBudgetEditor from "./TotalBudgetEditor";
+import { useUpdateTotalBudget } from "../../hooks/budget/useUpdateTotalBudget";
 
 export type BudgetItem = {
   id: string;
@@ -60,12 +61,9 @@ const BudgetPlanner = () => {
   // Fetch budget items using TanStack Query
   const { data: budgetItems, isLoading, isError } = useBudgetItems();
 
-  // Fetch total budget using the hook
-  const {
-    totalBudget,
-    setTotalBudget,
-    isLoading: isTotalBudgetLoading,
-  } = useTotalBudget();
+  const { data: totalBudget, isLoading: isTotalBudgetLoading } =
+    useTotalBudget();
+  const { mutate: updateTotalBudget } = useUpdateTotalBudget();
 
   // Budget mutations for create, update, and delete operations with loading states
   const { mutate: createBudgetItem, isPending: isCreating } =
@@ -205,12 +203,12 @@ const BudgetPlanner = () => {
         </Typography>
 
         <TotalBudgetEditor
-          totalBudget={totalBudget}
+          totalBudget={totalBudget?.amount ?? 0}
           isLoading={isTotalBudgetLoading}
-          onSaveTotalBudget={setTotalBudget}
+          onSaveTotalBudget={updateTotalBudget}
         />
-        {/* Show budget summary with updated totals */}
-        <BudgetSummary totals={totals} totalBudget={totalBudget} />
+
+        <BudgetSummary totals={totals} totalBudget={totalBudget?.amount ?? 0} />
 
         <Button
           variant="contained"
