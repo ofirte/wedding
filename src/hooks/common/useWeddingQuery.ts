@@ -27,7 +27,7 @@ export function useWeddingQuery<TData = unknown, TError = unknown>({
   const expandedQueryKey = Array.isArray(queryKey)
     ? [...queryKey, currentWeddingId]
     : [queryKey, currentWeddingId];
-
+  console.log("Expanded Query Key:", expandedQueryKey);
   return useQuery<TData, TError>({
     queryKey: expandedQueryKey,
     queryFn: () => queryFn(currentWeddingId || undefined),

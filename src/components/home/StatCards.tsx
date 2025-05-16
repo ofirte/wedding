@@ -17,11 +17,9 @@ const formatCurrency = (amount: number): string => {
   return "₪" + amount.toLocaleString();
 };
 
-interface StatCardsProps {
-  daysRemaining: number;
-}
+interface StatCardsProps {}
 
-const StatCards: React.FC<StatCardsProps> = ({ daysRemaining }) => {
+const StatCards: React.FC<StatCardsProps> = () => {
   const navigate = useNavigate();
   const { data: guests } = useInvitees();
   const { data: budget } = useBudgetItems();
@@ -60,7 +58,7 @@ const StatCards: React.FC<StatCardsProps> = ({ daysRemaining }) => {
   };
   return (
     <Grid container spacing={3} sx={{ mb: 4 }}>
-      <Grid size={{ xs: 4, md: 3 }}>
+      <Grid size={{ xs: 5, md: 4 }}>
         <StatCard
           icon={<GuestsIcon />}
           title="Guest List"
@@ -71,7 +69,7 @@ const StatCards: React.FC<StatCardsProps> = ({ daysRemaining }) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 4, md: 3 }}>
+      <Grid size={{ xs: 5, md: 4 }}>
         <StatCard
           icon={<BudgetIcon />}
           title="Budget"
@@ -82,7 +80,7 @@ const StatCards: React.FC<StatCardsProps> = ({ daysRemaining }) => {
         />
       </Grid>
 
-      <Grid size={{ xs: 4, md: 3 }}>
+      <Grid size={{ xs: 5, md: 4 }}>
         <StatCard
           icon={<TaskIcon />}
           title="Tasks"
@@ -90,16 +88,6 @@ const StatCards: React.FC<StatCardsProps> = ({ daysRemaining }) => {
           subtitle={`${taskStats.percentage}% completed`}
           color="success"
           onClick={() => navigate("/tasks")}
-        />
-      </Grid>
-
-      <Grid size={{ xs: 4, md: 3 }}>
-        <StatCard
-          icon={<TimeIcon />}
-          title="Timeline"
-          value={daysRemaining}
-          subtitle="Days remaining"
-          color="warning"
         />
       </Grid>
     </Grid>

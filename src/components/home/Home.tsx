@@ -3,25 +3,13 @@ import { Box } from "@mui/material";
 import WeddingCountdownBanner from "./WeddingCountdownBanner";
 import StatCards from "./StatCards";
 import DetailedOverviewCards from "./DetailedOverviewCards";
-
-// Mock wedding date - you can replace with real data later
-const weddingDate = new Date("2025-09-19");
+import { useWeddingDetails } from "../../hooks/auth";
 
 const Home: React.FC = () => {
-  const calculateDaysRemaining = (): number => {
-    const today = new Date();
-    const diffTime = weddingDate.getTime() - today.getTime();
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  };
-  const daysRemaining = calculateDaysRemaining();
-
-
   return (
     <Box sx={{ py: 4, px: 1 }}>
-      <WeddingCountdownBanner weddingDate={weddingDate} />
-      <StatCards
-        daysRemaining={daysRemaining}
-      />
+      <WeddingCountdownBanner  />
+      <StatCards />
       <DetailedOverviewCards />
     </Box>
   );

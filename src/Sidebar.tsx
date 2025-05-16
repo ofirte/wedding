@@ -45,7 +45,7 @@ const Sidebar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut();
+      signOut({});
       navigate("/login");
     } catch (error) {
       console.error("Error signing out:", error);

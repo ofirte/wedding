@@ -8,8 +8,6 @@ import {
 } from "firebase/auth";
 import { doc, setDoc, getDoc, collection, addDoc } from "firebase/firestore";
 import { auth, db } from "../firebaseConfig";
-
-// User interface
 export interface WeddingUser {
   uid: string;
   email: string;
@@ -17,26 +15,22 @@ export interface WeddingUser {
   photoURL?: string;
   weddingId?: string;
 }
-
-// Wedding interface
 export interface Wedding {
   id: string;
   name: string;
-  date: Date | null;
+  date: { seconds: number } | null;
   createdAt: Date;
   userIds: string[];
   brideName?: string;
   groomName?: string;
 }
 
-// Sign-up new user
 export const signUp = async (
   email: string,
   password: string,
   displayName?: string
 ): Promise<WeddingUser> => {
   try {
-    // Create user in Firebase Auth
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
@@ -82,8 +76,6 @@ export const signIn = async (
       password
     );
     const user = userCredential.user;
-
-    // Get user data including weddingId
     const userDoc = await getDoc(doc(db, "users", user.uid));
     const userData = userDoc.data() as WeddingUser;
 

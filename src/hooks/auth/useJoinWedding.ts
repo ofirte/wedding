@@ -3,14 +3,14 @@ import {
   UseMutationOptions,
   useQueryClient,
 } from "@tanstack/react-query";
-import {
-  joinWedding,
-  getCurrentUserData,
-} from "../../api/auth/authApi";
+import { joinWedding, getCurrentUserData } from "../../api/auth/authApi";
 import { useWedding } from "../../context/WeddingContext";
 
 export const useJoinWedding = (
-  options?: UseMutationOptions<unknown, unknown, unknown, unknown>
+  options?: Omit<
+    UseMutationOptions<unknown, unknown, unknown, unknown>,
+    "mutationFn"
+  >
 ) => {
   const queryClient = useQueryClient();
   const { setCurrentWeddingId } = useWedding();
@@ -27,5 +27,6 @@ export const useJoinWedding = (
       }
       options?.onSuccess?.(data, params, context);
     },
+    ...options,
   });
 };

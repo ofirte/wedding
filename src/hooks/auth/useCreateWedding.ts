@@ -12,7 +12,10 @@ import { getCurrentUserData } from "../../api/auth/authApi";
  * @returns Mutation result for creating a new wedding
  */
 export const useCreateWedding = (
-  options?: UseMutationOptions<unknown, unknown, unknown, unknown>
+  options?: Omit<
+    UseMutationOptions<unknown, unknown, unknown, unknown>,
+    "mutationFn"
+  >
 ) => {
   const queryClient = useQueryClient();
   const { setCurrentWeddingId } = useWedding();
@@ -33,18 +36,14 @@ export const useCreateWedding = (
         weddingData.weddingDate
       ),
     onSuccess: async (weddingId, variables, context) => {
-      // Set the wedding ID in our context
-      setCurrentWeddingId(weddingId);
-
-      // Invalidate the currentUser query to refetch user data with the new wedding ID
+      setCurrentWeddingId(weddingId as string);
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-
-      // Update the wedding ID in query cache
       const userData = await getCurrentUserData();
       if (userData?.weddingId) {
         queryClient.setQueryData(["currentUserWeddingId"], userData.weddingId);
       }
       options?.onSuccess?.(weddingId, variables, context);
     },
+    ...options,
   });
 };

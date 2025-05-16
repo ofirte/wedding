@@ -1,25 +1,36 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Box, Typography, Paper, Chip, useTheme } from "@mui/material";
 import {
   Favorite as HeartIcon,
   DateRange as DateIcon,
 } from "@mui/icons-material";
+import { useWeddingDetails } from "../../hooks/auth/useWeddingDetails";
 
-interface WeddingCountdownBannerProps {
-  weddingDate: Date;
-}
+interface WeddingCountdownBannerProps {}
 
-const WeddingCountdownBanner: React.FC<WeddingCountdownBannerProps> = ({
-  weddingDate,
-}) => {
+const WeddingCountdownBanner: React.FC<WeddingCountdownBannerProps> = ({}) => {
   const theme = useTheme();
+  const { data: weddingDetails, isLoading: isLoadingWeddingDetails } =
+    useWeddingDetails();
 
-  // Calculate days remaining until wedding
+  const weddingDate = useMemo(() => {
+    if (isLoadingWeddingDetails || !weddingDetails?.date) {
+      return null;
+    }
+    console.log(typeof weddingDetails.date, weddingDetails.date);
+    return new Date(weddingDetails.date.seconds * 1000);
+  }, [isLoadingWeddingDetails, weddingDetails]);
+
   const calculateDaysRemaining = (): number => {
+    if (isLoadingWeddingDetails || !weddingDetails?.date) {
+      return 0;
+    }
     const today = new Date();
-    const diffTime = weddingDate.getTime() - today.getTime();
+    const diffTime =
+      (weddingDate?.getTime() ?? today.getTime()) - today.getTime();
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
+
   const daysRemaining = calculateDaysRemaining();
 
   return (
@@ -74,7 +85,7 @@ const WeddingCountdownBanner: React.FC<WeddingCountdownBannerProps> = ({
 
         <Chip
           icon={<DateIcon />}
-          label={weddingDate.toLocaleDateString("en-US", {
+          label={weddingDate?.toLocaleDateString("en-US", {
             weekday: "long",
             year: "numeric",
             month: "long",
