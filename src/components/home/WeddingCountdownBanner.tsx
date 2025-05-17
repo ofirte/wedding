@@ -4,24 +4,13 @@ import {
   Favorite as HeartIcon,
   DateRange as DateIcon,
 } from "@mui/icons-material";
+import { useWeddingDate } from "../../hooks/wedding/useWeddingDate";
 
-interface WeddingCountdownBannerProps {
-  weddingDate: Date;
-}
+interface WeddingCountdownBannerProps {}
 
-const WeddingCountdownBanner: React.FC<WeddingCountdownBannerProps> = ({
-  weddingDate,
-}) => {
+const WeddingCountdownBanner: React.FC<WeddingCountdownBannerProps> = ({}) => {
   const theme = useTheme();
-
-  // Calculate days remaining until wedding
-  const calculateDaysRemaining = (): number => {
-    const today = new Date();
-    const diffTime = weddingDate.getTime() - today.getTime();
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  };
-  const daysRemaining = calculateDaysRemaining();
-
+  const weddingDateInfo = useWeddingDate();
   return (
     <Paper
       elevation={0}
@@ -65,7 +54,7 @@ const WeddingCountdownBanner: React.FC<WeddingCountdownBannerProps> = ({
         </Box>
 
         <Typography variant="h2" fontWeight="bold" sx={{ mb: 1 }}>
-          {daysRemaining} Days
+          {weddingDateInfo?.daysRemaining || 0} Days
         </Typography>
 
         <Typography variant="subtitle1" sx={{ mb: 3, opacity: 0.9 }}>
@@ -74,7 +63,7 @@ const WeddingCountdownBanner: React.FC<WeddingCountdownBannerProps> = ({
 
         <Chip
           icon={<DateIcon />}
-          label={weddingDate.toLocaleDateString("en-US", {
+          label={weddingDateInfo?.weddingDate.toLocaleDateString("en-US", {
             weekday: "long",
             year: "numeric",
             month: "long",

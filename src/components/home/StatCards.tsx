@@ -12,21 +12,21 @@ import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { useBudgetItems } from "../../hooks/budget/useBudgetItems";
 import { useTotalBudget } from "../../hooks/budget/useTotalBudget";
 import useTasks from "../../hooks/tasks/useTasks";
+import { useWeddingDate } from "../../hooks/wedding/useWeddingDate";
 // Utility function to format currency
 const formatCurrency = (amount: number): string => {
   return "₪" + amount.toLocaleString();
 };
 
-interface StatCardsProps {
-  daysRemaining: number;
-}
+interface StatCardsProps {}
 
-const StatCards: React.FC<StatCardsProps> = ({ daysRemaining }) => {
+const StatCards: React.FC<StatCardsProps> = () => {
   const navigate = useNavigate();
   const { data: guests } = useInvitees();
   const { data: budget } = useBudgetItems();
   const { data: totalBudget } = useTotalBudget();
   const { data: tasks } = useTasks();
+  const weddingDateInfo = useWeddingDate();
   const totalBudgetAmount = totalBudget?.amount || 0;
   const guestStats = {
     total:
@@ -78,7 +78,7 @@ const StatCards: React.FC<StatCardsProps> = ({ daysRemaining }) => {
           value={formatCurrency(budgetStats.spent)}
           subtitle={`of ${formatCurrency(budgetStats.total)}`}
           color="info"
-          onClick={() => navigate("../budget" )}
+          onClick={() => navigate("../budget")}
         />
       </Grid>
 
@@ -97,7 +97,7 @@ const StatCards: React.FC<StatCardsProps> = ({ daysRemaining }) => {
         <StatCard
           icon={<TimeIcon />}
           title="Timeline"
-          value={daysRemaining}
+          value={weddingDateInfo?.daysRemaining || 0}
           subtitle="Days remaining"
           color="warning"
         />

@@ -3,9 +3,9 @@ export { useCurrentUser } from "./useCurrentUser";
 export { useSignUp } from "./useSignUp";
 export { useSignIn } from "./useSignIn";
 export { useSignOut } from "./useSignOut";
-export { useCreateWedding } from "./useCreateWedding";
-export { useJoinWedding } from "./useJoinWedding";
-export { useWeddingDetails } from "./useWeddingDetails";
+export { useCreateWedding } from "../wedding/useCreateWedding";
+export { useJoinWedding } from "../wedding/useJoinWedding";
+export { useWeddingDetails } from "../wedding/useWeddingDetails";
 export { useCurrentUserWeddingId } from "./useCurrentUserWeddingId";
 
 // Also export types from authApi for convenience

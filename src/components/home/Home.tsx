@@ -8,20 +8,10 @@ import DetailedOverviewCards from "./DetailedOverviewCards";
 const weddingDate = new Date("2025-09-19");
 
 const Home: React.FC = () => {
-  const calculateDaysRemaining = (): number => {
-    const today = new Date();
-    const diffTime = weddingDate.getTime() - today.getTime();
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  };
-  const daysRemaining = calculateDaysRemaining();
-
-
   return (
     <Box sx={{ py: 4, px: 1 }}>
-      <WeddingCountdownBanner weddingDate={weddingDate} />
-      <StatCards
-        daysRemaining={daysRemaining}
-      />
+      <WeddingCountdownBanner />
+      <StatCards />
       <DetailedOverviewCards />
     </Box>
   );

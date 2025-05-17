@@ -7,6 +7,6 @@ export const useWeddingDetails = (weddingId?: string) => {
   return useQuery({
     queryKey: ["weddingDetails", weddingId],
     queryFn: () => getWeddingDetails(weddingId || paramsWeddingId || ""),
-    enabled: !!weddingId, // Only run the query if weddingId is present
+    enabled: !!(weddingId || paramsWeddingId), // Only run the query if weddingId is present
   });
 };

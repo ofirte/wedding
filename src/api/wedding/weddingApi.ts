@@ -1,11 +1,11 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { WeddingUser } from "../auth/authApi";
 
 export interface Wedding {
   id: string;
   name: string;
-  date: Date | null;
+  date: Timestamp;
   createdAt: Date;
   userIds: string[];
   brideName?: string;
