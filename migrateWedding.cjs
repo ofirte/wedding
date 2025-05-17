@@ -11,20 +11,32 @@ const {
 
 // Get the Firebase configuration
 const devFirebaseConfig = {
-  apiKey: "AIzaSyA2exk9CEMRDrm1kLCT_2Va0Yyo3Og34Xk",
-  authDomain: "wedding-c89a1.firebaseapp.com",
-  projectId: "wedding-c89a1",
-  storageBucket: "wedding-c89a1.firebasestorage.app",
-  messagingSenderId: "206786649581",
-  appId: "1:206786649581:web:1d3ad0e2f96d483f975be4",
-  measurementId: "G-RTW3LZZ6HW",
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: "",
+  measurementId: "",
 };
 
-// Initialize Firebase
-const app = initializeApp(devFirebaseConfig);
+// Production Firebase configuration
+const prodFirebaseConfig = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: "",
+  measurementId: "",
+};
+
+const firebaseConfig = prodFirebaseConfig; // Change to devFirebaseConfig for development
+
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const TARGET_WEDDING_ID = "Lu4SfiBN6YiBvJorwjmG";
+const TARGET_WEDDING_ID = "anNLmFinn4heRmSauEqc";
 const COLLECTIONS_TO_MIGRATE = ["invitee", "budget", "tasks", "setttings"];
 
 /**
