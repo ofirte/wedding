@@ -24,8 +24,8 @@ const devFirebaseConfig = {
 const app = initializeApp(devFirebaseConfig);
 const db = getFirestore(app);
 
-const TARGET_WEDDING_ID = "vuzRQji2SieDGatQNz0N";
-const COLLECTIONS_TO_MIGRATE = [];
+const TARGET_WEDDING_ID = "Lu4SfiBN6YiBvJorwjmG";
+const COLLECTIONS_TO_MIGRATE = ["invitee", "budget", "tasks", "setttings"];
 
 /**
  * Migrates a single collection to the wedding subcollection
