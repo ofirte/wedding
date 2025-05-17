@@ -3,7 +3,7 @@ import {
   UseMutationOptions,
   UseMutationResult,
 } from "@tanstack/react-query";
-import { useWedding } from "../../context/WeddingContext";
+import { useParams } from "react-router";
 
 /**
  * A wrapper around React Query's useMutation that automatically includes the wedding ID
@@ -29,10 +29,12 @@ export function useWeddingMutation<
     "mutationFn"
   >;
 }): UseMutationResult<TData, TError, TVariables, TContext> {
-  const { currentWeddingId } = useWedding();
+  const { weddingId: paramsWeddingId } = useParams<{
+    weddingId: string;
+  }>();
   return useMutation({
     mutationFn: (variables: TVariables) =>
-      mutationFn(variables, currentWeddingId || undefined),
+      mutationFn(variables, paramsWeddingId || undefined),
     ...options,
   });
 }

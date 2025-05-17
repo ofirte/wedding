@@ -21,6 +21,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { Wedding } from "../../api/wedding/weddingApi";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -59,14 +60,14 @@ const SetupWeddingPage: React.FC = () => {
 
   const { data: currentUser } = useCurrentUser();
   const { mutate: createWedding, isPending: isCreating } = useCreateWedding({
-    onSuccess: () => {
-      console.log('here')
-      navigate("/");
+    onSuccess: (weddingId) => {
+      console.log("Wedding created successfully:", weddingId);
+      navigate(`./${weddingId}/home`);
     },
   });
   const { mutate: joinWedding, isPending: isJoining } = useJoinWedding({
-    onSuccess: () => {
-      navigate("/");
+    onSuccess: (wedding: Wedding) => {
+      navigate(`./${wedding.id}/home`);
     },
   });
   const navigate = useNavigate();

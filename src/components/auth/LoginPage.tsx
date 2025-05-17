@@ -17,7 +17,14 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const { mutate: signIn, isPending } = useSignIn();
+  const { mutate: signIn, isPending } = useSignIn({
+    onSuccess: () => {
+      navigate("/wedding");
+    },
+    onError: (error: any) => {
+      setError(error.message || "Failed to sign in. Please try again.");
+    },
+  });
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -25,17 +32,7 @@ const LoginPage: React.FC = () => {
     setError(null);
 
     try {
-      await signIn(
-        { email, password },
-        {
-          onSuccess: () => {
-            navigate("/");
-          },
-          onError: (error: any) => {
-            setError(error.message || "Failed to sign in. Please try again.");
-          },
-        }
-      );
+      signIn({ email, password });
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
     }

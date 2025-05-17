@@ -5,9 +5,8 @@ export { useSignIn } from "./useSignIn";
 export { useSignOut } from "./useSignOut";
 export { useCreateWedding } from "./useCreateWedding";
 export { useJoinWedding } from "./useJoinWedding";
-export { useUserHasWedding } from "./useUserHasWedding";
 export { useWeddingDetails } from "./useWeddingDetails";
 export { useCurrentUserWeddingId } from "./useCurrentUserWeddingId";
 
 // Also export types from authApi for convenience
-export type { WeddingUser, Wedding } from "../../api/auth/authApi";
+export type { WeddingUser } from "../../api/auth/authApi";

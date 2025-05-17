@@ -19,7 +19,11 @@ const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const { mutate: signUp, isPending } = useSignUp();
+  const { mutate: signUp, isPending } = useSignUp({
+    onSuccess: () => {
+      navigate("/wedding");
+    },
+  });
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,17 +37,7 @@ const RegisterPage: React.FC = () => {
     }
 
     try {
-      await signUp(
-        { email, password, displayName: name },
-        {
-          onSuccess: () => {
-            navigate("/setup-wedding");
-          },
-          onError: (error: any) => {
-            setError(error.message || "Failed to sign up. Please try again.");
-          },
-        }
-      );
+      signUp({ email, password, displayName: name });
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
     }

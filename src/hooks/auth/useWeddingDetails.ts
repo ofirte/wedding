@@ -1,15 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { getWeddingDetails } from "../../api/auth/authApi";
+import { getWeddingDetails } from "../../api/wedding/weddingApi";
+import { useParams } from "react-router";
 
-/**
- * Hook to fetch wedding details
- * @param weddingId The wedding ID to fetch details for
- * @returns Query result containing wedding details
- */
-export const useWeddingDetails = (weddingId: string | undefined) => {
+export const useWeddingDetails = (weddingId?: string) => {
+  const { weddingId: paramsWeddingId } = useParams<{ weddingId: string }>();
   return useQuery({
     queryKey: ["weddingDetails", weddingId],
-    queryFn: () => weddingId ? getWeddingDetails(weddingId) : Promise.resolve(null),
+    queryFn: () => getWeddingDetails(weddingId || paramsWeddingId || ""),
     enabled: !!weddingId, // Only run the query if weddingId is present
   });
 };

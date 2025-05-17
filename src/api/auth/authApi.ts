@@ -18,17 +18,6 @@ export interface WeddingUser {
   weddingId?: string;
 }
 
-// Wedding interface
-export interface Wedding {
-  id: string;
-  name: string;
-  date: Date | null;
-  createdAt: Date;
-  userIds: string[];
-  brideName?: string;
-  groomName?: string;
-}
-
 // Sign-up new user
 export const signUp = async (
   email: string,
@@ -151,36 +140,6 @@ export const createWedding = async (
   }
 };
 
-// Add user to existing wedding
-export const joinWedding = async (
-  userId: string,
-  weddingId: string
-): Promise<Wedding> => {
-  try {
-    const weddingRef = doc(db, "weddings", weddingId);
-    const weddingDoc = await getDoc(weddingRef);
-
-    if (!weddingDoc.exists()) {
-      throw new Error("Wedding not found");
-    }
-
-    const weddingData = weddingDoc.data() as Wedding;
-    const updatedUserIds = [...weddingData.userIds, userId];
-
-    await setDoc(weddingRef, { userIds: updatedUserIds }, { merge: true });
-
-    // Update user document with weddingId
-    await setDoc(doc(db, "users", userId), { weddingId }, { merge: true });
-
-    return {
-      ...weddingData,
-    };
-  } catch (error) {
-    console.error("Error joining wedding:", error);
-    throw error;
-  }
-};
-
 // Helper to get wedding ID for current user
 export const getCurrentUserWeddingId = async (): Promise<string | null> => {
   try {
@@ -197,34 +156,5 @@ export const onAuthStateChange = (callback: (user: User | null) => void) => {
   return onAuthStateChanged(auth, callback);
 };
 
-// Check if user has a wedding
-export const userHasWedding = async (userId: string): Promise<boolean> => {
-  try {
-    const userDoc = await getDoc(doc(db, "users", userId));
-    if (!userDoc.exists()) return false;
 
-    const userData = userDoc.data() as WeddingUser;
-    return !!userData.weddingId;
-  } catch (error) {
-    console.error("Error checking if user has wedding:", error);
-    return false;
-  }
-};
 
-// Get wedding details
-export const getWeddingDetails = async (
-  weddingId: string
-): Promise<Wedding | null> => {
-  try {
-    const weddingDoc = await getDoc(doc(db, "weddings", weddingId));
-    if (!weddingDoc.exists()) return null;
-
-    return {
-      id: weddingId,
-      ...(weddingDoc.data() as Omit<Wedding, "id">),
-    };
-  } catch (error) {
-    console.error("Error getting wedding details:", error);
-    return null;
-  }
-};

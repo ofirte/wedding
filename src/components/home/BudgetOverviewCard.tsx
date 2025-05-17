@@ -69,7 +69,7 @@ const BudgetOverviewCard: React.FC = () => {
         <Button
           size="small"
           endIcon={<ArrowIcon />}
-          onClick={() => navigate("/budget")}
+          onClick={() => navigate("../budget" )}
         >
           Details
         </Button>

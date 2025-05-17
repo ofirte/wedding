@@ -8,7 +8,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import { AuthProvider } from "./hooks/auth/AuthContext";
-import { WeddingProvider } from "./context/WeddingContext";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -21,11 +20,9 @@ root.render(
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <WeddingProvider>
             <BrowserRouter>
               <AppRoutes />
             </BrowserRouter>
-          </WeddingProvider>
         </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>

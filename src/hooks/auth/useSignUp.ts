@@ -1,19 +1,20 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { signUp } from "../../api/auth/authApi";
+import { useMutation, UseMutationOptions } from "@tanstack/react-query";
+import { signUp, WeddingUser } from "../../api/auth/authApi";
+interface SignUpData {
+  email: string;
+  password: string;
+  displayName?: string;
+}
 
-/**
- * Hook to handle user sign-up
- * @returns Mutation result for user sign-up
- */
-export const useSignUp = () => {
-  const queryClient = useQueryClient();
-  
+export const useSignUp = (
+  options?: Omit<
+    UseMutationOptions<WeddingUser, unknown, SignUpData, unknown>,
+    "mutationFn"
+  >
+) => {
   return useMutation({
-    mutationFn: (userData: { email: string; password: string; displayName?: string }) => 
+    mutationFn: (userData: SignUpData) =>
       signUp(userData.email, userData.password, userData.displayName),
-    onSuccess: () => {
-      // Invalidate the currentUser query to refetch user data after sign-up
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-    },
+    ...options,
   });
 };

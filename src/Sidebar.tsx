@@ -23,21 +23,16 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { useCurrentUser, useSignOut, useWeddingDetails } from "./hooks/auth";
-import { useWedding } from "./context/WeddingContext";
-import WeddingSelector from "./components/auth/WeddingSelector";
 
 const Sidebar: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { data: currentUser } = useCurrentUser();
-  const { currentWeddingId } = useWedding();
-  const { data: weddingDetails } = useWeddingDetails(
-    currentWeddingId || undefined
-  );
+  const { data: weddingDetails } = useWeddingDetails();
   const { mutate: signOut } = useSignOut();
 
   const menuItems = [
-    { text: "Home", icon: <HomeIcon />, path: "/" },
+    { text: "Home", icon: <HomeIcon />, path: "/home" },
     { text: "Invite List", icon: <ListIcon />, path: "/invite" },
     { text: "Budget Planner", icon: <MoneyIcon />, path: "/budget" },
     { text: "Tasks", icon: <TaskIcon />, path: "/tasks" },
@@ -45,8 +40,7 @@ const Sidebar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut();
-      navigate("/login");
+      signOut();
     } catch (error) {
       console.error("Error signing out:", error);
     }
@@ -112,7 +106,7 @@ const Sidebar: React.FC = () => {
           <React.Fragment key={item.text}>
             <ListItem disablePadding>
               <ListItemButton
-                onClick={() => navigate(item.path)}
+                onClick={() => navigate(`.${item.path}`)}
                 sx={{
                   py: 1.5,
                   "&:hover": {
