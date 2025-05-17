@@ -5,6 +5,8 @@ import {
   onAuthStateChanged,
   User,
   updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 import { doc, setDoc, getDoc, collection, addDoc } from "firebase/firestore";
 import { auth, db } from "../firebaseConfig";
@@ -83,6 +85,36 @@ export const signIn = async (
   }
 };
 
+export const signInWithGoogle = async (): Promise<WeddingUser> => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    // Check if user already exists in Firestore
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (!userDoc.exists()) {
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        createdAt: new Date(),
+      });
+    }
+
+    return {
+      uid: user.uid,
+      email: user.email || "",
+      displayName: user.displayName || undefined,
+      photoURL: user.photoURL || undefined,
+    };
+  } catch (error) {
+    console.error("Error signing in with Google:", error);
+    throw error;
+  }
+};
+
 // Sign out user
 export const signOutUser = async (): Promise<void> => {
   try {
@@ -155,6 +187,3 @@ export const getCurrentUserWeddingId = async (): Promise<string | null> => {
 export const onAuthStateChange = (callback: (user: User | null) => void) => {
   return onAuthStateChanged(auth, callback);
 };
-
-
-

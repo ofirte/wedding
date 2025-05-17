@@ -12,19 +12,24 @@ import {
 } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router";
 import { useSignIn } from "../../hooks/auth";
+import { useSignInWithGoogle } from "../../hooks/auth/useSignInWithGoogle";
+import GoogleSignInButton from "./GoogleSignInButton";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const { mutate: signIn, isPending } = useSignIn({
+  const signInMutateOptions = {
     onSuccess: () => {
       navigate("/wedding");
     },
     onError: (error: any) => {
       setError(error.message || "Failed to sign in. Please try again.");
     },
-  });
+  };
+  const { mutate: signIn, isPending } = useSignIn(signInMutateOptions);
+  const { mutate: signInWithGoogle, isPending: isGoogleSignInPending } =
+    useSignInWithGoogle(signInMutateOptions);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,16 +44,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <Grid container sx={{ height: "100vh" }}>
-      <Grid
-        size={{ xs: false, sm: 4, md: 7 }}
-        sx={{
-          backgroundImage: "url(https://source.unsplash.com/random?wedding)",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
+    <Grid container sx={{ height: "100vh", justifyContent: "center" }}>
       <Grid
         size={{ xs: 12, sm: 8, md: 5 }}
         component={Paper}
@@ -64,8 +60,16 @@ const LoginPage: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <Typography component="h1" variant="h5">
-            Wedding Planner Sign In
+          <Typography
+            component="h1"
+            variant="h5"
+            sx={{
+              fontWeight: 300,
+              fontSize: "2rem",
+              color: ({ palette }) => palette.primary.main,
+            }}
+          >
+            Wedding Planner Studio
           </Typography>
           <Box
             component="form"
@@ -106,18 +110,37 @@ const LoginPage: React.FC = () => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{
+                mt: 3,
+                mb: 2,
+                backgroundColor: ({ palette }) => palette.primary.light,
+                color: "white",
+                fontWeight: 600,
+                fontSize: "1rem",
+                textTransform: "none",
+              }}
               disabled={isPending}
             >
               {isPending ? <CircularProgress size={24} /> : "Sign In"}
             </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid>
-                <Link component={RouterLink} to="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
+            <GoogleSignInButton
+              onClick={() => signInWithGoogle({})}
+              isLoading={isGoogleSignInPending}
+            />
+
+            <Link
+              sx={{
+                display: "block",
+                textAlign: "center",
+                mt: 2,
+                color: ({ palette }) => palette.primary.main,
+              }}
+              component={RouterLink}
+              to="/register"
+              variant="body2"
+            >
+              {"Don't have an account? Sign Up"}
+            </Link>
           </Box>
         </Box>
       </Grid>
