@@ -9,23 +9,26 @@ import LoginPage from "./components/auth/LoginPage";
 import RegisterPage from "./components/auth/RegisterPage";
 import SetupWeddingPage from "./components/wedding/SetupWeddingPage";
 import WeddingRoute from "./components/wedding/WeddingRoute";
+import RootRedirect from "./components/auth/RootRedirect";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 const AppRoutes: FC = () => {
   return (
     <Routes>
+      <Route path="/" element={<RootRedirect />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-
-      <Route path="wedding" element={<WeddingRoute />}>
-        <Route index element={<SetupWeddingPage />} />
-        <Route path=":weddingId" element={<App />}>
-          <Route path="home" element={<Home />} />
-          <Route path="invite" element={<WeddingInviteTable />} />
-          <Route path="budget" element={<BudgetPlanner />} />
-          <Route path="tasks" element={<TaskManager />} />
+      <Route element={<ProtectedRoute redirectPath="/login" />}>
+        <Route path="wedding" element={<WeddingRoute />}>
+          <Route index element={<SetupWeddingPage />} />
+          <Route path=":weddingId" element={<App />}>
+            <Route path="home" element={<Home />} />
+            <Route path="invite" element={<WeddingInviteTable />} />
+            <Route path="budget" element={<BudgetPlanner />} />
+            <Route path="tasks" element={<TaskManager />} />
+          </Route>
         </Route>
       </Route>
-      {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
     </Routes>
   );
 };
