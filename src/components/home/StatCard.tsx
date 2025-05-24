@@ -46,13 +46,13 @@ const StatCard: React.FC<StatCardProps> = ({
         sx={{ height: "100%" }}
         disabled={!onClick}
       >
-        <CardContent>
+        <CardContent sx={{ textAlign: "start" }}>
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
             <Avatar
               sx={{
                 bgcolor: `${theme.palette[color].light}`,
                 color: theme.palette[color].main,
-                mr: 2,
+                marginInlineEnd: 2,
               }}
             >
               {icon}
@@ -62,11 +62,22 @@ const StatCard: React.FC<StatCardProps> = ({
             </Typography>
           </Box>
 
-          <Typography variant="h4" sx={{ mb: 0.5, fontWeight: "bold" }}>
+          <Typography
+            variant="h4"
+            sx={{
+              mb: 0.5,
+              fontWeight: "bold",
+              textAlign: "start",
+            }}
+          >
             {value}
           </Typography>
 
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ textAlign: "start" }}
+          >
             {subtitle}
           </Typography>
         </CardContent>

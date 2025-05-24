@@ -23,19 +23,22 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { useCurrentUser, useSignOut, useWeddingDetails } from "./hooks/auth";
+import LanguageSwitcher from "./components/common/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const Sidebar: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
   const { data: weddingDetails } = useWeddingDetails();
   const { mutate: signOut } = useSignOut();
 
   const menuItems = [
-    { text: "Home", icon: <HomeIcon />, path: "/home" },
-    { text: "Invite List", icon: <ListIcon />, path: "/invite" },
-    { text: "Budget Planner", icon: <MoneyIcon />, path: "/budget" },
-    { text: "Tasks", icon: <TaskIcon />, path: "/tasks" },
+    { text: t("navigation.home"), icon: <HomeIcon />, path: "/home" },
+    { text: t("navigation.guests"), icon: <ListIcon />, path: "/invite" },
+    { text: t("navigation.budget"), icon: <MoneyIcon />, path: "/budget" },
+    { text: t("navigation.tasks"), icon: <TaskIcon />, path: "/tasks" },
   ];
 
   const handleLogout = async () => {
@@ -54,7 +57,7 @@ const Sidebar: React.FC = () => {
   return (
     <Drawer
       variant="permanent"
-      anchor="left"
+      anchor={theme.direction === "rtl" ? "right" : "left"}
       sx={{
         width: 240,
         flexShrink: 0,
@@ -74,7 +77,7 @@ const Sidebar: React.FC = () => {
         }}
       >
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-          The Wedding Planner
+          {t("app.title")}
         </Typography>
         {weddingDetails && (
           <Typography variant="body2" sx={{ mt: 1 }}>
@@ -97,6 +100,7 @@ const Sidebar: React.FC = () => {
               {currentUser?.displayName || currentUser?.email}
             </Typography>
           </Box>
+          <LanguageSwitcher />
         </Stack>
       </Box>
 
@@ -109,6 +113,9 @@ const Sidebar: React.FC = () => {
                 onClick={() => navigate(`.${item.path}`)}
                 sx={{
                   py: 1.5,
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
                   "&:hover": {
                     backgroundColor: theme.palette.action.hover,
                   },
@@ -118,6 +125,9 @@ const Sidebar: React.FC = () => {
                   sx={{
                     color: theme.palette.sage.dark,
                     minWidth: 40,
+                    justifyContent: "center",
+                    marginInlineEnd: 1,
+                    marginInlineStart: 0,
                   }}
                 >
                   {item.icon}
@@ -126,6 +136,10 @@ const Sidebar: React.FC = () => {
                   primary={item.text}
                   primaryTypographyProps={{
                     fontWeight: "medium",
+                  }}
+                  sx={{
+                    textAlign: "start",
+                    margin: 0,
                   }}
                 />
               </ListItemButton>
@@ -147,8 +161,15 @@ const Sidebar: React.FC = () => {
           startIcon={<LogoutIcon />}
           onClick={handleLogout}
           fullWidth
+          sx={{
+            "& .MuiButton-startIcon": {
+              marginInlineEnd: 1,
+              marginInlineStart: -1,
+            },
+            justifyContent: "flex-start",
+          }}
         >
-          Sign Out
+          {t("app.signOut")}
         </Button>
       </Box>
     </Drawer>

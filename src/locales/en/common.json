@@ -1,0 +1,33 @@
+{
+  "navigation": {
+    "home": "Home",
+    "guests": "Guest List",
+    "budget": "Budget",
+    "tasks": "Tasks",
+    "timeline": "Timeline"
+  },
+  "stats": {
+    "guestList": "Guest List",
+    "guestsConfirmed": "Guests confirmed",
+    "budget": "Budget",
+    "tasks": "Tasks",
+    "completed": "completed",
+    "timeline": "Timeline",
+    "daysRemaining": "Days remaining"
+  },
+  "currency": {
+    "symbol": "₪"
+  },
+  "common": {
+    "of": "of"
+  },
+  "app": {
+    "title": "The Wedding Planner",
+    "signOut": "Sign Out"
+  },
+  "countdown": {
+    "title": "Wedding Countdown",
+    "days": "Days",
+    "subtitle": "until your special day"
+  }
+}

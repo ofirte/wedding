@@ -8,25 +8,29 @@ import {
   CheckCircleOutline as TaskIcon,
   AccessTime as TimeIcon,
 } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { useBudgetItems } from "../../hooks/budget/useBudgetItems";
 import { useTotalBudget } from "../../hooks/budget/useTotalBudget";
 import useTasks from "../../hooks/tasks/useTasks";
 import { useWeddingDate } from "../../hooks/wedding/useWeddingDate";
 // Utility function to format currency
-const formatCurrency = (amount: number): string => {
-  return "₪" + amount.toLocaleString();
+const formatCurrency = (amount: number, currencySymbol: string): string => {
+  return currencySymbol + amount.toLocaleString();
 };
 
 interface StatCardsProps {}
 
 const StatCards: React.FC<StatCardsProps> = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { data: guests } = useInvitees();
   const { data: budget } = useBudgetItems();
   const { data: totalBudget } = useTotalBudget();
   const { data: tasks } = useTasks();
   const weddingDateInfo = useWeddingDate();
+
+  const currencySymbol = t("currency.symbol");
   const totalBudgetAmount = totalBudget?.amount || 0;
   const guestStats = {
     total:
@@ -63,9 +67,9 @@ const StatCards: React.FC<StatCardsProps> = () => {
       <Grid size={{ xs: 4, md: 3 }}>
         <StatCard
           icon={<GuestsIcon />}
-          title="Guest List"
+          title={t("stats.guestList")}
           value={`${guestStats.confirmed}/${guestStats.total}`}
-          subtitle="Guests confirmed"
+          subtitle={t("stats.guestsConfirmed")}
           color="primary"
           onClick={() => navigate("../invite")}
         />
@@ -74,9 +78,12 @@ const StatCards: React.FC<StatCardsProps> = () => {
       <Grid size={{ xs: 4, md: 3 }}>
         <StatCard
           icon={<BudgetIcon />}
-          title="Budget"
-          value={formatCurrency(budgetStats.spent)}
-          subtitle={`of ${formatCurrency(budgetStats.total)}`}
+          title={t("stats.budget")}
+          value={formatCurrency(budgetStats.spent, currencySymbol)}
+          subtitle={`${t("common.of")} ${formatCurrency(
+            budgetStats.total,
+            currencySymbol
+          )}`}
           color="info"
           onClick={() => navigate("../budget")}
         />
@@ -85,9 +92,9 @@ const StatCards: React.FC<StatCardsProps> = () => {
       <Grid size={{ xs: 4, md: 3 }}>
         <StatCard
           icon={<TaskIcon />}
-          title="Tasks"
+          title={t("stats.tasks")}
           value={`${taskStats.completed}/${taskStats.total}`}
-          subtitle={`${taskStats.percentage}% completed`}
+          subtitle={`${taskStats.percentage}% ${t("stats.completed")}`}
           color="success"
           onClick={() => navigate("../tasks")}
         />
@@ -96,9 +103,9 @@ const StatCards: React.FC<StatCardsProps> = () => {
       <Grid size={{ xs: 4, md: 3 }}>
         <StatCard
           icon={<TimeIcon />}
-          title="Timeline"
+          title={t("stats.timeline")}
           value={weddingDateInfo?.daysRemaining || 0}
-          subtitle="Days remaining"
+          subtitle={t("stats.daysRemaining")}
           color="warning"
         />
       </Grid>

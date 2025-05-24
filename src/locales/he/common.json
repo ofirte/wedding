@@ -1,0 +1,33 @@
+{
+  "navigation": {
+    "home": "בית",
+    "guests": "רשימת אורחים",
+    "budget": "תקציב",
+    "tasks": "משימות",
+    "timeline": "ציר זמן"
+  },
+  "stats": {
+    "guestList": "רשימת אורחים",
+    "guestsConfirmed": "אורחים אישרו",
+    "budget": "תקציב",
+    "tasks": "משימות",
+    "completed": "הושלמו",
+    "timeline": "ציר זמן",
+    "daysRemaining": "ימים נותרו"
+  },
+  "currency": {
+    "symbol": "₪"
+  },
+  "common": {
+    "of": "מתוך"
+  },
+  "app": {
+    "title": "מתכנן החתונות",
+    "signOut": "התנתק"
+  },
+  "countdown": {
+    "title": "ספירה לאחור לחתונה",
+    "days": "ימים",
+    "subtitle": "עד ליום המיוחד שלכם"
+  }
+}
