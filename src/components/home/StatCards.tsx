@@ -67,7 +67,7 @@ const StatCards: React.FC<StatCardsProps> = () => {
           value={`${guestStats.confirmed}/${guestStats.total}`}
           subtitle="Guests confirmed"
           color="primary"
-          onClick={() => navigate("/invite")}
+          onClick={() => navigate("../invite")}
         />
       </Grid>
 
@@ -89,7 +89,7 @@ const StatCards: React.FC<StatCardsProps> = () => {
           value={`${taskStats.completed}/${taskStats.total}`}
           subtitle={`${taskStats.percentage}% completed`}
           color="success"
-          onClick={() => navigate("/tasks")}
+          onClick={() => navigate("../tasks")}
         />
       </Grid>
 

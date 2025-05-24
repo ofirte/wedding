@@ -65,7 +65,7 @@ const TaskOverviewCard: React.FC = () => {
         <Button
           size="small"
           endIcon={<ArrowIcon />}
-          onClick={() => navigate("/tasks")}
+          onClick={() => navigate("../tasks")}
         >
           Details
         </Button>

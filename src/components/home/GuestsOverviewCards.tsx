@@ -58,7 +58,7 @@ const GuestOverviewCard: React.FC = () => {
         <Button
           size="small"
           endIcon={<ArrowIcon />}
-          onClick={() => navigate("/invite")}
+          onClick={() => navigate("../invite")}
         >
           Details
         </Button>
