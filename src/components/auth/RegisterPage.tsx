@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router";
 import { useSignUp } from "../../hooks/auth";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 const RegisterPage: React.FC = () => {
   const [name, setName] = useState("");
@@ -19,6 +20,7 @@ const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
   const { mutate: signUp, isPending } = useSignUp({
     onSuccess: () => {
       navigate("/wedding");
@@ -32,14 +34,14 @@ const RegisterPage: React.FC = () => {
 
     // Validate passwords match
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("common.passwordsDoNotMatch"));
       return;
     }
 
     try {
       signUp({ email, password, displayName: name });
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
+      setError(err.message || t("common.unexpectedError"));
     }
   };
 
@@ -78,7 +80,7 @@ const RegisterPage: React.FC = () => {
           }}
         >
           <Typography component="h1" variant="h5">
-            Create Your Wedding Planner Account
+            {t("common.createWeddingAccount")}
           </Typography>
           <Box
             component="form"
@@ -96,7 +98,7 @@ const RegisterPage: React.FC = () => {
               required
               fullWidth
               id="name"
-              label="Full Name"
+              label={t("common.fullName")}
               name="name"
               autoComplete="name"
               autoFocus
@@ -108,7 +110,7 @@ const RegisterPage: React.FC = () => {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label={t("common.emailAddress")}
               name="email"
               autoComplete="email"
               value={email}
@@ -119,7 +121,7 @@ const RegisterPage: React.FC = () => {
               required
               fullWidth
               name="password"
-              label="Password"
+              label={t("common.password")}
               type="password"
               id="password"
               autoComplete="new-password"
@@ -131,7 +133,7 @@ const RegisterPage: React.FC = () => {
               required
               fullWidth
               name="confirmPassword"
-              label="Confirm Password"
+              label={t("common.confirmPassword")}
               type="password"
               id="confirmPassword"
               value={confirmPassword}
@@ -144,12 +146,12 @@ const RegisterPage: React.FC = () => {
               sx={{ mt: 3, mb: 2 }}
               disabled={isPending}
             >
-              {isPending ? <CircularProgress size={24} /> : "Sign Up"}
+              {isPending ? <CircularProgress size={24} /> : t("common.signUp")}
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid>
                 <Link component={RouterLink} to="/login" variant="body2">
-                  {"Already have an account? Sign In"}
+                  {t("common.alreadyHaveAccount")}
                 </Link>
               </Grid>
             </Grid>

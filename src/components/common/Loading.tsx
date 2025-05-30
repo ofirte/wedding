@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface DSLoadingProps {
   size?: "small" | "medium" | "large";
@@ -12,8 +13,10 @@ interface DSLoadingProps {
  */
 export default function DSLoading({
   size = "medium",
-  message = "Loading...",
+  message,
 }: DSLoadingProps) {
+  const { t } = useTranslation();
+  const displayMessage = message || t("common.loading");
   const getMuiSize = () => {
     switch (size) {
       case "small":
@@ -38,13 +41,13 @@ export default function DSLoading({
       }}
     >
       <CircularProgress size={getMuiSize()} thickness={4} color="primary" />
-      {message && (
+      {displayMessage && (
         <Typography
           variant={size === "large" ? "h6" : "body1"}
           color="text.secondary"
           sx={{ mt: 1 }}
         >
-          {message}
+          {displayMessage}
         </Typography>
       )}
     </Box>

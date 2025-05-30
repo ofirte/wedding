@@ -19,6 +19,7 @@ import { useUpdateTask } from "../../hooks/tasks/useUpdateTask";
 import { useDeleteTask } from "../../hooks/tasks/useDeleteTask";
 import { useAssignTask } from "../../hooks/tasks/useAssignTask";
 import { useCompleteTask } from "../../hooks/tasks/useCompleteTask";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -29,6 +30,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 
 const TaskManager: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
+  const { t } = useTranslation();
   const { data: tasks, isLoading } = useTasks();
   const { mutate: createTask, isPending: isPendingCreation } = useCreateTask();
   const { mutate: updateTask, isPending: isPendingUpdate } = useUpdateTask();
@@ -59,7 +61,7 @@ const TaskManager: React.FC = () => {
     <Container maxWidth="xl">
       <Box sx={{ py: 4 }}>
         <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
-          Wedding Tasks
+          {t("tasks.weddingTasks")}
         </Typography>
         <Typography variant="subtitle1" color="text.secondary" gutterBottom>
           Manage all your wedding preparation tasks in one place
@@ -80,10 +82,10 @@ const TaskManager: React.FC = () => {
               indicatorColor="primary"
               aria-label="task tabs"
             >
-              <Tab label="All Tasks" />
-              <Tab label="To Do" />
-              <Tab label="In Progress" />
-              <Tab label="Completed" />
+              <Tab label={t("common.allTasks")} />
+              <Tab label={t("common.toDo")} />
+              <Tab label={t("common.inProgress")} />
+              <Tab label={t("common.completed")} />
             </Tabs>
           </Box>
 

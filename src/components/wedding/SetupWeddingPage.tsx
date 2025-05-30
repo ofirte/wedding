@@ -22,6 +22,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { Wedding } from "../../api/wedding/weddingApi";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -48,6 +49,7 @@ function TabPanel(props: TabPanelProps) {
 const SetupWeddingPage: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   // Create wedding form fields
   const [weddingName, setWeddingName] = useState("");
@@ -82,12 +84,12 @@ const SetupWeddingPage: React.FC = () => {
     setError(null);
 
     if (!currentUser?.uid) {
-      setError("You must be logged in to create a wedding");
+      setError(t("common.mustBeLoggedIn"));
       return;
     }
 
     if (!weddingName) {
-      setError("Please enter a name for your wedding");
+      setError(t("common.pleaseEnterWeddingName"));
       return;
     }
 
@@ -100,7 +102,7 @@ const SetupWeddingPage: React.FC = () => {
         weddingDate: weddingDate || undefined,
       });
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
+      setError(err.message || t("common.unexpectedError"));
     }
   };
 
@@ -109,19 +111,19 @@ const SetupWeddingPage: React.FC = () => {
     setError(null);
 
     if (!currentUser?.uid) {
-      setError("You must be logged in to join a wedding");
+      setError(t("common.mustBeLoggedIn"));
       return;
     }
 
     if (!weddingId) {
-      setError("Please enter a wedding ID");
+      setError(t("common.pleasEnterWeddingId"));
       return;
     }
 
     try {
       joinWedding({ userId: currentUser.uid, weddingId });
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
+      setError(err.message || t("common.unexpectedError"));
     }
   };
 
@@ -162,12 +164,11 @@ const SetupWeddingPage: React.FC = () => {
         }}
       >
         <Typography variant="h4" align="center" gutterBottom sx={{ mb: 3 }}>
-          Set Up Your Wedding
+          {t("common.setupWedding")}
         </Typography>
 
         <Typography variant="subtitle1" align="center" sx={{ mb: 4 }}>
-          Welcome, {currentUser.displayName || "New User"}! Let's set up your
-          wedding.
+          {t("common.welcomeNewUser")}
         </Typography>
 
         {error && (
@@ -182,8 +183,8 @@ const SetupWeddingPage: React.FC = () => {
           centered
           sx={{ mb: 2 }}
         >
-          <Tab label="Create New Wedding" />
-          <Tab label="Join Existing Wedding" />
+          <Tab label={t("common.createNewWedding")} />
+          <Tab label={t("common.joinExistingWedding")} />
         </Tabs>
 
         <TabPanel value={tabValue} index={0}>
@@ -193,8 +194,8 @@ const SetupWeddingPage: React.FC = () => {
                 required
                 fullWidth
                 id="weddingName"
-                label="Wedding Name"
-                placeholder="e.g., Alice & Bob's Wedding"
+                label={t("common.weddingName")}
+                placeholder={t("placeholders.exampleWeddingName")}
                 value={weddingName}
                 onChange={(e) => setWeddingName(e.target.value)}
               />
@@ -204,7 +205,7 @@ const SetupWeddingPage: React.FC = () => {
                   <TextField
                     fullWidth
                     id="brideName"
-                    label="Bride's Name"
+                    label={t("common.brideName")}
                     value={brideName}
                     onChange={(e) => setBrideName(e.target.value)}
                   />
@@ -213,7 +214,7 @@ const SetupWeddingPage: React.FC = () => {
                   <TextField
                     fullWidth
                     id="groomName"
-                    label="Groom's Name"
+                    label={t("common.groomName")}
                     value={groomName}
                     onChange={(e) => setGroomName(e.target.value)}
                   />
@@ -222,7 +223,7 @@ const SetupWeddingPage: React.FC = () => {
 
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
-                  label="Wedding Date"
+                  label={t("common.weddingDate")}
                   value={weddingDate}
                   onChange={(date) => setWeddingDate(date)}
                 />
@@ -236,7 +237,11 @@ const SetupWeddingPage: React.FC = () => {
                 fullWidth
                 disabled={isCreating}
               >
-                {isCreating ? <CircularProgress size={24} /> : "Create Wedding"}
+                {isCreating ? (
+                  <CircularProgress size={24} />
+                ) : (
+                  t("common.createWedding")
+                )}
               </Button>
             </Stack>
           </Box>
@@ -246,16 +251,15 @@ const SetupWeddingPage: React.FC = () => {
           <Box component="form" onSubmit={handleJoinWedding}>
             <Stack spacing={3}>
               <Typography variant="body2" sx={{ mb: 2 }}>
-                Enter the wedding ID that was shared with you to join an
-                existing wedding plan.
+                {t("common.enterWeddingIdDescription")}
               </Typography>
 
               <TextField
                 required
                 fullWidth
                 id="weddingId"
-                label="Wedding ID"
-                placeholder="e.g., AbCdEf123456"
+                label={t("common.weddingId")}
+                placeholder={t("placeholders.exampleWeddingId")}
                 value={weddingId}
                 onChange={(e) => setWeddingId(e.target.value)}
               />
@@ -268,7 +272,11 @@ const SetupWeddingPage: React.FC = () => {
                 fullWidth
                 disabled={isJoining}
               >
-                {isJoining ? <CircularProgress size={24} /> : "Join Wedding"}
+                {isJoining ? (
+                  <CircularProgress size={24} />
+                ) : (
+                  t("common.joinWedding")
+                )}
               </Button>
             </Stack>
           </Box>

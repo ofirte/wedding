@@ -14,6 +14,7 @@ import { ArrowForward as ArrowIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { useBudgetItems } from "../../hooks/budget/useBudgetItems";
 import { useTotalBudget } from "../../hooks/budget/useTotalBudget";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 // Styled LinearProgress for better visualization
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -33,6 +34,7 @@ const formatCurrency = (amount: number): string => {
 const BudgetOverviewCard: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { data: budget } = useBudgetItems();
   const { data: totalBudget } = useTotalBudget();
 
@@ -65,20 +67,20 @@ const BudgetOverviewCard: React.FC = () => {
         alignItems="center"
         mb={2}
       >
-        <Typography variant="h6">Budget Overview</Typography>
+        <Typography variant="h6">{t("budget.overview")}</Typography>
         <Button
           size="small"
           endIcon={<ArrowIcon />}
-          onClick={() => navigate("../budget" )}
+          onClick={() => navigate("../budget")}
         >
-          Details
+          {t("common.details")}
         </Button>
       </Box>
 
       <Box sx={{ mb: 3 }}>
         <Box display="flex" justifyContent="space-between" mb={1}>
           <Typography variant="body2" color="text.secondary">
-            Budget Spent
+            {t("budget.budgetSpent")}
           </Typography>
           <Typography variant="body2" fontWeight="medium">
             {formatCurrency(budgetStats.spent)} /{" "}
@@ -97,7 +99,7 @@ const BudgetOverviewCard: React.FC = () => {
       <Stack direction="row" spacing={2}>
         <Box flex={1}>
           <Typography variant="body2" color="text.secondary" gutterBottom>
-            Total Budget
+            {t("budget.totalBudget")}
           </Typography>
           <Typography variant="h6" fontWeight="medium">
             {formatCurrency(budgetStats.total)}
@@ -106,7 +108,7 @@ const BudgetOverviewCard: React.FC = () => {
 
         <Box flex={1}>
           <Typography variant="body2" color="text.secondary" gutterBottom>
-            Remaining
+            {t("budget.remaining")}
           </Typography>
           <Typography
             variant="h6"

@@ -8,6 +8,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Invitee } from "./InviteList";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 const EditableRow = ({
   invitee,
@@ -20,6 +21,7 @@ const EditableRow = ({
   onCancel: () => void;
   existingRelations: string[];
 }) => {
+  const { t } = useTranslation();
   const [editedInvitee, setEditedInvitee] = useState(invitee);
   const [customRelation, setCustomRelation] = useState("");
 
@@ -47,8 +49,8 @@ const EditableRow = ({
           }
           size="small"
         >
-          <MenuItem value="Pending">Pending</MenuItem>
-          <MenuItem value="Accepted">Accepted</MenuItem>
+          <MenuItem value="Pending">{t("common.pending")}</MenuItem>
+          <MenuItem value="Accepted">{t("common.accepted")}</MenuItem>
           <MenuItem value="Declined">Declined</MenuItem>
         </Select>
       </TableCell>

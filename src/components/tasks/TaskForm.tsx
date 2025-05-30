@@ -19,6 +19,7 @@ import {
   CalendarToday as DateIcon,
 } from "@mui/icons-material";
 import { Task } from "../../hooks/tasks/useTasks";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface TaskFormProps {
   onAddTask: (task: Omit<Task, "id">) => void;
@@ -35,12 +36,13 @@ const TaskForm: React.FC<TaskFormProps> = ({
   const [dueDate, setDueDate] = useState("");
   const [showDetails, setShowDetails] = useState(false);
   const [titleError, setTitleError] = useState("");
+  const { t } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!title.trim()) {
-      setTitleError("Task title is required");
+      setTitleError(t("common.taskTitleRequired"));
       return;
     }
 
@@ -85,7 +87,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
             }}
             error={!!titleError}
             helperText={titleError}
-            placeholder="What needs to be done?"
+            placeholder={t("placeholders.whatNeedsToBeDone")}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -114,7 +116,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
               }
               sx={{ height: "56px" }}
             >
-              {isSubmitting ? "Adding..." : "Add Task"}
+              {isSubmitting ? t("common.adding") : t("common.addTask")}
             </Button>
           </Grid>
         )}
@@ -125,13 +127,13 @@ const TaskForm: React.FC<TaskFormProps> = ({
               <Grid size={{ xs: 12 }}>
                 <TextField
                   fullWidth
-                  label="Description"
+                  label={t("common.description")}
                   variant="outlined"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   multiline
                   rows={2}
-                  placeholder="Add more details about this task"
+                  placeholder={t("common.addMoreDetails")}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -146,7 +148,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                 <TextField
                   select
                   fullWidth
-                  label="Priority"
+                  label={t("common.priority")}
                   variant="outlined"
                   value={priority}
                   onChange={(e) => setPriority(e.target.value)}
@@ -158,16 +160,16 @@ const TaskForm: React.FC<TaskFormProps> = ({
                     ),
                   }}
                 >
-                  <MenuItem value="High">High</MenuItem>
-                  <MenuItem value="Medium">Medium</MenuItem>
-                  <MenuItem value="Low">Low</MenuItem>
+                  <MenuItem value="High">{t("common.high")}</MenuItem>
+                  <MenuItem value="Medium">{t("common.medium")}</MenuItem>
+                  <MenuItem value="Low">{t("common.low")}</MenuItem>
                 </TextField>
               </Grid>
 
               <Grid size={{ xs: 12, md: 4, sm: 6 }}>
                 <TextField
                   fullWidth
-                  label="Due Date"
+                  label={t("common.dueDate")}
                   type="date"
                   variant="outlined"
                   value={dueDate}
@@ -198,7 +200,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                   }
                   sx={{ height: "56px" }}
                 >
-                  {isSubmitting ? "Adding..." : "Add Task"}
+                  {isSubmitting ? t("common.adding") : t("common.addTask")}
                 </Button>
               </Grid>
             </Grid>

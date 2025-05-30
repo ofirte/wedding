@@ -18,6 +18,7 @@ import BudgetTable from "./BudgetTable";
 import BudgetItemDialog from "./BudgetItemDialog";
 import TotalBudgetEditor from "./TotalBudgetEditor";
 import { useUpdateTotalBudget } from "../../hooks/budget/useUpdateTotalBudget";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 export type BudgetItem = {
   id: string;
@@ -31,6 +32,7 @@ export type BudgetItem = {
 
 const BudgetPlanner = () => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const budgetGroups = [
     "Venue",
@@ -199,7 +201,7 @@ const BudgetPlanner = () => {
             marginBottom: 3,
           }}
         >
-          Wedding Budget Planner
+          {t("budget.planning")}
         </Typography>
 
         <TotalBudgetEditor
@@ -224,7 +226,7 @@ const BudgetPlanner = () => {
             },
           }}
         >
-          {isCreating ? "Adding..." : "Add Budget Item"}
+          {isCreating ? t("budget.addingBudgetItem") : t("budget.addItem")}
         </Button>
 
         {isLoading ? (
@@ -233,7 +235,7 @@ const BudgetPlanner = () => {
           </Box>
         ) : isError ? (
           <Typography color="error" align="center">
-            Error loading budget data. Please try again.
+            {t("budget.errorLoadingBudget")}
           </Typography>
         ) : (
           <BudgetTable

@@ -1,6 +1,7 @@
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import React from "react";
 import { GoogleIcon } from "../../icons/GoogleIcon";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 export default function GoogleSignInButton({
   onClick,
@@ -9,6 +10,8 @@ export default function GoogleSignInButton({
   onClick: () => void;
   isLoading: boolean;
 }) {
+  const { t } = useTranslation();
+
   return (
     <Button
       onClick={onClick}
@@ -30,7 +33,7 @@ export default function GoogleSignInButton({
             textTransform: "none",
           }}
         >
-          Sign in with Google
+          {t("common.signInWithGoogle")}
         </Typography>
       </Box>
     </Button>

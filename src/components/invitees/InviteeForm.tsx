@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { Invitee } from "./InviteList";
 import { columns } from "./InviteListColumns";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface InviteeFormProps {
   draftInvitee: Invitee;
@@ -30,10 +31,14 @@ const InviteeForm: React.FC<InviteeFormProps> = ({
   handleInputChange,
   handleAddInvitee,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Paper variant="outlined" sx={{ p: 2 }}>
       <Box sx={{ mb: 2, fontWeight: "bold" }}>
-        {editingInviteeId ? "Edit Guest Details" : "New Guest Details"}
+        {editingInviteeId
+          ? t("guests.editGuestDetails")
+          : t("guests.newGuestDetails")}
       </Box>
       <Grid container spacing={2}>
         {columns
@@ -98,7 +103,7 @@ const InviteeForm: React.FC<InviteeFormProps> = ({
             color="primary"
             onClick={handleAddInvitee}
           >
-            Add Guest
+            {t("guests.addGuest")}
           </Button>
         )}
       </Box>

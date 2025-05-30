@@ -9,6 +9,7 @@ import {
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../api/firebaseConfig";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 // Styled component for the file input
 const VisuallyHiddenInput = styled("input")({
@@ -43,6 +44,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
   buttonHoverColor = "#8c78ef",
   disabled = false,
 }) => {
+  const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
 
@@ -83,7 +85,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
         onUploadComplete(url);
       }
     } catch (error) {
-      setUploadError("Failed to upload file. Please try again.");
+      setUploadError(t("common.uploadError"));
     } finally {
       setUploading(false);
     }

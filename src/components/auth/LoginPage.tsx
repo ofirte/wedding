@@ -14,17 +14,19 @@ import { Link as RouterLink, useNavigate } from "react-router";
 import { useSignIn } from "../../hooks/auth";
 import { useSignInWithGoogle } from "../../hooks/auth/useSignInWithGoogle";
 import GoogleSignInButton from "./GoogleSignInButton";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
   const signInMutateOptions = {
     onSuccess: () => {
       navigate("/wedding");
     },
     onError: (error: any) => {
-      setError(error.message || "Failed to sign in. Please try again.");
+      setError(error.message || t("common.failedToSignIn"));
     },
   };
   const { mutate: signIn, isPending } = useSignIn(signInMutateOptions);
@@ -39,7 +41,7 @@ const LoginPage: React.FC = () => {
     try {
       signIn({ email, password });
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
+      setError(err.message || t("common.unexpectedError"));
     }
   };
 
@@ -69,7 +71,7 @@ const LoginPage: React.FC = () => {
               color: ({ palette }) => palette.primary.main,
             }}
           >
-            Wedding Planner Studio
+            {t("wedding.studio")}
           </Typography>
           <Box
             component="form"
@@ -87,7 +89,7 @@ const LoginPage: React.FC = () => {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label={t("common.emailAddress")}
               name="email"
               autoComplete="email"
               autoFocus
@@ -99,7 +101,7 @@ const LoginPage: React.FC = () => {
               required
               fullWidth
               name="password"
-              label="Password"
+              label={t("common.password")}
               type="password"
               id="password"
               autoComplete="current-password"
@@ -121,7 +123,7 @@ const LoginPage: React.FC = () => {
               }}
               disabled={isPending}
             >
-              {isPending ? <CircularProgress size={24} /> : "Sign In"}
+              {isPending ? <CircularProgress size={24} /> : t("common.signIn")}
             </Button>
             <GoogleSignInButton
               onClick={() => signInWithGoogle({})}
@@ -139,7 +141,7 @@ const LoginPage: React.FC = () => {
               to="/register"
               variant="body2"
             >
-              {"Don't have an account? Sign Up"}
+              {t("common.dontHaveAccount")}
             </Link>
           </Box>
         </Box>

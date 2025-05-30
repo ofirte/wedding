@@ -5,11 +5,13 @@ import {
   DateRange as DateIcon,
 } from "@mui/icons-material";
 import { useWeddingDate } from "../../hooks/wedding/useWeddingDate";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface WeddingCountdownBannerProps {}
 
 const WeddingCountdownBanner: React.FC<WeddingCountdownBannerProps> = ({}) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const weddingDateInfo = useWeddingDate();
   return (
     <Paper
@@ -50,15 +52,15 @@ const WeddingCountdownBanner: React.FC<WeddingCountdownBannerProps> = ({}) => {
       <Box sx={{ position: "relative", zIndex: 1 }}>
         <Box display="flex" alignItems="center" mb={1}>
           <HeartIcon sx={{ mr: 1 }} />
-          <Typography variant="h6">Wedding Countdown</Typography>
+          <Typography variant="h6">{t("home.weddingCountdown")}</Typography>
         </Box>
 
         <Typography variant="h2" fontWeight="bold" sx={{ mb: 1 }}>
-          {weddingDateInfo?.daysRemaining || 0} Days
+          {weddingDateInfo?.daysRemaining || 0} {t("home.days")}
         </Typography>
 
         <Typography variant="subtitle1" sx={{ mb: 3, opacity: 0.9 }}>
-          until your special day
+          {t("home.untilSpecialDay")}
         </Typography>
 
         <Chip

@@ -14,6 +14,7 @@ import {
 import { ArrowForward as ArrowIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import useTasks from "../../hooks/tasks/useTasks";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 // Styled LinearProgress for better visualization
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -28,6 +29,7 @@ const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
 const TaskOverviewCard: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { data: tasks } = useTasks();
 
   const totalTasks = tasks?.length ?? 0;
@@ -61,20 +63,21 @@ const TaskOverviewCard: React.FC = () => {
         alignItems="center"
         mb={2}
       >
-        <Typography variant="h6">Task Progress</Typography>
+        <Typography variant="h6">{t("tasks.taskProgress")}</Typography>
         <Button
           size="small"
           endIcon={<ArrowIcon />}
           onClick={() => navigate("../tasks")}
         >
-          Details
+          {t("common.details")}
         </Button>
       </Box>
 
       <Box sx={{ mb: 3 }}>
         <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
           <Typography variant="body2" color="text.secondary">
-            {taskStats.completed} of {taskStats.total} tasks completed
+            {taskStats.completed} {t("common.of")} {taskStats.total}{" "}
+            {t("tasks.tasksCompleted")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {taskStats.percentage}%
@@ -98,7 +101,7 @@ const TaskOverviewCard: React.FC = () => {
           }}
         >
           <Typography variant="body2" fontWeight="medium" gutterBottom>
-            Completed
+            {t("common.completed")}
           </Typography>
           <Typography variant="h6">{taskStats.completed}</Typography>
         </Box>
@@ -113,7 +116,7 @@ const TaskOverviewCard: React.FC = () => {
           }}
         >
           <Typography variant="body2" fontWeight="medium" gutterBottom>
-            Ongoing
+            {t("common.ongoing")}
           </Typography>
           <Typography variant="h6">{taskStats.inProgress}</Typography>
         </Box>
@@ -128,7 +131,7 @@ const TaskOverviewCard: React.FC = () => {
           }}
         >
           <Typography variant="body2" fontWeight="medium" gutterBottom>
-            Pending
+            {t("common.pending")}
           </Typography>
           <Typography variant="h6">{taskStats.pending}</Typography>
         </Box>
