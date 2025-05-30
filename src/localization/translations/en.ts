@@ -1,0 +1,60 @@
+import { Translations } from "../types";
+
+export const englishTranslations: Translations = {
+  common: {
+    save: "Save",
+    cancel: "Cancel",
+    delete: "Delete",
+    edit: "Edit",
+    add: "Add",
+    loading: "Loading...",
+    error: "Error",
+    success: "Success",
+    confirm: "Confirm",
+    yes: "Yes",
+    no: "No",
+    changeLanguage: "Change Language",
+    signOut: "Sign Out",
+  },
+  nav: {
+    home: "Home",
+    budget: "Budget",
+    guests: "Guests",
+    tasks: "Tasks",
+    wedding: "Wedding",
+  },
+  home: {
+    title: "Wedding Planner",
+    welcome: "Welcome to your wedding planning dashboard",
+    countdown: "Wedding Countdown",
+    daysUntil: "days until your wedding",
+  },
+  budget: {
+    title: "Budget Planning",
+    totalBudget: "Total Budget",
+    spent: "Spent",
+    remaining: "Remaining",
+    addItem: "Add Budget Item",
+  },
+  guests: {
+    title: "Guest List",
+    totalGuests: "Total Guests",
+    confirmed: "Confirmed",
+    pending: "Pending",
+    declined: "Declined",
+    addGuest: "Add Guest",
+  },
+  tasks: {
+    title: "Wedding Tasks",
+    completed: "Completed",
+    pending: "Pending",
+    overdue: "Overdue",
+    addTask: "Add Task",
+  },
+  wedding: {
+    title: "Wedding Details",
+    date: "Wedding Date",
+    venue: "Venue",
+    details: "Details",
+  },
+};

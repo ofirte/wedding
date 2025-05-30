@@ -1,0 +1,60 @@
+import { Translations } from "../types";
+
+export const hebrewTranslations: Translations = {
+  common: {
+    save: "שמור",
+    cancel: "בטל",
+    delete: "מחק",
+    edit: "ערוך",
+    add: "הוסף",
+    loading: "טוען...",
+    error: "שגיאה",
+    success: "הצלחה",
+    confirm: "אשר",
+    yes: "כן",
+    no: "לא",
+    changeLanguage: "שנה שפה",
+    signOut: "התנתק",
+  },
+  nav: {
+    home: "בית",
+    budget: "תקציב",
+    guests: "אורחים",
+    tasks: "משימות",
+    wedding: "חתונה",
+  },
+  home: {
+    title: "מתכנן חתונות",
+    welcome: "ברוכים הבאים ללוח הבקרה של תכנון החתונה",
+    countdown: "ספירה לאחור לחתונה",
+    daysUntil: "ימים עד החתונה",
+  },
+  budget: {
+    title: "תכנון תקציב",
+    totalBudget: "סכום כולל",
+    spent: "הוצאו",
+    remaining: "נותר",
+    addItem: "הוסף פריט לתקציב",
+  },
+  guests: {
+    title: "רשימת אורחים",
+    totalGuests: "סך האורחים",
+    confirmed: "אישרו הגעה",
+    pending: "ממתינים לתשובה",
+    declined: "לא יגיעו",
+    addGuest: "הוסף אורח",
+  },
+  tasks: {
+    title: "משימות חתונה",
+    completed: "הושלמו",
+    pending: "בהמתנה",
+    overdue: "באיחור",
+    addTask: "הוסף משימה",
+  },
+  wedding: {
+    title: "פרטי החתונה",
+    date: "תאריך החתונה",
+    venue: "מקום האירוע",
+    details: "פרטים",
+  },
+};

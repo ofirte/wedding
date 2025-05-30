@@ -23,6 +23,8 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { useCurrentUser, useSignOut, useWeddingDetails } from "./hooks/auth";
+import { useTranslation } from "./localization/LocalizationContext";
+import { LanguageSwitcher } from "./components/common/LanguageSwitcher";
 
 const Sidebar: React.FC = () => {
   const theme = useTheme();
@@ -30,12 +32,13 @@ const Sidebar: React.FC = () => {
   const { data: currentUser } = useCurrentUser();
   const { data: weddingDetails } = useWeddingDetails();
   const { mutate: signOut } = useSignOut();
+  const { t } = useTranslation();
 
   const menuItems = [
-    { text: "Home", icon: <HomeIcon />, path: "/home" },
-    { text: "Invite List", icon: <ListIcon />, path: "/invite" },
-    { text: "Budget Planner", icon: <MoneyIcon />, path: "/budget" },
-    { text: "Tasks", icon: <TaskIcon />, path: "/tasks" },
+    { text: t("nav.home"), icon: <HomeIcon />, path: "/home" },
+    { text: t("nav.guests"), icon: <ListIcon />, path: "/invite" },
+    { text: t("nav.budget"), icon: <MoneyIcon />, path: "/budget" },
+    { text: t("nav.tasks"), icon: <TaskIcon />, path: "/tasks" },
   ];
 
   const handleLogout = async () => {
@@ -74,7 +77,7 @@ const Sidebar: React.FC = () => {
         }}
       >
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-          The Wedding Planner
+          {t("home.title")}
         </Typography>
         {weddingDetails && (
           <Typography variant="body2" sx={{ mt: 1 }}>
@@ -97,6 +100,7 @@ const Sidebar: React.FC = () => {
               {currentUser?.displayName || currentUser?.email}
             </Typography>
           </Box>
+          <LanguageSwitcher variant="icon" />
         </Stack>
       </Box>
 
@@ -117,7 +121,8 @@ const Sidebar: React.FC = () => {
                 <ListItemIcon
                   sx={{
                     color: theme.palette.sage.dark,
-                    minWidth: 40,
+                    minWidth: "auto",
+                    marginInlineEnd: 2,
                   }}
                 >
                   {item.icon}
@@ -148,7 +153,7 @@ const Sidebar: React.FC = () => {
           onClick={handleLogout}
           fullWidth
         >
-          Sign Out
+          {t("common.signOut")}
         </Button>
       </Box>
     </Drawer>

@@ -5,9 +5,8 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import AppRoutes from "./Routes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ThemeProvider } from "@mui/material/styles";
-import theme from "./theme";
 import { AuthProvider } from "./hooks/auth/AuthContext";
+import { LocalizedThemeProvider } from "./theme/LocalizedThemeProvider";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -17,15 +16,15 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
+    <LocalizedThemeProvider>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-            <BrowserRouter>
-              <AppRoutes />
-            </BrowserRouter>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
         </AuthProvider>
       </QueryClientProvider>
-    </ThemeProvider>
+    </LocalizedThemeProvider>
   </React.StrictMode>
 );
 reportWebVitals();
