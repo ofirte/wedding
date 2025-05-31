@@ -15,6 +15,7 @@ import {
   Radio,
 } from "@mui/material";
 import { Task } from "../../hooks/tasks/useTasks";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface TaskEditDialogProps {
   open: boolean;
@@ -29,6 +30,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
   onClose,
   onSave,
 }) => {
+  const { t } = useTranslation();
   const [editedTask, setEditedTask] = useState<Task>(task);
   const [titleError, setTitleError] = useState("");
 
@@ -65,13 +67,13 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>Edit Task</DialogTitle>
+      <DialogTitle>{t("tasks.editTask")}</DialogTitle>
       <DialogContent>
         <Grid container spacing={3} sx={{ pt: 1 }}>
           <Grid size={{xs:12, sm:6}}>
             <TextField
               fullWidth
-              label="Task Title"
+              label={t("common.taskTitle")}
               name="title"
               value={editedTask.title}
               onChange={handleChange}
@@ -84,7 +86,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
           <Grid size={{xs:12, sm:6}}>
             <TextField
               fullWidth
-              label="Description"
+              label={t("common.description")}
               name="description"
               value={editedTask.description || ""}
               onChange={handleChange}
@@ -97,21 +99,21 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
             <TextField
               fullWidth
               select
-              label="Priority"
+              label={t("common.priority")}
               name="priority"
               value={editedTask.priority}
               onChange={handleChange}
             >
-              <MenuItem value="High">High</MenuItem>
-              <MenuItem value="Medium">Medium</MenuItem>
-              <MenuItem value="Low">Low</MenuItem>
+              <MenuItem value="High">{t("common.high")}</MenuItem>
+              <MenuItem value="Medium">{t("common.medium")}</MenuItem>
+              <MenuItem value="Low">{t("common.low")}</MenuItem>
             </TextField>
           </Grid>
 
       <Grid size={{xs:12, sm:6}}>
             <TextField
               fullWidth
-              label="Due Date"
+              label={t("common.dueDate")}
               name="dueDate"
               type="date"
               value={editedTask.dueDate || ""}
@@ -124,21 +126,21 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
             <TextField
               fullWidth
               select
-              label="Assigned To"
+              label={t("common.assignedTo")}
               name="assignedTo"
               value={editedTask.assignedTo || ""}
               onChange={handleChange}
             >
-              <MenuItem value="">Unassigned</MenuItem>
-              <MenuItem value="Bride">Bride</MenuItem>
-              <MenuItem value="Groom">Groom</MenuItem>
-              <MenuItem value="Both">Both</MenuItem>
+              <MenuItem value="">{t("common.unassigned")}</MenuItem>
+              <MenuItem value="Bride">{t("common.bride")}</MenuItem>
+              <MenuItem value="Groom">{t("common.groom")}</MenuItem>
+              <MenuItem value="Both">{t("common.both")}</MenuItem>
             </TextField>
           </Grid>
 
           <Grid size={{xs:12, sm:6}}>
             <FormControl component="fieldset">
-              <FormLabel component="legend">Status</FormLabel>
+              <FormLabel component="legend">{t("common.status")}</FormLabel>
               <RadioGroup
                 row
                 value={editedTask.completed.toString()}
@@ -147,12 +149,12 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
                 <FormControlLabel
                   value="false"
                   control={<Radio />}
-                  label="In Progress"
+                  label={t("common.inProgress")}
                 />
                 <FormControlLabel
                   value="true"
                   control={<Radio />}
-                  label="Completed"
+                  label={t("common.completed")}
                 />
               </RadioGroup>
             </FormControl>

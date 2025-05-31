@@ -6,6 +6,7 @@ import {
   Flag as PriorityIcon,
 } from "@mui/icons-material";
 import { Task } from "../../hooks/tasks/useTasks";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface TaskSummaryProps {
   tasks: Task[];
@@ -21,6 +22,7 @@ const StatCard = styled(Paper)(({ theme }) => ({
 }));
 
 const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks }) => {
+  const { t } = useTranslation();
   const stats = useMemo(() => {
     const total = tasks.length;
     const completed = tasks.filter((task) => task.completed).length;
@@ -62,7 +64,7 @@ const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks }) => {
           <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <TaskIcon color="primary" sx={{ mr: 1 }} />
-              <Typography variant="h6">Task Progress</Typography>
+              <Typography variant="h6">{t("tasks.taskProgress")}</Typography>
             </Box>
             <Typography variant="h6" color="primary" fontWeight="bold">
               {stats.completionPercentage}%
@@ -81,7 +83,10 @@ const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks }) => {
 
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
             <Typography variant="body2" color="text.secondary">
-              {stats.completed} of {stats.total} tasks completed
+              {t("tasks.tasksCompletedCount", {
+                completed: stats.completed,
+                total: stats.total,
+              })}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
@@ -102,14 +107,14 @@ const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks }) => {
                     fontWeight="medium"
                     color="warning.dark"
                   >
-                    High Priority
+                    {t("common.highPriority")}
                   </Typography>
                 </Box>
                 <Typography variant="h4" color="warning.dark" fontWeight="bold">
                   {stats.highPriority}
                 </Typography>
                 <Typography variant="body2" color="warning.dark">
-                  tasks need attention
+                  {t("common.tasksNeedAttention")}
                 </Typography>
               </StatCard>
             </Grid>
@@ -123,14 +128,14 @@ const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks }) => {
                     fontWeight="medium"
                     color="info.dark"
                   >
-                    Due Soon
+                    {t("tasks.dueSoon")}
                   </Typography>
                 </Box>
                 <Typography variant="h4" color="info.dark" fontWeight="bold">
                   {stats.upcomingDueTasks}
                 </Typography>
                 <Typography variant="body2" color="info.dark">
-                  tasks this week
+                  {t("tasks.upcomingDueTasks")}
                 </Typography>
               </StatCard>
             </Grid>

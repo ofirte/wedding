@@ -64,7 +64,7 @@ const TaskManager: React.FC = () => {
           {t("tasks.weddingTasks")}
         </Typography>
         <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-          Manage all your wedding preparation tasks in one place
+          {t("tasks.taskDescription")}
         </Typography>
 
         <Box sx={{ mt: 4, mb: 2 }}>

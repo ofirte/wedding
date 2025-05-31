@@ -51,7 +51,7 @@ const EditableRow = ({
         >
           <MenuItem value="Pending">{t("common.pending")}</MenuItem>
           <MenuItem value="Accepted">{t("common.accepted")}</MenuItem>
-          <MenuItem value="Declined">Declined</MenuItem>
+          <MenuItem value="Declined">{t("guests.declined")}</MenuItem>
         </Select>
       </TableCell>
       <TableCell align="center">
@@ -97,7 +97,7 @@ const EditableRow = ({
               {relation}
             </MenuItem>
           ))}
-          <MenuItem value="custom">Custom</MenuItem>
+          <MenuItem value="custom">{t("common.custom")}</MenuItem>
         </Select>
         {editedInvitee.relation === "custom" && (
           <TextField
@@ -156,10 +156,10 @@ const EditableRow = ({
           color="primary"
           size="small"
         >
-          Save
+          {t("common.save")}
         </Button>
         <Button onClick={onCancel} size="small">
-          Cancel
+          {t("common.cancel")}
         </Button>
       </TableCell>
     </TableRow>

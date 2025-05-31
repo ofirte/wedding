@@ -3,6 +3,7 @@ import { Box, Stack, Button } from "@mui/material";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import FilterChips from "./FilterChips";
 import FilterPopover from "./FilterPopover";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 export interface FilterConfig {
   id: string;
@@ -39,7 +40,7 @@ const DSTableFilters: React.FC<DSTableFiltersProps> = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const open = Boolean(anchorEl);
-
+  const { t } = useTranslation();
   const handleOpenFilters = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -94,7 +95,7 @@ const DSTableFilters: React.FC<DSTableFiltersProps> = ({
           color={getActiveFiltersCount() > 0 ? "primary" : "inherit"}
           sx={{ height: 32 }}
         >
-          Filters{" "}
+          {t("common.filters")}
           {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}
         </Button>
 

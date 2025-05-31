@@ -3,6 +3,7 @@ import { Box, Typography, TextField, IconButton, Tooltip } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface TotalBudgetEditorProps {
   totalBudget: number;
@@ -15,6 +16,7 @@ const TotalBudgetEditor: React.FC<TotalBudgetEditorProps> = ({
   isLoading,
   onSaveTotalBudget,
 }) => {
+  const { t } = useTranslation();
   const [editingTotalBudget, setEditingTotalBudget] = useState(false);
   const [tempTotalBudget, setTempTotalBudget] = useState("");
 
@@ -55,7 +57,7 @@ const TotalBudgetEditor: React.FC<TotalBudgetEditorProps> = ({
       }}
     >
       <Typography variant="h6" sx={{ mr: 2 }}>
-        Total Budget:
+        {t("budget.totalBudget")}:
       </Typography>
       {editingTotalBudget ? (
         <>
@@ -81,9 +83,9 @@ const TotalBudgetEditor: React.FC<TotalBudgetEditorProps> = ({
       ) : (
         <>
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>{`₪${
-            isLoading ? "Loading..." : totalBudget.toLocaleString()
+            isLoading ? t("common.loading") : totalBudget.toLocaleString()
           }`}</Typography>
-          <Tooltip title="Edit total budget">
+          <Tooltip title={t("common.editTotalBudget")}>
             <IconButton
               onClick={handleStartEditTotalBudget}
               size="small"

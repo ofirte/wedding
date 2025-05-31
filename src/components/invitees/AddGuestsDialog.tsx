@@ -7,10 +7,11 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import { columns } from "./InviteListColumns";
+import { createColumns } from "./InviteListColumns";
 import { Invitee } from "./InviteList";
 import InviteeForm from "./InviteeForm";
 import InviteeTable from "./InviteeTable";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 const defaultInvitee: Invitee = {
   id: "",
@@ -39,9 +40,13 @@ const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
   relationOptions,
   editInvitee = null,
 }) => {
+  const { t } = useTranslation();
   const [newInvitees, setNewInvitees] = useState<Invitee[]>([]);
   const [editingInviteeId, setEditingInviteeId] = useState<string | null>(null);
   const [draftInvitee, setDraftInvitee] = useState<Invitee>(defaultInvitee);
+
+  // Create columns with translations
+  const columns = createColumns(t);
 
   useEffect(() => {
     if (editInvitee) {
@@ -109,7 +114,9 @@ const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle sx={{ bgcolor: "info.light", color: "info.contrastText" }}>
-        {editInvitee ? "Edit Guest" : "Add New Guests"}
+        {editInvitee
+          ? t("guests.editGuestDetails")
+          : t("guests.newGuestDetails")}
       </DialogTitle>
       <DialogContent>
         {/* Form Section for Adding / Editing a Guest */}
@@ -135,11 +142,9 @@ const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>{t("common.cancel")}</Button>
         <Button onClick={handleSaveAll} variant="contained" color="primary">
-          {editInvitee && newInvitees.length === 1
-            ? "Save Changes"
-            : "Save All"}
+          {t("common.save")}
         </Button>
       </DialogActions>
     </Dialog>

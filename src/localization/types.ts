@@ -1,3 +1,5 @@
+import { exportToExcel } from "../utils/ExcelUtils";
+
 // Types for localization system
 export type Language = "en" | "he";
 
@@ -128,6 +130,10 @@ export interface Translations {
     createWeddingAccount: string;
     responseRate: string;
     uploadFile: string;
+    custom: string;
+    expenseName: string;
+    exportToExcel: string;
+    filters: string;
   };
   nav: {
     home: string;
@@ -159,6 +165,9 @@ export interface Translations {
     overview: string;
     budgetSpent: string;
     budget: string;
+    paidSoFar: string;
+    actualTotal: string;
+    expectedTotal: string;
   };
   guests: {
     title: string;
@@ -173,6 +182,14 @@ export interface Translations {
     guestsConfirmed: string;
     editGuestDetails: string;
     newGuestDetails: string;
+    rsvpStatus: string;
+    attendance: string;
+    relation: string;
+    amount: string;
+    amountConfirm: string;
+    cellphone: string;
+    groom: string;
+    bride: string;
   };
   tasks: {
     title: string;
@@ -184,6 +201,12 @@ export interface Translations {
     tasks: string;
     taskProgress: string;
     tasksCompleted: string;
+    taskDescription: string;
+    tasksCompletedCount: string;
+    upcomingDueTasks: string;
+    dueSoon: string;
+    searchTasks: string;
+    editTask: string;
   };
   wedding: {
     title: string;

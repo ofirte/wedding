@@ -13,7 +13,7 @@ import {
 import { ArrowForward as ArrowIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
-
+import { useTranslation } from "../../localization/LocalizationContext";
 // Styled LinearProgress for better visualization
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -28,6 +28,7 @@ const GuestOverviewCard: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { data: guests } = useInvitees();
+  const { t } = useTranslation();
 
   const guestStats = {
     total:
@@ -54,24 +55,24 @@ const GuestOverviewCard: React.FC = () => {
         alignItems="center"
         mb={2}
       >
-        <Typography variant="h6">Guest List</Typography>
+        <Typography variant="h6">{t("common.guestList")}</Typography>
         <Button
           size="small"
           endIcon={<ArrowIcon />}
           onClick={() => navigate("/invite")}
         >
-          Details
+          {t("common.details")}
         </Button>
       </Box>
 
       <Box sx={{ mb: 3 }}>
         <Box display="flex" justifyContent="space-between" mb={1}>
           <Typography variant="body2" color="text.secondary">
-            Response Rate
+            {t("common.responseRate")}
           </Typography>
           <Typography variant="body2" fontWeight="medium">
             {guestStats.confirmed + guestStats.declined} / {guestStats.total}{" "}
-            guests
+            {t("common.guests")}
           </Typography>
         </Box>
         <StyledLinearProgress
@@ -97,7 +98,7 @@ const GuestOverviewCard: React.FC = () => {
           }}
         >
           <Typography variant="body2" fontWeight="medium" gutterBottom>
-            Confirmed
+            {t("guests.confirmed")}
           </Typography>
           <Typography variant="h6">{guestStats.confirmed}</Typography>
         </Box>
@@ -112,7 +113,7 @@ const GuestOverviewCard: React.FC = () => {
           }}
         >
           <Typography variant="body2" fontWeight="medium" gutterBottom>
-            Pending
+            {t("guests.pending")}
           </Typography>
           <Typography variant="h6">{guestStats.pending}</Typography>
         </Box>
@@ -127,7 +128,7 @@ const GuestOverviewCard: React.FC = () => {
           }}
         >
           <Typography variant="body2" fontWeight="medium" gutterBottom>
-            Declined
+            {t("guests.declined")}
           </Typography>
           <Typography variant="h6">{guestStats.declined}</Typography>
         </Box>

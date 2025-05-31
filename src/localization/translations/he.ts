@@ -85,7 +85,8 @@ export const hebrewTranslations: Translations = {
     joinExistingWedding: "הצטרף לחתונה קיימת",
     weddingId: "מזהה חתונה",
     enterWeddingId: "הכנס מזהה חתונה",
-    enterWeddingIdDescription: "הכנס את מזהה החתונה שנשתף איתך כדי להצטרף לתוכנית חתונה קיימת.",
+    enterWeddingIdDescription:
+      "הכנס את מזהה החתונה שנשתף איתך כדי להצטרף לתוכנית חתונה קיימת.",
     mustBeLoggedIn: "עליך להיות מחובר",
     pleaseEnterWeddingName: "אנא הכנס שם לחתונה שלך",
     pleasEnterWeddingId: "אנא הכנס מזהה חתונה",
@@ -99,7 +100,11 @@ export const hebrewTranslations: Translations = {
     toDo: "לביצוע",
     pending: "ממתין",
     completed: "הושלם",
-    accepted: "אושר"
+    accepted: "אושר",
+    custom: "מותאם אישית",
+    expenseName: "שם הוצאה",
+    exportToExcel: "ייצא ל - Excel",
+    filters: "סנן",
   },
   nav: {
     home: "בית",
@@ -130,7 +135,10 @@ export const hebrewTranslations: Translations = {
     addingBudgetItem: "מוסיף פריט לתקציב",
     overview: "סקירה כללית",
     budgetSpent: "תקציב שהוצא",
-    budget: "תקציב"
+    budget: "תקציב",
+    paidSoFar: "שולם עד כה",
+    actualTotal: "סכום בפועל",
+    expectedTotal: "סכום צפוי",
   },
   guests: {
     title: "רשימת אורחים",
@@ -144,7 +152,15 @@ export const hebrewTranslations: Translations = {
     guestList: "רשימת אורחים",
     guestsConfirmed: "אורחים מאושרים",
     editGuestDetails: "ערוך פרטי אורח",
-    newGuestDetails: "פרטי אורח חדשים"
+    newGuestDetails: "פרטי אורח חדשים",
+    rsvpStatus: "סטטוס",
+    attendance: "אחוז הגעה (%)",
+    relation: "קרבה",
+    amount: "כמות",
+    amountConfirm: "אישרו הגעה",
+    cellphone: "נייד",
+    groom: "חתן",
+    bride: "כלה",
   },
   tasks: {
     title: "משימות חתונה",
@@ -155,7 +171,13 @@ export const hebrewTranslations: Translations = {
     weddingTasks: "משימות חתונה",
     tasks: "משימות",
     taskProgress: "התקדמות משימות",
-    tasksCompleted: "משימות הושלמו"
+    tasksCompleted: "משימות הושלמו",
+    taskDescription: "נהל את משימות החתונה שלך ביעילות",
+    tasksCompletedCount: "{{completed}} מתוך {{total}} משימות הושלמו",
+    upcomingDueTasks: "משימות קרובות",
+    dueSoon: "באופן מיידי",
+    searchTasks: "חפש משימות",
+    editTask: "ערוך משימה",
   },
   wedding: {
     title: "פרטי החתונה",

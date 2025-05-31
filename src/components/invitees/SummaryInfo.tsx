@@ -5,12 +5,14 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingIcon from "@mui/icons-material/Pending";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { Invitee } from "./InviteList";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface SummaryInfoProps {
   invitees: Invitee[];
 }
 
 const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
+  const { t } = useTranslation();
   return (
     <Grid container spacing={3}>
       <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -24,7 +26,7 @@ const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
                   0
                 )}
               </Typography>
-              <Typography color="text.secondary">Total Guests</Typography>
+              <Typography color="text.secondary">{t("guests.totalGuests")}</Typography>
             </Stack>
           </CardContent>
         </Card>
@@ -37,7 +39,7 @@ const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
               <Typography variant="h5" component="div">
                 {invitees.filter((i) => i.rsvp === "Confirmed").length}
               </Typography>
-              <Typography color="text.secondary">Confirmed</Typography>
+              <Typography color="text.secondary">{t("guests.confirmed")}</Typography>
             </Stack>
           </CardContent>
         </Card>
@@ -50,7 +52,7 @@ const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
               <Typography variant="h5" component="div">
                 {invitees.filter((i) => i.rsvp === "Pending").length}
               </Typography>
-              <Typography color="text.secondary">Pending</Typography>
+              <Typography color="text.secondary">{t("guests.pending")}</Typography>
             </Stack>
           </CardContent>
         </Card>
@@ -63,7 +65,7 @@ const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
               <Typography variant="h5" component="div">
                 {invitees.filter((i) => i.rsvp === "Declined").length}
               </Typography>
-              <Typography color="text.secondary">Declined</Typography>
+              <Typography color="text.secondary">{t("guests.declined")}</Typography>
             </Stack>
           </CardContent>
         </Card>

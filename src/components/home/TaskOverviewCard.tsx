@@ -76,8 +76,10 @@ const TaskOverviewCard: React.FC = () => {
       <Box sx={{ mb: 3 }}>
         <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
           <Typography variant="body2" color="text.secondary">
-            {taskStats.completed} {t("common.of")} {taskStats.total}{" "}
-            {t("tasks.tasksCompleted")}
+            {t("tasks.tasksCompletedCount", {
+              completed: taskStats.completed,
+              total: taskStats.total,
+            })}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {taskStats.percentage}%

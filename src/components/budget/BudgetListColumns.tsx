@@ -51,17 +51,18 @@ const getCategoryColor = (group: string) => {
 
 export const createBudgetColumns = (
   onEdit: (item: BudgetItem) => void,
-  onDelete: (id: string) => void
+  onDelete: (id: string) => void,
+  t: (key: string) => string
 ): Column<BudgetItem>[] => [
   {
     id: "name",
-    label: "Expense Name",
+    label: t("common.expenseName"),
     sortable: true,
     render: (item: BudgetItem) => item.name,
   },
   {
     id: "group",
-    label: "Category",
+    label: t("common.category"),
     sortable: true,
     render: (item: BudgetItem) => (
       <Chip
@@ -74,7 +75,7 @@ export const createBudgetColumns = (
     ),
     filterConfig: {
       id: "group",
-      label: "Category",
+      label: t("common.category"),
       type: "multiple",
       options: (data: BudgetItem[]) => {
         const uniqueGroups = Array.from(
@@ -90,7 +91,7 @@ export const createBudgetColumns = (
   },
   {
     id: "expectedPrice",
-    label: "Expected Price",
+    label: t("common.expectedPrice"),
     sortable: true,
     render: (item: BudgetItem) =>
       formatCurrency({
@@ -100,7 +101,7 @@ export const createBudgetColumns = (
   },
   {
     id: "actualPrice",
-    label: "Actual Price",
+    label: t("common.actualPrice"),
     sortable: true,
     render: (item: BudgetItem) =>
       formatCurrency({
@@ -110,7 +111,7 @@ export const createBudgetColumns = (
   },
   {
     id: "downPayment",
-    label: "Down Payment",
+    label: t("common.downPayment"),
     sortable: true,
     render: (item: BudgetItem) =>
       formatCurrency({
@@ -120,7 +121,7 @@ export const createBudgetColumns = (
   },
   {
     id: "balance",
-    label: "Balance",
+    label: t("common.balance"),
     sortable: true,
     render: (item: BudgetItem) =>
       formatCurrency({
@@ -130,7 +131,7 @@ export const createBudgetColumns = (
   },
   {
     id: "contract",
-    label: "Contract",
+    label: t("common.contract"),
     sortable: false,
     render: (item: BudgetItem) => {
       const itemsIcons =
@@ -151,7 +152,7 @@ export const createBudgetColumns = (
 
   {
     id: "actions",
-    label: "Actions",
+    label: t("common.actions"),
     sortable: false,
     render: (item: BudgetItem) => (
       <BudgetActionCell item={item} onEdit={onEdit} onDelete={onDelete} />

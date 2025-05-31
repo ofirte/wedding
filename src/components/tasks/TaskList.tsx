@@ -26,6 +26,7 @@ import {
 } from "@mui/icons-material";
 import TaskEditDialog from "./TaskEditDialog";
 import { Task } from "../../hooks/tasks/useTasks";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface TaskListProps {
   tasks: Task[];
@@ -55,6 +56,7 @@ const TaskList: React.FC<TaskListProps> = ({
   onAssignTask,
   onCompleteTask,
 }) => {
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -150,7 +152,7 @@ const TaskList: React.FC<TaskListProps> = ({
       <TextField
         fullWidth
         variant="outlined"
-        placeholder="Search tasks..."
+        placeholder={t("tasks.searchTasks")}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         sx={{ mb: 2 }}
@@ -212,14 +214,14 @@ const TaskList: React.FC<TaskListProps> = ({
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                     <Chip
                       size="small"
-                      label={`Priority: ${task.priority}`}
+                      label={`${t("common.priority")}: ${t(`common.${task.priority.toLowerCase()}`)}`}
                       color={getPriorityColor(task.priority)}
                       icon={<PriorityIcon />}
                     />
                     {task.dueDate && (
                       <Chip
                         size="small"
-                        label={`Due: ${new Date(
+                        label={`${t("labels.due")}: ${new Date(
                           task.dueDate
                         ).toLocaleDateString()}`}
                         icon={<DateIcon />}
@@ -229,7 +231,7 @@ const TaskList: React.FC<TaskListProps> = ({
                     {task.assignedTo && (
                       <Chip
                         size="small"
-                        label={`Assigned: ${task.assignedTo}`}
+                        label={`${t("labels.assigned")}: ${t(`common.${task.assignedTo.toLowerCase()}`)}`}
                         icon={<PersonIcon />}
                         color="primary"
                         variant="outlined"

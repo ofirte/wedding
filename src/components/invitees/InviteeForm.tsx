@@ -9,7 +9,7 @@ import {
   Button,
 } from "@mui/material";
 import { Invitee } from "./InviteList";
-import { columns } from "./InviteListColumns";
+import { createColumns } from "./InviteListColumns";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface InviteeFormProps {
@@ -32,6 +32,9 @@ const InviteeForm: React.FC<InviteeFormProps> = ({
   handleAddInvitee,
 }) => {
   const { t } = useTranslation();
+
+  // Create columns with translations
+  const columns = createColumns(t);
 
   return (
     <Paper variant="outlined" sx={{ p: 2 }}>

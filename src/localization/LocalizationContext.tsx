@@ -25,7 +25,7 @@ interface LocalizationContextType {
   isRtl: boolean;
   translations: typeof englishTranslations;
   setLanguage: (language: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, variables?: Record<string, string | number>) => string;
 }
 
 const LocalizationContext = createContext<LocalizationContextType | undefined>(
@@ -73,8 +73,24 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({
     setLanguageState(newLanguage);
   };
 
-  const t = (key: string): string => {
-    return getNestedValue(currentTranslations, key);
+  const t = (
+    key: string,
+    variables?: Record<string, string | number>
+  ): string => {
+    let translation = getNestedValue(currentTranslations, key);
+
+    if (variables) {
+      // Replace placeholders like {{variable}} with actual values
+      Object.entries(variables).forEach(([varKey, value]) => {
+        const placeholder = `{{${varKey}}}`;
+        translation = translation.replace(
+          new RegExp(placeholder, "g"),
+          String(value)
+        );
+      });
+    }
+
+    return translation;
   };
 
   const value: LocalizationContextType = {

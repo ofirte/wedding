@@ -18,6 +18,7 @@ import TableContent from "./TableContent";
 import { applyFilters, sortData, resolveFilterOptions } from "./DSTableUtils";
 import { useExcelExport } from "../../utils/ExcelUtils";
 import DownloadIcon from "@mui/icons-material/Download";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 export type Column<T extends { id: string | number }> = {
   render: (row: T) => React.ReactNode;
@@ -50,7 +51,7 @@ const DSTable: FC<DSTableProps<any>> = ({
   const [order, setOrder] = useState<Order>("asc");
   const [displayedData, setDisplayedData] = useState<any[]>([]);
   const [filterStates, setFilterStates] = useState<FilterState[]>([]);
-
+  const { t } = useTranslation();
   const resolvedFilterConfigs = useMemo(
     () =>
       columns
@@ -123,7 +124,7 @@ const DSTable: FC<DSTableProps<any>> = ({
               onClick={handleExport}
               sx={{ ml: 2 }}
             >
-              Export to Excel
+              {t("common.exportToExcel")}
             </Button>
           )}
         </Box>

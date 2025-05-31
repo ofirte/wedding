@@ -78,7 +78,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
         <Grid size={{ xs: 12, sm: showDetails ? 12 : 8 }}>
           <TextField
             fullWidth
-            label="New Task"
+            label={t("common.newTask")}
             variant="outlined"
             value={title}
             onChange={(e) => {

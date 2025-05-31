@@ -4,16 +4,18 @@ import Typography from "@mui/material/Typography";
 import { Column } from "../common/DSTable";
 import InviteeListActionCell from "./InviteeListActionCell";
 
-export const columns: Column<Invitee>[] = [
+export const createColumns = (
+  t: (key: string) => string
+): Column<Invitee>[] => [
   {
     id: "name",
-    label: "Name",
+    label: t("common.name"),
     sortable: true,
     render: (invitee: Invitee) => invitee.name,
   },
   {
     id: "rsvp",
-    label: "RSVP Status",
+    label: t("guests.rsvpStatus"),
     sortable: true,
     render: (invitee: Invitee) => (
       <Typography
@@ -27,28 +29,28 @@ export const columns: Column<Invitee>[] = [
           fontWeight: "medium",
         }}
       >
-        {invitee.rsvp}
+        {invitee.rsvp ? t(`guests.${invitee.rsvp}`) : ""}
       </Typography>
     ),
     filterConfig: {
       id: "rsvp",
-      label: "RSVP Status",
+      label: t("guests.rsvpStatus"),
       type: "single",
       options: [
-        { value: "Confirmed", label: "Confirmed" },
-        { value: "Pending", label: "Pending" },
-        { value: "Declined", label: "Declined" },
+        { value: "Confirmed", label: t("guests.confirmed") },
+        { value: "Pending", label: t("guests.pending") },
+        { value: "Declined", label: t("guests.declined") },
       ],
     },
   },
   {
     id: "percentage",
-    label: "Attendance (%)",
+    label: t("guests.attendance"),
     sortable: true,
     render: (invitee: Invitee) => invitee.percentage,
     filterConfig: {
       id: "percentage",
-      label: "Attendance",
+      label: t("guests.attendance"),
       type: "single",
       options: [
         { value: "25", label: "≤ 25%" },
@@ -60,27 +62,27 @@ export const columns: Column<Invitee>[] = [
   },
   {
     id: "side",
-    label: "Side",
+    label: t("guests.side"),
     sortable: true,
     render: (invitee: Invitee) => invitee.side,
     filterConfig: {
       id: "side",
-      label: "Side",
+      label: t("guests.side"),
       type: "single",
       options: [
-        { value: "חתן", label: "חתן" },
-        { value: "כלה", label: "כלה" },
+        { value: "חתן", label: t("guests.groom") },
+        { value: "כלה", label: t("guests.bride") },
       ],
     },
   },
   {
     id: "relation",
-    label: "Relation",
+    label: t("guests.relation"),
     sortable: true,
     render: (invitee: Invitee) => invitee.relation,
     filterConfig: {
       id: "relation",
-      label: "Relation",
+      label: t("guests.relation"),
       type: "multiple",
       options: (data: Invitee[]) => {
         const uniqueRelations = Array.from(
@@ -96,31 +98,29 @@ export const columns: Column<Invitee>[] = [
   },
   {
     id: "amount",
-    label: "Amount",
+    label: t("guests.amount"),
     sortable: true,
     render: (invitee: Invitee) => invitee.amount,
   },
   {
     id: "amountConfirm",
-    label: "Amount Confirm",
+    label: t("guests.amountConfirm"),
     sortable: true,
     render: (invitee: Invitee) => invitee.amountConfirm,
   },
   {
     id: "cellphone",
-    label: "Cellphone",
+    label: t("guests.cellphone"),
     sortable: true,
     render: (invitee: Invitee) => invitee.cellphone,
   },
   {
     id: "actions",
-    label: "Actions",
+    label: t("common.actions"),
     sortable: false,
-    render: (invitee: Invitee) => (
-      <InviteeListActionCell
-        invitee={invitee}
-
-      />
-    ),
+    render: (invitee: Invitee) => <InviteeListActionCell invitee={invitee} />,
   },
 ];
+
+// Keep the old export for backward compatibility, but it won't have translations
+export const columns = createColumns((key: string) => key);

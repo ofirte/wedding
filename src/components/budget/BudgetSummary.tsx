@@ -1,6 +1,7 @@
 // BudgetSummary.tsx
 import React from "react";
 import { Typography, Paper,  Grid, useTheme } from "@mui/material";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 type SummaryProps = {
   totals: {
@@ -15,7 +16,7 @@ type SummaryProps = {
 const BudgetSummary: React.FC<SummaryProps> = ({ totals, totalBudget = 0 }) => {
   // Access theme
   const theme = useTheme();
-
+  const { t } = useTranslation();
   // Format currency
   const formatCurrency = (amount: number) => {
     return "₪" + amount.toLocaleString();
@@ -43,22 +44,22 @@ const BudgetSummary: React.FC<SummaryProps> = ({ totals, totalBudget = 0 }) => {
 
   const summaryCards = [
     {
-      title: "Expected Total",
+      title: t("budget.expectedTotal"),
       value: formatCurrency(totals.expected),
       color: theme.palette.info.light,
     },
     {
-      title: "Actual Total",
+      title: t("budget.actualTotal"),
       value: formatCurrency(totals.actual),
       color: theme.palette.primary.light,
     },
     {
-      title: "Paid So Far",
+      title: t("budget.paidSoFar"),
       value: formatCurrency(totals.downPayment),
       color: theme.palette.success.light,
     },
     {
-      title: "Remaining Budget",
+      title: t("budget.remaining"),
       value: formatCurrency(totalBudget - totals.actual),
       color: theme.palette.warning.light,
     },

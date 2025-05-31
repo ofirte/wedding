@@ -1,8 +1,8 @@
-import React from 'react';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import React from "react";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 interface DSLoadingProps {
-  size?: 'small' | 'medium' | 'large';
+  size?: "small" | "medium" | "large";
   message?: string;
 }
 
@@ -10,14 +10,17 @@ interface DSLoadingProps {
  * A reusable loading component that displays a spinner with an optional message
  * using Material-UI components
  */
-export default function DSLoading({ size = 'medium', message = 'Loading...' }: DSLoadingProps) {
+export default function DSLoading({
+  size = "medium",
+  message,
+}: DSLoadingProps) {
   const getMuiSize = () => {
     switch (size) {
-      case 'small':
+      case "small":
         return 24;
-      case 'large':
+      case "large":
         return 64;
-      case 'medium':
+      case "medium":
       default:
         return 40;
     }
@@ -26,22 +29,18 @@ export default function DSLoading({ size = 'medium', message = 'Loading...' }: D
   return (
     <Box
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
         padding: 4,
-        gap: 2
+        gap: 2,
       }}
     >
-      <CircularProgress 
-        size={getMuiSize()} 
-        thickness={4}
-        color="primary"
-      />
+      <CircularProgress size={getMuiSize()} thickness={4} color="primary" />
       {message && (
         <Typography
-          variant={size === 'large' ? 'h6' : 'body1'}
+          variant={size === "large" ? "h6" : "body1"}
           color="text.secondary"
           sx={{ mt: 1 }}
         >

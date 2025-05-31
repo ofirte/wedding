@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Button, Typography, Stack } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SummaryInfo from "./SummaryInfo";
-import { columns } from "./InviteListColumns";
+import { createColumns } from "./InviteListColumns";
 import AddGuestsDialog from "./AddGuestsDialog";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { useCreateInvitee } from "../../hooks/invitees/useCreateInvitee";
@@ -10,6 +10,7 @@ import { useUpdateInvitee } from "../../hooks/invitees/useUpdateInvitee";
 import { useDeleteInvitee } from "../../hooks/invitees/useDeleteInvitee";
 import { useQueryClient } from "@tanstack/react-query";
 import InviteeTable from "./InviteeTable";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 export interface Invitee {
   id: string;
@@ -24,11 +25,12 @@ export interface Invitee {
 }
 
 const WeddingInviteTable = () => {
+  const columns = createColumns(useTranslation().t);
   const { data: invitees = [] } = useInvitees();
   const [displayedInvitees, setDisplayedInvitees] = useState<Invitee[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingInvitee, setEditingInvitee] = useState<Invitee | null>(null);
-  const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   // Use the mutation hooks
   const { mutate: createInvitee } = useCreateInvitee();
@@ -132,7 +134,7 @@ const WeddingInviteTable = () => {
               component="h1"
               sx={{ fontWeight: "bold", color: "info.dark" }}
             >
-              Wedding Guest Management
+              {t("guests.title")}
             </Typography>
             <Button
               variant="contained"
@@ -143,7 +145,7 @@ const WeddingInviteTable = () => {
                 borderRadius: 2,
               }}
             >
-              Add New Guests
+              {t("guests.addGuest")}
             </Button>
           </Box>
           <SummaryInfo invitees={displayedInvitees} />

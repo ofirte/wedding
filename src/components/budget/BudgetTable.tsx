@@ -4,6 +4,7 @@ import { Box } from "@mui/material";
 import { BudgetItem } from "./BudgetPlanner";
 import DSTable from "../common/DSTable";
 import { createBudgetColumns } from "./BudgetListColumns";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 type BudgetTableProps = {
   items: BudgetItem[];
@@ -16,7 +17,8 @@ const BudgetTable: React.FC<BudgetTableProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const columns = createBudgetColumns(onEdit, onDelete);
+  const { t } = useTranslation();
+  const columns = createBudgetColumns(onEdit, onDelete, t);
 
   return (
     <Box sx={{ marginTop: 2 }}>
