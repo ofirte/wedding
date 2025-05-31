@@ -10,7 +10,8 @@ const RootRedirect: React.FC = () => {
     return <Navigate to="/wedding" replace />;
   } else {
     // If user is not authenticated, redirect to login page
-    return <Navigate to="/login" replace />;
+    const search = window.location.search;
+    return <Navigate to={`/login${search}`} replace />;
   }
 };
 

@@ -29,14 +29,18 @@ const GuestOverviewCard: React.FC = () => {
   const navigate = useNavigate();
   const { data: guests } = useInvitees();
   const { t } = useTranslation();
-
   const guestStats = {
     total:
       guests?.reduce((acc, i) => acc + parseInt(i.amount.toString()), 0) || 0,
     confirmed:
-      guests?.filter((guest) => guest.rsvp === "confirmed").length || 0,
-    pending: guests?.filter((guest) => guest.rsvp === "pending").length || 0,
-    declined: guests?.filter((guest) => guest.rsvp === "declined").length || 0,
+      guests?.filter((guest) => guest.rsvp.toLocaleLowerCase() === "confirmed")
+        .length || 0,
+    pending:
+      guests?.filter((guest) => guest.rsvp.toLocaleLowerCase() === "pending")
+        .length || 0,
+    declined:
+      guests?.filter((guest) => guest.rsvp.toLocaleLowerCase() === "declined")
+        .length || 0,
   };
 
   return (
@@ -55,7 +59,7 @@ const GuestOverviewCard: React.FC = () => {
         alignItems="center"
         mb={2}
       >
-        <Typography variant="h6"></Typography>
+        <Typography variant="h6">{t("guests.guestList")}</Typography>
         <Button
           size="small"
           endIcon={<ArrowIcon />}

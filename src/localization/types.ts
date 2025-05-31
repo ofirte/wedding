@@ -122,6 +122,12 @@ export interface Translations {
     weddingId: string;
     enterWeddingId: string;
     enterWeddingIdDescription: string;
+    joinWeddingDescription: string;
+    haveInvitationCode: string;
+    orEnterWeddingId: string;
+    invitationCode: string;
+    useWeddingIdInstead: string;
+    pleaseEnterInvitationCode: string;
     mustBeLoggedIn: string;
     pleaseEnterWeddingName: string;
     pleasEnterWeddingId: string;
@@ -134,6 +140,18 @@ export interface Translations {
     expenseName: string;
     exportToExcel: string;
     filters: string;
+    // Invitation sharing
+    shareWedding: string;
+    inviteOthers: string;
+    shareInvitationDescription: string;
+    invitationCodeLabel: string;
+    invitationLink: string;
+    copyInvitationCode: string;
+    copyInvitationLink: string;
+    invitationCodeCopied: string;
+    invitationLinkCopied: string;
+    shareViaEmail: string;
+    shareViaWhatsApp: string;
   };
   nav: {
     home: string;
@@ -225,6 +243,7 @@ export interface Translations {
   placeholders: {
     exampleWeddingName: string;
     exampleWeddingId: string;
+    enterInvitationCode: string;
     whatNeedsToBeDone: string;
   };
 }

@@ -87,6 +87,12 @@ export const hebrewTranslations: Translations = {
     enterWeddingId: "הכנס מזהה חתונה",
     enterWeddingIdDescription:
       "הכנס את מזהה החתונה שנשתף איתך כדי להצטרף לתוכנית חתונה קיימת.",
+    joinWeddingDescription: "הצטרף לחתונה באמצעות קוד ההזמנה שלך",
+    haveInvitationCode: "יש לי קוד הזמנה",
+    orEnterWeddingId: "או הכנס מזהה חתונה באופן ידני",
+    invitationCode: "קוד הזמנה",
+    useWeddingIdInstead: "השתמש במזהה חתונה במקום",
+    pleaseEnterInvitationCode: "אנא הכנס קוד הזמנה",
     mustBeLoggedIn: "עליך להיות מחובר",
     pleaseEnterWeddingName: "אנא הכנס שם לחתונה שלך",
     pleasEnterWeddingId: "אנא הכנס מזהה חתונה",
@@ -105,6 +111,19 @@ export const hebrewTranslations: Translations = {
     expenseName: "שם הוצאה",
     exportToExcel: "ייצא ל - Excel",
     filters: "סנן",
+    // Invitation sharing
+    shareWedding: "שתף הזמנה",
+    inviteOthers: "הזמן אחרים לחתונה שלך",
+    shareInvitationDescription:
+      "שתף את קוד ההזמנה לחתונה שלך עם משפחה וחברים כדי שיוכלו להצטרף לתכנון החתונה.",
+    invitationCodeLabel: "קוד הזמנה",
+    invitationLink: "קישור הזמנה",
+    copyInvitationCode: "העתק קוד הזמנה",
+    copyInvitationLink: "העתק קישור הזמנה",
+    invitationCodeCopied: "קוד ההזמנה הועתק ללוח!",
+    invitationLinkCopied: "קישור ההזמנה הועתק ללוח!",
+    shareViaEmail: "שתף באמצעות אימייל",
+    shareViaWhatsApp: "שתף באמצעות וואטסאפ",
   },
   nav: {
     home: "בית",
@@ -196,6 +215,7 @@ export const hebrewTranslations: Translations = {
   placeholders: {
     exampleWeddingName: "למשל, החתונה של אליס ובוב",
     exampleWeddingId: "למשל, AbCdEf123456",
+    enterInvitationCode: "למשל, LOVE2024ALICE",
     whatNeedsToBeDone: "מה צריך לעשות?",
   },
 };

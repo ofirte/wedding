@@ -70,7 +70,7 @@ const WeddingInviteTable = () => {
           },
         });
       } else {
-        // Add new invitee using the hook
+        console.log("Creating new invitee: ", invitee);
         createInvitee({
           name: invitee.name,
           rsvp: invitee.rsvp,

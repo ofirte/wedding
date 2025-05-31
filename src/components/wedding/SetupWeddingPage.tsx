@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -12,7 +12,7 @@ import {
   CircularProgress,
   Stack,
 } from "@mui/material";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import {
   useCurrentUser,
   useCreateWedding,
@@ -51,14 +51,15 @@ const SetupWeddingPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const { t } = useTranslation();
 
+  // Add these new state variables for invitation codes
+  const [searchParams] = useSearchParams();
+  const [invitationCode, setInvitationCode] = useState("");
+
   // Create wedding form fields
   const [weddingName, setWeddingName] = useState("");
   const [brideName, setBrideName] = useState("");
   const [groomName, setGroomName] = useState("");
   const [weddingDate, setWeddingDate] = useState<Date | null>(null);
-
-  // Join wedding form field
-  const [weddingId, setWeddingId] = useState("");
 
   const { data: currentUser } = useCurrentUser();
   const { mutate: createWedding, isPending: isCreating } = useCreateWedding({
@@ -73,6 +74,15 @@ const SetupWeddingPage: React.FC = () => {
     },
   });
   const navigate = useNavigate();
+
+  // Add this useEffect to check for invitation codes in URL
+  useEffect(() => {
+    const inviteCode = searchParams.get("invite");
+    if (inviteCode) {
+      setInvitationCode(inviteCode);
+      setTabValue(1); // Switch to join tab
+    }
+  }, [searchParams]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -115,13 +125,17 @@ const SetupWeddingPage: React.FC = () => {
       return;
     }
 
-    if (!weddingId) {
-      setError(t("common.pleasEnterWeddingId"));
+    if (!invitationCode) {
+      setError(t("common.pleaseEnterInvitationCode"));
       return;
     }
 
     try {
-      joinWedding({ userId: currentUser.uid, weddingId });
+      joinWedding({
+        userId: currentUser.uid,
+        weddingId: invitationCode,
+        isInvitationCode: true,
+      });
     } catch (err: any) {
       setError(err.message || t("common.unexpectedError"));
     }
@@ -251,17 +265,17 @@ const SetupWeddingPage: React.FC = () => {
           <Box component="form" onSubmit={handleJoinWedding}>
             <Stack spacing={3}>
               <Typography variant="body2" sx={{ mb: 2 }}>
-                {t("common.enterWeddingIdDescription")}
+                {t("common.joinWeddingDescription")}
               </Typography>
 
               <TextField
                 required
                 fullWidth
-                id="weddingId"
-                label={t("common.weddingId")}
-                placeholder={t("placeholders.exampleWeddingId")}
-                value={weddingId}
-                onChange={(e) => setWeddingId(e.target.value)}
+                id="invitationCode"
+                label={t("common.invitationCode")}
+                placeholder={t("placeholders.enterInvitationCode")}
+                value={invitationCode}
+                onChange={(e) => setInvitationCode(e.target.value)}
               />
 
               <Button

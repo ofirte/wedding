@@ -38,31 +38,33 @@ const InviteeForm: React.FC<InviteeFormProps> = ({
   const columns = createColumns(t);
 
   return (
-    <Paper variant="outlined" sx={{ p: 2 }}>
-      <Box sx={{ mb: 2, fontWeight: "bold" }}>
+    <Paper variant="outlined" sx={{ p: 1.5, mb: 1 }}>
+      <Box sx={{ mb: 1, fontWeight: "bold", fontSize: "0.9rem" }}>
         {editingInviteeId
           ? t("guests.editGuestDetails")
           : t("guests.newGuestDetails")}
       </Box>
-      <Grid container spacing={2}>
+      <Grid container spacing={1} sx={{ mb: 1 }}>
         {columns
           .filter((col) => col.id !== "actions")
           .map((column) => (
-            <Grid size={{ xs: 12, sm: 6 }} key={column.id}>
+            <Grid size={{ xs: 6, sm: 4, md: 3 }} key={column.id}>
               {column.id === "relation" ? (
                 <Autocomplete
                   freeSolo
                   options={relationOptions}
                   value={draftInvitee.relation}
-                  onChange={(event, newValue) =>
-                    handleInputChange(column.id, newValue)
-                  }
+       
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       label={column.label}
-                      margin="normal"
+                      onChange={(e) =>
+                        handleInputChange(column.id, e.target.value)
+                      }
+                      margin="dense"
                       fullWidth
+                      size="small"
                     />
                   )}
                 />
@@ -72,8 +74,9 @@ const InviteeForm: React.FC<InviteeFormProps> = ({
                   label={column.label}
                   value={draftInvitee.side}
                   onChange={(e) => handleInputChange(column.id, e.target.value)}
-                  margin="normal"
+                  margin="dense"
                   fullWidth
+                  size="small"
                 >
                   {sideOptions.map((option) => (
                     <MenuItem key={option} value={option}>
@@ -87,8 +90,9 @@ const InviteeForm: React.FC<InviteeFormProps> = ({
                   label={column.label}
                   value={draftInvitee.rsvp}
                   onChange={(e) => handleInputChange(column.id, e.target.value)}
-                  margin="normal"
+                  margin="dense"
                   fullWidth
+                  size="small"
                 >
                   {statusOptions.map((option) => (
                     <MenuItem key={option} value={option}>
@@ -101,8 +105,9 @@ const InviteeForm: React.FC<InviteeFormProps> = ({
                   label={column.label}
                   value={draftInvitee[column.id as keyof Invitee] ?? ""}
                   onChange={(e) => handleInputChange(column.id, e.target.value)}
-                  margin="normal"
+                  margin="dense"
                   fullWidth
+                  size="small"
                   type={
                     ["percentage", "amount", "amountConfirm"].includes(
                       column.id
@@ -115,12 +120,13 @@ const InviteeForm: React.FC<InviteeFormProps> = ({
             </Grid>
           ))}
       </Grid>
-      <Box mt={2}>
+      <Box mt={1}>
         {!editingInviteeId && (
           <Button
             variant="contained"
             color="primary"
             onClick={handleAddInvitee}
+            size="small"
           >
             {t("guests.addGuest")}
           </Button>

@@ -8,8 +8,67 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { doc, setDoc, getDoc, collection, addDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { auth, db } from "../firebaseConfig";
+
+// Generate a unique invitation code with collision detection
+export const generateInvitationCode = async (
+  weddingName: string
+): Promise<string> => {
+  const generateCode = (name: string): string => {
+    // Use first 3-4 letters of wedding name for readability
+    const sanitizedName = name
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .toUpperCase()
+      .substring(0, 3);
+
+    // Generate 5-6 random characters for better entropy
+    const randomSuffix = Math.random()
+      .toString(36)
+      .substring(2, 8)
+      .toUpperCase();
+    return `${sanitizedName}${randomSuffix}`;
+  };
+
+  // Check for uniqueness and retry if needed
+  let attempts = 0;
+  const maxAttempts = 10;
+
+  while (attempts < maxAttempts) {
+    const code = generateCode(weddingName);
+
+    try {
+      // Check if code already exists in weddings collection
+      const q = query(
+        collection(db, "weddings"),
+        where("invitationCode", "==", code)
+      );
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        return code; // Unique code found
+      }
+
+      attempts++;
+    } catch (error) {
+      console.error("Error checking invitation code uniqueness:", error);
+      attempts++;
+    }
+  }
+
+  // Fallback to timestamp-based code if all attempts fail
+  const timestamp = Date.now().toString(36).toUpperCase();
+  return `WED${timestamp}`;
+};
 
 // User interface
 export interface WeddingUser {
@@ -148,6 +207,9 @@ export const createWedding = async (
   weddingDate?: Date
 ): Promise<string> => {
   try {
+    // Generate unique invitation code for the wedding
+    const invitationCode = await generateInvitationCode(weddingName);
+
     // Create a wedding document
     const weddingRef = await addDoc(collection(db, "weddings"), {
       name: weddingName,
@@ -156,6 +218,7 @@ export const createWedding = async (
       userIds: [userId],
       brideName: brideName || "",
       groomName: groomName || "",
+      invitationCode,
     });
 
     // Update user document with weddingId

@@ -10,8 +10,11 @@ export const useJoinWedding = (
   options?: UseMutationOptions<Wedding, unknown, unknown, unknown>
 ) => {
   return useMutation({
-    mutationFn: (params: { userId: string; weddingId: string }) =>
-      joinWedding(params.userId, params.weddingId),
+    mutationFn: (params: {
+      userId: string;
+      weddingId: string;
+      isInvitationCode?: boolean;
+    }) => joinWedding(params.userId, params.weddingId, params.isInvitationCode),
     ...options,
   });
 };

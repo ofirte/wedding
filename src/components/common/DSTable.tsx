@@ -130,14 +130,6 @@ const DSTable: FC<DSTableProps<any>> = ({
         </Box>
       )}
 
-      {resolvedFilterConfigs.length > 0 && !showExport && (
-        <DSTableFilters
-          filters={filterStates}
-          filterConfigs={resolvedFilterConfigs}
-          setFilterStates={setFilterStates}
-        />
-      )}
-
       <TableContainer
         component={Paper}
         elevation={2}

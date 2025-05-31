@@ -93,6 +93,12 @@ export const englishTranslations: Translations = {
     enterWeddingId: "Enter the wedding ID",
     enterWeddingIdDescription:
       "Enter the wedding ID that was shared with you to join an existing wedding plan.",
+    joinWeddingDescription: "Join a wedding using your invitation code",
+    haveInvitationCode: "I have an invitation code",
+    orEnterWeddingId: "or enter wedding ID manually",
+    invitationCode: "Invitation Code",
+    useWeddingIdInstead: "Use wedding ID instead",
+    pleaseEnterInvitationCode: "Please enter an invitation code",
     mustBeLoggedIn: "You must be logged in",
     pleaseEnterWeddingName: "Please enter a name for your wedding",
     pleasEnterWeddingId: "Please enter a wedding ID",
@@ -105,6 +111,19 @@ export const englishTranslations: Translations = {
     expenseName: "Expense Name",
     exportToExcel: "Export to Excel",
     filters: "Filters",
+    // Invitation sharing
+    shareWedding: "Share Wedding",
+    inviteOthers: "Invite Others to Your Wedding",
+    shareInvitationDescription:
+      "Share your wedding invitation code with family and friends so they can join your wedding planning.",
+    invitationCodeLabel: "Invitation Code",
+    invitationLink: "Invitation Link",
+    copyInvitationCode: "Copy Invitation Code",
+    copyInvitationLink: "Copy Invitation Link",
+    invitationCodeCopied: "Invitation code copied to clipboard!",
+    invitationLinkCopied: "Invitation link copied to clipboard!",
+    shareViaEmail: "Share via Email",
+    shareViaWhatsApp: "Share via WhatsApp",
   },
   nav: {
     home: "Home",
@@ -196,6 +215,7 @@ export const englishTranslations: Translations = {
   placeholders: {
     exampleWeddingName: "e.g., Alice & Bob's Wedding",
     exampleWeddingId: "e.g., AbCdEf123456",
+    enterInvitationCode: "e.g., LOVE2024ALICE",
     whatNeedsToBeDone: "What needs to be done?",
   },
 };

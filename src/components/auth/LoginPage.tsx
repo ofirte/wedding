@@ -10,7 +10,7 @@ import {
   Alert,
   CircularProgress,
 } from "@mui/material";
-import { Link as RouterLink, useNavigate } from "react-router";
+import { Link as RouterLink, useNavigate, useSearchParams } from "react-router";
 import { useSignIn } from "../../hooks/auth";
 import { useSignInWithGoogle } from "../../hooks/auth/useSignInWithGoogle";
 import GoogleSignInButton from "./GoogleSignInButton";
@@ -21,9 +21,17 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
   const signInMutateOptions = {
     onSuccess: () => {
-      navigate("/wedding");
+      // Preserve invite parameter when navigating to wedding page
+      const inviteCode = searchParams.get("invite");
+      const targetUrl = inviteCode
+        ? `/wedding?invite=${inviteCode}`
+        : "/wedding";
+      navigate(targetUrl);
     },
     onError: (error: any) => {
       setError(error.message || t("common.failedToSignIn"));
@@ -32,7 +40,6 @@ const LoginPage: React.FC = () => {
   const { mutate: signIn, isPending } = useSignIn(signInMutateOptions);
   const { mutate: signInWithGoogle, isPending: isGoogleSignInPending } =
     useSignInWithGoogle(signInMutateOptions);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,7 +145,10 @@ const LoginPage: React.FC = () => {
                 color: ({ palette }) => palette.primary.main,
               }}
               component={RouterLink}
-              to="/register"
+              to={{
+                pathname: "/register",
+                search: window.location.search,
+              }}
               variant="body2"
             >
               {t("common.dontHaveAccount")}

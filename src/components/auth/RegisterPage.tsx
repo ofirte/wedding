@@ -10,7 +10,7 @@ import {
   Alert,
   CircularProgress,
 } from "@mui/material";
-import { Link as RouterLink, useNavigate } from "react-router";
+import { Link as RouterLink, useNavigate, useSearchParams } from "react-router";
 import { useSignUp } from "../../hooks/auth";
 import { useTranslation } from "../../localization/LocalizationContext";
 
@@ -21,12 +21,19 @@ const RegisterPage: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
   const { mutate: signUp, isPending } = useSignUp({
     onSuccess: () => {
-      navigate("/wedding");
+      // Preserve invite parameter when navigating to wedding page
+      const inviteCode = searchParams.get("invite");
+      const targetUrl = inviteCode
+        ? `/wedding?invite=${inviteCode}`
+        : "/wedding";
+      navigate(targetUrl);
     },
   });
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,7 +157,14 @@ const RegisterPage: React.FC = () => {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid>
-                <Link component={RouterLink} to="/login" variant="body2">
+                <Link
+                  component={RouterLink}
+                  to={{
+                    pathname: "/login",
+                    search: window.location.search,
+                  }}
+                  variant="body2"
+                >
                   {t("common.alreadyHaveAccount")}
                 </Link>
               </Grid>
