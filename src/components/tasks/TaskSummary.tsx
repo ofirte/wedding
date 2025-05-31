@@ -97,7 +97,7 @@ const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks }) => {
         </Grid>
 
         <Grid size={{ xs: 12, md: 4 }}>
-          <Grid container spacing={2} height="100%">
+          <Grid container spacing={2} height="80%">
             <Grid size={{ xs: 6 }} height="100%">
               <StatCard sx={{ bgcolor: "warning.light" }}>
                 <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>

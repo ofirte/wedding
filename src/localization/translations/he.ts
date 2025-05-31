@@ -197,6 +197,10 @@ export const hebrewTranslations: Translations = {
     dueSoon: "באופן מיידי",
     searchTasks: "חפש משימות",
     editTask: "ערוך משימה",
+    mostImportant: "הכי חשובות",
+    importantTasks: "משימות חשובות",
+    noCriticalTasks: "אין משימות קריטיות",
+    allCaughtUp: "אתם מעודכנים בכל!",
   },
   wedding: {
     title: "פרטי החתונה",

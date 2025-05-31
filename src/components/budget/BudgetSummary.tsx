@@ -1,6 +1,12 @@
 // BudgetSummary.tsx
 import React from "react";
-import { Typography, Paper,  Grid, useTheme } from "@mui/material";
+import { Grid, Card, CardContent, Typography, Stack } from "@mui/material";
+import {
+  TrendingUp as ExpectedIcon,
+  MonetizationOn as ActualIcon,
+  Payment as PaidIcon,
+  AccountBalance as RemainingIcon,
+} from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 type SummaryProps = {
@@ -14,59 +20,38 @@ type SummaryProps = {
 };
 
 const BudgetSummary: React.FC<SummaryProps> = ({ totals, totalBudget = 0 }) => {
-  // Access theme
-  const theme = useTheme();
   const { t } = useTranslation();
+
   // Format currency
   const formatCurrency = (amount: number) => {
     return "₪" + amount.toLocaleString();
-  };
-
-  const SummaryCard = ({ title, value, color }: any) => {
-    return (
-      <Paper
-        elevation={1}
-        sx={{
-          p: 2,
-          textAlign: "center",
-          backgroundColor: color,
-          padding: 4,
-          maxHeight: 100,
-        }}
-      >
-        <Typography variant="body2" color="textSecondary">
-          {title}
-        </Typography>
-        <Typography variant="h6">{value}</Typography>
-      </Paper>
-    );
   };
 
   const summaryCards = [
     {
       title: t("budget.expectedTotal"),
       value: formatCurrency(totals.expected),
-      color: theme.palette.info.light,
+      icon: <ExpectedIcon sx={{ fontSize: 40, color: "info.main" }} />,
     },
     {
       title: t("budget.actualTotal"),
       value: formatCurrency(totals.actual),
-      color: theme.palette.primary.light,
+      icon: <ActualIcon sx={{ fontSize: 40, color: "primary.main" }} />,
     },
     {
       title: t("budget.paidSoFar"),
       value: formatCurrency(totals.downPayment),
-      color: theme.palette.success.light,
+      icon: <PaidIcon sx={{ fontSize: 40, color: "success.main" }} />,
     },
     {
       title: t("budget.remaining"),
       value: formatCurrency(totalBudget - totals.actual),
-      color: theme.palette.warning.light,
+      icon: <RemainingIcon sx={{ fontSize: 40, color: "warning.main" }} />,
     },
   ];
 
   return (
-    <Grid container spacing={2} mb={2}>
+    <Grid container spacing={3} mb={2}>
       {summaryCards.map((card, index) => (
         <Grid
           size={{
@@ -76,7 +61,17 @@ const BudgetSummary: React.FC<SummaryProps> = ({ totals, totalBudget = 0 }) => {
           }}
           key={index}
         >
-          <SummaryCard {...card} />
+          <Card elevation={2}>
+            <CardContent>
+              <Stack spacing={1} alignItems="center">
+                {card.icon}
+                <Typography variant="h5" component="div">
+                  {card.value}
+                </Typography>
+                <Typography color="text.secondary">{card.title}</Typography>
+              </Stack>
+            </CardContent>
+          </Card>
         </Grid>
       ))}
     </Grid>

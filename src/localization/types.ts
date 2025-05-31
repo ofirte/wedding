@@ -225,6 +225,10 @@ export interface Translations {
     dueSoon: string;
     searchTasks: string;
     editTask: string;
+    mostImportant: string;
+    importantTasks: string;
+    noCriticalTasks: string;
+    allCaughtUp: string;
   };
   wedding: {
     title: string;

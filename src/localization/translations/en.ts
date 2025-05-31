@@ -197,6 +197,10 @@ export const englishTranslations: Translations = {
     dueSoon: "Due Soon",
     searchTasks: "Search Tasks",
     editTask: "Edit Task",
+    mostImportant: "Most Important",
+    importantTasks: "Important Tasks",
+    noCriticalTasks: "No critical tasks",
+    allCaughtUp: "You're all caught up!",
   },
   wedding: {
     title: "Wedding Details",

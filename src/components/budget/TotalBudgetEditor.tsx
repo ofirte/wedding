@@ -48,53 +48,90 @@ const TotalBudgetEditor: React.FC<TotalBudgetEditorProps> = ({
     <Box
       sx={{
         display: "flex",
+
         alignItems: "center",
-        justifyContent: "center",
-        mb: 2,
-        bgcolor: "sage.main",
-        padding: 2,
-        borderRadius: 1,
+
+        borderRadius: 2,
       }}
     >
-      <Typography variant="h6" sx={{ mr: 2 }}>
+      <Typography
+        variant="h6"
+        sx={{
+          fontWeight: "bold",
+          color: "info.dark",
+          mr: 2,
+        }}
+      >
         {t("budget.totalBudget")}:
       </Typography>
+
       {editingTotalBudget ? (
-        <>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <TextField
             value={tempTotalBudget}
             onChange={handleTotalBudgetChange}
             variant="outlined"
             size="small"
-            sx={{ width: "150px", mr: 1 }}
+            sx={{ width: "150px" }}
             autoFocus
           />
           <IconButton
             onClick={handleSaveTotalBudget}
-            color="primary"
             size="small"
+            color="success"
+            sx={{
+              bgcolor: "success.light",
+              "&:hover": {
+                bgcolor: "success.main",
+                color: "white",
+              },
+            }}
           >
             <CheckIcon />
           </IconButton>
-          <IconButton onClick={handleCancelEditTotalBudget} size="small">
+          <IconButton
+            onClick={handleCancelEditTotalBudget}
+            size="small"
+            color="error"
+            sx={{
+              bgcolor: "error.light",
+              "&:hover": {
+                bgcolor: "error.main",
+                color: "white",
+              },
+            }}
+          >
             <CloseIcon />
           </IconButton>
-        </>
+        </Box>
       ) : (
-        <>
-          <Typography variant="h6" sx={{ fontWeight: "bold" }}>{`₪${
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "bold",
+              color: "primary.main",
+            }}
+          >{`₪${
             isLoading ? t("common.loading") : totalBudget.toLocaleString()
           }`}</Typography>
           <Tooltip title={t("common.editTotalBudget")}>
             <IconButton
               onClick={handleStartEditTotalBudget}
               size="small"
-              sx={{ ml: 1 }}
+              color="info"
+              sx={{
+                borderRadius: 2,
+                "&:hover": {
+                  bgcolor: "info.light",
+                  color: "white",
+                },
+              }}
             >
               <EditIcon fontSize="small" />
             </IconButton>
           </Tooltip>
-        </>
+        </Box>
       )}
     </Box>
   );

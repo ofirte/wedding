@@ -2,10 +2,10 @@ import React, { useMemo, useState } from "react";
 import {
   Box,
   Typography,
-  Paper,
   Button,
   CircularProgress,
   useTheme,
+  Stack,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useBudgetItems } from "../../hooks/budget/useBudgetItems";
@@ -181,70 +181,72 @@ const BudgetPlanner = () => {
   // Render loading, error, or content
   return (
     <Box sx={{ padding: 4 }}>
-      {" "}
-      <Paper
-        elevation={3}
+      <Box
         sx={{
-          padding: 3,
-          backgroundColor: "#fafafa",
+          maxWidth: 1200,
+          mx: "auto",
+          p: 3,
+          bgcolor: "background.paper",
           borderRadius: 2,
-          borderTop: `8px solid ${theme.palette.primary.main}`,
+          boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
         }}
       >
-        <Typography
-          variant="h4"
-          gutterBottom
-          sx={{
-            fontFamily: '"Playfair Display", serif',
-            textAlign: "center",
-            color: theme.palette.primary.contrastText,
-            marginBottom: 3,
-          }}
-        >
-          {t("budget.planning")}
-        </Typography>
-
-        <TotalBudgetEditor
-          totalBudget={totalBudget?.amount ?? 0}
-          isLoading={isTotalBudgetLoading}
-          onSaveTotalBudget={updateTotalBudget}
-        />
-
-        <BudgetSummary totals={totals} totalBudget={totalBudget?.amount ?? 0} />
-
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleAddNew}
-          disabled={isMutating}
-          sx={{
-            marginBottom: 3,
-            backgroundColor: theme.palette.info.main,
-            color: theme.palette.info.contrastText,
-            "&:hover": {
-              backgroundColor: theme.palette.info.dark,
-            },
-          }}
-        >
-          {isCreating ? t("budget.addingBudgetItem") : t("budget.addItem")}
-        </Button>
-
-        {isLoading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", padding: 2 }}>
-            <CircularProgress sx={{ color: theme.palette.primary.main }} />
+        <Stack spacing={4}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              variant="h4"
+              component="h1"
+              sx={{ fontWeight: "bold", color: "info.dark" }}
+            >
+              {t("budget.planning")}
+            </Typography>
+            <TotalBudgetEditor
+              totalBudget={totalBudget?.amount ?? 0}
+              isLoading={isTotalBudgetLoading}
+              onSaveTotalBudget={updateTotalBudget}
+            />
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleAddNew}
+              disabled={isMutating}
+              color="info"
+              sx={{
+                borderRadius: 2,
+              }}
+            >
+              {isCreating ? t("budget.addingBudgetItem") : t("budget.addItem")}
+            </Button>
           </Box>
-        ) : isError ? (
-          <Typography color="error" align="center">
-            {t("budget.errorLoadingBudget")}
-          </Typography>
-        ) : (
-          <BudgetTable
-            items={budgetItems || []}
-            onEdit={handleEdit}
-            onDelete={deleteBudgetItem}
+
+          <BudgetSummary
+            totals={totals}
+            totalBudget={totalBudget?.amount ?? 0}
           />
-        )}
-      </Paper>
+
+          {isLoading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", padding: 2 }}>
+              <CircularProgress sx={{ color: theme.palette.primary.main }} />
+            </Box>
+          ) : isError ? (
+            <Typography color="error" align="center">
+              {t("budget.errorLoadingBudget")}
+            </Typography>
+          ) : (
+            <BudgetTable
+              items={budgetItems || []}
+              onEdit={handleEdit}
+              onDelete={deleteBudgetItem}
+            />
+          )}
+        </Stack>
+      </Box>
       <BudgetItemDialog
         open={open}
         onClose={() => setOpen(false)}
