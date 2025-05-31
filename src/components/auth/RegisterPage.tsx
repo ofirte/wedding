@@ -53,20 +53,7 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <Grid container sx={{ height: "100vh" }}>
-      <Grid
-        size={{
-          xs: false,
-          sm: 4,
-          md: 7,
-        }}
-        sx={{
-          backgroundImage: "url(https://source.unsplash.com/random?wedding)",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
+    <Grid container sx={{ height: "100vh", justifyContent: "center" }}>
       <Grid
         size={{
           xs: 12,
