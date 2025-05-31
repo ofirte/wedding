@@ -23,6 +23,7 @@ interface InviteeFormProps {
 }
 
 const sideOptions = ["חתן", "כלה"];
+const statusOptions = ["Pending", "Confirmed", "Declined"];
 
 const InviteeForm: React.FC<InviteeFormProps> = ({
   draftInvitee,
@@ -77,6 +78,21 @@ const InviteeForm: React.FC<InviteeFormProps> = ({
                   {sideOptions.map((option) => (
                     <MenuItem key={option} value={option}>
                       {option}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              ) : column.id === "rsvp" ? (
+                <TextField
+                  select
+                  label={column.label}
+                  value={draftInvitee.rsvp}
+                  onChange={(e) => handleInputChange(column.id, e.target.value)}
+                  margin="normal"
+                  fullWidth
+                >
+                  {statusOptions.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {t(`guests.${option.toLowerCase()}`)}
                     </MenuItem>
                   ))}
                 </TextField>

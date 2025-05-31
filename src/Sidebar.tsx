@@ -21,7 +21,7 @@ import {
   Assignment as TaskIcon,
   Logout as LogoutIcon,
 } from "@mui/icons-material";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { useCurrentUser, useSignOut, useWeddingDetails } from "./hooks/auth";
 import { useTranslation } from "./localization/LocalizationContext";
 import { LanguageSwitcher } from "./components/common/LanguageSwitcher";
@@ -29,6 +29,7 @@ import { LanguageSwitcher } from "./components/common/LanguageSwitcher";
 const Sidebar: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
   const { data: currentUser } = useCurrentUser();
   const { data: weddingDetails } = useWeddingDetails();
   const { mutate: signOut } = useSignOut();
@@ -40,6 +41,36 @@ const Sidebar: React.FC = () => {
     { text: t("nav.budget"), icon: <MoneyIcon />, path: "/budget" },
     { text: t("nav.tasks"), icon: <TaskIcon />, path: "/tasks" },
   ];
+
+  // Function to check if a menu item is currently active
+  const isMenuItemActive = (itemPath: string) => {
+    return location.pathname.endsWith(itemPath);
+  };
+
+  // Function to get styles for menu items based on active state
+  const getMenuItemStyles = (isActive: boolean) => ({
+    listItemButton: {
+      py: 1.5,
+      backgroundColor: isActive ? theme.palette.sage.light : "transparent",
+      "&:hover": {
+        backgroundColor: isActive
+          ? theme.palette.sage.light
+          : theme.palette.action.hover,
+      },
+      borderRight: isActive
+        ? `3px solid ${theme.palette.sage.dark}`
+        : "3px solid transparent",
+    },
+    listItemIcon: {
+      color: theme.palette.sage.dark,
+      minWidth: "auto",
+      marginInlineEnd: 2,
+    },
+    listItemText: {
+      fontWeight: isActive ? "bold" : "medium",
+      color: isActive ? theme.palette.sage.dark : "inherit",
+    },
+  });
 
   const handleLogout = async () => {
     try {
@@ -100,46 +131,38 @@ const Sidebar: React.FC = () => {
               {currentUser?.displayName || currentUser?.email}
             </Typography>
           </Box>
-          <LanguageSwitcher variant="icon" />
+          <LanguageSwitcher />
         </Stack>
       </Box>
 
       <Divider />
       <List sx={{ py: 1 }}>
-        {menuItems.map((item, index) => (
-          <React.Fragment key={item.text}>
-            <ListItem disablePadding>
-              <ListItemButton
-                onClick={() => navigate(`.${item.path}`)}
-                sx={{
-                  py: 1.5,
-                  "&:hover": {
-                    backgroundColor: theme.palette.action.hover,
-                  },
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    color: theme.palette.sage.dark,
-                    minWidth: "auto",
-                    marginInlineEnd: 2,
-                  }}
+        {menuItems.map((item, index) => {
+          const isActive = isMenuItemActive(item.path);
+          const styles = getMenuItemStyles(isActive);
+
+          return (
+            <React.Fragment key={item.text}>
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => navigate(`.${item.path}`)}
+                  sx={styles.listItemButton}
                 >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  primaryTypographyProps={{
-                    fontWeight: "medium",
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-            {index < menuItems.length - 1 && (
-              <Divider variant="middle" sx={{ my: 0.5 }} />
-            )}
-          </React.Fragment>
-        ))}
+                  <ListItemIcon sx={styles.listItemIcon}>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.text}
+                    primaryTypographyProps={styles.listItemText}
+                  />
+                </ListItemButton>
+              </ListItem>
+              {index < menuItems.length - 1 && (
+                <Divider variant="middle" sx={{ my: 0.5 }} />
+              )}
+            </React.Fragment>
+          );
+        })}
       </List>
 
       <Box sx={{ flexGrow: 1 }} />

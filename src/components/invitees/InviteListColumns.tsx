@@ -29,7 +29,7 @@ export const createColumns = (
           fontWeight: "medium",
         }}
       >
-        {invitee.rsvp ? t(`guests.${invitee.rsvp}`) : ""}
+        {invitee.rsvp ? t(`guests.${invitee.rsvp.toLowerCase()}`) : ""}
       </Typography>
     ),
     filterConfig: {
