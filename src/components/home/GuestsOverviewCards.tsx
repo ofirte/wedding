@@ -33,13 +33,13 @@ const GuestOverviewCard: React.FC = () => {
     total:
       guests?.reduce((acc, i) => acc + parseInt(i.amount.toString()), 0) || 0,
     confirmed:
-      guests?.filter((guest) => guest.rsvp.toLocaleLowerCase() === "confirmed")
+      guests?.filter((guest) => guest?.rsvp?.toLocaleLowerCase() === "confirmed")
         .length || 0,
     pending:
-      guests?.filter((guest) => guest.rsvp.toLocaleLowerCase() === "pending")
+      guests?.filter((guest) => guest?.rsvp?.toLocaleLowerCase() === "pending")
         .length || 0,
     declined:
-      guests?.filter((guest) => guest.rsvp.toLocaleLowerCase() === "declined")
+      guests?.filter((guest) => guest?.rsvp?.toLocaleLowerCase() === "declined")
         .length || 0,
   };
 
