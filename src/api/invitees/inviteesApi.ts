@@ -50,6 +50,38 @@ export const deleteInvitee = async (id: string, weddingId?: string) => {
 };
 
 /**
+ * Bulk update multiple invitees for the current user's wedding
+ * @param updates Array of objects with {id, data} to update
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
+ */
+export const bulkUpdateInvitees = async (
+  updates: Array<{ id: string; data: Partial<Invitee> }>,
+  weddingId?: string
+) => {
+  return await weddingFirebase.bulkUpdateDocuments<Invitee>(
+    "invitee",
+    updates,
+    weddingId
+  );
+};
+
+/**
+ * Bulk delete multiple invitees for the current user's wedding
+ * @param inviteeIds Array of invitee IDs to delete
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
+ */
+export const bulkDeleteInvitees = async (
+  inviteeIds: string[],
+  weddingId?: string
+) => {
+  return await weddingFirebase.bulkDeleteDocuments(
+    "invitee",
+    inviteeIds,
+    weddingId
+  );
+};
+
+/**
  * Creates a new invitee for the current user's wedding
  * @param invitee Invitee to create (without ID)
  * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)

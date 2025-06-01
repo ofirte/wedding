@@ -1,30 +1,58 @@
 import React from "react";
-import { TableCell, TableHead, TableRow, TableSortLabel } from "@mui/material";
+import {
+  TableCell,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  Checkbox,
+} from "@mui/material";
 import { Column } from "./DSTable";
 
-interface TableHeaderProps<T extends { id: string | number; }> {
+interface TableHeaderProps<T extends { id: string | number }> {
   columns: Column<T>[];
   orderBy: string;
   order: "asc" | "desc";
   onRequestSort: (columnId: string) => void;
+  showSelectColumn?: boolean;
+  isAllSelected?: boolean;
+  isIndeterminate?: boolean;
+  onSelectAll?: (isSelected: boolean) => void;
 }
 
 /**
  * TableHeader component - handles column headers and sorting
  */
-const TableHeader = <T extends { id: string | number; },>({ 
-  columns, 
-  orderBy, 
-  order, 
-  onRequestSort 
+const TableHeader = <T extends { id: string | number }>({
+  columns,
+  orderBy,
+  order,
+  onRequestSort,
+  showSelectColumn = false,
+  isAllSelected = false,
+  isIndeterminate = false,
+  onSelectAll,
 }: TableHeaderProps<T>) => {
   const createSortHandler = (columnId: string) => () => {
     onRequestSort(columnId);
   };
 
+  const handleSelectAllChange = (_: React.ChangeEvent<HTMLInputElement>) => {
+    onSelectAll?.(!(isAllSelected || isIndeterminate));
+  };
+
   return (
     <TableHead>
       <TableRow>
+        {showSelectColumn && (
+          <TableCell align="center" sx={{ width: "48px", minWidth: "48px" }}>
+            <Checkbox
+              checked={isAllSelected}
+              indeterminate={isIndeterminate}
+              onChange={handleSelectAllChange}
+              color="primary"
+            />
+          </TableCell>
+        )}
         {columns.map((column) => (
           <TableCell key={column.id} align="center">
             {column.sortable ? (

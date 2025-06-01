@@ -8,7 +8,8 @@ import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { useCreateInvitee } from "../../hooks/invitees/useCreateInvitee";
 import { useUpdateInvitee } from "../../hooks/invitees/useUpdateInvitee";
 import { useDeleteInvitee } from "../../hooks/invitees/useDeleteInvitee";
-import { useQueryClient } from "@tanstack/react-query";
+import { useBulkUpdateInvitees } from "../../hooks/invitees/useBulkUpdateInvitees";
+import { useBulkDeleteInvitees } from "../../hooks/invitees/useBulkDeleteInvitees";
 import InviteeTable from "./InviteeTable";
 import { useTranslation } from "../../localization/LocalizationContext";
 
@@ -36,6 +37,8 @@ const WeddingInviteTable = () => {
   const { mutate: createInvitee } = useCreateInvitee();
   const { mutate: updateInvitee } = useUpdateInvitee();
   const { mutate: deleteInvitee } = useDeleteInvitee();
+  const { mutate: bulkUpdateInvitees } = useBulkUpdateInvitees();
+  const { mutate: bulkDeleteInvitees } = useBulkDeleteInvitees();
 
   const handleDialogOpen = () => {
     setEditingInvitee(null);
@@ -102,6 +105,37 @@ const WeddingInviteTable = () => {
     }
   };
 
+  const handleBulkUpdate = async (
+    invitees: Invitee[],
+    updates: Partial<Invitee>
+  ) => {
+    try {
+      const cleanUpdates = Object.fromEntries(
+        Object.entries(updates).filter(
+          ([_, value]) => value !== "" && value !== null && value !== undefined
+        )
+      );
+      const bulkUpdates = invitees.map((invitee) => ({
+        id: invitee.id,
+        data: cleanUpdates,
+      }));
+
+      bulkUpdateInvitees(bulkUpdates);
+    } catch (error) {
+      console.error("Error updating invitees in bulk: ", error);
+    }
+  };
+
+  const handleBulkDelete = async (invitees: Invitee[]) => {
+    try {
+      // Use the bulk delete hook with proper batch operations
+      const inviteeIds = invitees.map((invitee) => invitee.id);
+      bulkDeleteInvitees(inviteeIds);
+    } catch (error) {
+      console.error("Error deleting invitees in bulk: ", error);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -154,6 +188,8 @@ const WeddingInviteTable = () => {
             invitees={invitees}
             onDeleteInvitee={handleDelete}
             onEditInvitee={handleEditStart}
+            onBulkUpdate={handleBulkUpdate}
+            onBulkDelete={handleBulkDelete}
             showExport={true}
             onDisplayDataChange={(data: Invitee[]) =>
               setDisplayedInvitees(data)

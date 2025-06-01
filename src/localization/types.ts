@@ -152,6 +152,10 @@ export interface Translations {
     invitationLinkCopied: string;
     shareViaEmail: string;
     shareViaWhatsApp: string;
+    selected: string;
+    noChange: string;
+    more: string;
+    update: string;
   };
   nav: {
     home: string;
@@ -202,12 +206,20 @@ export interface Translations {
     newGuestDetails: string;
     rsvpStatus: string;
     attendance: string;
+    attendanceHelper: string;
     relation: string;
     amount: string;
     amountConfirm: string;
     cellphone: string;
     groom: string;
     bride: string;
+    bulkUpdate: string;
+    bulkDelete: string;
+    bulkUpdateTitle: string;
+    bulkUpdateDescription: string;
+    bulkDeleteTitle: string;
+    bulkDeleteConfirmation: string;
+    selectedGuests: string;
   };
   tasks: {
     title: string;

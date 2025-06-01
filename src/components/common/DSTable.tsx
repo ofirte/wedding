@@ -36,6 +36,9 @@ type DSTableProps<T extends { id: string | number }> = {
   onDisplayedDataChange?: (data: T[]) => void;
   showExport?: boolean;
   exportFilename?: string;
+  showSelectColumn?: boolean;
+  onSelectionChange?: (selectedRows: T[]) => void;
+  BulkActions?: React.JSX.Element | null;
 };
 
 type Order = "asc" | "desc";
@@ -46,11 +49,15 @@ const DSTable: FC<DSTableProps<any>> = ({
   onDisplayedDataChange,
   showExport = false,
   exportFilename = "export",
+  showSelectColumn = false,
+  onSelectionChange,
+  BulkActions,
 }) => {
   const [orderBy, setOrderBy] = useState<string>("");
   const [order, setOrder] = useState<Order>("asc");
   const [displayedData, setDisplayedData] = useState<any[]>([]);
   const [filterStates, setFilterStates] = useState<FilterState[]>([]);
+  const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const { t } = useTranslation();
   const resolvedFilterConfigs = useMemo(
     () =>
@@ -87,6 +94,26 @@ const DSTable: FC<DSTableProps<any>> = ({
     onFilterSortChange();
   }, [filterStates, orderBy, order, data]);
 
+  const handleRowSelect = (row: any, isSelected: boolean) => {
+    const newSelectedRows = isSelected
+      ? [...selectedRows, row]
+      : selectedRows.filter((selectedRow) => selectedRow.id !== row.id);
+
+    setSelectedRows(newSelectedRows);
+    onSelectionChange?.(newSelectedRows);
+  };
+
+  const handleSelectAll = (isSelected: boolean) => {
+    const newSelectedRows = isSelected ? [...displayedData] : [];
+    setSelectedRows(newSelectedRows);
+    onSelectionChange?.(newSelectedRows);
+  };
+
+  const isAllSelected =
+    displayedData.length > 0 && selectedRows.length === displayedData.length;
+  const isIndeterminate =
+    selectedRows.length > 0 && selectedRows.length < displayedData.length;
+
   // Initialize the Excel export hook
   const { exportData } = useExcelExport(exportFilename);
 
@@ -115,7 +142,7 @@ const DSTable: FC<DSTableProps<any>> = ({
               />
             </Box>
           )}
-
+          {selectedRows.length > 0 && BulkActions}
           {showExport && (
             <Button
               variant="outlined"
@@ -143,16 +170,26 @@ const DSTable: FC<DSTableProps<any>> = ({
           },
         }}
       >
-        <Table stickyHeader>
+        <Table stickyHeader sx={{ tableLayout: "fixed", width: "100%" }}>
           <TableHeader
             columns={columns}
             orderBy={orderBy}
             order={order}
             onRequestSort={handleRequestSort}
+            showSelectColumn={showSelectColumn}
+            isAllSelected={isAllSelected}
+            isIndeterminate={isIndeterminate}
+            onSelectAll={handleSelectAll}
           />
 
           <TableBody>
-            <TableContent columns={columns} data={displayedData} />
+            <TableContent
+              columns={columns}
+              data={displayedData}
+              showSelectColumn={showSelectColumn}
+              selectedRows={selectedRows}
+              onRowSelect={handleRowSelect}
+            />
           </TableBody>
         </Table>
       </TableContainer>

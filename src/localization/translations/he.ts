@@ -124,6 +124,10 @@ export const hebrewTranslations: Translations = {
     invitationLinkCopied: "קישור ההזמנה הועתק ללוח!",
     shareViaEmail: "שתף באמצעות אימייל",
     shareViaWhatsApp: "שתף באמצעות וואטסאפ",
+    selected: "{{count}} נבחרו",
+    noChange: "אין שינוי",
+    more: "עוד",
+    update: "עדכן",
   },
   nav: {
     home: "בית",
@@ -180,6 +184,15 @@ export const hebrewTranslations: Translations = {
     cellphone: "נייד",
     groom: "חתן",
     bride: "כלה",
+    attendanceHelper: "הזן אחוז הגעה (0-100%)",
+    bulkUpdate: "עדכון קבוצתי",
+    bulkDelete: "מחיקה קבוצתית",
+    bulkUpdateTitle: "עדכן אורחים נבחרים",
+    bulkUpdateDescription: "עדכן {{count}} אורחים נבחרים",
+    bulkDeleteTitle: "מחק אורחים נבחרים",
+    bulkDeleteConfirmation:
+      "האם אתה בטוח שברצונך למחוק {{count}} אורחים נבחרים?",
+    selectedGuests: "אורחים נבחרים",
   },
   tasks: {
     title: "משימות חתונה",

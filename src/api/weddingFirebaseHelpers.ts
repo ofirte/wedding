@@ -7,13 +7,10 @@ import {
   getDoc,
   setDoc,
   onSnapshot,
-  query,
-  where,
-  Query,
   DocumentReference,
   CollectionReference,
-  Firestore,
   Unsubscribe,
+  writeBatch,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import { getCurrentUserWeddingId } from "./auth/authApi";
@@ -27,17 +24,22 @@ class WeddingFirebaseService {
    * @param collectionName The name of the collection to reference
    * @param weddingId Optional wedding ID (will attempt to get current user's wedding ID if not provided)
    */
-  async getCollectionRef<T = any>(
-    collectionName: string,
-    weddingId?: string
-  ): Promise<CollectionReference<T>> {
+
+  async getWeddingId(weddingId?: string): Promise<string> {
     const resolvedWeddingId = weddingId || (await this.resolveWeddingId());
     if (!resolvedWeddingId) {
       throw new Error(
         "No wedding ID available - please create or join a wedding first"
       );
     }
+    return resolvedWeddingId;
+  }
 
+  async getCollectionRef<T = any>(
+    collectionName: string,
+    weddingId?: string
+  ): Promise<CollectionReference<T>> {
+    const resolvedWeddingId = await this.getWeddingId(weddingId);
     return collection(
       db,
       "weddings",
@@ -57,13 +59,7 @@ class WeddingFirebaseService {
     docId: string,
     weddingId?: string
   ): Promise<DocumentReference<T>> {
-    const resolvedWeddingId = weddingId || (await this.resolveWeddingId());
-    if (!resolvedWeddingId) {
-      throw new Error(
-        "No wedding ID available - please create or join a wedding first"
-      );
-    }
-
+    const resolvedWeddingId = await this.getWeddingId(weddingId);
     return doc(
       db,
       "weddings",
@@ -84,9 +80,11 @@ class WeddingFirebaseService {
     data: T,
     weddingId?: string
   ) {
+    const resolvedWeddingId = await this.getWeddingId(weddingId);
+
     const collectionRef = await this.getCollectionRef(
       collectionName,
-      weddingId
+      resolvedWeddingId
     );
     return addDoc(collectionRef, data);
   }
@@ -104,7 +102,12 @@ class WeddingFirebaseService {
     data: Partial<T>,
     weddingId?: string
   ) {
-    const docRef = await this.getDocRef(collectionName, docId, weddingId);
+    const resolvedWeddingId = await this.getWeddingId(weddingId);
+    const docRef = await this.getDocRef(
+      collectionName,
+      docId,
+      resolvedWeddingId
+    );
 
     // Remove undefined fields to prevent Firestore errors
     const sanitizedFields = Object.entries(data).reduce((acc, [key, value]) => {
@@ -128,7 +131,12 @@ class WeddingFirebaseService {
     docId: string,
     weddingId?: string
   ) {
-    const docRef = await this.getDocRef(collectionName, docId, weddingId);
+    const resolvedWeddingId = await this.getWeddingId(weddingId);
+    const docRef = await this.getDocRef(
+      collectionName,
+      docId,
+      resolvedWeddingId
+    );
     return deleteDoc(docRef);
   }
 
@@ -143,7 +151,12 @@ class WeddingFirebaseService {
     docId: string,
     weddingId?: string
   ): Promise<T | null> {
-    const docRef = await this.getDocRef<T>(collectionName, docId, weddingId);
+    const resolvedWeddingId = await this.getWeddingId(weddingId);
+    const docRef = await this.getDocRef<T>(
+      collectionName,
+      docId,
+      resolvedWeddingId
+    );
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -166,7 +179,12 @@ class WeddingFirebaseService {
     data: T,
     weddingId?: string
   ) {
-    const docRef = await this.getDocRef(collectionName, docId, weddingId);
+    const resolvedWeddingId = await this.getWeddingId(weddingId);
+    const docRef = await this.getDocRef(
+      collectionName,
+      docId,
+      resolvedWeddingId
+    );
     return setDoc(docRef, data);
   }
 
@@ -184,9 +202,10 @@ class WeddingFirebaseService {
     weddingId?: string
   ): Promise<Unsubscribe> {
     try {
+      const resolvedWeddingId = await this.getWeddingId(weddingId);
       const collectionRef = await this.getCollectionRef<T>(
         collectionName,
-        weddingId
+        resolvedWeddingId
       );
 
       return onSnapshot(
@@ -222,13 +241,7 @@ class WeddingFirebaseService {
     defaultData: T,
     weddingId?: string
   ): Promise<T> {
-    const resolvedWeddingId = weddingId || (await this.resolveWeddingId());
-    if (!resolvedWeddingId) {
-      throw new Error(
-        "No wedding ID available - please create or join a wedding first"
-      );
-    }
-
+    const resolvedWeddingId = await this.getWeddingId(weddingId);
     const settingsRef = doc(
       db,
       "weddings",
@@ -258,7 +271,78 @@ class WeddingFirebaseService {
     data: Partial<T>,
     weddingId?: string
   ) {
-    return this.updateDocument("settings", settingId, data, weddingId);
+    const resolvedWeddingId = await this.getWeddingId(weddingId);
+    return this.updateDocument("settings", settingId, data, resolvedWeddingId);
+  }
+
+  /**
+   * Bulk update multiple documents in a collection
+   * @param collectionName The name of the collection
+   * @param updates Array of objects with {id, data} to update
+   * @param weddingId Optional wedding ID (will attempt to get current user's wedding ID if not provided)
+   */
+  async bulkUpdateDocuments<T extends object>(
+    collectionName: string,
+    updates: Array<{ id: string; data: Partial<T> }>,
+    weddingId?: string
+  ) {
+    const resolvedWeddingId = await this.getWeddingId(weddingId);
+
+    const batch = writeBatch(db);
+
+    for (const update of updates) {
+      const docRef = doc(
+        db,
+        "weddings",
+        resolvedWeddingId,
+        collectionName,
+        update.id
+      );
+
+      // Remove undefined fields to prevent Firestore errors
+      const sanitizedFields = Object.entries(update.data).reduce(
+        (acc, [key, value]) => {
+          if (value !== undefined) {
+            acc[key] = value;
+          }
+          return acc;
+        },
+        {} as Record<string, any>
+      );
+
+      batch.update(docRef, sanitizedFields);
+    }
+
+    return batch.commit();
+  }
+
+  /**
+   * Bulk delete multiple documents from a collection
+   * @param collectionName The name of the collection
+   * @param docIds Array of document IDs to delete
+   * @param weddingId Optional wedding ID (will attempt to get current user's wedding ID if not provided)
+   */
+  async bulkDeleteDocuments(
+    collectionName: string,
+    docIds: string[],
+    weddingId?: string
+  ) {
+    const resolvedWeddingId = await this.getWeddingId(weddingId);
+
+    const batch = writeBatch(db);
+
+    for (const docId of docIds) {
+      const docRef = doc(
+        db,
+        "weddings",
+        resolvedWeddingId,
+        collectionName,
+        docId
+      );
+      batch.delete(docRef);
+    }
+
+    return batch.commit();
   }
 
   /**

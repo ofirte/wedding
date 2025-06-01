@@ -47,7 +47,7 @@ export const createColumns = (
     id: "percentage",
     label: t("guests.attendance"),
     sortable: true,
-    render: (invitee: Invitee) => invitee.percentage,
+    render: (invitee: Invitee) => `${invitee.percentage}%`,
     filterConfig: {
       id: "percentage",
       label: t("guests.attendance"),
