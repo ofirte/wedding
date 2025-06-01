@@ -54,7 +54,7 @@ const InviteeBulkUpdateDialog: React.FC<InviteeBulkUpdateDialogProps> = ({
           <TextField
             select
             label={t("guests.rsvpStatus")}
-            value={bulkUpdateData.rsvp || ""}
+            value={bulkUpdateData.rsvp ?? ""}
             onChange={(e) => handleBulkUpdateChange("rsvp", e.target.value)}
             fullWidth
             size="small"
@@ -68,11 +68,15 @@ const InviteeBulkUpdateDialog: React.FC<InviteeBulkUpdateDialogProps> = ({
           <TextField
             type="number"
             label={t("guests.attendance")}
-            value={bulkUpdateData.percentage || ""}
+            value={
+              bulkUpdateData.percentage !== undefined
+                ? bulkUpdateData.percentage
+                : ""
+            }
             onChange={(e) =>
               handleBulkUpdateChange(
                 "percentage",
-                parseInt(e.target.value) || 0
+                e.target.value === "" ? undefined : Number(e.target.value)
               )
             }
             fullWidth
@@ -84,7 +88,7 @@ const InviteeBulkUpdateDialog: React.FC<InviteeBulkUpdateDialogProps> = ({
           <TextField
             select
             label={t("guests.side")}
-            value={bulkUpdateData.side || ""}
+            value={bulkUpdateData.side ?? ""}
             onChange={(e) => handleBulkUpdateChange("side", e.target.value)}
             fullWidth
             size="small"
@@ -93,6 +97,24 @@ const InviteeBulkUpdateDialog: React.FC<InviteeBulkUpdateDialogProps> = ({
             <MenuItem value="חתן">{t("guests.groom")}</MenuItem>
             <MenuItem value="כלה">{t("guests.bride")}</MenuItem>
           </TextField>
+
+          <TextField
+            type="number"
+            label={t("guests.amountConfirm")}
+            value={
+              bulkUpdateData.amountConfirm !== undefined
+                ? bulkUpdateData.amountConfirm
+                : ""
+            }
+            onChange={(e) =>
+              handleBulkUpdateChange(
+                "amountConfirm",
+                e.target.value === "" ? undefined : Number(e.target.value)
+              )
+            }
+            fullWidth
+            size="small"
+          />
         </Stack>
       </DialogContent>
       <DialogActions>
