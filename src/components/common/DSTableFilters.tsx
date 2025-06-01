@@ -85,8 +85,8 @@ const DSTableFilters: React.FC<DSTableFiltersProps> = ({
   };
 
   return (
-    <Box sx={{ mb: 2 }}>
-      <Stack direction="row" spacing={1} alignItems="center">
+    <Box>
+      <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
         <Button
           size="small"
           startIcon={<FilterAltIcon />}
@@ -102,13 +102,9 @@ const DSTableFilters: React.FC<DSTableFiltersProps> = ({
         <FilterChips
           filters={filters}
           onRemoveFilterValue={handleRemoveFilterValue}
+          showClearAll={getActiveFiltersCount() > 0}
+          onClearAll={handleClearFilters}
         />
-
-        {getActiveFiltersCount() > 0 && (
-          <Button size="small" onClick={handleClearFilters} sx={{ height: 32 }}>
-            Clear all
-          </Button>
-        )}
       </Stack>
 
       <FilterPopover

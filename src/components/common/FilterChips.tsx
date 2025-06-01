@@ -1,10 +1,12 @@
 import React from "react";
-import { Chip, Stack } from "@mui/material";
+import { Chip, Stack, Button } from "@mui/material";
 import { FilterState } from "./DSTableFilters";
 
 interface FilterChipsProps {
   filters: FilterState[];
   onRemoveFilterValue: (filterId: string, value: any) => void;
+  showClearAll?: boolean;
+  onClearAll?: () => void;
 }
 
 /**
@@ -13,6 +15,8 @@ interface FilterChipsProps {
 const FilterChips: React.FC<FilterChipsProps> = ({
   filters,
   onRemoveFilterValue,
+  showClearAll = false,
+  onClearAll,
 }) => {
   const getFilterValueDisplay = (filterId: string, value: any): string => {
     return String(value);
@@ -29,6 +33,11 @@ const FilterChips: React.FC<FilterChipsProps> = ({
             size="small"
           />
         ))
+      )}
+      {showClearAll && onClearAll && (
+        <Button size="small" onClick={onClearAll} sx={{ ml: 1 }}>
+          Clear all
+        </Button>
       )}
     </Stack>
   );
