@@ -92,8 +92,7 @@ const DSTableFilters: React.FC<DSTableFiltersProps> = ({
           startIcon={<FilterAltIcon />}
           onClick={handleOpenFilters}
           variant="outlined"
-          color={getActiveFiltersCount() > 0 ? "primary" : "inherit"}
-          sx={{ height: 32 }}
+          color={"primary"}
         >
           {t("common.filters")}
           {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}

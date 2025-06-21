@@ -128,6 +128,7 @@ export const hebrewTranslations: Translations = {
     noChange: "אין שינוי",
     more: "עוד",
     update: "עדכן",
+    clearAll: "נקה הכל",
   },
   nav: {
     home: "בית",

@@ -156,6 +156,7 @@ export interface Translations {
     noChange: string;
     more: string;
     update: string;
+    clearAll: string;
   };
   nav: {
     home: string;
@@ -163,6 +164,7 @@ export interface Translations {
     guests: string;
     tasks: string;
     wedding: string;
+
   };
   home: {
     title: string;

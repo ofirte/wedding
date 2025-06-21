@@ -1,6 +1,7 @@
 import React from "react";
 import { Chip, Stack, Button } from "@mui/material";
 import { FilterState } from "./DSTableFilters";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface FilterChipsProps {
   filters: FilterState[];
@@ -18,25 +19,42 @@ const FilterChips: React.FC<FilterChipsProps> = ({
   showClearAll = false,
   onClearAll,
 }) => {
+  const { t } = useTranslation();
   const getFilterValueDisplay = (filterId: string, value: any): string => {
     return String(value);
   };
 
   return (
-    <Stack direction="row" spacing={1} sx={{ flexGrow: 1, overflow: "auto" }}>
-      {filters.flatMap((filter: FilterState) =>
-        filter.value.map((val: any) => (
-          <Chip
-            key={`${filter.id}-${val}`}
-            label={getFilterValueDisplay(filter.id, val)}
-            onDelete={() => onRemoveFilterValue(filter.id, val)}
-            size="small"
-          />
-        ))
-      )}
+    <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          alignItems: "center",
+          overflow: "auto",
+          maxWidth: ({ spacing }) => spacing(30),
+          flexShrink: 1,
+        }}
+      >
+        {filters.flatMap((filter: FilterState) =>
+          filter.value.map((val: any) => (
+            <Chip
+              key={`${filter.id}-${val}`}
+              sx={{
+                bgcolor: ({ palette }) => palette.primary.light,
+                color: ({ palette }) => palette.primary.contrastText,
+                flexShrink: 0,
+              }}
+              label={getFilterValueDisplay(filter.id, val)}
+              onDelete={() => onRemoveFilterValue(filter.id, val)}
+              size="small"
+            />
+          ))
+        )}
+      </Stack>
       {showClearAll && onClearAll && (
-        <Button size="small" onClick={onClearAll} sx={{ ml: 1 }}>
-          Clear all
+        <Button size="small" onClick={onClearAll} sx={{ flexShrink: 0 }}>
+          {t("common.clearAll")}
         </Button>
       )}
     </Stack>

@@ -128,6 +128,7 @@ export const englishTranslations: Translations = {
     noChange: "No change",
     more: "more",
     update: "Update",
+    clearAll: "Clear All",
   },
   nav: {
     home: "Home",
