@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Box, Button, Typography, Stack } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
 import SummaryInfo from "./SummaryInfo";
 import { createColumns } from "./InviteListColumns";
 import AddGuestsDialog from "./AddGuestsDialog";
+import ContactMatcher from "../contacts/ContactMatcher";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { useCreateInvitee } from "../../hooks/invitees/useCreateInvitee";
 import { useUpdateInvitee } from "../../hooks/invitees/useUpdateInvitee";
@@ -12,6 +14,7 @@ import { useBulkUpdateInvitees } from "../../hooks/invitees/useBulkUpdateInvitee
 import { useBulkDeleteInvitees } from "../../hooks/invitees/useBulkDeleteInvitees";
 import InviteeTable from "./InviteeTable";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { isGoogleContactsConfigured } from "../../api/contacts/googleContactsApi";
 
 export interface Invitee {
   id: string;
@@ -31,6 +34,7 @@ const WeddingInviteTable = () => {
   const [displayedInvitees, setDisplayedInvitees] = useState<Invitee[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingInvitee, setEditingInvitee] = useState<Invitee | null>(null);
+  const [isContactMatcherOpen, setIsContactMatcherOpen] = useState(false);
   const { t } = useTranslation();
 
   // Use the mutation hooks
@@ -136,6 +140,24 @@ const WeddingInviteTable = () => {
     }
   };
 
+  const handleContactMatcherOpen = () => {
+    setIsContactMatcherOpen(true);
+  };
+
+  const handleContactMatcherClose = () => {
+    setIsContactMatcherOpen(false);
+  };
+
+  const handleContactMatcherComplete = () => {
+    // Optionally show a success message or refresh data
+    setIsContactMatcherOpen(false);
+  };
+
+  // Count invitees without phone numbers
+  const inviteesNeedingPhones = invitees.filter(
+    (invitee) => !invitee.cellphone || invitee.cellphone.trim() === ""
+  ).length;
+
   return (
     <Box
       sx={{
@@ -170,17 +192,32 @@ const WeddingInviteTable = () => {
             >
               {t("guests.title")}
             </Typography>
-            <Button
-              variant="contained"
-              startIcon={<PersonAddIcon />}
-              onClick={handleDialogOpen}
-              color="info"
-              sx={{
-                borderRadius: 2,
-              }}
-            >
-              {t("guests.addGuest")}
-            </Button>
+            <Stack direction="row" spacing={2}>
+              {inviteesNeedingPhones > 0 && isGoogleContactsConfigured() && (
+                <Button
+                  variant="outlined"
+                  startIcon={<ContactPhoneIcon />}
+                  onClick={handleContactMatcherOpen}
+                  color="primary"
+                  sx={{
+                    borderRadius: 2,
+                  }}
+                >
+                  {t("contacts.matchContacts")} ({inviteesNeedingPhones})
+                </Button>
+              )}
+              <Button
+                variant="contained"
+                startIcon={<PersonAddIcon />}
+                onClick={handleDialogOpen}
+                color="info"
+                sx={{
+                  borderRadius: 2,
+                }}
+              >
+                {t("guests.addGuest")}
+              </Button>
+            </Stack>
           </Box>
           <SummaryInfo invitees={displayedInvitees} />
           <InviteeTable
@@ -203,6 +240,12 @@ const WeddingInviteTable = () => {
         onSave={handleSaveInvitee}
         relationOptions={existingRelations}
         editInvitee={editingInvitee}
+      />
+      <ContactMatcher
+        open={isContactMatcherOpen}
+        onClose={handleContactMatcherClose}
+        invitees={invitees}
+        onComplete={handleContactMatcherComplete}
       />
     </Box>
   );

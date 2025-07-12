@@ -164,7 +164,6 @@ export interface Translations {
     guests: string;
     tasks: string;
     wedding: string;
-
   };
   home: {
     title: string;
@@ -263,5 +262,32 @@ export interface Translations {
     exampleWeddingId: string;
     enterInvitationCode: string;
     whatNeedsToBeDone: string;
+  };
+  contacts: {
+    matchContacts: string;
+    accessRequired: string;
+    accessDescription: string;
+    grantAccess: string;
+    searchContacts: string;
+    selectedContact: string;
+    noContactsFound: string;
+    tryDifferentSearch: string;
+    noPhoneNumber: string;
+    currentlyMatching: string;
+    confirmMatch: string;
+    skip: string;
+    matchingComplete: string;
+    completedDescription: string;
+    progressLabel: string;
+    noInviteesNeedPhone: string;
+    next: string;
+    previous: string;
+    done: string;
+    close: string;
+    inviteeName: string;
+    editNameHint: string;
+    contactsFound: string;
+    showingAllContacts: string;
+    searchPlaceholder: string;
   };
 }
