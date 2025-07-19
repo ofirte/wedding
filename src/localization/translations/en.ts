@@ -135,6 +135,7 @@ export const englishTranslations: Translations = {
     budget: "Budget",
     guests: "Guests",
     tasks: "Tasks",
+    rsvp: "RSVP",
     wedding: "Wedding",
   },
   home: {

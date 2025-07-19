@@ -163,6 +163,7 @@ export interface Translations {
     budget: string;
     guests: string;
     tasks: string;
+    rsvp: string;
     wedding: string;
   };
   home: {

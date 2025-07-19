@@ -5,6 +5,7 @@ import WeddingInviteTable from "./components/invitees/InviteList";
 import BudgetPlanner from "./components/budget/BudgetPlanner";
 import Home from "./components/home/Home";
 import TaskManager from "./components/tasks/TaskManager";
+import RSVPManager from "./components/rsvp/RSVPManager";
 import LoginPage from "./components/auth/LoginPage";
 import RegisterPage from "./components/auth/RegisterPage";
 import SetupWeddingPage from "./components/wedding/SetupWeddingPage";
@@ -26,6 +27,7 @@ const AppRoutes: FC = () => {
             <Route path="invite" element={<WeddingInviteTable />} />
             <Route path="budget" element={<BudgetPlanner />} />
             <Route path="tasks" element={<TaskManager />} />
+            <Route path="rsvp" element={<RSVPManager />} />
           </Route>
         </Route>
       </Route>

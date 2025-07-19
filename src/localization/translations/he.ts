@@ -135,6 +135,7 @@ export const hebrewTranslations: Translations = {
     budget: "תקציב",
     guests: "אורחים",
     tasks: "משימות",
+    rsvp: "אישור הגעה",
     wedding: "חתונה",
   },
   home: {

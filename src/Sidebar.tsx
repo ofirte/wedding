@@ -19,6 +19,7 @@ import {
   List as ListIcon,
   Money as MoneyIcon,
   Assignment as TaskIcon,
+  WhatsApp as RSVPIcon,
   Logout as LogoutIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router";
@@ -40,6 +41,7 @@ const Sidebar: React.FC = () => {
     { text: t("nav.guests"), icon: <ListIcon />, path: "/invite" },
     { text: t("nav.budget"), icon: <MoneyIcon />, path: "/budget" },
     { text: t("nav.tasks"), icon: <TaskIcon />, path: "/tasks" },
+    { text: t("nav.rsvp"), icon: <RSVPIcon />, path: "/rsvp" },
   ];
 
   // Function to check if a menu item is currently active
