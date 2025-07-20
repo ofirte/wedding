@@ -5,6 +5,7 @@ import { defineString } from "firebase-functions/params";
 import express from "express";
 import cors from "cors";
 import twilio from "twilio";
+import { MessageTemplatesResponse } from "./messagesService/types";
 
 // Initialize Firebase Admin SDK
 initializeApp();
@@ -67,5 +68,33 @@ api.post("/messages/send-message", async (req, res) => {
     });
   }
 });
+
+api.get("/messages/templates", async (req, res) => {
+  const accountSid = twilioAccountSid.value();
+  const authToken = twilioAuthToken.value();
+  const twilioClient =
+    accountSid && authToken ? twilio(accountSid, authToken) : null;
+
+  if (!twilioClient) {
+    return res.status(500).json({ error: "Twilio client not configured." });
+  }
+
+  try {
+    const contentList = await twilioClient.content.v2.contents.list();
+    const response: MessageTemplatesResponse = {
+      templates: contentList,
+      length: contentList.length,
+    };
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.error("Error fetching Twilio content templates:", error);
+    return res.status(500).json({
+      error: "Failed to fetch message templates",
+      details: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
 
 export const app = onRequest(api);

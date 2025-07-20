@@ -5,6 +5,7 @@ import {
   Send as SendIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
+import MessageTemplateTable from "./MessageTemplateTable";
 
 const TabValue = {
   TEMPLATES: "templates",
@@ -52,16 +53,7 @@ const RSVPManager: FC = () => {
       </Tabs>
 
       <Box sx={{ minHeight: 400 }}>
-        {activeTab === TabValue.TEMPLATES && (
-          <Box sx={{ p: 4, textAlign: "center" }}>
-            <Typography variant="h6" color="text.secondary" gutterBottom>
-              {t("rsvp.templates")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Message templates will be displayed here
-            </Typography>
-          </Box>
-        )}
+        {activeTab === TabValue.TEMPLATES && <MessageTemplateTable />}
 
         {activeTab === TabValue.SEND && (
           <Box sx={{ p: 4, textAlign: "center" }}>

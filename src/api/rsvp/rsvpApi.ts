@@ -1,27 +1,4 @@
-import { weddingFirebase } from "../weddingFirebaseHelpers";
-
-// Types for message-related operations
-export interface MessageContent {
-  id: string;
-  contentSid: string;
-  name: string;
-  variables: string[];
-  language: string;
-  type: "whatsapp" | "sms";
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface MessageTemplate {
-  id: string;
-  name: string;
-  contentSid: string;
-  variables: Record<string, string>;
-  type: "whatsapp" | "sms";
-  weddingId: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { ContentInstance } from "twilio/lib/rest/content/v2/content";
 
 export interface SendMessageRequest {
   to: string;
@@ -40,27 +17,12 @@ export interface SendMessageResponse {
   errorMessage?: string;
 }
 
-export interface MessageLog {
-  id: string;
-  messageSid: string;
-  to: string;
-  from: string;
-  contentSid: string;
-  contentVariables: Record<string, string>;
-  status:
-    | "queued"
-    | "sending"
-    | "sent"
-    | "failed"
-    | "delivered"
-    | "undelivered";
-  type: "whatsapp" | "sms";
-  sentAt: Date;
-  deliveredAt?: Date;
-  errorMessage?: string;
-  weddingId: string;
-  inviteeId?: string;
-  templateId?: string;
+// Types for Twilio Content Templates
+export type ContentInsight = ContentInstance;
+
+export interface MessageTemplatesResponse {
+  templates: ContentInsight[];
+  length: number;
 }
 
 const getBaseUrl = (): string => {
@@ -81,7 +43,7 @@ export const sendMessage = async (
   messageData: SendMessageRequest,
   weddingId?: string
 ): Promise<SendMessageResponse> => {
-  console.log(BASE_URL)
+  console.log(BASE_URL);
   try {
     const sendMessageFunction = await fetch(
       `${BASE_URL}/messages/send-message`,
@@ -133,3 +95,24 @@ export const sendBulkMessages = async (
   return results;
 };
 
+export const getMessageTemplates =
+  async (): Promise<MessageTemplatesResponse> => {
+    try {
+      const response = await fetch(`${BASE_URL}/messages/templates`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = (await response.json()) as MessageTemplatesResponse;
+      return data;
+    } catch (error) {
+      console.error("Error fetching message templates:", error);
+      throw error;
+    }
+  };
