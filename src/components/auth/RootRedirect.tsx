@@ -1,6 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router";
 import { useAuth } from "../../hooks/auth/AuthContext";
+import LandingPage from "../landing/LandingPage";
 
 const RootRedirect: React.FC = () => {
   const { currentUser } = useAuth();
@@ -11,7 +12,11 @@ const RootRedirect: React.FC = () => {
   } else {
     // If user is not authenticated, redirect to login page
     const search = window.location.search;
-    return <Navigate to={`/login${search}`} replace />;
+    if (search) {
+      // Preserve any query parameters in the redirect
+      return <Navigate to={`/login${search}`} replace />;
+    }
+    return <LandingPage />; // Redirect to landing page if no query parameters
   }
 };
 
