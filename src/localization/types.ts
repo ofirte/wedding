@@ -291,4 +291,9 @@ export interface Translations {
     showingAllContacts: string;
     searchPlaceholder: string;
   };
+  rsvp: {
+    rsvpManagement: string;
+    templates: string;
+    sendRSVP: string;
+  };
 }

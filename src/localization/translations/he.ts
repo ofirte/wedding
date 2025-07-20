@@ -265,4 +265,9 @@ export const hebrewTranslations: Translations = {
     showingAllContacts: "מציג את כל אנשי הקשר",
     searchPlaceholder: "ערוך שם או הקלד לחיפוש אנשי קשר...",
   },
+  rsvp: {
+    rsvpManagement: "ניהול אישורי הגעה",
+    templates: "תבניות",
+    sendRSVP: "שלח אישור הגעה",
+  },
 };

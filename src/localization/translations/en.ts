@@ -266,4 +266,9 @@ export const englishTranslations: Translations = {
     showingAllContacts: "Showing all contacts",
     searchPlaceholder: "Edit name or type to search contacts...",
   },
+  rsvp: {
+    rsvpManagement: "RSVP Management",
+    templates: "Templates",
+    sendRSVP: "Send RSVP",
+  },
 };

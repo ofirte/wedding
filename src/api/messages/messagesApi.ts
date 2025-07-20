@@ -63,9 +63,7 @@ export interface MessageLog {
   templateId?: string;
 }
 
-// Determine the base URL based on environment
 const getBaseUrl = (): string => {
-  // Check if we're in development mode
   const isDevelopment =
     process.env.NODE_ENV === "development" ||
     window.location.hostname === "localhost" ||
@@ -78,11 +76,7 @@ const getBaseUrl = (): string => {
 };
 
 const BASE_URL = getBaseUrl();
-/**
- * Send a message using Twilio via Firebase Functions
- * @param messageData The message data to send
- * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
- */
+
 export const sendMessage = async (
   messageData: SendMessageRequest,
   weddingId?: string
@@ -106,23 +100,6 @@ export const sendMessage = async (
 
     const response = (await sendMessageFunction.json()) as SendMessageResponse;
 
-    // Log the message attempt
-    await logMessage(
-      {
-        messageSid: response.sid,
-        to: messageData.to,
-        from: response.from,
-        contentSid: messageData.contentSid,
-        contentVariables: messageData.contentVariables,
-        status: response.status as MessageLog["status"],
-        type: messageData.to.startsWith("whatsapp:") ? "whatsapp" : "sms",
-        sentAt: new Date(),
-        errorMessage: response.errorMessage,
-        templateId: messageData.templateId,
-      },
-      weddingId
-    );
-
     return response;
   } catch (error) {
     console.error("Error sending message:", error);
@@ -130,11 +107,6 @@ export const sendMessage = async (
   }
 };
 
-/**
- * Send bulk messages to multiple recipients
- * @param messages Array of message requests
- * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
- */
 export const sendBulkMessages = async (
   messages: SendMessageRequest[],
   weddingId?: string
@@ -147,7 +119,6 @@ export const sendBulkMessages = async (
       results.push(result);
     } catch (error) {
       console.error(`Error sending message to ${message.to}:`, error);
-      // Continue with other messages even if one fails
       results.push({
         sid: "",
         status: "failed",
@@ -162,48 +133,3 @@ export const sendBulkMessages = async (
   return results;
 };
 
-/**
- * Log a message attempt to Firestore
- * @param logData The message log data
- * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
- */
-export const logMessage = async (
-  logData: Omit<MessageLog, "id" | "weddingId">,
-  weddingId?: string
-): Promise<void> => {
-  const resolvedWeddingId = weddingId || (await weddingFirebase.getWeddingId());
-
-  await weddingFirebase.addDocument(
-    "messageLogs",
-    {
-      ...logData,
-      weddingId: resolvedWeddingId,
-    },
-    weddingId
-  );
-};
-
-/**
- * Get all message logs for the current user's wedding
- * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
- */
-export const getMessageLogs = (weddingId?: string) =>
-  new Promise<MessageLog[]>((resolve, reject) => {
-    weddingFirebase
-      .listenToCollection<MessageLog>(
-        "messageLogs",
-        (logs) => resolve(logs),
-        (error) => reject(error),
-        weddingId
-      )
-      .catch((error) => {
-        console.error("Error setting up message logs listener:", error);
-        resolve([]);
-      });
-  });
-
-/**
- * Create a new message template
- * @param template Template data (without ID)
- * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
- */

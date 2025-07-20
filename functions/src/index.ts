@@ -12,10 +12,9 @@ initializeApp();
 // Define Twilio parameters
 const twilioAccountSid = defineString("TWILIO_ACCOUNT_SID");
 const twilioAuthToken = defineString("TWILIO_AUTH_TOKEN");
-const twilioWhatsAppFrom = "whatsapp:+15558047639";
-//  defineString("TWILIO_WHATSAPP_FROM", {
-//   default: "whatsapp:+14155238886",
-// });
+const twilioWhatsAppFrom = defineString("TWILIO_WHATSAPP_FROM", {
+  default: "whatsapp:+15558047639",
+});
 
 // Set global options for all functions
 setGlobalOptions({
@@ -35,15 +34,10 @@ api.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
-// Send message endpoint
 api.post("/messages/send-message", async (req, res) => {
-  // Get parameter values at runtime
-  console.log("hello from send-message");
   const accountSid = twilioAccountSid.value();
   const authToken = twilioAuthToken.value();
-  const twilioPhone = twilioWhatsAppFrom;
-
-  console.log(accountSid, authToken);
+  const twilioPhone = twilioWhatsAppFrom.value();
   const twilioClient =
     accountSid && authToken ? twilio(accountSid, authToken) : null;
   if (!twilioClient) {

@@ -1,24 +1,81 @@
-import React, { FC } from "react";
-import { useSendMessage } from "../../hooks/messages/useSendMessage";
+import React, { FC, useState } from "react";
+import { Box, Typography, Tabs, Tab } from "@mui/material";
+import {
+  Description as DescriptionIcon,
+  Send as SendIcon,
+} from "@mui/icons-material";
+import { useTranslation } from "../../localization/LocalizationContext";
+
+const TabValue = {
+  TEMPLATES: "templates",
+  SEND: "send",
+} as const;
+
+type TabValue = (typeof TabValue)[keyof typeof TabValue];
+
+const RSVPTabs = [
+  {
+    value: TabValue.TEMPLATES,
+    icon: <DescriptionIcon />,
+    labelKey: "rsvp.templates",
+  },
+  {
+    value: TabValue.SEND,
+    icon: <SendIcon />,
+    labelKey: "rsvp.sendRSVP",
+  },
+] as const;
 
 const RSVPManager: FC = () => {
-  const { mutate: sendMessage, isPending, error } = useSendMessage();
-
-  const handleSendMessage = () => {
-    sendMessage({
-      to: "whatsapp:+972587170296",
-      contentSid: "HX1e2a82319f77d62848d6f0c353cd41b5",
-      contentVariables: { "guest": "יסמין" },
-    });
+  const [activeTab, setActiveTab] = useState<TabValue>(TabValue.TEMPLATES);
+  const { t } = useTranslation();
+  const handleTabChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+    setActiveTab(newValue);
   };
+
   return (
-    <div>
-      <h1>RSVP Manager</h1>
-      <p>This is the RSVP management page.</p>
-      <button onClick={handleSendMessage} disabled={isPending}>
-        {isPending ? "Sending..." : "Send RSVP Message"}
-      </button>
-    </div>
+    <Box>
+      <Tabs
+        value={activeTab}
+        onChange={handleTabChange}
+        aria-label="RSVP management tabs"
+      >
+        {RSVPTabs.map((tab) => (
+          <Tab
+            key={tab.value}
+            value={tab.value}
+            icon={tab.icon}
+            iconPosition="start"
+            label={t(tab.labelKey)}
+          />
+        ))}
+      </Tabs>
+
+      <Box sx={{ minHeight: 400 }}>
+        {activeTab === TabValue.TEMPLATES && (
+          <Box sx={{ p: 4, textAlign: "center" }}>
+            <Typography variant="h6" color="text.secondary" gutterBottom>
+              {t("rsvp.templates")}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Message templates will be displayed here
+            </Typography>
+          </Box>
+        )}
+
+        {activeTab === TabValue.SEND && (
+          <Box sx={{ p: 4, textAlign: "center" }}>
+            <Typography variant="h6" color="text.secondary" gutterBottom>
+              {t("rsvp.sendRSVP")}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Send messages interface will be displayed here
+            </Typography>
+          </Box>
+        )}
+      </Box>
+    </Box>
   );
 };
+
 export default RSVPManager;
