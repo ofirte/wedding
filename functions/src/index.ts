@@ -27,9 +27,15 @@ setGlobalOptions({
 
 const api = express();
 
-api.use(cors({ origin: "http://localhost:3000" }));
+const corsMiddleware = cors({
+  origin: true,
+  methods: ["GET", "POST", "OPTIONS"],
+  credentials: true,
+});
+
+// apply it globally
+api.use(corsMiddleware);
 api.use(express.json());
-api.options("*", cors({ origin: "http://localhost:3000" }));
 
 api.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });

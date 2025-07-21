@@ -5,6 +5,7 @@ lib/**/*.js.map
 # TypeScript v1 declaration files
 typings/
 .env.wedding-c89a1
+.env.wedding-prod-f13a0
 # Node.js dependency directory
 node_modules/
 *.local
