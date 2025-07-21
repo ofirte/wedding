@@ -109,6 +109,7 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
           contentVariables: {
             guest: guest.name,
           },
+          userId: guest.id,
         });
       }
 

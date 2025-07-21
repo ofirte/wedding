@@ -96,5 +96,4 @@ api.get("/messages/templates", async (req, res) => {
   }
 });
 
-
 export const app = onRequest(api);

@@ -3,15 +3,18 @@ import { Box, Typography, Tabs, Tab } from "@mui/material";
 import {
   Description as DescriptionIcon,
   Send as SendIcon,
+  History as HistoryIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
 import MessageTemplateTable from "./MessageTemplateTable";
 import SendRSVPTab from "./SendRSVPTab";
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
+import MessagesLogTab from "./MessagesLogTab";
 
 const TabValue = {
   TEMPLATES: "templates",
   SEND: "send",
+  MESSAGES_LOG: "messagesLog",
 } as const;
 
 type TabValue = (typeof TabValue)[keyof typeof TabValue];
@@ -26,6 +29,11 @@ const RSVPTabs = [
     value: TabValue.SEND,
     icon: <SendIcon />,
     labelKey: "rsvp.sendRSVP",
+  },
+  {
+    value: TabValue.MESSAGES_LOG,
+    icon: <HistoryIcon />,
+    labelKey: "rsvp.messagesLog",
   },
 ] as const;
 
@@ -57,6 +65,8 @@ const RSVPManager: FC = () => {
         {activeTab === TabValue.TEMPLATES && <MessageTemplateTable />}
 
         {activeTab === TabValue.SEND && <SendRSVPTab />}
+
+        {activeTab === TabValue.MESSAGES_LOG && <MessagesLogTab />}
       </Box>
     </Box>
   );
