@@ -1,3 +1,4 @@
+import { MessageStatus } from "twilio/lib/rest/api/v2010/account/message";
 import { ContentInstance } from "twilio/lib/rest/content/v2/content";
 
 // Use Twilio's ContentInstance as the base type for ContentInsights
@@ -22,3 +23,10 @@ export interface CreateContentRequest {
 }
 
 export type CreateContentResponse = ContentInstance;
+
+// Webhook payload types
+export interface WebhookMessageStatusPayload {
+  MessageStatus: MessageStatus;
+  MessageSid: string;
+  AccountSid: string;
+}

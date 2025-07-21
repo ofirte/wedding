@@ -41,8 +41,9 @@ export interface SentMessage {
   dateSent?: string;
   dateUpdated?: string;
   errorMessage?: string;
+  errorCode?: string;
   weddingId: string;
-  userId?: string; 
+  userId?: string;
 }
 
 const getBaseUrl = (): string => {
@@ -185,7 +186,6 @@ export const saveSentMessage = async (
       sentMessage,
       resolvedWeddingId
     );
-    console.log('docRef', docRef);
     return docRef.id;
   } catch (error) {
     console.error("Error saving sent message to Firebase:", error);

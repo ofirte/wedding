@@ -5,7 +5,11 @@ import { defineString } from "firebase-functions/params";
 import express from "express";
 import cors from "cors";
 import twilio from "twilio";
-import { MessageTemplatesResponse } from "./messagesService/types";
+import {
+  MessageTemplatesResponse,
+  WebhookMessageStatusPayload,
+} from "./messagesService/types";
+import { updateMessageStatus } from "./messagesService/routes";
 
 // Initialize Firebase Admin SDK
 initializeApp();
@@ -13,6 +17,9 @@ initializeApp();
 // Define Twilio parameters
 const twilioAccountSid = defineString("TWILIO_ACCOUNT_SID");
 const twilioAuthToken = defineString("TWILIO_AUTH_TOKEN");
+const twilioWebhookSecret = defineString("TWILIO_WEBHOOK_SECRET", {
+  default: "",
+});
 const twilioWhatsAppFrom = defineString("TWILIO_WHATSAPP_FROM", {
   default: "whatsapp:+15558003977",
 });
@@ -27,9 +34,9 @@ setGlobalOptions({
 
 const api = express();
 
-api.use(cors({ origin: "http://localhost:3000" }));
+api.options("*", cors());
 api.use(express.json());
-api.options("*", cors({ origin: "http://localhost:3000" }));
+api.options("*", cors());
 
 api.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
@@ -91,6 +98,59 @@ api.get("/messages/templates", async (req, res) => {
     console.error("Error fetching Twilio content templates:", error);
     return res.status(500).json({
       error: "Failed to fetch message templates",
+      details: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
+// Test endpoint for webhook
+api.get("/webhooks/message-status", (req, res) => {
+  res.status(200).json({
+    message: "Twilio message status webhook endpoint is ready",
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Webhook for Twilio message status updates
+api.post("/webhooks/message-status", async (req, res) => {
+  try {
+    // Optional: Validate Twilio webhook signature for security
+    const webhookSecret = twilioWebhookSecret.value();
+    if (webhookSecret) {
+      const twilioSignature = req.headers["x-twilio-signature"] as string;
+      if (!twilioSignature) {
+        return res.status(401).json({ error: "Missing Twilio signature" });
+      }
+
+      // In production, you should validate the signature here
+      // const isValid = twilio.validateRequest(webhookSecret, JSON.stringify(req.body), url, twilioSignature);
+      // if (!isValid) {
+      //   return res.status(401).json({ error: "Invalid Twilio signature" });
+      // }
+    }
+
+    const payload: WebhookMessageStatusPayload = req.body;
+
+    console.log("Received message status webhook:", payload);
+
+    if (!payload.MessageSid) {
+      return res.status(400).json({ error: "MessageSid is required" });
+    }
+
+    const result = await updateMessageStatus(payload);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Error processing message status webhook:", error);
+
+    if (error instanceof Error && error.message.includes("not found")) {
+      return res.status(404).json({
+        error: "Message not found",
+        details: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      error: "Failed to process webhook",
       details: error instanceof Error ? error.message : "Unknown error",
     });
   }
