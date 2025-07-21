@@ -270,5 +270,24 @@ export const englishTranslations: Translations = {
     rsvpManagement: "RSVP Management",
     templates: "Templates",
     sendRSVP: "Send RSVP",
+    sendMessage: "Send Message",
+    selectedGuests: "Selected Guests",
+    selectTemplate: "Select Template",
+    messagePreview: "Message Preview",
+    previewNote:
+      "This is a preview with the first guest's name. Each recipient will receive a personalized message.",
+    bulkSendWarning:
+      "You are about to send messages to {{count}} guests. This action cannot be undone.",
+    sending: "Sending...",
+    sendToGuests: "Send to {{count}} guest(s)",
+    noGuestsWithPhones: "No guests with phone numbers",
+    addPhoneNumbers: "Add phone numbers to your guests to send RSVP messages",
+    selectGuests: "Select Guests",
+    selectGuestsDescription:
+      "Select guests to send RSVP messages to. Only guests with phone numbers are shown.",
+    selectedGuestsCount: "{{count}} guest(s) selected",
+    sendRSVPDescription: "{{count}} guests with phone numbers available",
+    addPhoneNumbersHint:
+      "Add phone numbers to your guests in the main guest list to enable RSVP messaging",
   },
 };

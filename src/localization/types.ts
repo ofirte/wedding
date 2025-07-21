@@ -295,5 +295,20 @@ export interface Translations {
     rsvpManagement: string;
     templates: string;
     sendRSVP: string;
+    sendMessage: string;
+    selectedGuests: string;
+    selectTemplate: string;
+    messagePreview: string;
+    previewNote: string;
+    bulkSendWarning: string;
+    sending: string;
+    sendToGuests: string;
+    noGuestsWithPhones: string;
+    addPhoneNumbers: string;
+    selectGuests: string;
+    selectGuestsDescription: string;
+    selectedGuestsCount: string;
+    sendRSVPDescription: string;
+    addPhoneNumbersHint: string;
   };
 }

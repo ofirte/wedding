@@ -14,7 +14,7 @@ initializeApp();
 const twilioAccountSid = defineString("TWILIO_ACCOUNT_SID");
 const twilioAuthToken = defineString("TWILIO_AUTH_TOKEN");
 const twilioWhatsAppFrom = defineString("TWILIO_WHATSAPP_FROM", {
-  default: "whatsapp:+15558047639",
+  default: "whatsapp:+15558003977",
 });
 
 // Set global options for all functions
@@ -50,7 +50,7 @@ api.post("/messages/send-message", async (req, res) => {
     const message = await twilioClient.messages.create({
       from: twilioPhone,
       contentSid,
-      contentVariables,
+      contentVariables: JSON.stringify(contentVariables),
       to,
     });
     return res.status(200).json({

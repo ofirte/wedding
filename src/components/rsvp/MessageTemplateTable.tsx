@@ -10,18 +10,18 @@ import {
 const MessageTemplateTable: React.FC = () => {
   const { data, isLoading, error } = useMessageTemplates();
   const columns = createMessageTemplateColumns();
-
-  // Transform ContentInsight to MessageTemplateRow by adding id field
   const transformedData: MessageTemplateRow[] = React.useMemo(() => {
     if (!data?.templates) return [];
 
-    return data.templates.map(
-      (template) =>
-        ({
-          ...template,
-          id: template.sid, // Use Twilio SID as the id
-        } as MessageTemplateRow)
-    );
+    return data.templates
+      .filter((template) => !!template.types?.["twilio/media"])
+      .map(
+        (template) =>
+          ({
+            ...template,
+            id: template.sid, // Use Twilio SID as the id
+          } as MessageTemplateRow)
+      );
   }, [data?.templates]);
 
   if (isLoading) {
