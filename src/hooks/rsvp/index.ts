@@ -3,6 +3,8 @@ export { useMessageTemplates } from "./useMessageTemplates";
 export { useSendMessage } from "./useSendMessage";
 export { useSendBulkMessages } from "./useSendBulkMessages";
 export { useSentMessages } from "./useSentMessages";
+export { useCheckMessageStatus } from "./useCheckMessageStatus";
+export { useUpdateMessageStatus } from "./useUpdateMessageStatus";
 
 // Also export types from rsvpApi for convenience
 export type {
@@ -11,4 +13,5 @@ export type {
   SentMessage,
   MessageTemplatesResponse,
   ContentInsight,
+  TwilioMessageStatus,
 } from "../../api/rsvp/rsvpApi";

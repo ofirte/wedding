@@ -310,5 +310,7 @@ export interface Translations {
     selectedGuestsCount: string;
     sendRSVPDescription: string;
     addPhoneNumbersHint: string;
+    dateSent: string;
+    status: string;
   };
 }

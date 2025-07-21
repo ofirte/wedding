@@ -1,5 +1,6 @@
 import { ContentInstance } from "twilio/lib/rest/content/v2/content";
 import { weddingFirebase } from "../weddingFirebaseHelpers";
+import { MessageInstance } from "twilio/lib/rest/api/v2010/account/message";
 
 export interface SendMessageRequest {
   to: string;
@@ -27,6 +28,11 @@ export interface MessageTemplatesResponse {
   length: number;
 }
 
+// Twilio message status response from API
+export interface TwilioMessageStatus {
+  messageInfo: MessageInstance;
+}
+
 // Types for Firebase sent messages collection
 export interface SentMessage {
   id: string;
@@ -42,7 +48,7 @@ export interface SentMessage {
   dateUpdated?: string;
   errorMessage?: string;
   weddingId: string;
-  userId?: string; 
+  userId?: string;
 }
 
 const getBaseUrl = (): string => {
@@ -150,6 +156,37 @@ export const getMessageTemplates =
     }
   };
 
+/**
+ * Check message status from Twilio API
+ * @param messageSid The Twilio message SID to check
+ * @returns Promise resolving to Twilio message status
+ */
+export const checkMessageStatus = async (
+  messageSid: string
+): Promise<TwilioMessageStatus> => {
+  try {
+    const response = await fetch(`${BASE_URL}/messages/status/${messageSid}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error(`Message with SID ${messageSid} not found`);
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = (await response.json()) as TwilioMessageStatus;
+    return data;
+  } catch (error) {
+    console.error("Error checking message status:", error);
+    throw error;
+  }
+};
+
 // Firebase Firestore functions for sent messages
 
 /**
@@ -185,7 +222,7 @@ export const saveSentMessage = async (
       sentMessage,
       resolvedWeddingId
     );
-    console.log('docRef', docRef);
+    console.log("docRef", docRef);
     return docRef.id;
   } catch (error) {
     console.error("Error saving sent message to Firebase:", error);
@@ -219,6 +256,41 @@ export const getSentMessages = async (
     });
   } catch (error) {
     console.error("Error getting sent messages from Firebase:", error);
+    throw error;
+  }
+};
+
+/**
+ * Update message status in Firebase
+ * @param messageId The Firebase document ID of the message
+ * @param status The new status to set
+ * @param additionalData Optional additional data to update (dateSent, errorMessage, etc.)
+ * @param weddingId Optional wedding ID
+ */
+export const updateMessageStatus = async (
+  messageId: string,
+  status: string,
+  weddingId?: string
+): Promise<void> => {
+  try {
+    const resolvedWeddingId =
+      weddingId || (await weddingFirebase.getWeddingId());
+
+    const updateData: Partial<SentMessage> = {
+      status,
+      dateUpdated: new Date().toISOString(),
+    };
+
+    await weddingFirebase.updateDocument(
+      "sentMessages",
+      messageId,
+      updateData,
+      resolvedWeddingId
+    );
+
+    console.log(`Updated message ${messageId} status to ${status}`);
+  } catch (error) {
+    console.error("Error updating message status in Firebase:", error);
     throw error;
   }
 };

@@ -288,5 +288,7 @@ export const hebrewTranslations: Translations = {
     sendRSVPDescription:
       "שלח הודעה אישית או תבנית אישור הגעה לאורחים שלך. ודא שהמספרים מעודכנים.",
     addPhoneNumbersHint: "הוסף מספרי טלפון לאורחים כדי לשלוח הודעות",
+    dateSent: "תאריך שליחה",
+    status: "סטטוס",
   },
 };

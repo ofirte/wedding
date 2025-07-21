@@ -10,10 +10,12 @@ import {
 import { SentMessage } from "../../api/rsvp/rsvpApi";
 import { format } from "date-fns";
 import { Invitee } from "../invitees/InviteList";
+import { ca } from "date-fns/locale";
 
 const getStatusIcon = (status: string) => {
   switch (status) {
     case "delivered":
+    case "read":
       return <CheckCircleIcon color="success" fontSize="small" />;
     case "sent":
       return <SendIcon color="primary" fontSize="small" />;
@@ -33,6 +35,7 @@ const getStatusColor = (
 ): "success" | "error" | "warning" | "info" | "default" => {
   switch (status) {
     case "delivered":
+    case "read":
       return "success";
     case "sent":
       return "info";
@@ -60,16 +63,45 @@ export const createSentMessagesColumns = (
   guests: Invitee[]
 ): Column<SentMessage>[] => [
   {
+    id: "to",
+    label: t("contacts.inviteeName"),
+    sortable: true,
+    render: (message: SentMessage) => {
+      const guest = guests.find((g) => g.id === message.userId);
+      return (
+        <Typography variant="body2">
+          {guest ? guest.name : message.to}
+        </Typography>
+      );
+    },
+  },
+  {
+    id: "dateCreated",
+    label: t("rsvp.dateSent"),
+    sortable: true,
+    render: (message: SentMessage) => (
+      <Typography variant="body2">{formatDate(message.dateCreated)}</Typography>
+    ),
+    sortFn: (a: SentMessage, b: SentMessage) => {
+      return (
+        new Date(a.dateCreated).getTime() - new Date(b.dateCreated).getTime()
+      );
+    },
+  },
+  {
     id: "status",
     label: t("rsvp.status"),
     sortable: true,
     render: (message: SentMessage) => (
-      <Box display="flex" alignItems="center" gap={1}>
+      <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
         {getStatusIcon(message.status)}
         <Chip
           label={message.status}
           color={getStatusColor(message.status)}
           size="small"
+          sx={{
+            width: ({ spacing }) => spacing(12),
+          }}
         />
       </Box>
     ),
@@ -81,42 +113,11 @@ export const createSentMessagesColumns = (
         const uniqueStatuses = Array.from(
           new Set(data.map((item) => item.status))
         ).filter(Boolean);
-
         return uniqueStatuses.map((status) => ({
           value: status,
           label: status,
         }));
       },
-    },
-  },
-  {
-    id: "from",
-    label: t("rsvp.from"),
-    sortable: true,
-    render: (message: SentMessage) => (
-      <Typography variant="body2">{message.from || "-"}</Typography>
-    ),
-  },
-  {
-    id: "to",
-    label: t("rsvp.to"),
-    sortable: true,
-    render: (message: SentMessage) => {
-      const guest = guests.find((g) => g.id === message.userId);
-      return <Typography variant="body2">{guest ? guest.name : message.to}</Typography>;
-    },
-  },
-  {
-    id: "dateCreated",
-    label: t("rsvp.dateCreated"),
-    sortable: true,
-    render: (message: SentMessage) => (
-      <Typography variant="body2">{formatDate(message.dateCreated)}</Typography>
-    ),
-    sortFn: (a: SentMessage, b: SentMessage) => {
-      return (
-        new Date(a.dateCreated).getTime() - new Date(b.dateCreated).getTime()
-      );
     },
   },
 ];

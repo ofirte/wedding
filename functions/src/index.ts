@@ -96,4 +96,45 @@ api.get("/messages/templates", async (req, res) => {
   }
 });
 
+// Get message status from Twilio
+api.get("/messages/status/:messageSid", async (req, res) => {
+  const accountSid = twilioAccountSid.value();
+  const authToken = twilioAuthToken.value();
+  const twilioClient =
+    accountSid && authToken ? twilio(accountSid, authToken) : null;
+
+  if (!twilioClient) {
+    return res.status(500).json({ error: "Twilio client not configured." });
+  }
+
+  try {
+    const { messageSid } = req.params;
+
+    if (!messageSid) {
+      return res.status(400).json({ error: "Message SID is required" });
+    }
+
+    // Fetch message status from Twilio
+    const message = await twilioClient.messages(messageSid).fetch();
+
+    return res.status(200).json({
+      messageInfo: message,
+    });
+  } catch (error) {
+    console.error("Error fetching message status from Twilio:", error);
+
+    if (error instanceof Error && error.message.includes("not found")) {
+      return res.status(404).json({
+        error: "Message not found",
+        details: error.message,
+        messageSid: req.params.messageSid,
+      });
+    }
+    return res.status(500).json({
+      error: "Failed to fetch message status",
+      details: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
 export const app = onRequest(api);

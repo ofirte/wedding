@@ -289,5 +289,7 @@ export const englishTranslations: Translations = {
     sendRSVPDescription: "{{count}} guests with phone numbers available",
     addPhoneNumbersHint:
       "Add phone numbers to your guests in the main guest list to enable RSVP messaging",
+    dateSent: "Date Sent",
+    status: "Status",
   },
 };
