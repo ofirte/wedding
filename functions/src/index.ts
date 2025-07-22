@@ -13,9 +13,7 @@ initializeApp();
 // Define Twilio parameters
 const twilioAccountSid = defineString("TWILIO_ACCOUNT_SID");
 const twilioAuthToken = defineString("TWILIO_AUTH_TOKEN");
-const twilioWhatsAppFrom = defineString("TWILIO_WHATSAPP_FROM", {
-  default: "whatsapp:+15558003977",
-});
+const twilioWhatsAppFrom = defineString("TWILIO_WHATSAPP_FROM");
 
 // Set global options for all functions
 setGlobalOptions({
