@@ -163,6 +163,7 @@ export interface Translations {
     budget: string;
     guests: string;
     tasks: string;
+    rsvp: string;
     wedding: string;
   };
   home: {
@@ -289,5 +290,27 @@ export interface Translations {
     contactsFound: string;
     showingAllContacts: string;
     searchPlaceholder: string;
+  };
+  rsvp: {
+    rsvpManagement: string;
+    templates: string;
+    sendRSVP: string;
+    sendMessage: string;
+    selectedGuests: string;
+    selectTemplate: string;
+    messagePreview: string;
+    previewNote: string;
+    bulkSendWarning: string;
+    sending: string;
+    sendToGuests: string;
+    noGuestsWithPhones: string;
+    addPhoneNumbers: string;
+    selectGuests: string;
+    selectGuestsDescription: string;
+    selectedGuestsCount: string;
+    sendRSVPDescription: string;
+    addPhoneNumbersHint: string;
+    dateSent: string;
+    status: string;
   };
 }

@@ -135,6 +135,7 @@ export const hebrewTranslations: Translations = {
     budget: "תקציב",
     guests: "אורחים",
     tasks: "משימות",
+    rsvp: "אישור הגעה",
     wedding: "חתונה",
   },
   home: {
@@ -263,5 +264,31 @@ export const hebrewTranslations: Translations = {
     contactsFound: "אנשי קשר נמצאו",
     showingAllContacts: "מציג את כל אנשי הקשר",
     searchPlaceholder: "ערוך שם או הקלד לחיפוש אנשי קשר...",
+  },
+  rsvp: {
+    rsvpManagement: "ניהול אישורי הגעה",
+    templates: "תבניות",
+    sendRSVP: "שלח אישור הגעה",
+    sendMessage: "שלח הודעה",
+    selectedGuests: "אורחים נבחרים",
+    selectTemplate: "בחר תבנית",
+    messagePreview: "תצוגה מקדימה של ההודעה",
+    previewNote:
+      "הערה: תצוגה מקדימה זו עשויה להשתנות בהתאם למספרי הטלפון של המוזמנים.",
+    bulkSendWarning:
+      "שליחת הודעה ל-{{count}} אורחים. ודא שההודעה מתאימה לכולם.",
+    sending: "שולח הודעות...",
+    sendToGuests: "שלח לאורחים",
+    noGuestsWithPhones: "אין אורחים עם מספרי טלפון זמינים",
+    addPhoneNumbers: "הוסף מספרי טלפון לאורחים",
+    selectGuests: "בחר אורחים לשליחה",
+    selectGuestsDescription:
+      "בחר את האורחים שברצונך לשלוח להם הודעה. רק אורחים עם מספרי טלפון זמינים יופיעו כאן.",
+    selectedGuestsCount: "{{count}} אורחים נבחרים",
+    sendRSVPDescription:
+      "שלח הודעה אישית או תבנית אישור הגעה לאורחים שלך. ודא שהמספרים מעודכנים.",
+    addPhoneNumbersHint: "הוסף מספרי טלפון לאורחים כדי לשלוח הודעות",
+    dateSent: "תאריך שליחה",
+    status: "סטטוס",
   },
 };
