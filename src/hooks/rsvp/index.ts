@@ -5,6 +5,8 @@ export { useSendBulkMessages } from "./useSendBulkMessages";
 export { useSentMessages } from "./useSentMessages";
 export { useCheckMessageStatus } from "./useCheckMessageStatus";
 export { useUpdateMessageStatus } from "./useUpdateMessageStatus";
+export { useRSVPStatus } from "./useRSVPStatus";
+export { useUpdateRSVPStatus } from "./useUpdateRSVPStatus";
 
 // Also export types from rsvpApi for convenience
 export type {
@@ -15,3 +17,6 @@ export type {
   ContentInsight,
   TwilioMessageStatus,
 } from "../../api/rsvp/rsvpApi";
+
+// Export RSVP Status types
+export type { RSVPStatus, RSVPFormData } from "../../api/rsvp/rsvpStatusTypes";

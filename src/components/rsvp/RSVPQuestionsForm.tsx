@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   Paper,
   Typography,
@@ -9,10 +9,12 @@ import {
 } from "@mui/material";
 import { RSVPFormData } from "./guestRSVPTypes";
 import { Invitee } from "../invitees/InviteList";
+import RSVPQuestionCard from "./RSVPQuestionCard";
 import AttendanceQuestion from "./questions/AttendanceQuestion";
 import GuestCountQuestion from "./questions/GuestCountQuestion";
 import SleepoverQuestion from "./questions/SleepoverQuestion";
 import RideQuestion from "./questions/RideQuestion";
+import { isNil } from "lodash";
 
 interface RSVPQuestionsFormProps {
   guestInfo: Invitee;
@@ -21,6 +23,7 @@ interface RSVPQuestionsFormProps {
   onSubmit: (event: React.FormEvent) => void;
   submitting: boolean;
   error: string | null;
+  isSubmitted: boolean;
 }
 
 const RSVPQuestionsForm: React.FC<RSVPQuestionsFormProps> = ({
@@ -30,90 +33,56 @@ const RSVPQuestionsForm: React.FC<RSVPQuestionsFormProps> = ({
   onSubmit,
   submitting,
   error,
+  isSubmitted,
 }) => {
   const questionsRef = useRef<HTMLDivElement>(null);
+  const [currentOpenQuestion, setCurrentOpenQuestion] = useState<number>(1);
+  const isDone =
+    (formData.attending === "yes" &&
+      !!formData.guestCount &&
+      !!formData.sleepover &&
+      formData.needsRideFromTelAviv) ||
+    formData.attending === "no";
+  const numberOfAnsweredQuestions = Object.values(formData).filter(
+    (value) => !isNil(value) && value !== 0
+  ).length;
 
-  // Determine which step should be currently active (open)
-  const getCurrentStep = () => {
-    if (formData.attending === "") return 1; // First question
-    if (formData.attending === "no") return 0; // All done if not attending
-
-    // For attending users, show next unanswered question
-    if (formData.attending === "yes") {
-      if (formData.guestCount === 0) return 2; // Second question
-      if (formData.sleepover === "") return 3; // Third question
-      if (formData.needsRideFromTelAviv === "") return 4; // Fourth question
+  const numberOfQuestionsNeeded = formData.attending === "no" ? 1 : 4;
+  // Handle form data changes
+  const handleFormDataChange = (newFormData: Partial<RSVPFormData>) => {
+    onFormDataChange(newFormData);
+    const nextQuestion = getNextUnansweredQuestion({
+      ...formData,
+      ...newFormData,
+    });
+    if (nextQuestion) {
+      setCurrentOpenQuestion(nextQuestion);
+    } else {
+      setCurrentOpenQuestion(0);
     }
-
-    return 0; // All done
   };
 
-  const currentStep = getCurrentStep();
+  // Handle clicking on completed questions to reopen them
+  const handleQuestionClick = (questionNumber: number) => {
+    setCurrentOpenQuestion(questionNumber);
+  };
+  const getNextUnansweredQuestion = (newFormData: Partial<RSVPFormData>) => {
+    if (isNil(newFormData.attending)) return 1;
+    if (isNil(newFormData.guestCount) || newFormData.guestCount === 0) return 2;
+    if (isNil(newFormData.sleepover)) return 3;
+    if (isNil(newFormData.needsRideFromTelAviv)) return 4;
+    return null;
+  };
 
-  // Scroll to questions section when moving to next step
+  // Scroll to questions
   const scrollToQuestions = () => {
     if (questionsRef.current) {
       questionsRef.current.scrollIntoView({
         behavior: "smooth",
         block: "start",
-        inline: "nearest",
       });
     }
   };
-
-  // Handle clicking on collapsed questions to reopen them
-  const handleQuestionClick = (questionNumber: number) => {
-    // Only allow reopening if not the current step
-    if (questionNumber !== currentStep && completedSteps >= questionNumber) {
-      // Only reset the specific answer being edited - preserve other answers
-      switch (questionNumber) {
-        case 1:
-          // For attendance question, only reset attendance itself
-          // Other answers will be handled by the handleAttendingChange logic if needed
-          onFormDataChange({
-            attending: "",
-          });
-          break;
-        case 2:
-          // Reset only guest count, preserve sleepover and ride answers
-          onFormDataChange({
-            guestCount: 0,
-          });
-          break;
-        case 3:
-          // Reset only sleepover, preserve ride answer
-          onFormDataChange({
-            sleepover: "",
-          });
-          break;
-        case 4:
-          // Reset only ride question
-          onFormDataChange({
-            needsRideFromTelAviv: "",
-          });
-          break;
-      }
-      // Scroll to the question after a brief delay
-      setTimeout(() => scrollToQuestions(), 100);
-    }
-  };
-
-  // Helper function to determine if a question should be clickable
-  const isQuestionClickable = (questionNumber: number) => {
-    // Allow clicking on completed questions to reopen them
-    return completedSteps >= questionNumber && questionNumber !== currentStep;
-  };
-
-  const isAttending = formData.attending === "yes";
-
-  const completedSteps = [
-    formData.attending !== "",
-    isAttending ? formData.guestCount > 0 : formData.attending === "no",
-    isAttending ? formData.sleepover !== "" : formData.attending === "no",
-    isAttending
-      ? formData.needsRideFromTelAviv !== ""
-      : formData.attending === "no",
-  ].filter(Boolean).length;
 
   return (
     <Paper
@@ -133,8 +102,10 @@ const RSVPQuestionsForm: React.FC<RSVPQuestionsFormProps> = ({
           width: "100%",
           height: "4px",
           background: `linear-gradient(90deg, #9BBB9B ${
-            (completedSteps / 4) * 100
-          }%, #E8E0CC ${(completedSteps / 4) * 100}%)`,
+            (numberOfAnsweredQuestions / numberOfQuestionsNeeded) * 100
+          }%, #E8E0CC ${
+            (numberOfAnsweredQuestions / numberOfQuestionsNeeded) * 100
+          }%)`,
           transition: "all 0.3s ease",
         },
       }}
@@ -163,7 +134,7 @@ const RSVPQuestionsForm: React.FC<RSVPQuestionsFormProps> = ({
           variant="body2"
           sx={{ color: "#888888", textAlign: "center", mb: 2 }}
         >
-          {completedSteps}/4 שלבים הושלמו
+          {numberOfAnsweredQuestions}/{numberOfQuestionsNeeded} שלבים הושלמו
         </Typography>
         <Box
           sx={{
@@ -176,7 +147,9 @@ const RSVPQuestionsForm: React.FC<RSVPQuestionsFormProps> = ({
         >
           <Box
             sx={{
-              width: `${(completedSteps / 4) * 100}%`,
+              width: `${
+                (numberOfAnsweredQuestions / numberOfQuestionsNeeded) * 100
+              }%`,
               height: "100%",
               backgroundColor: "#9BBB9B",
               transition: "width 0.5s ease",
@@ -193,65 +166,124 @@ const RSVPQuestionsForm: React.FC<RSVPQuestionsFormProps> = ({
       )}
 
       <Box component="form" onSubmit={onSubmit} ref={questionsRef}>
-        <AttendanceQuestion
+        <RSVPQuestionCard
           formData={formData}
-          onFormDataChange={onFormDataChange}
-          currentStep={currentStep}
-          isClickable={isQuestionClickable(1)}
+          onFormDataChange={handleFormDataChange}
+          isOpen={currentOpenQuestion === 1}
+          isClickable={currentOpenQuestion !== 1}
+          onScroll={scrollToQuestions}
           onQuestionClick={() => handleQuestionClick(1)}
-          onScroll={scrollToQuestions}
+          questionTitle="💒 האם תגיעו לחתונה?"
+          answerSummary={
+            formData.attending === "yes"
+              ? "🎊 כן, נגיע!"
+              : formData.attending === "no"
+              ? "😔 לא נוכל להגיע"
+              : undefined
+          }
+          questionComponent={
+            <AttendanceQuestion
+              formData={formData}
+              onFormDataChange={handleFormDataChange}
+              onScroll={scrollToQuestions}
+            />
+          }
         />
 
-        <GuestCountQuestion
-          formData={formData}
-          onFormDataChange={onFormDataChange}
-          currentStep={currentStep}
-          isClickable={isQuestionClickable(2)}
-          onQuestionClick={() => handleQuestionClick(2)}
-          onScroll={scrollToQuestions}
-        />
+        {formData.attending === "yes" && (
+          <>
+            <RSVPQuestionCard
+              formData={formData}
+              onFormDataChange={handleFormDataChange}
+              isOpen={currentOpenQuestion === 2}
+              isClickable={currentOpenQuestion !== 2}
+              onScroll={scrollToQuestions}
+              onQuestionClick={() => handleQuestionClick(2)}
+              questionTitle="👥 כמה אנשים תביאו?"
+              answerSummary={
+                formData.guestCount && formData.guestCount > 0
+                  ? `${formData.guestCount} אנשים`
+                  : undefined
+              }
+              questionComponent={
+                <GuestCountQuestion
+                  formData={formData}
+                  onFormDataChange={handleFormDataChange}
+                  onScroll={scrollToQuestions}
+                />
+              }
+            />
 
-        <SleepoverQuestion
-          formData={formData}
-          onFormDataChange={onFormDataChange}
-          currentStep={currentStep}
-          isClickable={isQuestionClickable(3)}
-          onQuestionClick={() => handleQuestionClick(3)}
-          onScroll={scrollToQuestions}
-        />
+            <RSVPQuestionCard
+              formData={formData}
+              onFormDataChange={handleFormDataChange}
+              isOpen={currentOpenQuestion === 3}
+              isClickable={currentOpenQuestion !== 3}
+              onScroll={scrollToQuestions}
+              onQuestionClick={() => handleQuestionClick(3)}
+              questionTitle="🛏️ לינה במקום?"
+              answerSummary={
+                formData.sleepover === "yes"
+                  ? "כן, נישאר ללון"
+                  : formData.sleepover === "no"
+                  ? "לא, נחזור הביתה"
+                  : undefined
+              }
+              questionComponent={
+                <SleepoverQuestion
+                  formData={formData}
+                  onFormDataChange={handleFormDataChange}
+                  onScroll={scrollToQuestions}
+                />
+              }
+            />
 
-        <RideQuestion
-          formData={formData}
-          onFormDataChange={onFormDataChange}
-          currentStep={currentStep}
-          isClickable={isQuestionClickable(4)}
-          onQuestionClick={() => handleQuestionClick(4)}
-          onScroll={scrollToQuestions}
-        />
+            <RSVPQuestionCard
+              formData={formData}
+              onFormDataChange={handleFormDataChange}
+              isOpen={currentOpenQuestion === 4}
+              isClickable={currentOpenQuestion !== 4}
+              onScroll={scrollToQuestions}
+              onQuestionClick={() => handleQuestionClick(4)}
+              questionTitle="🚗 צריכים הסעה מתל אביב?"
+              answerSummary={
+                formData.needsRideFromTelAviv === "yes"
+                  ? "כן, נזדקק להסעה"
+                  : formData.needsRideFromTelAviv === "no"
+                  ? "לא, נגיע בכוחות עצמנו"
+                  : undefined
+              }
+              questionComponent={
+                <RideQuestion
+                  formData={formData}
+                  onFormDataChange={handleFormDataChange}
+                  onScroll={scrollToQuestions}
+                />
+              }
+            />
+          </>
+        )}
 
         <Box sx={{ textAlign: "center", mt: 4 }}>
           <Button
             type="submit"
             variant="contained"
             size="large"
-            disabled={submitting || completedSteps < 4}
+            disabled={submitting || !isDone}
             sx={{
-              bgcolor: completedSteps === 4 ? "#4A6741" : "#CCCCCC",
+              bgcolor: isDone ? "#4A6741" : "#CCCCCC",
               color: "white",
               px: 8,
               py: 2,
               borderRadius: 4,
               fontSize: "1.3rem",
               fontWeight: "bold",
-              boxShadow:
-                completedSteps === 4
-                  ? "0 8px 20px rgba(74, 103, 65, 0.4)"
-                  : "none",
-              transform: completedSteps === 4 ? "scale(1.05)" : "scale(1)",
+              boxShadow: isDone ? "0 8px 20px rgba(74, 103, 65, 0.4)" : "none",
+              transform: isDone ? "scale(1.05)" : "scale(1)",
               transition: "all 0.3s ease",
               "&:hover": {
-                bgcolor: completedSteps === 4 ? "#3A5232" : "#CCCCCC",
-                transform: completedSteps === 4 ? "scale(1.08)" : "scale(1)",
+                bgcolor: isDone ? "#3A5232" : "#CCCCCC",
+                transform: isDone ? "scale(1.08)" : "scale(1)",
               },
               "&:disabled": {
                 color: "#999999",
@@ -261,12 +293,12 @@ const RSVPQuestionsForm: React.FC<RSVPQuestionsFormProps> = ({
             {submitting ? (
               <>
                 <CircularProgress size={24} sx={{ mr: 2, color: "white" }} />
-                שולח...
+                {isSubmitted ? "מעדכן..." : "שולח..."}
               </>
-            ) : completedSteps === 4 ? (
-              "🎉 שלח אישור הגעה! 🎉"
+            ) : isDone ? (
+              isSubmitted ? "🔄 עדכן אישור הגעה 🔄" : "🎉 שלח אישור הגעה! 🎉"
             ) : (
-              `מלא את כל השאלות (${completedSteps}/4)`
+              `מלא את כל השאלות (${numberOfAnsweredQuestions}/${numberOfQuestionsNeeded})`
             )}
           </Button>
         </Box>

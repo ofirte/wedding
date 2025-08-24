@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Container, CircularProgress } from "@mui/material";
 import { useParams } from "react-router";
+import isNil from "lodash/isNil";
 import { RSVPFormData } from "./guestRSVPTypes";
 import WeddingIntroCard from "./WeddingIntroCard";
 import RSVPQuestionsForm from "./RSVPQuestionsForm";
@@ -8,8 +9,11 @@ import ThankYouCard from "./ThankYouCard";
 import WeddingDetailsCard from "./WeddingDetailsCard";
 import { useWeddingDetails } from "../../hooks/auth";
 import { useInvitee } from "../../hooks/invitees";
-import { Wedding } from "../../api/wedding/weddingApi";
-import { Invitee } from "../invitees/InviteList";
+import { useRSVPStatus, useUpdateRSVPStatus } from "../../hooks/rsvp";
+import {
+  formDataToRSVPStatus,
+  rsvpStatusToFormData,
+} from "../../api/rsvp/rsvpStatusTypes";
 
 const GuestRSVPPage: React.FC = () => {
   const { guestId } = useParams<{ guestId: string }>();
@@ -18,21 +22,32 @@ const GuestRSVPPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Mock data - in real implementation, fetch based on guestId
+  // Fetch wedding info and guest info
   const { data: weddingInfo } = useWeddingDetails();
-
   const { data: guestInfo } = useInvitee(guestId as string);
-  console.log(guestInfo, weddingInfo, guestId);
+
+  // Fetch existing RSVP status
+  const { data: rsvpStatus } = useRSVPStatus(guestId as string);
+  const updateRSVPStatus = useUpdateRSVPStatus();
+
+  // Initialize form data with existing RSVP status or defaults
   const [formData, setFormData] = useState<RSVPFormData>({
-    attending: "",
-    guestCount: 1,
-    sleepover: "",
-    needsRideFromTelAviv: "",
-    dietaryRestrictions: "",
-    specialRequests: "",
-    plusOneName: "",
-    phone: guestInfo?.cellphone || "",
+    attending: undefined,
+    guestCount: undefined,
+    sleepover: undefined,
+    needsRideFromTelAviv: undefined,
   });
+
+  useEffect(() => {
+    // Initialize form data from existing RSVP status when it loads
+    if (rsvpStatus) {
+      const convertedFormData = rsvpStatusToFormData(rsvpStatus);
+      setFormData((prev) => ({
+        ...prev,
+        ...convertedFormData,
+      }));
+    }
+  }, [rsvpStatus]);
 
   useEffect(() => {
     // Simulate loading guest data
@@ -43,13 +58,31 @@ const GuestRSVPPage: React.FC = () => {
   }, [guestId]);
 
   const handleFormDataChange = (newFormData: Partial<RSVPFormData>) => {
-    setFormData((prev) => ({ ...prev, ...newFormData }));
+    const updatedFormData = { ...formData, ...newFormData };
+    if (updatedFormData.attending === "no") {
+      updatedFormData.guestCount = undefined;
+      updatedFormData.sleepover = undefined;
+      updatedFormData.needsRideFromTelAviv = undefined;
+    }
+    setFormData(updatedFormData);
+
+    // Update database with current form state using the utility function
+    if (guestId) {
+      const rsvpUpdate = formDataToRSVPStatus(updatedFormData);
+      updateRSVPStatus.mutate({
+        inviteeId: guestId,
+        rsvpStatus: {
+          ...rsvpUpdate,
+          isSubmitted: rsvpStatus?.isSubmitted || false,
+        },
+      });
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!formData.attending) {
+    if (isNil(formData.attending)) {
       setError("אנא ציינו האם תגיעו לחתונה");
       return;
     }
@@ -58,9 +91,16 @@ const GuestRSVPPage: React.FC = () => {
     setError(null);
 
     try {
-      // Here you would submit the RSVP data to your backend
-      console.log("Submitting RSVP:", { guestId, ...formData });
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Mock API call
+      // Mark RSVP as officially submitted using the existing hook
+      if (guestId) {
+        const rsvpUpdate = formDataToRSVPStatus(formData);
+        await updateRSVPStatus.mutateAsync({
+          inviteeId: guestId,
+          rsvpStatus: { ...rsvpUpdate, isSubmitted: true },
+        });
+      }
+
+      console.log("RSVP submitted successfully:", { guestId, ...formData });
       setSubmitted(true);
     } catch (err) {
       console.error("Failed to submit RSVP:", err);
@@ -119,6 +159,7 @@ const GuestRSVPPage: React.FC = () => {
           onSubmit={handleSubmit}
           submitting={submitting}
           error={error}
+          isSubmitted={rsvpStatus?.isSubmitted || false}
         />
 
         {/* Step 3: Provide additional wedding details */}

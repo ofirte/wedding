@@ -67,6 +67,7 @@
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/lodash": "^4.17.20",
     "@types/stylis": "^4.2.7",
     "env-cmd": "^10.1.0",
     "ts-node": "^10.9.2"

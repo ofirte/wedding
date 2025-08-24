@@ -18,14 +18,10 @@ export interface WeddingInfo {
 }
 
 export interface RSVPFormData {
-  attending: "yes" | "no" | "";
-  guestCount: number;
-  sleepover: "yes" | "no" | "";
-  needsRideFromTelAviv: "yes" | "no" | "";
-  dietaryRestrictions: string;
-  specialRequests: string;
-  plusOneName?: string;
-  phone?: string;
+  attending: "yes" | "no" | undefined;
+  guestCount: number | undefined;
+  sleepover: "yes" | "no" | undefined;
+  needsRideFromTelAviv: "yes" | "no" | undefined;
 }
 
 export interface RSVPSubmission {
