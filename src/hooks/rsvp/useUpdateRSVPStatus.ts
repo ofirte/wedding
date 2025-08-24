@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateRSVPStatus } from "../../api/rsvp/rsvpStatusApi";
 import { RSVPStatus } from "../../api/rsvp/rsvpStatusTypes";
 import { useWeddingMutation } from "../common";
+import { useParams } from "react-router";
 
 /**
  * Hook to update RSVP status for an invitee
@@ -9,7 +10,7 @@ import { useWeddingMutation } from "../common";
  */
 export const useUpdateRSVPStatus = () => {
   const queryClient = useQueryClient();
-
+  const { weddingId } = useParams<{ weddingId: string }>();
   return useWeddingMutation({
     mutationFn: ({
       inviteeId,
@@ -17,7 +18,7 @@ export const useUpdateRSVPStatus = () => {
     }: {
       inviteeId: string;
       rsvpStatus: Partial<RSVPStatus> | Record<string, any>;
-    }) => updateRSVPStatus(inviteeId, rsvpStatus),
+    }) => updateRSVPStatus(inviteeId, rsvpStatus, weddingId),
     options: {
       onSuccess: (_, variables) => {
         // Invalidate the specific RSVP status query for this invitee

@@ -16,14 +16,17 @@ import {
 } from "../../api/rsvp/rsvpStatusTypes";
 
 const GuestRSVPPage: React.FC = () => {
-  const { guestId } = useParams<{ guestId: string }>();
+  const { guestId, weddingId } = useParams<{
+    guestId: string;
+    weddingId: string;
+  }>();
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Fetch wedding info and guest info
-  const { data: weddingInfo } = useWeddingDetails();
+  const { data: weddingInfo } = useWeddingDetails(weddingId as string);
   const { data: guestInfo } = useInvitee(guestId as string);
 
   // Fetch existing RSVP status
