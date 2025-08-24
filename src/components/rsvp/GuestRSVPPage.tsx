@@ -7,28 +7,31 @@ import WeddingIntroCard from "./WeddingIntroCard";
 import RSVPQuestionsForm from "./RSVPQuestionsForm";
 import ThankYouCard from "./ThankYouCard";
 import WeddingDetailsCard from "./WeddingDetailsCard";
-import { useWeddingDetails } from "../../hooks/auth";
-import { useInvitee } from "../../hooks/invitees";
-import { useRSVPStatus, useUpdateRSVPStatus } from "../../hooks/rsvp";
+import {
+  usePublicWeddingDetails,
+  usePublicInvitee,
+  usePublicRSVPStatus,
+  usePublicUpdateRSVPStatus,
+} from "../../hooks/public/usePublicData";
 import {
   formDataToRSVPStatus,
   rsvpStatusToFormData,
 } from "../../api/rsvp/rsvpStatusTypes";
 
 const GuestRSVPPage: React.FC = () => {
-  const { guestId } = useParams<{ guestId: string }>();
+  const { guestId, weddingId } = useParams<{ guestId: string; weddingId: string }>();
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch wedding info and guest info
-  const { data: weddingInfo } = useWeddingDetails();
-  const { data: guestInfo } = useInvitee(guestId as string);
+  // Fetch wedding info and guest info using public hooks
+  const { data: weddingInfo } = usePublicWeddingDetails(weddingId as string);
+  const { data: guestInfo } = usePublicInvitee(weddingId as string, guestId as string);
 
-  // Fetch existing RSVP status
-  const { data: rsvpStatus } = useRSVPStatus(guestId as string);
-  const updateRSVPStatus = useUpdateRSVPStatus();
+  // Fetch existing RSVP status using public hooks
+  const { data: rsvpStatus } = usePublicRSVPStatus(weddingId as string, guestId as string);
+  const updateRSVPStatusMutation = usePublicUpdateRSVPStatus(weddingId as string, guestId as string);
 
   // Initialize form data with existing RSVP status or defaults
   const [formData, setFormData] = useState<RSVPFormData>({
@@ -67,14 +70,11 @@ const GuestRSVPPage: React.FC = () => {
     setFormData(updatedFormData);
 
     // Update database with current form state using the utility function
-    if (guestId) {
+    if (guestId && weddingId) {
       const rsvpUpdate = formDataToRSVPStatus(updatedFormData);
-      updateRSVPStatus.mutate({
-        inviteeId: guestId,
-        rsvpStatus: {
-          ...rsvpUpdate,
-          isSubmitted: rsvpStatus?.isSubmitted || false,
-        },
+      updateRSVPStatusMutation.mutate({
+        ...rsvpUpdate,
+        isSubmitted: rsvpStatus?.isSubmitted || false,
       });
     }
   };
@@ -92,11 +92,11 @@ const GuestRSVPPage: React.FC = () => {
 
     try {
       // Mark RSVP as officially submitted using the existing hook
-      if (guestId) {
+      if (guestId && weddingId) {
         const rsvpUpdate = formDataToRSVPStatus(formData);
-        await updateRSVPStatus.mutateAsync({
-          inviteeId: guestId,
-          rsvpStatus: { ...rsvpUpdate, isSubmitted: true },
+        await updateRSVPStatusMutation.mutateAsync({
+          ...rsvpUpdate,
+          isSubmitted: true,
         });
       }
 
