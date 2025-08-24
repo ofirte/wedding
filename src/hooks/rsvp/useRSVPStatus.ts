@@ -10,7 +10,7 @@ import { useWeddingQuery } from "../common";
 export const useRSVPStatus = (inviteeId: string) => {
   return useWeddingQuery({
     queryKey: ["rsvpStatus", inviteeId],
-    queryFn: () => getRSVPStatus(inviteeId),
+    queryFn: (weddingId) => getRSVPStatus(inviteeId, weddingId),
     options: {
       refetchOnWindowFocus: false,
       // Enable query only if inviteeId is provided

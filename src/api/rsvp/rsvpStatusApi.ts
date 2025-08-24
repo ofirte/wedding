@@ -27,7 +27,7 @@ export const updateRSVPStatus = async (
 
     // Use setDoc to handle both create and update cases
     // This will create the document if it doesn't exist, or completely overwrite existing data
-    await setDoc(docRef, rsvpStatus);
+    await setDoc(docRef, rsvpStatus, { merge: true });
 
     console.log(`RSVP status updated for invitee ${inviteeId}`);
   } catch (error) {
