@@ -22,6 +22,7 @@ import { useTranslation } from "../../localization/LocalizationContext";
 import { useMessageTemplates } from "../../hooks/rsvp/useMessageTemplates";
 import { useSendMessage } from "../../hooks/rsvp/useSendMessage";
 import { Invitee } from "../invitees/InviteList";
+import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
 
 interface SendMessageDialogProps {
   open: boolean;
@@ -37,7 +38,7 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
   const { t } = useTranslation();
   const { data: templatesResponse } = useMessageTemplates();
   const { mutate: sendMessage, isPending } = useSendMessage();
-
+  const { data: wedding } = useWeddingDetails();
   // Extract templates array from the response
   const templates = templatesResponse?.templates || [];
 
@@ -107,7 +108,9 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
           to: phoneNumber,
           contentSid: selectedTemplate.sid,
           contentVariables: {
-            guest: guest.name,
+            guestName: guest.name,
+            guestId: guest.id,
+            weddingId: wedding?.id ?? "",
           },
           userId: guest.id,
         });
