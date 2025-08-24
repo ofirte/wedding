@@ -2,6 +2,23 @@ import { weddingFirebase } from "../weddingFirebaseHelpers";
 import { Invitee } from "../../components/invitees/InviteList";
 
 /**
+ * Fetches a single invitee by ID from Firebase for the current user's wedding
+ * @param inviteeId The ID of the invitee to fetch
+ * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
+ * @returns A Promise that resolves with the invitee data or null if not found
+ */
+export const fetchInvitee = async (
+  inviteeId: string,
+  weddingId?: string
+): Promise<Invitee | null> => {
+  return await weddingFirebase.getDocument<Invitee>(
+    "invitee",
+    inviteeId,
+    weddingId
+  );
+};
+
+/**
  * Fetches all invitees from Firebase for the current user's wedding
  * @param weddingId Optional wedding ID (will use current user's wedding ID if not provided)
  * @returns A Promise that resolves with an array of invitees

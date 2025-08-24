@@ -12,6 +12,7 @@ import SetupWeddingPage from "./components/wedding/SetupWeddingPage";
 import WeddingRoute from "./components/wedding/WeddingRoute";
 import RootRedirect from "./components/auth/RootRedirect";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import GuestRSVPPage from "./components/rsvp/GuestRSVPPage";
 
 const AppRoutes: FC = () => {
   return (
@@ -19,6 +20,7 @@ const AppRoutes: FC = () => {
       <Route path="/" element={<RootRedirect />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/guest-rsvp/:weddingId/:guestId" element={<GuestRSVPPage />} />
       <Route element={<ProtectedRoute redirectPath="/login" />}>
         <Route path="wedding" element={<WeddingRoute />}>
           <Route index element={<SetupWeddingPage />} />
