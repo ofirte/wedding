@@ -313,4 +313,29 @@ export interface Translations {
     dateSent: string;
     status: string;
   };
+  rsvpStatusTab: {
+    title: string;
+    statistics: string;
+    totalInvitations: string;
+    submittedRSVP: string;
+    attending: string;
+    totalGuests: string;
+    sleepover: string;
+    transportation: string;
+    rsvpList: string;
+    name: string;
+    phone: string;
+    attendance: string;
+    guestCount: string;
+    sleepoverColumn: string;
+    transportationColumn: string;
+    status: string;
+    pending: string;
+    arriving: string;
+    notArriving: string;
+    draft: string;
+    submitted: string;
+    noData: string;
+    loadingData: string;
+  };
 }

@@ -24,6 +24,7 @@ import { RSVPStatus } from "../../api/rsvp/rsvpStatusTypes";
 import { Invitee } from "../invitees/InviteList";
 import DSTable, { Column } from "../common/DSTable";
 import { isNil } from "lodash";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 type InviteeWithRSVP = Invitee & {
   rsvpStatus?: RSVPStatus;
@@ -66,6 +67,7 @@ const StatCard: React.FC<{
 );
 
 const RSVPStatusTab: React.FC = () => {
+  const { t } = useTranslation();
   const { data: rsvpStatuses, isLoading: isLoadingRSVP } = useRSVPStatuses();
   const { data: invitees, isLoading: isLoadingInvitees } = useInvitees();
 
@@ -110,7 +112,7 @@ const RSVPStatusTab: React.FC = () => {
   const columns: Column<InviteeWithRSVP>[] = [
     {
       id: "name",
-      label: "שם",
+      label: t("rsvpStatusTab.name"),
       render: (row) => (
         <Typography variant="body2" fontWeight="medium">
           {row.name}
@@ -120,7 +122,8 @@ const RSVPStatusTab: React.FC = () => {
     },
     {
       id: "phone",
-      label: "טלפון",
+      label: t("rsvpStatusTab.phone"),
+      sortable: true,
       render: (row) => (
         <Typography variant="body2" color="text.secondary">
           {row.cellphone || "-"}
@@ -129,14 +132,27 @@ const RSVPStatusTab: React.FC = () => {
     },
     {
       id: "attendance",
-      label: "נוכחות",
+      label: t("rsvpStatusTab.attendance"),
+      sortable: true,
+      sortFn: (a, b) => {
+        const aAttendance = a.rsvpStatus?.attendance;
+        const bAttendance = b.rsvpStatus?.attendance;
+
+        // Sort priority: attending -> not attending -> pending
+        if (aAttendance === bAttendance) return 0;
+        if (aAttendance === true && bAttendance !== true) return -1;
+        if (bAttendance === true && aAttendance !== true) return 1;
+        if (aAttendance === false && isNil(bAttendance)) return -1;
+        if (bAttendance === false && isNil(aAttendance)) return 1;
+        return 0;
+      },
       render: (row) => {
         const status = row.rsvpStatus;
         if (isNil(status?.attendance)) {
           return (
             <Chip
               icon={<PendingIcon />}
-              label="ממתין"
+              label={t("rsvpStatusTab.pending")}
               size="small"
               color="default"
               variant="outlined"
@@ -147,7 +163,7 @@ const RSVPStatusTab: React.FC = () => {
           return (
             <Chip
               icon={<CheckIcon />}
-              label="מגיע"
+              label={t("rsvpStatusTab.arriving")}
               size="small"
               color="success"
             />
@@ -156,7 +172,7 @@ const RSVPStatusTab: React.FC = () => {
         return (
           <Chip
             icon={<CancelIcon />}
-            label="לא מגיע"
+            label={t("rsvpStatusTab.notArriving")}
             size="small"
             color="error"
           />
@@ -165,7 +181,7 @@ const RSVPStatusTab: React.FC = () => {
     },
     {
       id: "guestCount",
-      label: "מספר אנשים",
+      label: t("rsvpStatusTab.guestCount"),
       render: (row) => {
         const status = row.rsvpStatus;
         if (isNil(status?.amount)) return "-";
@@ -185,7 +201,20 @@ const RSVPStatusTab: React.FC = () => {
     },
     {
       id: "sleepover",
-      label: "לינה",
+      label: t("rsvpStatusTab.sleepoverColumn"),
+      sortable: true,
+      sortFn: (a, b) => {
+        const aSleepover = a.rsvpStatus?.sleepover;
+        const bSleepover = b.rsvpStatus?.sleepover;
+
+        // Sort priority: true -> false -> null/undefined
+        if (aSleepover === bSleepover) return 0;
+        if (aSleepover === true && bSleepover !== true) return -1;
+        if (bSleepover === true && aSleepover !== true) return 1;
+        if (aSleepover === false && bSleepover === null) return -1;
+        if (bSleepover === false && aSleepover === null) return 1;
+        return 0;
+      },
       render: (row) => {
         const status = row.rsvpStatus;
         if (isNil(status?.sleepover)) return "-";
@@ -193,14 +222,27 @@ const RSVPStatusTab: React.FC = () => {
           <HotelIcon color="primary" fontSize="small" />
         ) : (
           <Typography variant="body2" color="text.secondary">
-            לא
+            {t("rsvpStatusTab.noData")}
           </Typography>
         );
       },
     },
     {
       id: "ride",
-      label: "הסעה",
+      label: t("rsvpStatusTab.transportationColumn"),
+      sortable: true,
+      sortFn: (a, b) => {
+        const aRide = a.rsvpStatus?.rideFromTelAviv;
+        const bRide = b.rsvpStatus?.rideFromTelAviv;
+
+        // Sort priority: true -> false -> null/undefined
+        if (aRide === bRide) return 0;
+        if (aRide === true && bRide !== true) return -1;
+        if (bRide === true && aRide !== true) return 1;
+        if (aRide === false && bRide === null) return -1;
+        if (bRide === false && aRide === null) return 1;
+        return 0;
+      },
       render: (row) => {
         const status = row.rsvpStatus;
         if (isNil(status?.rideFromTelAviv)) return "-";
@@ -208,20 +250,42 @@ const RSVPStatusTab: React.FC = () => {
           <BusIcon color="primary" fontSize="small" />
         ) : (
           <Typography variant="body2" color="text.secondary">
-            לא
+            {t("rsvpStatusTab.noData")}
           </Typography>
         );
       },
     },
     {
       id: "submitted",
-      label: "סטטוס",
+      label: t("rsvpStatusTab.status"),
+      sortable: true,
+      sortFn: (a, b) => {
+        const aSubmitted = a.rsvpStatus?.isSubmitted;
+        const bSubmitted = b.rsvpStatus?.isSubmitted;
+
+        // Sort priority: submitted (true) -> draft (false) -> null/undefined
+        if (aSubmitted === bSubmitted) return 0;
+        if (aSubmitted === true && bSubmitted !== true) return -1;
+        if (bSubmitted === true && aSubmitted !== true) return 1;
+        if (aSubmitted === false && bSubmitted === null) return -1;
+        if (bSubmitted === false && aSubmitted === null) return 1;
+        return 0;
+      },
       render: (row) => {
         const status = row.rsvpStatus;
         return status?.isSubmitted ? (
-          <Chip label="הוגש" size="small" color="info" />
+          <Chip
+            label={t("rsvpStatusTab.submitted")}
+            size="small"
+            color="info"
+          />
         ) : (
-          <Chip label="טיוטה" size="small" color="warning" variant="outlined" />
+          <Chip
+            label={t("rsvpStatusTab.draft")}
+            size="small"
+            color="warning"
+            variant="outlined"
+          />
         );
       },
     },
@@ -230,7 +294,7 @@ const RSVPStatusTab: React.FC = () => {
   if (isLoadingRSVP || isLoadingInvitees) {
     return (
       <Box display="flex" justifyContent="center" p={4}>
-        <Typography>טוען נתונים...</Typography>
+        <Typography>{t("rsvpStatusTab.loadingData")}</Typography>
       </Box>
     );
   }
@@ -240,12 +304,12 @@ const RSVPStatusTab: React.FC = () => {
       {/* Statistics Cards */}
       <Stack spacing={3} sx={{ mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          סטטיסטיקות אישורי הגעה
+          {t("rsvpStatusTab.statistics")}
         </Typography>
         <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
           <Box sx={{ minWidth: 200, flex: 1 }}>
             <StatCard
-              title="סה״כ הזמנות"
+              title={t("rsvpStatusTab.totalInvitations")}
               value={stats.totalInvitees}
               icon={<PeopleIcon />}
               color="info"
@@ -253,7 +317,7 @@ const RSVPStatusTab: React.FC = () => {
           </Box>
           <Box sx={{ minWidth: 200, flex: 1 }}>
             <StatCard
-              title="הגישו RSVP"
+              title={t("rsvpStatusTab.submittedRSVP")}
               value={stats.submittedCount}
               icon={<EventAvailableIcon />}
               color="primary"
@@ -261,7 +325,7 @@ const RSVPStatusTab: React.FC = () => {
           </Box>
           <Box sx={{ minWidth: 200, flex: 1 }}>
             <StatCard
-              title="מגיעים"
+              title={t("rsvpStatusTab.attending")}
               value={stats.attendingCount}
               icon={<CheckIcon />}
               color="success"
@@ -269,7 +333,7 @@ const RSVPStatusTab: React.FC = () => {
           </Box>
           <Box sx={{ minWidth: 200, flex: 1 }}>
             <StatCard
-              title="סה״כ אורחים"
+              title={t("rsvpStatusTab.totalGuests")}
               value={stats.totalGuests}
               icon={<GroupIcon />}
               color="secondary"
@@ -279,7 +343,7 @@ const RSVPStatusTab: React.FC = () => {
         <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
           <Box sx={{ minWidth: 200, flex: 1 }}>
             <StatCard
-              title="לינה"
+              title={t("rsvpStatusTab.sleepover")}
               value={stats.sleepoverCount}
               icon={<HotelIcon />}
               color="warning"
@@ -287,7 +351,7 @@ const RSVPStatusTab: React.FC = () => {
           </Box>
           <Box sx={{ minWidth: 200, flex: 1 }}>
             <StatCard
-              title="הסעה"
+              title={t("rsvpStatusTab.transportation")}
               value={stats.rideCount}
               icon={<BusIcon />}
               color="error"
@@ -300,7 +364,7 @@ const RSVPStatusTab: React.FC = () => {
       <Paper sx={{ mt: 3 }}>
         <Box p={2}>
           <Typography variant="h6" gutterBottom>
-            רשימת אישורי הגעה
+            {t("rsvpStatusTab.rsvpList")}
           </Typography>
           <DSTable
             columns={columns}
