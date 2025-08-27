@@ -28,37 +28,16 @@ export interface RSVPFormData {
 export const formDataToRSVPStatus = (
   formData: RSVPFormData
 ): Partial<RSVPStatus> | Record<string, any> => {
-  const result: Record<string, any> = {};
-
-  // Handle attendance
-  if (!isNil(formData.attending)) {
-    result.attendance = formData.attending === "yes";
-  }
-
-  // Handle guest count (amount)
-  if (formData.attending === "no") {
-    // When not attending, explicitly remove amount field
-    result.amount = deleteField();
-  } else if (!isNil(formData.guestCount)) {
-    result.amount = formData.guestCount;
-  }
-
-  // Handle sleepover
-  if (formData.attending === "no") {
-    // When not attending, explicitly remove sleepover field
-    result.sleepover = deleteField();
-  } else if (!isNil(formData.sleepover)) {
-    result.sleepover = formData.sleepover === "yes";
-  }
-
-  // Handle ride from Tel Aviv
-  if (formData.attending === "no") {
-    // When not attending, explicitly remove ride field
-    result.rideFromTelAviv = deleteField();
-  } else if (!isNil(formData.needsRideFromTelAviv)) {
-    result.rideFromTelAviv = formData.needsRideFromTelAviv === "yes";
-  }
-
+  const yesNoFieldValue = (fieldValue: "yes" | "no" | undefined) => {
+    if (isNil(fieldValue)) return deleteField();
+    return fieldValue === "yes";
+  };
+  const result = {
+    attendance: yesNoFieldValue(formData.attending),
+    amount: isNil(formData.guestCount) ? deleteField() : formData.guestCount,
+    sleepover: yesNoFieldValue(formData.sleepover),
+    rideFromTelAviv: yesNoFieldValue(formData.needsRideFromTelAviv),
+  };
   return result;
 };
 
@@ -69,6 +48,9 @@ export const formDataToRSVPStatus = (
 export const rsvpStatusToFormData = (
   rsvpStatus: Partial<RSVPStatus> | null | undefined
 ): RSVPFormData => {
+  const yesNoFieldValue = (fieldValue: boolean | undefined) =>
+    !isNil(fieldValue) ? (fieldValue ? "yes" : "no") : undefined;
+  
   if (isNil(rsvpStatus)) {
     return {
       attending: undefined,
@@ -79,21 +61,9 @@ export const rsvpStatusToFormData = (
   }
 
   return {
-    attending: !isNil(rsvpStatus.attendance)
-      ? rsvpStatus.attendance
-        ? "yes"
-        : "no"
-      : undefined,
+    attending: yesNoFieldValue(rsvpStatus.attendance),
     guestCount: !isNil(rsvpStatus.amount) ? rsvpStatus.amount : undefined,
-    sleepover: !isNil(rsvpStatus.sleepover)
-      ? rsvpStatus.sleepover
-        ? "yes"
-        : "no"
-      : undefined,
-    needsRideFromTelAviv: !isNil(rsvpStatus.rideFromTelAviv)
-      ? rsvpStatus.rideFromTelAviv
-        ? "yes"
-        : "no"
-      : undefined,
+    sleepover: yesNoFieldValue(rsvpStatus.sleepover),
+    needsRideFromTelAviv: yesNoFieldValue(rsvpStatus.rideFromTelAviv),
   };
 };

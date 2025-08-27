@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import {
   Paper,
   Typography,
@@ -35,8 +35,21 @@ const RSVPQuestionsForm: React.FC<RSVPQuestionsFormProps> = ({
   error,
   isSubmitted,
 }) => {
+  const getNextUnansweredQuestion = (newFormData: Partial<RSVPFormData>) => {
+    if (isNil(newFormData.attending)) return 1;
+    if (isNil(newFormData.guestCount) || newFormData.guestCount === 0) return 2;
+    if (isNil(newFormData.sleepover)) return 3;
+    if (isNil(newFormData.needsRideFromTelAviv)) return 4;
+    return null;
+  };
   const questionsRef = useRef<HTMLDivElement>(null);
-  const [currentOpenQuestion, setCurrentOpenQuestion] = useState<number>(1);
+  const firstUnansweredQuestion = useMemo(
+    () => getNextUnansweredQuestion(formData),
+    [formData]
+  );
+  const [currentOpenQuestion, setCurrentOpenQuestion] = useState<number>(
+    firstUnansweredQuestion || 0
+  );
   const isDone =
     (formData.attending === "yes" &&
       !!formData.guestCount &&
@@ -47,7 +60,8 @@ const RSVPQuestionsForm: React.FC<RSVPQuestionsFormProps> = ({
     (value) => !isNil(value) && value !== 0
   ).length;
 
-  const numberOfQuestionsNeeded = formData.attending === "no" ? 1 : 4;
+  const numberOfQuestionsNeeded =
+    formData.attending === "no" ? 1 : formData.sleepover === "no" ? 4 : 3;
   // Handle form data changes
   const handleFormDataChange = (newFormData: Partial<RSVPFormData>) => {
     onFormDataChange(newFormData);
@@ -65,13 +79,6 @@ const RSVPQuestionsForm: React.FC<RSVPQuestionsFormProps> = ({
   // Handle clicking on completed questions to reopen them
   const handleQuestionClick = (questionNumber: number) => {
     setCurrentOpenQuestion(questionNumber);
-  };
-  const getNextUnansweredQuestion = (newFormData: Partial<RSVPFormData>) => {
-    if (isNil(newFormData.attending)) return 1;
-    if (isNil(newFormData.guestCount) || newFormData.guestCount === 0) return 2;
-    if (isNil(newFormData.sleepover)) return 3;
-    if (isNil(newFormData.needsRideFromTelAviv)) return 4;
-    return null;
   };
 
   // Scroll to questions
@@ -238,29 +245,31 @@ const RSVPQuestionsForm: React.FC<RSVPQuestionsFormProps> = ({
               }
             />
 
-            <RSVPQuestionCard
-              formData={formData}
-              onFormDataChange={handleFormDataChange}
-              isOpen={currentOpenQuestion === 4}
-              isClickable={currentOpenQuestion !== 4}
-              onScroll={scrollToQuestions}
-              onQuestionClick={() => handleQuestionClick(4)}
-              questionTitle="🚗 צריכים הסעה מתל אביב?"
-              answerSummary={
-                formData.needsRideFromTelAviv === "yes"
-                  ? "כן, נזדקק להסעה"
-                  : formData.needsRideFromTelAviv === "no"
-                  ? "לא, נגיע בכוחות עצמנו"
-                  : undefined
-              }
-              questionComponent={
-                <RideQuestion
-                  formData={formData}
-                  onFormDataChange={handleFormDataChange}
-                  onScroll={scrollToQuestions}
-                />
-              }
-            />
+            {formData.sleepover === "no" && (
+              <RSVPQuestionCard
+                formData={formData}
+                onFormDataChange={handleFormDataChange}
+                isOpen={currentOpenQuestion === 4}
+                isClickable={currentOpenQuestion !== 4}
+                onScroll={scrollToQuestions}
+                onQuestionClick={() => handleQuestionClick(4)}
+                questionTitle="🚗 צריכים הסעה מתל אביב?"
+                answerSummary={
+                  formData.needsRideFromTelAviv === "yes"
+                    ? "כן, נזדקק להסעה"
+                    : formData.needsRideFromTelAviv === "no"
+                    ? "לא, נגיע בכוחות עצמנו"
+                    : undefined
+                }
+                questionComponent={
+                  <RideQuestion
+                    formData={formData}
+                    onFormDataChange={handleFormDataChange}
+                    onScroll={scrollToQuestions}
+                  />
+                }
+              />
+            )}
           </>
         )}
 
@@ -296,7 +305,11 @@ const RSVPQuestionsForm: React.FC<RSVPQuestionsFormProps> = ({
                 {isSubmitted ? "מעדכן..." : "שולח..."}
               </>
             ) : isDone ? (
-              isSubmitted ? "🔄 עדכן אישור הגעה 🔄" : "🎉 שלח אישור הגעה! 🎉"
+              isSubmitted ? (
+                "🔄 עדכן אישור הגעה 🔄"
+              ) : (
+                "🎉 שלח אישור הגעה! 🎉"
+              )
             ) : (
               `מלא את כל השאלות (${numberOfAnsweredQuestions}/${numberOfQuestionsNeeded})`
             )}

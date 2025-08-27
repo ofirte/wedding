@@ -6,6 +6,7 @@ import {
   Typography,
   Avatar,
   Divider,
+  Button,
 } from "@mui/material";
 import { CheckCircle as CheckIcon } from "@mui/icons-material";
 import { RSVPFormData } from "./guestRSVPTypes";
@@ -16,12 +17,14 @@ interface ThankYouCardProps {
   formData: RSVPFormData;
   weddingInfo: Wedding;
   guestInfo: Invitee;
+  onUpdateInfo: () => void;
 }
 
 const ThankYouCard: React.FC<ThankYouCardProps> = ({
   formData,
   weddingInfo,
   guestInfo,
+  onUpdateInfo,
 }) => {
   return (
     <Box
@@ -100,6 +103,13 @@ const ThankYouCard: React.FC<ThankYouCardProps> = ({
           <Typography variant="body2" sx={{ color: "#666666", mb: 2 }}>
             תוכלו לעדכן את אישור ההגעה שלכם בכל זמן דרך הקישור שקיבלתם 💌
           </Typography>
+          <Button
+            variant="contained"
+            sx={{ mt: 2, bgcolor: "#9BBB9B", color: "white" }}
+            onClick={onUpdateInfo}
+          >
+            עדכון אישור הגעה
+          </Button>
         </Paper>
       </Container>
     </Box>

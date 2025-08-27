@@ -37,9 +37,6 @@ const AttendanceQuestion: React.FC<AttendanceQuestionProps> = ({
       // When selecting "yes", reset other fields to empty/unanswered state
       onFormDataChange({
         attending,
-        guestCount: undefined, // Reset to undefined so user must answer again
-        sleepover: undefined, // Reset to empty so user must answer again
-        needsRideFromTelAviv: undefined, // Reset to empty so user must answer again
       });
       // Scroll to questions when user selects "yes"
       setTimeout(() => onScroll(), 300);

@@ -62,14 +62,7 @@ const GuestRSVPPage: React.FC = () => {
 
   const handleFormDataChange = (newFormData: Partial<RSVPFormData>) => {
     const updatedFormData = { ...formData, ...newFormData };
-    if (updatedFormData.attending === "no") {
-      updatedFormData.guestCount = undefined;
-      updatedFormData.sleepover = undefined;
-      updatedFormData.needsRideFromTelAviv = undefined;
-    }
     setFormData(updatedFormData);
-
-    // Update database with current form state using the utility function
     if (guestId) {
       const rsvpUpdate = formDataToRSVPStatus(updatedFormData);
       updateRSVPStatus.mutate({
@@ -137,6 +130,7 @@ const GuestRSVPPage: React.FC = () => {
         formData={formData}
         weddingInfo={weddingInfo}
         guestInfo={guestInfo}
+        onUpdateInfo={() => setSubmitted(false)}
       />
     );
   }

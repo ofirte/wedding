@@ -20,9 +20,15 @@ const SleepoverQuestion: React.FC<SleepoverQuestionProps> = ({
   onFormDataChange,
   onScroll,
 }) => {
-  const handleSleepoverChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSleepoverChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const sleepover = event.target.value as "yes" | "no";
-    onFormDataChange({ sleepover });
+    const needsRideFromTelAviv = sleepover === "yes" ? "no" : undefined;
+    onFormDataChange({
+      sleepover,
+      needsRideFromTelAviv,
+    });
   };
 
   return (
