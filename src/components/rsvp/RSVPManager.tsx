@@ -1,15 +1,13 @@
-import React, { FC, useState } from "react";
-import { Box, Typography, Tabs, Tab } from "@mui/material";
+import React, { FC, useEffect } from "react";
+import { Box, Tabs, Tab } from "@mui/material";
 import {
   Description as DescriptionIcon,
-  Send as SendIcon,
   History as HistoryIcon,
   Assessment as AssessmentIcon,
 } from "@mui/icons-material";
+import { useSearchParams } from "react-router";
 import { useTranslation } from "../../localization/LocalizationContext";
 import MessageTemplateTable from "./MessageTemplateTable";
-import SendRSVPTab from "./SendRSVPTab";
-import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
 import MessagesLogTab from "./MessagesLogTab";
 import RSVPStatusTab from "./RSVPStatusTab";
 
@@ -24,33 +22,47 @@ type TabValue = (typeof TabValue)[keyof typeof TabValue];
 
 const RSVPTabs = [
   {
+    value: TabValue.RSVP_STATUS,
+    icon: <AssessmentIcon />,
+    labelKey: "rsvp.status",
+  },
+  {
     value: TabValue.TEMPLATES,
     icon: <DescriptionIcon />,
     labelKey: "rsvp.templates",
-  },
-  {
-    value: TabValue.SEND,
-    icon: <SendIcon />,
-    labelKey: "rsvp.sendRSVP",
   },
   {
     value: TabValue.MESSAGES_LOG,
     icon: <HistoryIcon />,
     labelKey: "rsvp.messagesLog",
   },
-  {
-    value: TabValue.RSVP_STATUS,
-    icon: <AssessmentIcon />,
-    labelKey: "rsvp.status",
-  },
 ] as const;
 
 const RSVPManager: FC = () => {
-  const [activeTab, setActiveTab] = useState<TabValue>(TabValue.TEMPLATES);
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
+
+  // Get tab from URL query param, default to TEMPLATES if not present or invalid
+  const tabFromUrl = searchParams.get("tab") as TabValue;
+  const isValidTab = Object.values(TabValue).includes(tabFromUrl);
+  const activeTab = isValidTab ? tabFromUrl : TabValue.RSVP_STATUS;
+
+  // Update URL when tab changes
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    setActiveTab(newValue);
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("tab", newValue);
+    setSearchParams(newSearchParams);
   };
+
+  // Set initial tab in URL if not present
+  useEffect(() => {
+    if (!tabFromUrl || !isValidTab) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("tab", TabValue.RSVP_STATUS);
+      setSearchParams(newSearchParams, { replace: true });
+    }
+  }, []);
+
   return (
     <Box>
       <Tabs
@@ -71,8 +83,6 @@ const RSVPManager: FC = () => {
 
       <Box sx={{ minHeight: 400 }}>
         {activeTab === TabValue.TEMPLATES && <MessageTemplateTable />}
-
-        {activeTab === TabValue.SEND && <SendRSVPTab />}
 
         {activeTab === TabValue.MESSAGES_LOG && <MessagesLogTab />}
 

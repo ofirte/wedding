@@ -286,11 +286,13 @@ export const englishTranslations: Translations = {
     selectGuestsDescription:
       "Select guests to send RSVP messages to. Only guests with phone numbers are shown.",
     selectedGuestsCount: "{{count}} guest(s) selected",
+    onlyGuestsWithPhones: "(Only guests with phone numbers can be messaged)",
     sendRSVPDescription: "{{count}} guests with phone numbers available",
     addPhoneNumbersHint:
       "Add phone numbers to your guests in the main guest list to enable RSVP messaging",
     dateSent: "Date Sent",
     status: "Status",
+    messagesLog: "Messages Log",
   },
   rsvpStatusTab: {
     title: "RSVP Status",

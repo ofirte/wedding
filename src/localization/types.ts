@@ -308,10 +308,12 @@ export interface Translations {
     selectGuests: string;
     selectGuestsDescription: string;
     selectedGuestsCount: string;
+    onlyGuestsWithPhones: string;
     sendRSVPDescription: string;
     addPhoneNumbersHint: string;
     dateSent: string;
     status: string;
+    messagesLog: string;
   };
   rsvpStatusTab: {
     title: string;

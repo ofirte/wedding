@@ -1,13 +1,5 @@
-import React, { useMemo } from "react";
-import {
-  Box,
-  Typography,
-  Paper,
-  Card,
-  CardContent,
-  Chip,
-  Stack,
-} from "@mui/material";
+import React, { useMemo, useState } from "react";
+import { Box, Typography, Paper, Chip, Button } from "@mui/material";
 import {
   CheckCircle as CheckIcon,
   Cancel as CancelIcon,
@@ -15,8 +7,7 @@ import {
   Group as GroupIcon,
   Hotel as HotelIcon,
   DirectionsBus as BusIcon,
-  People as PeopleIcon,
-  EventAvailable as EventAvailableIcon,
+  Send as SendIcon,
 } from "@mui/icons-material";
 import { useRSVPStatuses } from "../../hooks/rsvp/useRSVPStatuses";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
@@ -25,51 +16,19 @@ import { Invitee } from "../invitees/InviteList";
 import DSTable, { Column } from "../common/DSTable";
 import { isNil } from "lodash";
 import { useTranslation } from "../../localization/LocalizationContext";
+import SendMessageDialog from "./SendMessageDialog";
+import RSVPStatusSummary from "./RSVPStatusSummary";
 
 type InviteeWithRSVP = Invitee & {
   rsvpStatus?: RSVPStatus;
 };
 
-const StatCard: React.FC<{
-  title: string;
-  value: number;
-  icon: React.ReactElement;
-  color?: string;
-}> = ({ title, value, icon, color = "primary" }) => (
-  <Card sx={{ height: "100%" }}>
-    <CardContent>
-      <Box display="flex" alignItems="center" gap={2}>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 48,
-            height: 48,
-            borderRadius: 2,
-            bgcolor: `${color}.light`,
-            color: `${color}.main`,
-          }}
-        >
-          {icon}
-        </Box>
-        <Box>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
-            {title}
-          </Typography>
-          <Typography variant="h4" fontWeight="bold" color={color}>
-            {value}
-          </Typography>
-        </Box>
-      </Box>
-    </CardContent>
-  </Card>
-);
-
 const RSVPStatusTab: React.FC = () => {
   const { t } = useTranslation();
   const { data: rsvpStatuses, isLoading: isLoadingRSVP } = useRSVPStatuses();
   const { data: invitees, isLoading: isLoadingInvitees } = useInvitees();
+  const [selectedGuests, setSelectedGuests] = useState<Invitee[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const inviteesWithRSVP: InviteeWithRSVP[] = useMemo(() => {
     if (!invitees || !rsvpStatuses) return [];
@@ -79,35 +38,28 @@ const RSVPStatusTab: React.FC = () => {
     }));
   }, [invitees, rsvpStatuses]);
 
-  const stats = useMemo(() => {
-    let submittedCount = 0;
-    let attendingCount = 0;
-    let totalGuests = 0;
-    let sleepoverCount = 0;
-    let rideCount = 0;
-
-    inviteesWithRSVP.forEach((invitee) => {
-      const status = invitee.rsvpStatus;
-      if (status?.isSubmitted) {
-        submittedCount++;
-      }
-      if (status?.attendance) {
-        attendingCount += status?.amount || 0;
-        totalGuests += status?.amount || 0;
-        if (status?.sleepover) sleepoverCount += status?.amount || 0;
-        if (status?.rideFromTelAviv) rideCount += status?.amount || 0;
-      }
-    });
-
-    return {
-      submittedCount,
-      attendingCount,
-      totalGuests,
-      sleepoverCount,
-      rideCount,
-      totalInvitees: inviteesWithRSVP.length,
-    };
+  // Filter for invitees with phone numbers for messaging
+  const inviteesWithPhones = useMemo(() => {
+    return inviteesWithRSVP.filter(
+      (invitee) => invitee.cellphone && invitee.cellphone.trim() !== ""
+    );
   }, [inviteesWithRSVP]);
+
+  const handleSelectionChange = (selected: InviteeWithRSVP[]) => {
+    // Filter selected guests to only include those with phone numbers
+    const selectedWithPhones = selected.filter(
+      (guest) => guest.cellphone && guest.cellphone.trim() !== ""
+    );
+    setSelectedGuests(selectedWithPhones);
+  };
+
+  const handleOpenDialog = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
 
   const columns: Column<InviteeWithRSVP>[] = [
     {
@@ -302,78 +254,48 @@ const RSVPStatusTab: React.FC = () => {
   return (
     <Box p={3}>
       {/* Statistics Cards */}
-      <Stack spacing={3} sx={{ mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          {t("rsvpStatusTab.statistics")}
-        </Typography>
-        <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
-          <Box sx={{ minWidth: 200, flex: 1 }}>
-            <StatCard
-              title={t("rsvpStatusTab.totalInvitations")}
-              value={stats.totalInvitees}
-              icon={<PeopleIcon />}
-              color="info"
-            />
-          </Box>
-          <Box sx={{ minWidth: 200, flex: 1 }}>
-            <StatCard
-              title={t("rsvpStatusTab.submittedRSVP")}
-              value={stats.submittedCount}
-              icon={<EventAvailableIcon />}
-              color="primary"
-            />
-          </Box>
-          <Box sx={{ minWidth: 200, flex: 1 }}>
-            <StatCard
-              title={t("rsvpStatusTab.attending")}
-              value={stats.attendingCount}
-              icon={<CheckIcon />}
-              color="success"
-            />
-          </Box>
-          <Box sx={{ minWidth: 200, flex: 1 }}>
-            <StatCard
-              title={t("rsvpStatusTab.totalGuests")}
-              value={stats.totalGuests}
-              icon={<GroupIcon />}
-              color="secondary"
-            />
-          </Box>
-        </Stack>
-        <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
-          <Box sx={{ minWidth: 200, flex: 1 }}>
-            <StatCard
-              title={t("rsvpStatusTab.sleepover")}
-              value={stats.sleepoverCount}
-              icon={<HotelIcon />}
-              color="warning"
-            />
-          </Box>
-          <Box sx={{ minWidth: 200, flex: 1 }}>
-            <StatCard
-              title={t("rsvpStatusTab.transportation")}
-              value={stats.rideCount}
-              icon={<BusIcon />}
-              color="error"
-            />
-          </Box>
-        </Stack>
-      </Stack>
+      <RSVPStatusSummary inviteesWithRSVP={inviteesWithRSVP} />
 
       {/* Table */}
       <Paper sx={{ mt: 3 }}>
         <Box p={2}>
-          <Typography variant="h6" gutterBottom>
-            {t("rsvpStatusTab.rsvpList")}
-          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
+            <Typography variant="h6">{t("rsvpStatusTab.rsvpList")}</Typography>
+
+            <Button
+              variant="contained"
+              startIcon={<SendIcon />}
+              onClick={handleOpenDialog}
+              color="primary"
+              disabled={selectedGuests.length === 0}
+            >
+              <Typography>
+                {t("rsvp.sendMessage")}{" "}
+                {selectedGuests.length > 0 && `(${selectedGuests.length})`}
+              </Typography>
+            </Button>
+          </Box>
+
           <DSTable
             columns={columns}
             data={inviteesWithRSVP}
-            showExport
-            exportFilename="rsvp-status"
+            showSelectColumn={true}
+            onSelectionChange={handleSelectionChange}
           />
         </Box>
       </Paper>
+      <SendMessageDialog
+        open={isDialogOpen}
+        onClose={handleCloseDialog}
+        selectedGuests={selectedGuests}
+      />
     </Box>
   );
 };

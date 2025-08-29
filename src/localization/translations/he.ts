@@ -285,11 +285,13 @@ export const hebrewTranslations: Translations = {
     selectGuestsDescription:
       "בחר את האורחים שברצונך לשלוח להם הודעה. רק אורחים עם מספרי טלפון זמינים יופיעו כאן.",
     selectedGuestsCount: "{{count}} אורחים נבחרים",
+    onlyGuestsWithPhones: "(רק אורחים עם מספר טלפון יכולים לקבל הודעות)",
     sendRSVPDescription:
       "שלח הודעה אישית או תבנית אישור הגעה לאורחים שלך. ודא שהמספרים מעודכנים.",
     addPhoneNumbersHint: "הוסף מספרי טלפון לאורחים כדי לשלוח הודעות",
     dateSent: "תאריך שליחה",
     status: "סטטוס",
+    messagesLog: "יומן הודעות",
   },
   rsvpStatusTab: {
     title: "אישורי הגעה",
