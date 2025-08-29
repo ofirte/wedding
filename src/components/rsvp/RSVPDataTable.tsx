@@ -3,7 +3,7 @@ import { Paper, Box } from "@mui/material";
 import DSTable from "../common/DSTable";
 import RSVPTableHeader from "./RSVPTableHeader";
 import { useRSVPTableColumns, InviteeWithRSVP } from "./RSVPTableColumns";
-import { Invitee } from "../invitees/InviteList";
+import { SentMessage } from "../../hooks/rsvp";
 
 interface MessageTemplate {
   sid: string;
@@ -18,7 +18,7 @@ interface RSVPDataTableProps {
   onSelectionChange: (selected: InviteeWithRSVP[]) => void;
   onSendMessage: () => void;
   templates?: MessageTemplate[];
-  sentMessages?: any[];
+  sentMessages?: SentMessage[];
   isLoading?: boolean;
 }
 
@@ -52,7 +52,9 @@ const RSVPDataTable: React.FC<RSVPDataTableProps> = ({
     if (!sentMessages.length || !selectedTemplates.length) return false;
 
     const inviteeMessages = sentMessages.filter(
-      (message) => message.userId === invitee.id
+      (message) =>
+        message.userId === invitee.id &&
+        !["failed", "undelivered"].includes(message.status)
     );
 
     return inviteeMessages.some((message) =>

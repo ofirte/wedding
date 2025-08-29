@@ -4,7 +4,6 @@ import { useRSVPStatuses } from "../../hooks/rsvp/useRSVPStatuses";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { useSentMessages } from "../../hooks/rsvp/useSentMessages";
 import { useMessageTemplates } from "../../hooks/rsvp/useMessageTemplates";
-import { RSVPStatus } from "../../api/rsvp/rsvpStatusTypes";
 import { Invitee } from "../invitees/InviteList";
 import { useTranslation } from "../../localization/LocalizationContext";
 import SendMessageDialog from "./SendMessageDialog";
