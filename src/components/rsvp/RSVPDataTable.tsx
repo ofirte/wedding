@@ -50,14 +50,13 @@ const RSVPDataTable: React.FC<RSVPDataTableProps> = ({
     invitee: InviteeWithRSVP
   ): boolean => {
     if (!sentMessages.length || !selectedTemplates.length) return false;
-
-    const inviteeMessages = sentMessages.filter(
+    const inviteeDeliveredMessages = sentMessages.filter(
       (message) =>
         message.userId === invitee.id &&
         !["failed", "undelivered"].includes(message.status)
     );
 
-    return inviteeMessages.some((message) =>
+    return inviteeDeliveredMessages.some((message) =>
       selectedTemplates.includes(message.contentSid)
     );
   };

@@ -17,6 +17,7 @@ import { useTranslation } from "../../localization/LocalizationContext";
 
 export type InviteeWithRSVP = Invitee & {
   rsvpStatus?: RSVPStatus;
+  templateSent?: "sent" | "notSent" | "all";
 };
 
 interface UseRSVPTableColumnsProps {
@@ -40,21 +41,6 @@ export const useRSVPTableColumns = ({
   sentMessages,
 }: UseRSVPTableColumnsProps): Column<InviteeWithRSVP>[] => {
   const { t } = useTranslation();
-
-  // Helper to check if templates were sent to an invitee
-  const wasAnySelectedTemplateSentToInvitee = (
-    invitee: InviteeWithRSVP
-  ): boolean => {
-    if (!sentMessages.length || !selectedTemplates.length) return false;
-
-    const inviteeMessages = sentMessages.filter(
-      (message) => message.userId === invitee.id
-    );
-
-    return inviteeMessages.some((message) =>
-      selectedTemplates.includes(message.contentSid)
-    );
-  };
 
   return useMemo(
     (): Column<InviteeWithRSVP>[] => [
@@ -245,20 +231,18 @@ export const useRSVPTableColumns = ({
         label: t("rsvpStatusTab.sent"),
         sortable: true,
         sortFn: (a, b) => {
-          const aSent = wasAnySelectedTemplateSentToInvitee(a);
-          const bSent = wasAnySelectedTemplateSentToInvitee(b);
+          const aSent = a.templateSent === "sent";
+          const bSent = b.templateSent === "sent";
           return aSent === bSent ? 0 : aSent ? -1 : 1;
         },
         filterConfig: {
           id: "templateSent",
           type: "single",
           label: t("rsvpStatusTab.sent"),
-          options: (data: InviteeWithRSVP[]) => {
-            return [
-              { value: "sent", label: t("rsvpStatusTab.sent") },
-              { value: "notSent", label: t("rsvpStatusTab.notSent") },
-            ];
-          },
+          options: [
+            { value: "sent", label: t("rsvpStatusTab.sent") },
+            { value: "notSent", label: t("rsvpStatusTab.notSent") },
+          ],
         },
         render: (row) => {
           if (selectedTemplates.length === 0) {
@@ -268,10 +252,7 @@ export const useRSVPTableColumns = ({
               </Typography>
             );
           }
-
-          const wasSent = wasAnySelectedTemplateSentToInvitee(row);
-
-          return wasSent ? (
+          return row.templateSent === "sent" ? (
             <Chip
               icon={<MessageIcon />}
               label={t("rsvpStatusTab.sent")}

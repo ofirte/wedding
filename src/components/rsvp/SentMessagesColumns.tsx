@@ -10,7 +10,6 @@ import {
 import { SentMessage } from "../../api/rsvp/rsvpApi";
 import { format } from "date-fns";
 import { Invitee } from "../invitees/InviteList";
-import { ca } from "date-fns/locale";
 
 const getStatusIcon = (status: string) => {
   switch (status) {
