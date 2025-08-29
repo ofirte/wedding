@@ -1,0 +1,111 @@
+import React, { useMemo } from "react";
+import { Paper, Box } from "@mui/material";
+import DSTable from "../common/DSTable";
+import RSVPTableHeader from "./RSVPTableHeader";
+import { useRSVPTableColumns, InviteeWithRSVP } from "./RSVPTableColumns";
+import { Invitee } from "../invitees/InviteList";
+
+interface MessageTemplate {
+  sid: string;
+  friendlyName: string;
+}
+
+interface RSVPDataTableProps {
+  data: InviteeWithRSVP[];
+  selectedTemplates: string[];
+  onTemplateSelectionChange: (selected: string[]) => void;
+  selectedGuestsCount: number;
+  onSelectionChange: (selected: InviteeWithRSVP[]) => void;
+  onSendMessage: () => void;
+  templates?: MessageTemplate[];
+  sentMessages?: any[];
+  isLoading?: boolean;
+}
+
+/**
+ * RSVPDataTable - The heart of RSVP data management
+ *
+ * This component tells the complete story of RSVP data interaction:
+ * 1. Provides filtering and action controls through the header
+ * 2. Displays comprehensive RSVP information in an organized table
+ * 3. Enables bulk operations through guest selection
+ * 4. Maintains focus on the wedding planning workflow
+ *
+ * It combines header controls with data presentation to create
+ * a cohesive data management experience.
+ */
+const RSVPDataTable: React.FC<RSVPDataTableProps> = ({
+  data,
+  selectedTemplates,
+  onTemplateSelectionChange,
+  selectedGuestsCount,
+  onSelectionChange,
+  onSendMessage,
+  templates = [],
+  sentMessages = [],
+  isLoading = false,
+}) => {
+  // Helper to check if templates were sent to an invitee
+  const wasAnySelectedTemplateSentToInvitee = (
+    invitee: InviteeWithRSVP
+  ): boolean => {
+    if (!sentMessages.length || !selectedTemplates.length) return false;
+
+    const inviteeMessages = sentMessages.filter(
+      (message) => message.userId === invitee.id
+    );
+
+    return inviteeMessages.some((message) =>
+      selectedTemplates.includes(message.contentSid)
+    );
+  };
+
+  // Preprocess data to add computed properties for filtering
+  const enrichedData = useMemo(() => {
+    return data.map((row) => ({
+      ...row,
+      templateSent:
+        selectedTemplates.length === 0
+          ? "all"
+          : wasAnySelectedTemplateSentToInvitee(row)
+          ? "sent"
+          : "notSent",
+    }));
+  }, [data, selectedTemplates, sentMessages]);
+
+  const columns = useRSVPTableColumns({
+    selectedTemplates,
+    sentMessages,
+  });
+
+  const handleSelectionChange = (selected: InviteeWithRSVP[]) => {
+    // Filter selected guests to only include those with phone numbers
+    const selectedWithPhones = selected.filter(
+      (guest) => guest.cellphone && guest.cellphone.trim() !== ""
+    );
+    onSelectionChange(selectedWithPhones);
+  };
+
+  return (
+    <Paper sx={{ mt: 3 }}>
+      <Box p={2}>
+        <RSVPTableHeader
+          selectedTemplates={selectedTemplates}
+          onTemplateSelectionChange={onTemplateSelectionChange}
+          selectedGuestsCount={selectedGuestsCount}
+          onSendMessage={onSendMessage}
+          templates={templates}
+          isLoading={isLoading}
+        />
+        <DSTable
+          columns={columns}
+          data={enrichedData}
+          showSelectColumn={true}
+          onSelectionChange={handleSelectionChange}
+        />
+      </Box>
+    </Paper>
+  );
+};
+
+export default RSVPDataTable;

@@ -317,5 +317,12 @@ export const hebrewTranslations: Translations = {
     submitted: "הוגש",
     noData: "לא",
     loadingData: "טוען נתונים...",
+    templatesSent: "תבניות שנשלחו",
+    noTemplatesSent: "לא נשלחו תבניות",
+    sent: "נשלח",
+    notSent: "לא נשלח",
+    filterByTemplate: "סנן לפי תבנית",
+    selectTemplates: "בחר תבניות",
+    selectTemplateFirst: "בחר תבניות כדי לסנן",
   },
 };

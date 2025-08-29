@@ -318,5 +318,12 @@ export const englishTranslations: Translations = {
     submitted: "Submitted",
     noData: "No",
     loadingData: "Loading data...",
+    templatesSent: "Templates Sent",
+    noTemplatesSent: "No templates sent",
+    sent: "Sent",
+    notSent: "Not Sent",
+    filterByTemplate: "Filter by Template",
+    selectTemplates: "Select Templates",
+    selectTemplateFirst: "Select templates to filter",
   },
 };

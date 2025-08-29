@@ -339,5 +339,12 @@ export interface Translations {
     submitted: string;
     noData: string;
     loadingData: string;
+    templatesSent: string;
+    noTemplatesSent: string;
+    sent: string;
+    notSent: string;
+    filterByTemplate: string;
+    selectTemplates: string;
+    selectTemplateFirst: string;
   };
 }
