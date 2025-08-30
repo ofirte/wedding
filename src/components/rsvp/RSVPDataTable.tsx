@@ -71,6 +71,11 @@ const RSVPDataTable: React.FC<RSVPDataTableProps> = ({
           : wasAnySelectedTemplateSentToInvitee(row)
           ? "sent"
           : "notSent",
+      // Add flattened properties for filtering
+      attendance: row.rsvpStatus?.attendance,
+      sleepover: row.rsvpStatus?.sleepover,
+      ride: row.rsvpStatus?.rideFromTelAviv,
+      submitted: row.rsvpStatus?.isSubmitted,
     }));
   }, [data, selectedTemplates, sentMessages]);
 

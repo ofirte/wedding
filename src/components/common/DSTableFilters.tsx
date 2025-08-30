@@ -100,6 +100,7 @@ const DSTableFilters: React.FC<DSTableFiltersProps> = ({
 
         <FilterChips
           filters={filters}
+          filterConfigs={filterConfigs}
           onRemoveFilterValue={handleRemoveFilterValue}
           showClearAll={getActiveFiltersCount() > 0}
           onClearAll={handleClearFilters}

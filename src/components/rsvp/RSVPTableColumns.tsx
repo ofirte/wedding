@@ -71,6 +71,16 @@ export const useRSVPTableColumns = ({
         id: "attendance",
         label: t("rsvpStatusTab.attendance"),
         sortable: true,
+        filterConfig: {
+          id: "attendance",
+          type: "multiple",
+          label: t("rsvpStatusTab.attendance"),
+          options: [
+            { value: true, label: t("rsvpStatusTab.arriving") },
+            { value: false, label: t("rsvpStatusTab.notArriving") },
+            { value: null, label: t("rsvpStatusTab.pending") },
+          ],
+        },
         sortFn: (a, b) => {
           const aAttendance = a.rsvpStatus?.attendance;
           const bAttendance = b.rsvpStatus?.attendance;
@@ -141,6 +151,16 @@ export const useRSVPTableColumns = ({
         id: "sleepover",
         label: t("rsvpStatusTab.sleepoverColumn"),
         sortable: true,
+        filterConfig: {
+          id: "sleepover",
+          type: "multiple",
+          label: t("rsvpStatusTab.sleepoverColumn"),
+          options: [
+            { value: true, label: t("common.yes") },
+            { value: false, label: t("common.no") },
+            { value: null, label: "-" },
+          ],
+        },
         sortFn: (a, b) => {
           const aSleepover = a.rsvpStatus?.sleepover;
           const bSleepover = b.rsvpStatus?.sleepover;
@@ -148,8 +168,8 @@ export const useRSVPTableColumns = ({
           if (aSleepover === bSleepover) return 0;
           if (aSleepover === true && bSleepover !== true) return -1;
           if (bSleepover === true && aSleepover !== true) return 1;
-          if (aSleepover === false && bSleepover === null) return -1;
-          if (bSleepover === false && aSleepover === null) return 1;
+          if (aSleepover === false && isNil(bSleepover)) return -1;
+          if (bSleepover === false && isNil(aSleepover)) return 1;
           return 0;
         },
         render: (row) => {
@@ -168,6 +188,16 @@ export const useRSVPTableColumns = ({
         id: "ride",
         label: t("rsvpStatusTab.transportationColumn"),
         sortable: true,
+        filterConfig: {
+          id: "ride",
+          type: "multiple",
+          label: t("rsvpStatusTab.transportationColumn"),
+          options: [
+            { value: true, label: t("common.yes") },
+            { value: false, label: t("common.no") },
+            { value: null, label: "-" },
+          ],
+        },
         sortFn: (a, b) => {
           const aRide = a.rsvpStatus?.rideFromTelAviv;
           const bRide = b.rsvpStatus?.rideFromTelAviv;
@@ -175,8 +205,8 @@ export const useRSVPTableColumns = ({
           if (aRide === bRide) return 0;
           if (aRide === true && bRide !== true) return -1;
           if (bRide === true && aRide !== true) return 1;
-          if (aRide === false && bRide === null) return -1;
-          if (bRide === false && aRide === null) return 1;
+          if (aRide === false && isNil(bRide)) return -1;
+          if (bRide === false && isNil(aRide)) return 1;
           return 0;
         },
         render: (row) => {
@@ -197,6 +227,15 @@ export const useRSVPTableColumns = ({
         id: "submitted",
         label: t("rsvpStatusTab.status"),
         sortable: true,
+        filterConfig: {
+          id: "submitted",
+          type: "multiple",
+          label: t("rsvpStatusTab.status"),
+          options: [
+            { value: true, label: t("rsvpStatusTab.submitted") },
+            { value: false, label: t("rsvpStatusTab.draft") },
+          ],
+        },
         sortFn: (a, b) => {
           const aSubmitted = a.rsvpStatus?.isSubmitted;
           const bSubmitted = b.rsvpStatus?.isSubmitted;
@@ -204,8 +243,8 @@ export const useRSVPTableColumns = ({
           if (aSubmitted === bSubmitted) return 0;
           if (aSubmitted === true && bSubmitted !== true) return -1;
           if (bSubmitted === true && aSubmitted !== true) return 1;
-          if (aSubmitted === false && bSubmitted === null) return -1;
-          if (bSubmitted === false && aSubmitted === null) return 1;
+          if (aSubmitted === false && isNil(bSubmitted)) return -1;
+          if (bSubmitted === false && isNil(aSubmitted)) return 1;
           return 0;
         },
         render: (row) => {

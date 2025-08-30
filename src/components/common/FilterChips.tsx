@@ -1,10 +1,11 @@
 import React from "react";
 import { Chip, Stack, Button } from "@mui/material";
-import { FilterState } from "./DSTableFilters";
+import { FilterState, ResolvedFilterConfig } from "./DSTableFilters";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface FilterChipsProps {
   filters: FilterState[];
+  filterConfigs?: ResolvedFilterConfig[];
   onRemoveFilterValue: (filterId: string, value: any) => void;
   showClearAll?: boolean;
   onClearAll?: () => void;
@@ -15,12 +16,24 @@ interface FilterChipsProps {
  */
 const FilterChips: React.FC<FilterChipsProps> = ({
   filters,
+  filterConfigs = [],
   onRemoveFilterValue,
   showClearAll = false,
   onClearAll,
 }) => {
   const { t } = useTranslation();
+
   const getFilterValueDisplay = (filterId: string, value: any): string => {
+    const filterConfig = filterConfigs.find((config) => config.id === filterId);
+
+    if (filterConfig) {
+      const option = filterConfig.resolvedOptions.find(
+        (opt) => opt.value === value
+      );
+      if (option) {
+        return option.label;
+      }
+    }
     return String(value);
   };
 
