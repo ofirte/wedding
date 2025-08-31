@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Box, Button, Typography, Stack } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
@@ -12,9 +12,12 @@ import { useUpdateInvitee } from "../../hooks/invitees/useUpdateInvitee";
 import { useDeleteInvitee } from "../../hooks/invitees/useDeleteInvitee";
 import { useBulkUpdateInvitees } from "../../hooks/invitees/useBulkUpdateInvitees";
 import { useBulkDeleteInvitees } from "../../hooks/invitees/useBulkDeleteInvitees";
+import { useRSVPStatuses } from "../../hooks/rsvp/useRSVPStatuses";
 import InviteeTable from "./InviteeTable";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { isGoogleContactsConfigured } from "../../api/contacts/googleContactsApi";
+import { RSVPStatus } from "../../api/rsvp/rsvpStatusTypes";
+import { isNil } from "lodash";
 
 export interface Invitee {
   id: string;
@@ -26,11 +29,28 @@ export interface Invitee {
   amount: number;
   amountConfirm: number;
   cellphone: string;
+  rsvpStatus?: RSVPStatus;
 }
 
 const WeddingInviteTable = () => {
   const columns = createColumns(useTranslation().t);
   const { data: invitees = [] } = useInvitees();
+  const { data: rsvpStatuses } = useRSVPStatuses();
+  // Combine invitees with their RSVP status
+  const inviteesWithRSVP: Invitee[] = useMemo(() => {
+    if (!invitees || !rsvpStatuses) return invitees || [];
+    return invitees.map((invitee) => ({
+      ...invitee,
+      amountConfirm: rsvpStatuses[invitee.id]?.amount || 0,
+      rsvp:
+        rsvpStatuses[invitee.id]?.attendance === true
+          ? "Confirmed"
+          : isNil(rsvpStatuses[invitee.id]?.attendance)
+          ? "Pending"
+          : "Declined",
+    }));
+  }, [invitees, rsvpStatuses]);
+
   const [displayedInvitees, setDisplayedInvitees] = useState<Invitee[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingInvitee, setEditingInvitee] = useState<Invitee | null>(null);
@@ -97,7 +117,7 @@ const WeddingInviteTable = () => {
   };
 
   const existingRelations = Array.from(
-    new Set(invitees.map((invitee) => invitee.relation))
+    new Set(inviteesWithRSVP.map((invitee) => invitee.relation))
   ).filter(Boolean);
 
   const handleDelete = async (invitee: Invitee) => {
@@ -154,7 +174,7 @@ const WeddingInviteTable = () => {
   };
 
   // Count invitees without phone numbers
-  const inviteesNeedingPhones = invitees.filter(
+  const inviteesNeedingPhones = inviteesWithRSVP.filter(
     (invitee) => !invitee.cellphone || invitee.cellphone.trim() === ""
   ).length;
 
@@ -222,7 +242,7 @@ const WeddingInviteTable = () => {
           <SummaryInfo invitees={displayedInvitees} />
           <InviteeTable
             columns={columns}
-            invitees={invitees}
+            invitees={inviteesWithRSVP}
             onDeleteInvitee={handleDelete}
             onEditInvitee={handleEditStart}
             onBulkUpdate={handleBulkUpdate}
@@ -244,7 +264,7 @@ const WeddingInviteTable = () => {
       <ContactMatcher
         open={isContactMatcherOpen}
         onClose={handleContactMatcherClose}
-        invitees={invitees}
+        invitees={inviteesWithRSVP}
         onComplete={handleContactMatcherComplete}
       />
     </Box>
