@@ -81,7 +81,7 @@ const RSVPStatusSummary: React.FC<RSVPStatusSummaryProps> = ({
             busCount += status?.amount || 0;
           }
         } else if (status?.attendance === false) {
-          notArrivingCount += status?.amount || 0;
+          notArrivingCount += 1;
         }
       }
     });
