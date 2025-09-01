@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useCallback } from "react";
 import { Paper, Box } from "@mui/material";
 import DSTable from "../common/DSTable";
 import RSVPTableHeader from "./RSVPTableHeader";
@@ -20,6 +20,7 @@ interface RSVPDataTableProps {
   templates?: MessageTemplate[];
   sentMessages?: SentMessage[];
   isLoading?: boolean;
+  onFilteredDataChange?: (data: InviteeWithRSVP[]) => void;
 }
 
 /**
@@ -44,9 +45,10 @@ const RSVPDataTable: React.FC<RSVPDataTableProps> = ({
   templates = [],
   sentMessages = [],
   isLoading = false,
+  onFilteredDataChange,
 }) => {
   // Helper to check if templates were sent to an invitee
-  const wasAnySelectedTemplateSentToInvitee = (
+  const wasAnySelectedTemplateSentToInvitee = useCallback((
     invitee: InviteeWithRSVP
   ): boolean => {
     if (!sentMessages.length || !selectedTemplates.length) return false;
@@ -59,7 +61,7 @@ const RSVPDataTable: React.FC<RSVPDataTableProps> = ({
     return inviteeDeliveredMessages.some((message) =>
       selectedTemplates.includes(message.contentSid)
     );
-  };
+  }, [sentMessages, selectedTemplates]);
 
   // Preprocess data to add computed properties for filtering
   const enrichedData = useMemo(() => {
@@ -77,7 +79,7 @@ const RSVPDataTable: React.FC<RSVPDataTableProps> = ({
       ride: row.rsvpStatus?.rideFromTelAviv,
       submitted: row.rsvpStatus?.isSubmitted,
     }));
-  }, [data, selectedTemplates, sentMessages]);
+  }, [data, selectedTemplates, wasAnySelectedTemplateSentToInvitee]);
 
   const columns = useRSVPTableColumns({
     selectedTemplates,
@@ -91,6 +93,10 @@ const RSVPDataTable: React.FC<RSVPDataTableProps> = ({
     );
     onSelectionChange(selectedWithPhones);
   };
+
+  const handleDisplayedDataChange = useCallback((displayedData: InviteeWithRSVP[]) => {
+    onFilteredDataChange?.(displayedData);
+  }, [onFilteredDataChange]);
 
   return (
     <Paper sx={{ mt: 3 }}>
@@ -108,6 +114,7 @@ const RSVPDataTable: React.FC<RSVPDataTableProps> = ({
           data={enrichedData}
           showSelectColumn={true}
           onSelectionChange={handleSelectionChange}
+          onDisplayedDataChange={handleDisplayedDataChange}
         />
       </Box>
     </Paper>

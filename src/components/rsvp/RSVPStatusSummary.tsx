@@ -16,6 +16,8 @@ type InviteeWithRSVP = Invitee & {
 
 interface RSVPStatusSummaryProps {
   inviteesWithRSVP: InviteeWithRSVP[];
+  onFilterClick?: (filterType: string, value: any) => void;
+  activeFilter?: { type: string; value: any } | null;
 }
 
 const StatCard: React.FC<{
@@ -23,8 +25,26 @@ const StatCard: React.FC<{
   value: number;
   icon: React.ReactElement;
   color?: string;
-}> = ({ title, value, icon, color = "primary" }) => (
-  <Card sx={{ height: "100%" }}>
+  onClick?: () => void;
+  isActive?: boolean;
+}> = ({ title, value, icon, color = "primary", onClick, isActive = false }) => (
+  <Card 
+    sx={{ 
+      height: "100%",
+      cursor: onClick ? "pointer" : "default",
+      transition: "all 0.2s ease-in-out",
+      border: isActive ? 2 : 1,
+      borderColor: isActive ? `${color}.main` : "divider",
+      bgcolor: isActive ? `${color}.50` : "background.paper",
+      boxShadow: isActive ? 3 : 1,
+      "&:hover": onClick ? {
+        transform: "translateY(-2px)",
+        boxShadow: isActive ? 4 : 2,
+        borderColor: `${color}.main`,
+      } : {}
+    }}
+    onClick={onClick}
+  >
     <CardContent>
       <Box display="flex" alignItems="center" gap={2}>
         <Box
@@ -35,8 +55,9 @@ const StatCard: React.FC<{
             width: 48,
             height: 48,
             borderRadius: 2,
-            bgcolor: `${color}.light`,
-            color: `${color}.main`,
+            bgcolor: isActive ? `${color}.main` : `${color}.light`,
+            color: isActive ? "white" : `${color}.main`,
+            boxShadow: isActive ? 2 : 0,
           }}
         >
           {icon}
@@ -45,7 +66,14 @@ const StatCard: React.FC<{
           <Typography variant="body2" color="text.secondary" gutterBottom>
             {title}
           </Typography>
-          <Typography variant="h4" fontWeight="bold" color={color}>
+          <Typography 
+            variant="h4" 
+            fontWeight="bold" 
+            color={isActive ? `${color}.main` : color}
+            sx={{ 
+              textShadow: isActive ? "0 1px 2px rgba(0,0,0,0.1)" : "none" 
+            }}
+          >
             {value}
           </Typography>
         </Box>
@@ -56,6 +84,8 @@ const StatCard: React.FC<{
 
 const RSVPStatusSummary: React.FC<RSVPStatusSummaryProps> = ({
   inviteesWithRSVP,
+  onFilterClick,
+  activeFilter,
 }) => {
   const { t } = useTranslation();
 
@@ -106,6 +136,8 @@ const RSVPStatusSummary: React.FC<RSVPStatusSummaryProps> = ({
             value={stats.arrivingCount}
             icon={<CheckIcon />}
             color="success"
+            onClick={() => onFilterClick?.("attendance", true)}
+            isActive={activeFilter?.type === "attendance" && activeFilter?.value === true}
           />
         </Box>
         <Box sx={{ minWidth: 200, flex: 1 }}>
@@ -114,6 +146,8 @@ const RSVPStatusSummary: React.FC<RSVPStatusSummaryProps> = ({
             value={stats.notArrivingCount}
             icon={<CancelIcon />}
             color="error"
+            onClick={() => onFilterClick?.("attendance", false)}
+            isActive={activeFilter?.type === "attendance" && activeFilter?.value === false}
           />
         </Box>
         <Box sx={{ minWidth: 200, flex: 1 }}>
@@ -122,6 +156,8 @@ const RSVPStatusSummary: React.FC<RSVPStatusSummaryProps> = ({
             value={stats.sleepingCount}
             icon={<HotelIcon />}
             color="warning"
+            onClick={() => onFilterClick?.("sleepover", true)}
+            isActive={activeFilter?.type === "sleepover" && activeFilter?.value === true}
           />
         </Box>
         <Box sx={{ minWidth: 200, flex: 1 }}>
@@ -130,6 +166,8 @@ const RSVPStatusSummary: React.FC<RSVPStatusSummaryProps> = ({
             value={stats.busCount}
             icon={<BusIcon />}
             color="info"
+            onClick={() => onFilterClick?.("ride", true)}
+            isActive={activeFilter?.type === "ride" && activeFilter?.value === true}
           />
         </Box>
       </Stack>

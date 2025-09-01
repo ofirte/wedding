@@ -45,7 +45,9 @@ const RSVPStatusTab: React.FC = () => {
   const [selectedGuests, setSelectedGuests] = useState<Invitee[]>([]);
   const [selectedTemplates, setSelectedTemplates] = useState<string[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+  const [statusFilter, setStatusFilter] = useState<{type: string, value: any} | null>(null);
+  
+  // Filter management
   // Data Transformation - Combining invitees with their RSVP status
   const inviteesWithRSVP: InviteeWithRSVP[] = useMemo(() => {
     if (!invitees || !rsvpStatuses) return [];
@@ -54,6 +56,27 @@ const RSVPStatusTab: React.FC = () => {
       rsvpStatus: rsvpStatuses[invitee.id],
     }));
   }, [invitees, rsvpStatuses]);
+
+  // Apply status filter to data before sending to DSTable
+  const filteredInvitees = useMemo(() => {
+    if (!statusFilter) return inviteesWithRSVP;
+    
+    return inviteesWithRSVP.filter((invitee) => {
+      const rsvp = invitee.rsvpStatus;
+      if (!rsvp?.isSubmitted) return false; // Only show submitted RSVPs for status filters
+      
+      switch (statusFilter.type) {
+        case 'attendance':
+          return rsvp.attendance === statusFilter.value;
+        case 'sleepover':
+          return rsvp.sleepover === statusFilter.value && rsvp.attendance === true;
+        case 'ride':
+          return rsvp.rideFromTelAviv === statusFilter.value && rsvp.attendance === true;
+        default:
+          return true;
+      }
+    });
+  }, [inviteesWithRSVP, statusFilter]);
 
   // Event Handlers - The story's interactive moments
   const handleTemplateSelectionChange = (selected: string[]) => {
@@ -72,6 +95,20 @@ const RSVPStatusTab: React.FC = () => {
     setIsDialogOpen(false);
   };
 
+  const handleFilteredDataChange = (data: InviteeWithRSVP[]) => {
+    // Optional: Track displayed data after DSTable filtering
+    // This is for any additional functionality you might need
+  };
+
+  const handleFilterClick = (filterType: string, value: any) => {
+    // Toggle filter - if same filter clicked, clear it
+    if (statusFilter?.type === filterType && statusFilter?.value === value) {
+      setStatusFilter(null);
+    } else {
+      setStatusFilter({ type: filterType, value });
+    }
+  };
+
   // Loading State - Setting the stage
   if (isLoadingRSVP || isLoadingInvitees) {
     return (
@@ -83,10 +120,14 @@ const RSVPStatusTab: React.FC = () => {
 
   return (
     <Box p={3}>
-      <RSVPStatusSummary inviteesWithRSVP={inviteesWithRSVP} />
+      <RSVPStatusSummary 
+        inviteesWithRSVP={inviteesWithRSVP} 
+        onFilterClick={handleFilterClick}
+        activeFilter={statusFilter}
+      />
 
       <RSVPDataTable
-        data={inviteesWithRSVP}
+        data={filteredInvitees}
         selectedTemplates={selectedTemplates}
         onTemplateSelectionChange={handleTemplateSelectionChange}
         selectedGuestsCount={selectedGuests.length}
@@ -95,6 +136,7 @@ const RSVPStatusTab: React.FC = () => {
         templates={messageTemplatesData?.templates || []}
         sentMessages={sentMessages}
         isLoading={isLoadingRSVP || isLoadingInvitees}
+        onFilteredDataChange={handleFilteredDataChange}
       />
 
       <SendMessageDialog

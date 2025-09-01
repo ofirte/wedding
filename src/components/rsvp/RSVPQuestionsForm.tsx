@@ -206,7 +206,7 @@ const RSVPQuestionsForm: React.FC<RSVPQuestionsFormProps> = ({
               isClickable={currentOpenQuestion !== 2}
               onScroll={scrollToQuestions}
               onQuestionClick={() => handleQuestionClick(2)}
-              questionTitle="👥 כמה אנשים תביאו?"
+              questionTitle="👥 כמה תגיעו?"
               answerSummary={
                 formData.guestCount && formData.guestCount > 0
                   ? `${formData.guestCount} אנשים`
