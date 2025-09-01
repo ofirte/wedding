@@ -36,3 +36,79 @@
     transform: rotate(360deg);
   }
 }
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .App {
+    text-align: left;
+  }
+
+  /* Ensure proper touch targets on mobile */
+  button,
+  .MuiButton-root,
+  .MuiIconButton-root,
+  .MuiListItemButton-root {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Improve readability on small screens */
+  .MuiTypography-h4 {
+    font-size: 1.75rem !important;
+  }
+
+  .MuiTypography-h5 {
+    font-size: 1.5rem !important;
+  }
+
+  .MuiTypography-h6 {
+    font-size: 1.25rem !important;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .App {
+    text-align: left;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 1025px) {
+  .App {
+    text-align: center;
+  }
+}
+
+/* Responsive spacing utilities */
+.mobile-padding {
+  padding: 8px 16px;
+}
+
+.desktop-padding {
+  padding: 16px 24px;
+}
+
+@media (max-width: 768px) {
+  .mobile-padding {
+    padding: 8px 12px;
+  }
+
+  .desktop-padding {
+    padding: 8px 16px;
+  }
+}
+
+/* Responsive grid utilities */
+.responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .responsive-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}

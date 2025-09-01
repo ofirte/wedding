@@ -15,10 +15,12 @@ import {
 import DSTableFilters from "./DSTableFilters";
 import TableHeader from "./TableHeader";
 import TableContent from "./TableContent";
+import MobileTableView from "./MobileTableView";
 import { applyFilters, sortData, resolveFilterOptions } from "./DSTableUtils";
 import { useExcelExport } from "../../utils/ExcelUtils";
 import DownloadIcon from "@mui/icons-material/Download";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { useResponsive, responsivePatterns } from "../../utils/ResponsiveUtils";
 
 export type Column<T extends { id: string | number }> = {
   render: (row: T) => React.ReactNode;
@@ -27,6 +29,10 @@ export type Column<T extends { id: string | number }> = {
   sortable?: boolean;
   sortFn?: (a: T, b: T) => number;
   filterConfig?: FilterConfig;
+  // Mobile-specific props
+  mobileLabel?: string;
+  hideOnMobile?: boolean;
+  showOnMobileCard?: boolean;
 };
 
 type DSTableProps<T extends { id: string | number }> = {
@@ -39,6 +45,9 @@ type DSTableProps<T extends { id: string | number }> = {
   showSelectColumn?: boolean;
   onSelectionChange?: (selectedRows: T[]) => void;
   BulkActions?: React.JSX.Element | null;
+  // Mobile card props
+  renderMobileCard?: (row: T) => React.ReactNode;
+  mobileCardTitle?: (row: T) => string;
 };
 
 type Order = "asc" | "desc";
@@ -52,6 +61,8 @@ const DSTable: FC<DSTableProps<any>> = ({
   showSelectColumn = false,
   onSelectionChange,
   BulkActions,
+  renderMobileCard,
+  mobileCardTitle,
 }) => {
   const [orderBy, setOrderBy] = useState<string>("");
   const [order, setOrder] = useState<Order>("asc");
@@ -59,6 +70,8 @@ const DSTable: FC<DSTableProps<any>> = ({
   const [filterStates, setFilterStates] = useState<FilterState[]>([]);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const { t } = useTranslation();
+  const { isMobile } = useResponsive();
+
   const resolvedFilterConfigs = useMemo(
     () =>
       columns
@@ -92,7 +105,7 @@ const DSTable: FC<DSTableProps<any>> = ({
       onDisplayedDataChange?.(sortedFilteredData);
     };
     onFilterSortChange();
-  }, [filterStates, orderBy, order, data]);
+  }, [filterStates, orderBy, order, data, columns, onDisplayedDataChange]);
 
   const handleRowSelect = (row: any, isSelected: boolean) => {
     const newSelectedRows = isSelected
@@ -123,14 +136,16 @@ const DSTable: FC<DSTableProps<any>> = ({
   };
 
   return (
-    <>
+    <Box sx={responsivePatterns.containerPadding}>
       {(resolvedFilterConfigs.length > 0 || showExport) && (
         <Box
           sx={{
             display: "flex",
+            flexDirection: isMobile ? "column" : "row",
             justifyContent: "space-between",
             mb: 2,
-            alignItems: "center",
+            alignItems: isMobile ? "stretch" : "center",
+            gap: isMobile ? 2 : 0,
           }}
         >
           {resolvedFilterConfigs.length > 0 && (
@@ -149,7 +164,8 @@ const DSTable: FC<DSTableProps<any>> = ({
               color="primary"
               startIcon={<DownloadIcon />}
               onClick={handleExport}
-              sx={{ ml: 2 }}
+              sx={{ ml: isMobile ? 0 : 2 }}
+              fullWidth={isMobile}
             >
               {t("common.exportToExcel")}
             </Button>
@@ -157,43 +173,55 @@ const DSTable: FC<DSTableProps<any>> = ({
         </Box>
       )}
 
-      <TableContainer
-        component={Paper}
-        elevation={2}
-        sx={{
-          maxHeight: "60vh",
-          overflowY: "auto",
-          borderRadius: 2,
-          "& .MuiTableCell-head": {
-            bgcolor: "#f5f5f5",
-            fontWeight: "bold",
-          },
-        }}
-      >
-        <Table stickyHeader sx={{ tableLayout: "fixed", width: "100%" }}>
-          <TableHeader
-            columns={columns}
-            orderBy={orderBy}
-            order={order}
-            onRequestSort={handleRequestSort}
-            showSelectColumn={showSelectColumn}
-            isAllSelected={isAllSelected}
-            isIndeterminate={isIndeterminate}
-            onSelectAll={handleSelectAll}
-          />
-
-          <TableBody>
-            <TableContent
+      {isMobile ? (
+        <MobileTableView
+          data={displayedData}
+          columns={columns}
+          renderMobileCard={renderMobileCard}
+          mobileCardTitle={mobileCardTitle}
+          onRowSelect={showSelectColumn ? handleRowSelect : undefined}
+          selectedRows={selectedRows}
+          showSelectColumn={showSelectColumn}
+        />
+      ) : (
+        <TableContainer
+          component={Paper}
+          elevation={2}
+          sx={{
+            maxHeight: "60vh",
+            overflowY: "auto",
+            borderRadius: 2,
+            "& .MuiTableCell-head": {
+              bgcolor: "#f5f5f5",
+              fontWeight: "bold",
+            },
+          }}
+        >
+          <Table stickyHeader sx={{ tableLayout: "fixed", width: "100%" }}>
+            <TableHeader
               columns={columns}
-              data={displayedData}
+              orderBy={orderBy}
+              order={order}
+              onRequestSort={handleRequestSort}
               showSelectColumn={showSelectColumn}
-              selectedRows={selectedRows}
-              onRowSelect={handleRowSelect}
+              isAllSelected={isAllSelected}
+              isIndeterminate={isIndeterminate}
+              onSelectAll={handleSelectAll}
             />
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+
+            <TableBody>
+              <TableContent
+                columns={columns}
+                data={displayedData}
+                showSelectColumn={showSelectColumn}
+                selectedRows={selectedRows}
+                onRowSelect={handleRowSelect}
+              />
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+    </Box>
   );
 };
 

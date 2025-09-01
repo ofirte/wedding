@@ -19,6 +19,7 @@ import BudgetItemDialog from "./BudgetItemDialog";
 import TotalBudgetEditor from "./TotalBudgetEditor";
 import { useUpdateTotalBudget } from "../../hooks/budget/useUpdateTotalBudget";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { responsivePatterns } from "../../utils/ResponsiveUtils";
 
 export type BudgetItem = {
   id: string;
@@ -180,49 +181,55 @@ const BudgetPlanner = () => {
 
   // Render loading, error, or content
   return (
-    <Box sx={{ padding: 4 }}>
+    <Box sx={responsivePatterns.containerPadding}>
       <Box
         sx={{
           maxWidth: 1200,
           mx: "auto",
-          p: 3,
+          ...responsivePatterns.cardPadding,
           bgcolor: "background.paper",
           borderRadius: 2,
           boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
         }}
       >
         <Stack spacing={4}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
+          <Box sx={responsivePatterns.flexColumn}>
             <Typography
               variant="h4"
               component="h1"
-              sx={{ fontWeight: "bold", color: "info.dark" }}
+              sx={responsivePatterns.headingFont}
             >
               {t("budget.planning")}
             </Typography>
-            <TotalBudgetEditor
-              totalBudget={totalBudget?.amount ?? 0}
-              isLoading={isTotalBudgetLoading}
-              onSaveTotalBudget={updateTotalBudget}
-            />
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={handleAddNew}
-              disabled={isMutating}
-              color="info"
+            <Box
               sx={{
-                borderRadius: 2,
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
+                gap: { xs: 1, sm: 2 },
+                alignItems: { xs: "stretch", sm: "center" },
               }}
             >
-              {isCreating ? t("budget.addingBudgetItem") : t("budget.addItem")}
-            </Button>
+              <TotalBudgetEditor
+                totalBudget={totalBudget?.amount ?? 0}
+                isLoading={isTotalBudgetLoading}
+                onSaveTotalBudget={updateTotalBudget}
+              />
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={handleAddNew}
+                disabled={isMutating}
+                color="info"
+                sx={{
+                  ...responsivePatterns.responsiveButton,
+                  borderRadius: 2,
+                }}
+              >
+                {isCreating
+                  ? t("budget.addingBudgetItem")
+                  : t("budget.addItem")}
+              </Button>
+            </Box>
           </Box>
 
           <BudgetSummary

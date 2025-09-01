@@ -10,6 +10,7 @@ import SendMessageDialog from "./SendMessageDialog";
 import RSVPStatusSummary from "./RSVPStatusSummary";
 import RSVPDataTable from "./RSVPDataTable";
 import { InviteeWithRSVP } from "./RSVPTableColumns";
+import { responsivePatterns } from "../../utils/ResponsiveUtils";
 
 /**
  * RSVPStatusTab - The Wedding RSVP Management Story
@@ -45,8 +46,11 @@ const RSVPStatusTab: React.FC = () => {
   const [selectedGuests, setSelectedGuests] = useState<Invitee[]>([]);
   const [selectedTemplates, setSelectedTemplates] = useState<string[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<{type: string, value: any} | null>(null);
-  
+  const [statusFilter, setStatusFilter] = useState<{
+    type: string;
+    value: any;
+  } | null>(null);
+
   // Filter management
   // Data Transformation - Combining invitees with their RSVP status
   const inviteesWithRSVP: InviteeWithRSVP[] = useMemo(() => {
@@ -60,18 +64,23 @@ const RSVPStatusTab: React.FC = () => {
   // Apply status filter to data before sending to DSTable
   const filteredInvitees = useMemo(() => {
     if (!statusFilter) return inviteesWithRSVP;
-    
+
     return inviteesWithRSVP.filter((invitee) => {
       const rsvp = invitee.rsvpStatus;
       if (!rsvp?.isSubmitted) return false; // Only show submitted RSVPs for status filters
-      
+
       switch (statusFilter.type) {
-        case 'attendance':
+        case "attendance":
           return rsvp.attendance === statusFilter.value;
-        case 'sleepover':
-          return rsvp.sleepover === statusFilter.value && rsvp.attendance === true;
-        case 'ride':
-          return rsvp.rideFromTelAviv === statusFilter.value && rsvp.attendance === true;
+        case "sleepover":
+          return (
+            rsvp.sleepover === statusFilter.value && rsvp.attendance === true
+          );
+        case "ride":
+          return (
+            rsvp.rideFromTelAviv === statusFilter.value &&
+            rsvp.attendance === true
+          );
         default:
           return true;
       }
@@ -119,9 +128,9 @@ const RSVPStatusTab: React.FC = () => {
   }
 
   return (
-    <Box p={3}>
-      <RSVPStatusSummary 
-        inviteesWithRSVP={inviteesWithRSVP} 
+    <Box sx={responsivePatterns.containerPadding}>
+      <RSVPStatusSummary
+        inviteesWithRSVP={inviteesWithRSVP}
         onFilterClick={handleFilterClick}
         activeFilter={statusFilter}
       />

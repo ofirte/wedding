@@ -129,6 +129,9 @@ export const englishTranslations: Translations = {
     more: "more",
     update: "Update",
     clearAll: "Clear All",
+    item: "Item",
+    noDataAvailable: "No data available",
+    noDataDescription: "There are no items to display at the moment",
   },
   nav: {
     home: "Home",

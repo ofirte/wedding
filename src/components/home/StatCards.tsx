@@ -14,6 +14,8 @@ import { useTotalBudget } from "../../hooks/budget/useTotalBudget";
 import useTasks from "../../hooks/tasks/useTasks";
 import { useWeddingDate } from "../../hooks/wedding/useWeddingDate";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { gridColumns } from "../../utils/ResponsiveUtils";
+
 // Utility function to format currency
 const formatCurrency = (amount: number): string => {
   return "₪" + amount.toLocaleString();
@@ -61,8 +63,8 @@ const StatCards: React.FC<StatCardsProps> = () => {
     percentage: percentage,
   };
   return (
-    <Grid container spacing={3} sx={{ mb: 4 }}>
-      <Grid size={{ xs: 4, md: 3 }}>
+    <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }} sx={{ mb: 4 }}>
+      <Grid size={gridColumns.stats}>
         <StatCard
           icon={<GuestsIcon />}
           title={t("guests.guestList")}
@@ -73,7 +75,7 @@ const StatCards: React.FC<StatCardsProps> = () => {
         />
       </Grid>
 
-      <Grid size={{ xs: 4, md: 3 }}>
+      <Grid size={gridColumns.stats}>
         <StatCard
           icon={<BudgetIcon />}
           title={t("budget.budget")}
@@ -84,7 +86,7 @@ const StatCards: React.FC<StatCardsProps> = () => {
         />
       </Grid>
 
-      <Grid size={{ xs: 4, md: 3 }}>
+      <Grid size={gridColumns.stats}>
         <StatCard
           icon={<TaskIcon />}
           title={t("tasks.tasks")}
@@ -95,7 +97,7 @@ const StatCards: React.FC<StatCardsProps> = () => {
         />
       </Grid>
 
-      <Grid size={{ xs: 4, md: 3 }}>
+      <Grid size={gridColumns.stats}>
         <StatCard
           icon={<TimeIcon />}
           title={t("home.timeline")}

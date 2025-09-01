@@ -129,6 +129,9 @@ export const hebrewTranslations: Translations = {
     more: "עוד",
     update: "עדכן",
     clearAll: "נקה הכל",
+    item: "פריט",
+    noDataAvailable: "אין נתונים זמינים",
+    noDataDescription: "אין פריטים להצגה כרגע",
   },
   nav: {
     home: "בית",

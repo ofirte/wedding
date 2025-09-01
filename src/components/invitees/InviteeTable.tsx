@@ -82,6 +82,7 @@ const InviteeTable: React.FC<InviteeTableProps> = ({
             onBulkDelete={() => handleBulkAction("delete")}
           />
         }
+        mobileCardTitle={(row) => `${row.firstName} ${row.lastName}`}
       />
 
       <InviteeBulkUpdateDialog

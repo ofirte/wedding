@@ -68,6 +68,7 @@ const MessageTemplateTable: React.FC = () => {
         data={transformedData}
         showExport={true}
         exportFilename="message-templates"
+        mobileCardTitle={(row) => `${row.friendlyName}`}
       />
     </Box>
   );

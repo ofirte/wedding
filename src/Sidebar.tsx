@@ -26,9 +26,19 @@ import { useNavigate, useLocation } from "react-router";
 import { useCurrentUser, useSignOut, useWeddingDetails } from "./hooks/auth";
 import { useTranslation } from "./localization/LocalizationContext";
 import { LanguageSwitcher } from "./components/common/LanguageSwitcher";
+import { useResponsive } from "./utils/ResponsiveUtils";
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({
+  mobileOpen = false,
+  onMobileClose = () => {},
+}) => {
   const theme = useTheme();
+  const { isMobile } = useResponsive();
   const navigate = useNavigate();
   const location = useLocation();
   const { data: currentUser } = useCurrentUser();
@@ -77,8 +87,18 @@ const Sidebar: React.FC = () => {
   const handleLogout = async () => {
     try {
       signOut();
+      if (isMobile && onMobileClose) {
+        onMobileClose();
+      }
     } catch (error) {
       console.error("Error signing out:", error);
+    }
+  };
+
+  const handleNavigate = (path: string) => {
+    navigate(`.${path}`);
+    if (isMobile && onMobileClose) {
+      onMobileClose();
     }
   };
 
@@ -87,21 +107,8 @@ const Sidebar: React.FC = () => {
     return null;
   }
 
-  return (
-    <Drawer
-      variant="permanent"
-      anchor="left"
-      sx={{
-        width: 240,
-        flexShrink: 0,
-        "& .MuiDrawer-paper": {
-          width: 240,
-          boxSizing: "border-box",
-          boxShadow: theme.shadows[2],
-          border: "none",
-        },
-      }}
-    >
+  const drawerContent = (
+    <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <Box
         sx={{
           padding: 2,
@@ -133,12 +140,12 @@ const Sidebar: React.FC = () => {
               {currentUser?.displayName || currentUser?.email}
             </Typography>
           </Box>
-          <LanguageSwitcher />
+          {!isMobile && <LanguageSwitcher />}
         </Stack>
       </Box>
 
       <Divider />
-      <List sx={{ py: 1 }}>
+      <List sx={{ py: 1, flexGrow: 1 }}>
         {menuItems.map((item, index) => {
           const isActive = isMenuItemActive(item.path);
           const styles = getMenuItemStyles(isActive);
@@ -147,7 +154,7 @@ const Sidebar: React.FC = () => {
             <React.Fragment key={item.text}>
               <ListItem disablePadding>
                 <ListItemButton
-                  onClick={() => navigate(`.${item.path}`)}
+                  onClick={() => handleNavigate(item.path)}
                   sx={styles.listItemButton}
                 >
                   <ListItemIcon sx={styles.listItemIcon}>
@@ -167,9 +174,7 @@ const Sidebar: React.FC = () => {
         })}
       </List>
 
-      <Box sx={{ flexGrow: 1 }} />
       <Divider />
-
       <Box sx={{ p: 2 }}>
         <Button
           variant="outlined"
@@ -181,7 +186,52 @@ const Sidebar: React.FC = () => {
           {t("common.signOut")}
         </Button>
       </Box>
-    </Drawer>
+    </Box>
+  );
+
+  return (
+    <>
+      {/* Desktop permanent drawer */}
+      <Drawer
+        variant="permanent"
+        anchor="left"
+        sx={{
+          display: { xs: "none", md: "flex" },
+          width: 240,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: 240,
+            boxSizing: "border-box",
+            boxShadow: theme.shadows[2],
+            border: "none",
+          },
+        }}
+      >
+        {drawerContent}
+      </Drawer>
+
+      {/* Mobile temporary drawer */}
+      <Drawer
+        variant="temporary"
+        anchor="left"
+        open={mobileOpen}
+        onClose={onMobileClose}
+        sx={{
+          display: { xs: "flex", md: "none" },
+          "& .MuiDrawer-paper": {
+            width: 280,
+            boxSizing: "border-box",
+            boxShadow: theme.shadows[2],
+            border: "none",
+          },
+        }}
+        ModalProps={{
+          keepMounted: true, // Better performance on mobile
+        }}
+      >
+        {drawerContent}
+      </Drawer>
+    </>
   );
 };
 

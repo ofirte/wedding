@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Box, Typography, Card, CardContent, Stack } from "@mui/material";
+import { Box, Typography, Card, CardContent } from "@mui/material";
 import {
   CheckCircle as CheckIcon,
   Cancel as CancelIcon,
@@ -7,6 +7,7 @@ import {
   DirectionsBus as BusIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { useResponsive, responsivePatterns } from "../../utils/ResponsiveUtils";
 import { RSVPStatus } from "../../api/rsvp/rsvpStatusTypes";
 import { Invitee } from "../invitees/InviteList";
 
@@ -27,60 +28,78 @@ const StatCard: React.FC<{
   color?: string;
   onClick?: () => void;
   isActive?: boolean;
-}> = ({ title, value, icon, color = "primary", onClick, isActive = false }) => (
-  <Card 
-    sx={{ 
-      height: "100%",
-      cursor: onClick ? "pointer" : "default",
-      transition: "all 0.2s ease-in-out",
-      border: isActive ? 2 : 1,
-      borderColor: isActive ? `${color}.main` : "divider",
-      bgcolor: isActive ? `${color}.50` : "background.paper",
-      boxShadow: isActive ? 3 : 1,
-      "&:hover": onClick ? {
-        transform: "translateY(-2px)",
-        boxShadow: isActive ? 4 : 2,
-        borderColor: `${color}.main`,
-      } : {}
-    }}
-    onClick={onClick}
-  >
-    <CardContent>
-      <Box display="flex" alignItems="center" gap={2}>
+}> = ({ title, value, icon, color = "primary", onClick, isActive = false }) => {
+  const { isMobile } = useResponsive();
+
+  return (
+    <Card
+      sx={{
+        height: "100%",
+        cursor: onClick ? "pointer" : "default",
+        transition: "all 0.2s ease-in-out",
+        border: isActive ? 2 : 1,
+        borderColor: isActive ? `${color}.main` : "divider",
+        bgcolor: isActive ? `${color}.50` : "background.paper",
+        boxShadow: isActive ? 3 : 1,
+        "&:hover": onClick
+          ? {
+              transform: isMobile ? "none" : "translateY(-2px)",
+              boxShadow: isActive ? 4 : 2,
+              borderColor: `${color}.main`,
+            }
+          : {},
+      }}
+      onClick={onClick}
+    >
+      <CardContent sx={responsivePatterns.cardPadding}>
         <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 48,
-            height: 48,
-            borderRadius: 2,
-            bgcolor: isActive ? `${color}.main` : `${color}.light`,
-            color: isActive ? "white" : `${color}.main`,
-            boxShadow: isActive ? 2 : 0,
-          }}
+          display="flex"
+          alignItems="center"
+          gap={isMobile ? 1.5 : 2}
+          flexDirection={isMobile ? "column" : "row"}
+          textAlign={isMobile ? "center" : "left"}
         >
-          {icon}
-        </Box>
-        <Box>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
-            {title}
-          </Typography>
-          <Typography 
-            variant="h4" 
-            fontWeight="bold" 
-            color={isActive ? `${color}.main` : color}
-            sx={{ 
-              textShadow: isActive ? "0 1px 2px rgba(0,0,0,0.1)" : "none" 
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: isMobile ? 40 : 48,
+              height: isMobile ? 40 : 48,
+              borderRadius: 2,
+              bgcolor: isActive ? `${color}.main` : `${color}.light`,
+              color: isActive ? "white" : `${color}.main`,
+              boxShadow: isActive ? 2 : 0,
+              mb: isMobile ? 1 : 0,
             }}
           >
-            {value}
-          </Typography>
+            {icon}
+          </Box>
+          <Box>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              gutterBottom
+              sx={{ mb: 0.5 }}
+            >
+              {title}
+            </Typography>
+            <Typography
+              variant={isMobile ? "h5" : "h4"}
+              fontWeight="bold"
+              color={isActive ? `${color}.main` : color}
+              sx={{
+                textShadow: isActive ? "0 1px 2px rgba(0,0,0,0.1)" : "none",
+              }}
+            >
+              {value}
+            </Typography>
+          </Box>
         </Box>
-      </Box>
-    </CardContent>
-  </Card>
-);
+      </CardContent>
+    </Card>
+  );
+};
 
 const RSVPStatusSummary: React.FC<RSVPStatusSummaryProps> = ({
   inviteesWithRSVP,
@@ -88,6 +107,7 @@ const RSVPStatusSummary: React.FC<RSVPStatusSummaryProps> = ({
   activeFilter,
 }) => {
   const { t } = useTranslation();
+  const { isMobile } = useResponsive();
 
   const stats = useMemo(() => {
     let arrivingCount = 0;
@@ -125,53 +145,72 @@ const RSVPStatusSummary: React.FC<RSVPStatusSummaryProps> = ({
   }, [inviteesWithRSVP]);
 
   return (
-    <Stack spacing={3}>
-      <Typography variant="h6" gutterBottom>
+    <Box sx={responsivePatterns.containerPadding}>
+      <Typography
+        variant={isMobile ? "h6" : "h5"}
+        gutterBottom
+        sx={{ mb: { xs: 2, sm: 3 } }}
+      >
         {t("rsvpStatusTab.statistics")}
       </Typography>
-      <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
-        <Box sx={{ minWidth: 200, flex: 1 }}>
-          <StatCard
-            title={t("rsvpStatusTab.arriving")}
-            value={stats.arrivingCount}
-            icon={<CheckIcon />}
-            color="success"
-            onClick={() => onFilterClick?.("attendance", true)}
-            isActive={activeFilter?.type === "attendance" && activeFilter?.value === true}
-          />
-        </Box>
-        <Box sx={{ minWidth: 200, flex: 1 }}>
-          <StatCard
-            title={t("rsvpStatusTab.notArriving")}
-            value={stats.notArrivingCount}
-            icon={<CancelIcon />}
-            color="error"
-            onClick={() => onFilterClick?.("attendance", false)}
-            isActive={activeFilter?.type === "attendance" && activeFilter?.value === false}
-          />
-        </Box>
-        <Box sx={{ minWidth: 200, flex: 1 }}>
-          <StatCard
-            title={t("rsvpStatusTab.sleepover")}
-            value={stats.sleepingCount}
-            icon={<HotelIcon />}
-            color="warning"
-            onClick={() => onFilterClick?.("sleepover", true)}
-            isActive={activeFilter?.type === "sleepover" && activeFilter?.value === true}
-          />
-        </Box>
-        <Box sx={{ minWidth: 200, flex: 1 }}>
-          <StatCard
-            title={t("rsvpStatusTab.transportation")}
-            value={stats.busCount}
-            icon={<BusIcon />}
-            color="info"
-            onClick={() => onFilterClick?.("ride", true)}
-            isActive={activeFilter?.type === "ride" && activeFilter?.value === true}
-          />
-        </Box>
-      </Stack>
-    </Stack>
+
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr 1fr", // 2 columns on mobile
+            sm: "1fr 1fr", // 2 columns on tablet
+            md: "repeat(4, 1fr)", // 4 columns on desktop
+          },
+          gap: { xs: 2, sm: 2, md: 3 },
+          width: "100%",
+        }}
+      >
+        <StatCard
+          title={t("rsvpStatusTab.arriving")}
+          value={stats.arrivingCount}
+          icon={<CheckIcon />}
+          color="success"
+          onClick={() => onFilterClick?.("attendance", true)}
+          isActive={
+            activeFilter?.type === "attendance" && activeFilter?.value === true
+          }
+        />
+
+        <StatCard
+          title={t("rsvpStatusTab.notArriving")}
+          value={stats.notArrivingCount}
+          icon={<CancelIcon />}
+          color="error"
+          onClick={() => onFilterClick?.("attendance", false)}
+          isActive={
+            activeFilter?.type === "attendance" && activeFilter?.value === false
+          }
+        />
+
+        <StatCard
+          title={t("rsvpStatusTab.sleepover")}
+          value={stats.sleepingCount}
+          icon={<HotelIcon />}
+          color="warning"
+          onClick={() => onFilterClick?.("sleepover", true)}
+          isActive={
+            activeFilter?.type === "sleepover" && activeFilter?.value === true
+          }
+        />
+
+        <StatCard
+          title={t("rsvpStatusTab.transportation")}
+          value={stats.busCount}
+          icon={<BusIcon />}
+          color="info"
+          onClick={() => onFilterClick?.("ride", true)}
+          isActive={
+            activeFilter?.type === "ride" && activeFilter?.value === true
+          }
+        />
+      </Box>
+    </Box>
   );
 };
 

@@ -1,5 +1,3 @@
-import { exportToExcel } from "../utils/ExcelUtils";
-
 // Types for localization system
 export type Language = "en" | "he";
 
@@ -157,6 +155,9 @@ export interface Translations {
     more: string;
     update: string;
     clearAll: string;
+    item: string;
+    noDataAvailable: string;
+    noDataDescription: string;
   };
   nav: {
     home: string;

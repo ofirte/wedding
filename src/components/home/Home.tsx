@@ -4,19 +4,20 @@ import WeddingCountdownBanner from "./WeddingCountdownBanner";
 import StatCards from "./StatCards";
 import DetailedOverviewCards from "./DetailedOverviewCards";
 import InvitationShareButton from "./InvitationShareButton";
-
-// Mock wedding date - you can replace with real data later
-const weddingDate = new Date("2025-09-19");
+import { responsivePatterns } from "../../utils/ResponsiveUtils";
 
 const Home: React.FC = () => {
   return (
-    <Box sx={{ py: 4, px: 1, position: "relative" }}>
+    <Box sx={responsivePatterns.containerPadding}>
       <Box
         sx={{
-          position: "absolute",
-          top: 48,
-          right: 16,
+          position: { xs: "relative", md: "absolute" },
+          top: { xs: "auto", md: 48 },
+          right: { xs: "auto", md: 16 },
           zIndex: 10,
+          mb: { xs: 2, md: 0 },
+          display: "flex",
+          justifyContent: { xs: "center", md: "flex-end" },
         }}
       >
         <InvitationShareButton />

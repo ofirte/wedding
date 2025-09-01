@@ -27,6 +27,7 @@ const BudgetTable: React.FC<BudgetTableProps> = ({
         data={items}
         showExport={true}
         exportFilename="budget-data"
+        mobileCardTitle={(row) => `${row.name}`}
       />
     </Box>
   );

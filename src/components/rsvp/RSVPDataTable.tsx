@@ -3,6 +3,7 @@ import { Paper, Box } from "@mui/material";
 import DSTable from "../common/DSTable";
 import RSVPTableHeader from "./RSVPTableHeader";
 import { useRSVPTableColumns, InviteeWithRSVP } from "./RSVPTableColumns";
+import { responsivePatterns } from "../../utils/ResponsiveUtils";
 import { SentMessage } from "../../hooks/rsvp";
 
 interface MessageTemplate {
@@ -48,20 +49,21 @@ const RSVPDataTable: React.FC<RSVPDataTableProps> = ({
   onFilteredDataChange,
 }) => {
   // Helper to check if templates were sent to an invitee
-  const wasAnySelectedTemplateSentToInvitee = useCallback((
-    invitee: InviteeWithRSVP
-  ): boolean => {
-    if (!sentMessages.length || !selectedTemplates.length) return false;
-    const inviteeDeliveredMessages = sentMessages.filter(
-      (message) =>
-        message.userId === invitee.id &&
-        !["failed", "undelivered"].includes(message.status)
-    );
+  const wasAnySelectedTemplateSentToInvitee = useCallback(
+    (invitee: InviteeWithRSVP): boolean => {
+      if (!sentMessages.length || !selectedTemplates.length) return false;
+      const inviteeDeliveredMessages = sentMessages.filter(
+        (message) =>
+          message.userId === invitee.id &&
+          !["failed", "undelivered"].includes(message.status)
+      );
 
-    return inviteeDeliveredMessages.some((message) =>
-      selectedTemplates.includes(message.contentSid)
-    );
-  }, [sentMessages, selectedTemplates]);
+      return inviteeDeliveredMessages.some((message) =>
+        selectedTemplates.includes(message.contentSid)
+      );
+    },
+    [sentMessages, selectedTemplates]
+  );
 
   // Preprocess data to add computed properties for filtering
   const enrichedData = useMemo(() => {
@@ -94,13 +96,32 @@ const RSVPDataTable: React.FC<RSVPDataTableProps> = ({
     onSelectionChange(selectedWithPhones);
   };
 
-  const handleDisplayedDataChange = useCallback((displayedData: InviteeWithRSVP[]) => {
-    onFilteredDataChange?.(displayedData);
-  }, [onFilteredDataChange]);
+  const handleDisplayedDataChange = useCallback(
+    (displayedData: InviteeWithRSVP[]) => {
+      onFilteredDataChange?.(displayedData);
+    },
+    [onFilteredDataChange]
+  );
 
   return (
-    <Paper sx={{ mt: 3 }}>
-      <Box p={2}>
+    <Box
+      sx={{
+        mt: { xs: 2, sm: 3 },
+        mx: { xs: -1, sm: 0 }, // Negative margin on mobile to use full width
+        width: { xs: "calc(100% + 16px)", sm: "100%" }, // Extend beyond container padding on mobile
+        maxWidth: "100vw", // Prevent exceeding viewport width
+        overflowX: "hidden", // Prevent horizontal scrolling
+      }}
+    >
+      <Paper
+        sx={{
+          ...responsivePatterns.containerPadding,
+          overflow: "hidden", // Prevent horizontal scrolling
+          width: "100%",
+          maxWidth: "100%", // Ensure it doesn't exceed container
+          boxSizing: "border-box",
+        }}
+      >
         <RSVPTableHeader
           selectedTemplates={selectedTemplates}
           onTemplateSelectionChange={onTemplateSelectionChange}
@@ -109,15 +130,24 @@ const RSVPDataTable: React.FC<RSVPDataTableProps> = ({
           templates={templates}
           isLoading={isLoading}
         />
-        <DSTable
-          columns={columns}
-          data={enrichedData}
-          showSelectColumn={true}
-          onSelectionChange={handleSelectionChange}
-          onDisplayedDataChange={handleDisplayedDataChange}
-        />
-      </Box>
-    </Paper>
+        <Box
+          sx={{
+            mt: { xs: 2, sm: 3 },
+            width: "100%",
+            overflow: "hidden", // Prevent any child overflow
+          }}
+        >
+          <DSTable
+            columns={columns}
+            data={enrichedData}
+            showSelectColumn={true}
+            onSelectionChange={handleSelectionChange}
+            onDisplayedDataChange={handleDisplayedDataChange}
+            mobileCardTitle={(row) => ` ${row.name}`}
+          />
+        </Box>
+      </Paper>
+    </Box>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Box, Typography, Paper, Chip } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import DSTable from "../common/DSTable";
 import { useSentMessages } from "../../hooks/rsvp";
 import { createSentMessagesColumns } from "./SentMessagesColumns";
@@ -59,6 +59,7 @@ const MessagesLogTab: FC = () => {
         data={sentMessages}
         showExport={true}
         exportFilename="sent-messages"
+        mobileCardTitle={(row) => `${row.firstName} ${row.lastName}`}
       />
     </Box>
   );
