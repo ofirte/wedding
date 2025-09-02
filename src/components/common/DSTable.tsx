@@ -105,7 +105,7 @@ const DSTable: FC<DSTableProps<any>> = ({
       onDisplayedDataChange?.(sortedFilteredData);
     };
     onFilterSortChange();
-  }, [filterStates, orderBy, order, data, columns, onDisplayedDataChange]);
+  }, [filterStates, orderBy, order, data]);
 
   const handleRowSelect = (row: any, isSelected: boolean) => {
     const newSelectedRows = isSelected
