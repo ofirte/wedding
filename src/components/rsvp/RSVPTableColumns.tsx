@@ -78,7 +78,7 @@ export const useRSVPTableColumns = ({
           options: [
             { value: true, label: t("rsvpStatusTab.arriving") },
             { value: false, label: t("rsvpStatusTab.notArriving") },
-            { value: null, label: t("rsvpStatusTab.pending") },
+            { value: undefined, label: t("rsvpStatusTab.pending") },
           ],
         },
         sortFn: (a, b) => {
@@ -158,7 +158,7 @@ export const useRSVPTableColumns = ({
           options: [
             { value: true, label: t("common.yes") },
             { value: false, label: t("common.no") },
-            { value: null, label: "-" },
+            { value: undefined, label: "-" },
           ],
         },
         sortFn: (a, b) => {
@@ -195,7 +195,7 @@ export const useRSVPTableColumns = ({
           options: [
             { value: true, label: t("common.yes") },
             { value: false, label: t("common.no") },
-            { value: null, label: "-" },
+            { value: undefined, label: "-" },
           ],
         },
         sortFn: (a, b) => {
