@@ -119,21 +119,21 @@ const RSVPStatusSummary: React.FC<RSVPStatusSummaryProps> = ({
       const status = invitee.rsvpStatus;
 
       // Only count submitted RSVPs
-      if (status?.isSubmitted) {
-        if (status?.attendance === true) {
-          arrivingCount += status?.amount || 0;
-          // Count sleepover requests for arriving guests
-          if (status?.sleepover) {
-            sleepingCount += status?.amount || 0;
-          }
-          // Count bus requests for arriving guests
-          if (status?.rideFromTelAviv) {
-            busCount += status?.amount || 0;
-          }
-        } else if (status?.attendance === false) {
-          notArrivingCount += 1;
+      // if (status?.isSubmitted) {
+      if (status?.attendance === true) {
+        arrivingCount += status?.amount || 0;
+        // Count sleepover requests for arriving guests
+        if (status?.sleepover) {
+          sleepingCount += status?.amount || 0;
         }
+        // Count bus requests for arriving guests
+        if (status?.rideFromTelAviv) {
+          busCount += status?.amount || 0;
+        }
+      } else if (status?.attendance === false) {
+        notArrivingCount += 1;
       }
+      // }
     });
 
     return {
