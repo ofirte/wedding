@@ -347,5 +347,7 @@ export interface Translations {
     filterByTemplate: string;
     selectTemplates: string;
     selectTemplateFirst: string;
+    invitationLink: string;
+    copyInvitationLink: string;
   };
 }

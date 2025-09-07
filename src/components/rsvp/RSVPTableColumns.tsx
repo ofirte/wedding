@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Box, Typography, Chip } from "@mui/material";
+import { Box, Typography, Chip, IconButton, Tooltip } from "@mui/material";
 import {
   CheckCircle as CheckIcon,
   Cancel as CancelIcon,
@@ -8,12 +8,15 @@ import {
   Hotel as HotelIcon,
   DirectionsBus as BusIcon,
   Message as MessageIcon,
+  Link as LinkIcon,
+  ContentCopy as CopyIcon,
 } from "@mui/icons-material";
 import { Column } from "../common/DSTable";
 import { RSVPStatus } from "../../api/rsvp/rsvpStatusTypes";
 import { Invitee } from "../invitees/InviteList";
 import { isNil } from "lodash";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
 
 export type InviteeWithRSVP = Invitee & {
   rsvpStatus?: RSVPStatus;
@@ -41,9 +44,27 @@ export const useRSVPTableColumns = ({
   sentMessages,
 }: UseRSVPTableColumnsProps): Column<InviteeWithRSVP>[] => {
   const { t } = useTranslation();
+  const { data: wedding } = useWeddingDetails();
 
-  return useMemo(
-    (): Column<InviteeWithRSVP>[] => [
+  return useMemo((): Column<InviteeWithRSVP>[] => {
+    const handleLinkClick = (guestId: string) => {
+      if (!wedding?.id) return;
+      const url = `/guest-rsvp/${wedding.id}/${guestId}`;
+      window.open(url, "_blank");
+    };
+
+    const handleCopyLink = async (guestId: string) => {
+      if (!wedding?.id) return;
+      const url = `${window.location.origin}/guest-rsvp/${wedding.id}/${guestId}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        // Could add a snackbar notification here
+      } catch (err) {
+        console.error("Failed to copy link:", err);
+      }
+    };
+
+    return [
       // Guest Identity Section
       {
         id: "name",
@@ -222,6 +243,36 @@ export const useRSVPTableColumns = ({
         },
       },
 
+      // Guest Link Section
+      {
+        id: "guestLink",
+        label: t("rsvpStatusTab.invitationLink"),
+        render: (row) => (
+          <Box display="flex" alignItems="center" gap={0.5}>
+            <Tooltip title={t("rsvpStatusTab.invitationLink")}>
+              <IconButton
+                size="small"
+                onClick={() => handleLinkClick(row.id)}
+                disabled={!wedding?.id}
+                color="primary"
+              >
+                <LinkIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={t("rsvpStatusTab.copyInvitationLink")}>
+              <IconButton
+                size="small"
+                onClick={() => handleCopyLink(row.id)}
+                disabled={!wedding?.id}
+                color="primary"
+              >
+                <CopyIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        ),
+      },
+
       // Process Management Section
       {
         id: "submitted",
@@ -309,7 +360,6 @@ export const useRSVPTableColumns = ({
           );
         },
       },
-    ],
-    [t, selectedTemplates, sentMessages]
-  );
+    ];
+  }, [t, selectedTemplates, wedding?.id]);
 };

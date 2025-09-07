@@ -327,5 +327,7 @@ export const hebrewTranslations: Translations = {
     filterByTemplate: "סנן לפי תבנית",
     selectTemplates: "בחר תבניות",
     selectTemplateFirst: "בחר תבניות כדי לסנן",
+    invitationLink: "קישור להזמנה",
+    copyInvitationLink: "העתק קישור הזמנה לאורח",
   },
 };

@@ -328,5 +328,7 @@ export const englishTranslations: Translations = {
     filterByTemplate: "Filter by Template",
     selectTemplates: "Select Templates",
     selectTemplateFirst: "Select templates to filter",
+    invitationLink: "invitation link",
+    copyInvitationLink: "Copy guest invitation link",
   },
 };
