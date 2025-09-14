@@ -77,7 +77,7 @@ export const useRSVPTableColumns = ({
         sortable: true,
       },
       {
-        id: "phone",
+        id: "cellphone",
         label: t("rsvpStatusTab.phone"),
         sortable: true,
         render: (row) => (
