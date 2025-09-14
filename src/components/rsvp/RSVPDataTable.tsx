@@ -141,6 +141,7 @@ const RSVPDataTable: React.FC<RSVPDataTableProps> = ({
             columns={columns}
             data={enrichedData}
             showSelectColumn={true}
+            showExport={true}
             onSelectionChange={handleSelectionChange}
             onDisplayedDataChange={handleDisplayedDataChange}
             mobileCardTitle={(row) => ` ${row.name}`}
