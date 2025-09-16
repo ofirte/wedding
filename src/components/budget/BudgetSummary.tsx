@@ -45,7 +45,7 @@ const BudgetSummary: React.FC<SummaryProps> = ({ totals, totalBudget = 0 }) => {
     },
     {
       title: t("budget.remaining"),
-      value: formatCurrency(totalBudget - totals.actual),
+      value: formatCurrency(totals.remaining),
       icon: <RemainingIcon sx={{ fontSize: 40, color: "warning.main" }} />,
     },
   ];
