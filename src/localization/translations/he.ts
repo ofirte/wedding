@@ -198,6 +198,10 @@ export const hebrewTranslations: Translations = {
     bulkDeleteConfirmation:
       "האם אתה בטוח שברצונך למחוק {{count}} אורחים נבחרים?",
     selectedGuests: "אורחים נבחרים",
+    inviteeRecords: "מוזמנים",
+    totalExpectedGuests: "סה״כ אורחים",
+    withPhoneNumbers: "עם מספרי טלפון",
+    missingPhoneNumbers: "ללא מספר טלפון",
   },
   tasks: {
     title: "משימות חתונה",

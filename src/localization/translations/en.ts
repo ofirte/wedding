@@ -198,6 +198,10 @@ export const englishTranslations: Translations = {
     bulkDeleteConfirmation:
       "Are you sure you want to delete {{count}} selected guests?",
     selectedGuests: "Selected Guests",
+    inviteeRecords: "Invitee Records",
+    totalExpectedGuests: "Total Expected Guests",
+    withPhoneNumbers: "With Phone Numbers",
+    missingPhoneNumbers: "Missing Phone Numbers",
   },
   tasks: {
     title: "Wedding Tasks",

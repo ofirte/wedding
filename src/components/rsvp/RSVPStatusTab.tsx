@@ -50,14 +50,12 @@ const RSVPStatusTab: React.FC = () => {
     value: any;
   } | null>(null);
 
-  // Filter management
-  // Data Transformation - Using denormalized RSVP status from invitees
-
   // Apply status filter to data before sending to DSTable
   const filteredInvitees = useMemo(() => {
     if (!statusFilter) return inviteesWithRSVP;
+    if (!inviteesWithRSVP) return [];
 
-    return (inviteesWithRSVP ?? []).filter((invitee) => {
+    return inviteesWithRSVP.filter((invitee) => {
       const rsvp = invitee.rsvpStatus;
       if (!rsvp?.isSubmitted) return false; // Only show submitted RSVPs for status filters
 

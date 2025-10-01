@@ -223,6 +223,10 @@ export interface Translations {
     bulkDeleteTitle: string;
     bulkDeleteConfirmation: string;
     selectedGuests: string;
+    inviteeRecords: string;
+    totalExpectedGuests: string;
+    withPhoneNumbers: string;
+    missingPhoneNumbers: string;
   };
   tasks: {
     title: string;

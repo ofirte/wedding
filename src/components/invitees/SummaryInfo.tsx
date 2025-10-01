@@ -1,110 +1,104 @@
 import React, { useMemo } from "react";
 import { Grid, Card, CardContent, Typography, Stack } from "@mui/material";
-import PeopleIcon from "@mui/icons-material/People";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import PendingIcon from "@mui/icons-material/Pending";
-import CancelIcon from "@mui/icons-material/Cancel";
+import {
+  People as PeopleIcon,
+  Group as GroupIcon,
+  PhoneDisabled as PhoneDisabledIcon,
+} from "@mui/icons-material";
 import { Invitee } from "./InviteList";
 import { useTranslation } from "../../localization/LocalizationContext";
-
+import { gu } from "date-fns/locale";
 interface SummaryInfoProps {
   invitees: Invitee[];
 }
 
 const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
   const { t } = useTranslation();
-  const guestStatuses = useMemo(() => {
+
+  const guestStats = useMemo(() => {
+    const totalInviteeRecords = invitees.length;
+    console.log(invitees);
+    // Total expected guests (including plus-ones)
+    const totalExpectedGuests = invitees.reduce(
+      (acc, invitee) =>
+        acc + (isNaN(Number(invitee.amount)) ? 0 : Number(invitee.amount)),
+      0
+    );
+    console.log("Total Expected Guests:", totalExpectedGuests);
+    const missingPhoneNumbers = invitees.filter(
+      (invitee) => !invitee.cellphone || invitee.cellphone.trim() === ""
+    ).length;
+
+
     return {
-      total: invitees.reduce(
-        (acc, i) => acc + parseInt(i.amount.toString()),
-        0
-      ),
-      confirmed: invitees
-        .filter((i) => i.rsvp === "Confirmed")
-        .reduce((acc, i) => acc + parseInt(i.amountConfirm.toString()), 0),
-      pending: invitees
-        .filter((i) => i.rsvp === "Pending")
-        .reduce(
-          (acc, i) =>
-            acc +
-            parseInt(i.amount.toString()) -
-            parseInt(i.amountConfirm.toString()),
-          0
-        ),
-      declined: invitees
-        .filter((i) => i.rsvp === "Declined")
-        .reduce(
-          (acc, i) =>
-            acc +
-            parseInt(i.amount.toString()) -
-            parseInt(i.amountConfirm.toString()),
-          0
-        ),
+      totalInviteeRecords,
+      totalExpectedGuests,
+      missingPhoneNumbers,
     };
   }, [invitees]);
-
+  const gridSize = guestStats.missingPhoneNumbers
+    ? {
+        xs: 12,
+        sm: 6,
+        md: 4,
+      }
+    : {
+        xs: 12,
+        sm: 6,
+        md: 6,
+      };
   return (
     <Grid container spacing={3}>
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+      <Grid size={gridSize}>
         <Card elevation={2}>
           <CardContent>
             <Stack spacing={1} alignItems="center">
-              <PeopleIcon sx={{ fontSize: 40, color: "info.dark" }} />
+              <GroupIcon sx={{ fontSize: 40, color: "success.main" }} />
               <Typography variant="h5" component="div">
-                {guestStatuses.total}
+                {guestStats.totalExpectedGuests}
               </Typography>
               <Typography color="text.secondary">
-                {t("guests.totalGuests")}
+                {t("guests.totalExpectedGuests")}
               </Typography>
             </Stack>
           </CardContent>
         </Card>
       </Grid>
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+      <Grid size={gridSize}>
         <Card elevation={2}>
           <CardContent>
             <Stack spacing={1} alignItems="center">
-              <CheckCircleIcon sx={{ fontSize: 40, color: "success.main" }} />
+              <PeopleIcon sx={{ fontSize: 40, color: "primary.main" }} />
               <Typography variant="h5" component="div">
-                {guestStatuses.confirmed}
+                {guestStats.totalInviteeRecords}
               </Typography>
               <Typography color="text.secondary">
-                {t("guests.confirmed")}
+                {t("guests.inviteeRecords")}
               </Typography>
             </Stack>
           </CardContent>
         </Card>
       </Grid>
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-        <Card elevation={2}>
-          <CardContent>
-            <Stack spacing={1} alignItems="center">
-              <PendingIcon sx={{ fontSize: 40, color: "warning.main" }} />
-              <Typography variant="h5" component="div">
-                {guestStatuses.pending}
-              </Typography>
-              <Typography color="text.secondary">
-                {t("guests.pending")}
-              </Typography>
-            </Stack>
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-        <Card elevation={2}>
-          <CardContent>
-            <Stack spacing={1} alignItems="center">
-              <CancelIcon sx={{ fontSize: 40, color: "error.main" }} />
-              <Typography variant="h5" component="div">
-                {guestStatuses.declined}
-              </Typography>
-              <Typography color="text.secondary">
-                {t("guests.declined")}
-              </Typography>
-            </Stack>
-          </CardContent>
-        </Card>
-      </Grid>
+
+      {guestStats.missingPhoneNumbers !== 0 && (
+        <Grid size={gridSize}>
+          <Card elevation={2}>
+            <CardContent>
+              <Stack spacing={1} alignItems="center">
+                <PhoneDisabledIcon
+                  sx={{ fontSize: 40, color: "warning.main" }}
+                />
+                <Typography variant="h5" component="div">
+                  {guestStats.missingPhoneNumbers}
+                </Typography>
+                <Typography color="text.secondary">
+                  {t("guests.missingPhoneNumbers")}
+                </Typography>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Grid>
+      )}
     </Grid>
   );
 };
