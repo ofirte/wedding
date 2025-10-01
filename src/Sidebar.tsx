@@ -20,6 +20,7 @@ import {
   Money as MoneyIcon,
   Assignment as TaskIcon,
   WhatsApp as RSVPIcon,
+  Build as MigrationIcon,
   Logout as LogoutIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router";
@@ -52,6 +53,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     { text: t("nav.budget"), icon: <MoneyIcon />, path: "/budget" },
     { text: t("nav.tasks"), icon: <TaskIcon />, path: "/tasks" },
     { text: t("nav.rsvp"), icon: <RSVPIcon />, path: "/rsvp" },
+  ];
+
+  const adminMenuItems = [
+    { text: "Migrations", icon: <MigrationIcon />, path: "/migrations" },
   ];
 
   // Function to check if a menu item is currently active
@@ -170,6 +175,41 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <Divider variant="middle" sx={{ my: 0.5 }} />
               )}
             </React.Fragment>
+          );
+        })}
+      </List>
+
+      {/* Admin Section */}
+      <Divider />
+      <Box sx={{ px: 2, py: 1 }}>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ fontWeight: "medium" }}
+        >
+          Admin Tools
+        </Typography>
+      </Box>
+      <List sx={{ py: 0, pb: 1 }}>
+        {adminMenuItems.map((item, index) => {
+          const isActive = isMenuItemActive(item.path);
+          const styles = getMenuItemStyles(isActive);
+
+          return (
+            <ListItem key={item.text} disablePadding>
+              <ListItemButton
+                onClick={() => handleNavigate(item.path)}
+                sx={styles.listItemButton}
+              >
+                <ListItemIcon sx={styles.listItemIcon}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={item.text}
+                  primaryTypographyProps={styles.listItemText}
+                />
+              </ListItemButton>
+            </ListItem>
           );
         })}
       </List>

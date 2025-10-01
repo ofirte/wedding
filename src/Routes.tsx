@@ -1,11 +1,12 @@
 import React, { FC } from "react";
-import { Routes, Route, Navigate } from "react-router";
+import { Routes, Route } from "react-router";
 import App from "./App";
 import WeddingInviteTable from "./components/invitees/InviteList";
 import BudgetPlanner from "./components/budget/BudgetPlanner";
 import Home from "./components/home/Home";
 import TaskManager from "./components/tasks/TaskManager";
 import RSVPManager from "./components/rsvp/RSVPManager";
+import MigrationManager from "./migrations/components/MigrationManager";
 import LoginPage from "./components/auth/LoginPage";
 import RegisterPage from "./components/auth/RegisterPage";
 import SetupWeddingPage from "./components/wedding/SetupWeddingPage";
@@ -20,7 +21,10 @@ const AppRoutes: FC = () => {
       <Route path="/" element={<RootRedirect />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/guest-rsvp/:weddingId/:guestId" element={<GuestRSVPPage />} />
+      <Route
+        path="/guest-rsvp/:weddingId/:guestId"
+        element={<GuestRSVPPage />}
+      />
       <Route element={<ProtectedRoute redirectPath="/login" />}>
         <Route path="wedding" element={<WeddingRoute />}>
           <Route index element={<SetupWeddingPage />} />
@@ -30,6 +34,7 @@ const AppRoutes: FC = () => {
             <Route path="budget" element={<BudgetPlanner />} />
             <Route path="tasks" element={<TaskManager />} />
             <Route path="rsvp" element={<RSVPManager />} />
+            <Route path="migrations" element={<MigrationManager />} />
           </Route>
         </Route>
       </Route>
