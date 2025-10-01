@@ -5,9 +5,7 @@ export { useSendBulkMessages } from "./useSendBulkMessages";
 export { useSentMessages } from "./useSentMessages";
 export { useCheckMessageStatus } from "./useCheckMessageStatus";
 export { useUpdateMessageStatus } from "./useUpdateMessageStatus";
-export { useRSVPStatus } from "./useRSVPStatus";
-export { useUpdateRSVPStatus } from "./useUpdateRSVPStatus";
-export { useRSVPStatuses } from "./useRSVPStatuses";
+// Note: RSVP status hooks have been moved to invitees hooks since data is now denormalized
 
 // Also export types from rsvpApi for convenience
 export type {

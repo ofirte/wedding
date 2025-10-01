@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { useRSVPStatuses } from "../../hooks/rsvp/useRSVPStatuses";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { useSentMessages } from "../../hooks/rsvp/useSentMessages";
 import { useMessageTemplates } from "../../hooks/rsvp/useMessageTemplates";
@@ -37,8 +36,8 @@ const RSVPStatusTab: React.FC = () => {
   const { t } = useTranslation();
 
   // Data Management - The foundation of our story
-  const { data: rsvpStatuses, isLoading: isLoadingRSVP } = useRSVPStatuses();
-  const { data: invitees, isLoading: isLoadingInvitees } = useInvitees();
+  const { data: inviteesWithRSVP, isLoading: isLoadingInvitees } =
+    useInvitees();
   const { data: sentMessages = [] } = useSentMessages();
   const { data: messageTemplatesData } = useMessageTemplates();
 
@@ -52,20 +51,13 @@ const RSVPStatusTab: React.FC = () => {
   } | null>(null);
 
   // Filter management
-  // Data Transformation - Combining invitees with their RSVP status
-  const inviteesWithRSVP: InviteeWithRSVP[] = useMemo(() => {
-    if (!invitees || !rsvpStatuses) return [];
-    return invitees.map((invitee) => ({
-      ...invitee,
-      rsvpStatus: rsvpStatuses[invitee.id],
-    }));
-  }, [invitees, rsvpStatuses]);
+  // Data Transformation - Using denormalized RSVP status from invitees
 
   // Apply status filter to data before sending to DSTable
   const filteredInvitees = useMemo(() => {
     if (!statusFilter) return inviteesWithRSVP;
 
-    return inviteesWithRSVP.filter((invitee) => {
+    return (inviteesWithRSVP ?? []).filter((invitee) => {
       const rsvp = invitee.rsvpStatus;
       if (!rsvp?.isSubmitted) return false; // Only show submitted RSVPs for status filters
 
@@ -119,7 +111,7 @@ const RSVPStatusTab: React.FC = () => {
   };
 
   // Loading State - Setting the stage
-  if (isLoadingRSVP || isLoadingInvitees) {
+  if (isLoadingInvitees) {
     return (
       <Box display="flex" justifyContent="center" p={4}>
         <Typography>{t("rsvpStatusTab.loadingData")}</Typography>
@@ -130,13 +122,13 @@ const RSVPStatusTab: React.FC = () => {
   return (
     <Box sx={responsivePatterns.containerPadding}>
       <RSVPStatusSummary
-        inviteesWithRSVP={inviteesWithRSVP}
+        inviteesWithRSVP={inviteesWithRSVP ?? []}
         onFilterClick={handleFilterClick}
         activeFilter={statusFilter}
       />
 
       <RSVPDataTable
-        data={filteredInvitees}
+        data={filteredInvitees ?? []}
         selectedTemplates={selectedTemplates}
         onTemplateSelectionChange={handleTemplateSelectionChange}
         selectedGuestsCount={selectedGuests.length}
@@ -144,7 +136,7 @@ const RSVPStatusTab: React.FC = () => {
         onSendMessage={handleOpenDialog}
         templates={messageTemplatesData?.templates || []}
         sentMessages={sentMessages}
-        isLoading={isLoadingRSVP || isLoadingInvitees}
+        isLoading={isLoadingInvitees}
         onFilteredDataChange={handleFilteredDataChange}
       />
 

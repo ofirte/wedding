@@ -8,8 +8,11 @@ import RSVPQuestionsForm from "./RSVPQuestionsForm";
 import ThankYouCard from "./ThankYouCard";
 import WeddingDetailsCard from "./WeddingDetailsCard";
 import { useWeddingDetails } from "../../hooks/auth";
-import { useInvitee } from "../../hooks/invitees";
-import { useRSVPStatus, useUpdateRSVPStatus } from "../../hooks/rsvp";
+import {
+  useInvitee,
+  useInviteeRSVP,
+  useUpdateInviteeRSVP,
+} from "../../hooks/invitees";
 import {
   formDataToRSVPStatus,
   rsvpStatusToFormData,
@@ -29,9 +32,9 @@ const GuestRSVPPage: React.FC = () => {
   const { data: weddingInfo } = useWeddingDetails(weddingId as string);
   const { data: guestInfo } = useInvitee(guestId as string);
 
-  // Fetch existing RSVP status
-  const { data: rsvpStatus } = useRSVPStatus(guestId as string);
-  const updateRSVPStatus = useUpdateRSVPStatus();
+  // Fetch existing RSVP status using denormalized data
+  const { data: rsvpStatus } = useInviteeRSVP(guestId as string);
+  const updateRSVPStatus = useUpdateInviteeRSVP();
 
   // Initialize form data with existing RSVP status or defaults
   const [formData, setFormData] = useState<RSVPFormData>({

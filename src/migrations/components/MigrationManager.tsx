@@ -11,7 +11,9 @@ import {
   useMigrationRecords,
   useMigrationExecution,
 } from "../../hooks/migrations";
-import { MigrationControls, MigrationList, MigrationResults } from "./index";
+import { MigrationControls } from "./MigrationControls";
+import { MigrationList } from "./MigrationList";
+import { MigrationResults } from "./MigrationResults";
 import { migrationRegistry } from "../index";
 import {
   Migration,

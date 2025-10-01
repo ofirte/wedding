@@ -76,16 +76,6 @@ export const useRSVPTableColumns = ({
         ),
         sortable: true,
       },
-      {
-        id: "cellphone",
-        label: t("rsvpStatusTab.phone"),
-        sortable: true,
-        render: (row) => (
-          <Typography variant="body2" color="text.secondary">
-            {row.cellphone || "-"}
-          </Typography>
-        ),
-      },
 
       // Attendance Decision Section
       {

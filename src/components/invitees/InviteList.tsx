@@ -12,7 +12,6 @@ import { useUpdateInvitee } from "../../hooks/invitees/useUpdateInvitee";
 import { useDeleteInvitee } from "../../hooks/invitees/useDeleteInvitee";
 import { useBulkUpdateInvitees } from "../../hooks/invitees/useBulkUpdateInvitees";
 import { useBulkDeleteInvitees } from "../../hooks/invitees/useBulkDeleteInvitees";
-import { useRSVPStatuses } from "../../hooks/rsvp/useRSVPStatuses";
 import InviteeTable from "./InviteeTable";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { isGoogleContactsConfigured } from "../../api/contacts/googleContactsApi";
@@ -35,21 +34,20 @@ export interface Invitee {
 const WeddingInviteTable = () => {
   const columns = createColumns(useTranslation().t);
   const { data: invitees = [] } = useInvitees();
-  const { data: rsvpStatuses } = useRSVPStatuses();
-  // Combine invitees with their RSVP status
+
+  // Use denormalized RSVP data directly from invitees
   const inviteesWithRSVP: Invitee[] = useMemo(() => {
-    if (!invitees || !rsvpStatuses) return invitees || [];
     return invitees.map((invitee) => ({
       ...invitee,
-      amountConfirm: rsvpStatuses[invitee.id]?.amount || 0,
+      amountConfirm: invitee.rsvpStatus?.amount || 0,
       rsvp:
-        rsvpStatuses[invitee.id]?.attendance === true
+        invitee.rsvpStatus?.attendance === true
           ? "Confirmed"
-          : isNil(rsvpStatuses[invitee.id]?.attendance)
+          : isNil(invitee.rsvpStatus?.attendance)
           ? "Pending"
           : "Declined",
     }));
-  }, [invitees, rsvpStatuses]);
+  }, [invitees]);
 
   const [displayedInvitees, setDisplayedInvitees] = useState<Invitee[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);

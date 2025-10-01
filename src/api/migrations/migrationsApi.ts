@@ -3,6 +3,7 @@ import {
   MigrationRecord,
   MigrationStatus,
 } from "../../migrations/framework/types";
+import { getDocs } from "firebase/firestore";
 
 /**
  * API for managing migration records in Firestore
@@ -17,20 +18,23 @@ import {
 export const fetchMigrationRecords = async (
   weddingId?: string
 ): Promise<MigrationRecord[]> => {
-  return new Promise((resolve, reject) => {
-    weddingFirebase
-      .listenToCollection<MigrationRecord>(
+  try {
+    console.log(weddingId, 'wow')
+    const collectionRef =
+      await weddingFirebase.getCollectionRef<MigrationRecord>(
         "migrations",
-        (records) => resolve(records),
-        (error) => reject(error),
         weddingId
-      )
-      .then((unsubscribe) => {
-        // Immediately unsubscribe since we just want the data once
-        setTimeout(() => unsubscribe(), 100);
-      })
-      .catch(reject);
-  });
+      );
+    console.log(collectionRef);
+    const snapshot = await getDocs(collectionRef);
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as MigrationRecord[];
+  } catch (error) {
+    console.error("Error fetching migration records:", error);
+    return [];
+  }
 };
 
 /**

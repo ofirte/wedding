@@ -6,3 +6,4 @@ export { useUpdateInvitee } from "./useUpdateInvitee";
 export { useDeleteInvitee } from "./useDeleteInvitee";
 export { useBulkUpdateInvitees } from "./useBulkUpdateInvitees";
 export { useBulkDeleteInvitees } from "./useBulkDeleteInvitees";
+export { useInviteeRSVP, useUpdateInviteeRSVP } from "./useInviteeRSVP";

@@ -5,16 +5,19 @@ import {
 } from "../../api/migrations/migrationsApi";
 import { MigrationRecord } from "../../migrations/framework/types";
 import { useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router";
 
 /**
  * Hook to fetch all migration records for a wedding
  * Follows the pattern of useInvitees, useTasks, etc.
  */
 export const useMigrationRecords = () => {
-  return useWeddingQuery<MigrationRecord[]>({
+  const result = useWeddingQuery<MigrationRecord[]>({
     queryKey: ["migrationRecords"],
     queryFn: fetchMigrationRecords,
   });
+
+  return result;
 };
 
 /**
