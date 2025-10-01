@@ -178,6 +178,7 @@ export const englishTranslations: Translations = {
     accepted: "Accepted",
     side: "Side",
     guestList: "Guest List",
+    presumedAmount: "Presumed Amount",
     guestsConfirmed: "Guests confirmed",
     editGuestDetails: "Edit Guest Details",
     newGuestDetails: "New Guest Details",

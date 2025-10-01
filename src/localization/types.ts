@@ -200,6 +200,7 @@ export interface Translations {
     confirmed: string;
     pending: string;
     declined: string;
+    presumedAmount: string;
     addGuest: string;
     accepted: string;
     side: string;

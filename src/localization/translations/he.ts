@@ -185,6 +185,7 @@ export const hebrewTranslations: Translations = {
     attendance: "אחוז הגעה (%)",
     relation: "קרבה",
     amount: "כמות",
+    presumedAmount: "כמות מתוכננת",
     amountConfirm: "אישרו הגעה",
     cellphone: "נייד",
     groom: "חתן",
@@ -198,7 +199,7 @@ export const hebrewTranslations: Translations = {
     bulkDeleteConfirmation:
       "האם אתה בטוח שברצונך למחוק {{count}} אורחים נבחרים?",
     selectedGuests: "אורחים נבחרים",
-    inviteeRecords: "מוזמנים",
+    inviteeRecords: "סה״כ מוזמנים",
     totalExpectedGuests: "סה״כ אורחים",
     withPhoneNumbers: "עם מספרי טלפון",
     missingPhoneNumbers: "ללא מספר טלפון",

@@ -1,5 +1,4 @@
 import isNil from "lodash/isNil";
-import { deleteField } from "firebase/firestore";
 /**
  * RSVP Status data structure for storing as subcollection under invitees
  */
@@ -23,21 +22,30 @@ export interface RSVPFormData {
 
 /**
  * Utility function to convert form data to RSVP status
- * Uses deleteField() to remove undefined values from Firebase
+ * For denormalized data structure - only includes fields that have values
  */
 export const formDataToRSVPStatus = (
   formData: RSVPFormData
-): Partial<RSVPStatus> | Record<string, any> => {
-  const yesNoFieldValue = (fieldValue: "yes" | "no" | undefined) => {
-    if (isNil(fieldValue)) return deleteField();
-    return fieldValue === "yes";
-  };
-  const result = {
-    attendance: yesNoFieldValue(formData.attending),
-    amount: isNil(formData.guestCount) ? deleteField() : formData.guestCount,
-    sleepover: yesNoFieldValue(formData.sleepover),
-    rideFromTelAviv: yesNoFieldValue(formData.needsRideFromTelAviv),
-  };
+): Partial<RSVPStatus> => {
+  const result: Partial<RSVPStatus> = {};
+
+  // Only include fields that have actual values (not undefined)
+  if (!isNil(formData.attending)) {
+    result.attendance = formData.attending === "yes";
+  }
+
+  if (!isNil(formData.guestCount)) {
+    result.amount = formData.guestCount;
+  }
+
+  if (!isNil(formData.sleepover)) {
+    result.sleepover = formData.sleepover === "yes";
+  }
+
+  if (!isNil(formData.needsRideFromTelAviv)) {
+    result.rideFromTelAviv = formData.needsRideFromTelAviv === "yes";
+  }
+
   return result;
 };
 
@@ -50,7 +58,7 @@ export const rsvpStatusToFormData = (
 ): RSVPFormData => {
   const yesNoFieldValue = (fieldValue: boolean | undefined) =>
     !isNil(fieldValue) ? (fieldValue ? "yes" : "no") : undefined;
-  
+
   if (isNil(rsvpStatus)) {
     return {
       attending: undefined,
@@ -66,4 +74,48 @@ export const rsvpStatusToFormData = (
     sleepover: yesNoFieldValue(rsvpStatus.sleepover),
     needsRideFromTelAviv: yesNoFieldValue(rsvpStatus.rideFromTelAviv),
   };
+};
+
+/**
+ * Utility function to create a complete RSVP status object with defaults
+ * For cases where you want to completely replace the RSVP status
+ */
+export const formDataToCompleteRSVPStatus = (
+  formData: RSVPFormData
+): RSVPStatus => {
+  return {
+    attendance: formData.attending === "yes",
+    amount: formData.guestCount || 1,
+    sleepover: formData.sleepover === "yes",
+    rideFromTelAviv: formData.needsRideFromTelAviv === "yes",
+    isSubmitted: false, // Will be set to true when officially submitted
+  };
+};
+
+/**
+ * Utility function to clear specific RSVP fields
+ * Since deleteField() doesn't work with nested objects, we set to null/default values
+ */
+export const clearRSVPFields = (
+  fieldsToKeep: Array<keyof RSVPStatus>
+): Partial<RSVPStatus> => {
+  const clearedStatus: Partial<RSVPStatus> = {};
+
+  if (!fieldsToKeep.includes("attendance")) {
+    clearedStatus.attendance = false;
+  }
+  if (!fieldsToKeep.includes("amount")) {
+    clearedStatus.amount = 1;
+  }
+  if (!fieldsToKeep.includes("sleepover")) {
+    clearedStatus.sleepover = false;
+  }
+  if (!fieldsToKeep.includes("rideFromTelAviv")) {
+    clearedStatus.rideFromTelAviv = false;
+  }
+  if (!fieldsToKeep.includes("isSubmitted")) {
+    clearedStatus.isSubmitted = false;
+  }
+
+  return clearedStatus;
 };

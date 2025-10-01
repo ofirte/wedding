@@ -122,6 +122,8 @@ export const updateInviteeRSVP = async (
   rsvpStatus: Partial<RSVPStatus> | Record<string, any>,
   weddingId?: string
 ): Promise<void> => {
+  // First get the current invitee to merge the RSVP status
+
   return await weddingFirebase.updateDocument(
     "invitee",
     inviteeId,

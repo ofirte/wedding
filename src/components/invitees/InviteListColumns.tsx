@@ -98,7 +98,7 @@ export const createColumns = (
   },
   {
     id: "amount",
-    label: t("guests.amount"),
+    label: t("guests.presumedAmount"),
     sortable: true,
     render: (invitee: Invitee) => invitee.amount,
   },
@@ -106,7 +106,12 @@ export const createColumns = (
     id: "amountConfirm",
     label: t("guests.amountConfirm"),
     sortable: true,
-    render: (invitee: Invitee) => invitee.amountConfirm,
+    render: (invitee: Invitee) =>
+      invitee.rsvpStatus?.attendance
+        ? invitee.rsvpStatus?.amount
+        : invitee.rsvpStatus?.attendance === false
+        ? 0
+        : "-",
   },
   {
     id: "cellphone",
