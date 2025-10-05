@@ -10,6 +10,7 @@ import {
 
 import { InviteeRSVP, RSVPQuestion } from "../../api/rsvp/rsvpQuestionsTypes";
 import RSVPFormQuestionCard from "./RSVPFormQuestionCard";
+import { useTranslation } from "../../localization/LocalizationContext";
 import isNil from "lodash/isNil";
 
 interface DynamicRSVPFormProps {
@@ -33,6 +34,7 @@ const DynamicRSVPForm: React.FC<DynamicRSVPFormProps> = ({
   error,
   isSubmitted,
 }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<Record<string, any>>({});
   const questionsRef = useRef<HTMLDivElement>(null);
 
@@ -225,40 +227,6 @@ const DynamicRSVPForm: React.FC<DynamicRSVPFormProps> = ({
     );
   };
 
-  // Show empty state if no questions are configured
-  if (questions.length === 0) {
-    return (
-      <Paper
-        elevation={8}
-        sx={{
-          p: 6,
-          borderRadius: 4,
-          background: "linear-gradient(135deg, #FFFFFF, #FFF8E7)",
-          direction: "rtl",
-          textAlign: "center",
-        }}
-      >
-        <Typography
-          variant="h5"
-          gutterBottom
-          sx={{
-            color: "#6b7280",
-            mb: 2,
-            fontWeight: "600",
-          }}
-        >
-          📝 No RSVP Questions Configured
-        </Typography>
-        <Typography variant="body1" sx={{ color: "#9ca3af", mb: 2 }}>
-          The wedding organizer hasn't set up RSVP questions yet.
-        </Typography>
-        <Typography variant="body2" sx={{ color: "#d1d5db" }}>
-          Please check back later or contact the wedding organizers.
-        </Typography>
-      </Paper>
-    );
-  }
-
   const isValid = validateForm();
   const isDone = isValid;
 
@@ -298,7 +266,7 @@ const DynamicRSVPForm: React.FC<DynamicRSVPFormProps> = ({
           fontWeight: "bold",
         }}
       >
-        🎉 אישור הגעה 🎉
+        {guestName}
       </Typography>
 
       <Box sx={{ mb: 3 }}>
@@ -306,7 +274,10 @@ const DynamicRSVPForm: React.FC<DynamicRSVPFormProps> = ({
           variant="body2"
           sx={{ color: "#888888", textAlign: "center", mb: 2 }}
         >
-          {numberOfAnsweredQuestions}/{visibleQuestions.length} שלבים הושלמו
+          {t("rsvp.stepsCompleted", {
+            completed: numberOfAnsweredQuestions,
+            total: visibleQuestions.length,
+          })}
         </Typography>
         <Box
           sx={{
@@ -374,16 +345,19 @@ const DynamicRSVPForm: React.FC<DynamicRSVPFormProps> = ({
             {submitting ? (
               <>
                 <CircularProgress size={24} sx={{ mr: 2, color: "white" }} />
-                {isSubmitted ? "מעדכן..." : "שולח..."}
+                {isSubmitted ? t("rsvp.updating") : t("rsvp.sending")}
               </>
             ) : isDone ? (
               isSubmitted ? (
-                "🔄 עדכן אישור הגעה 🔄"
+                `🔄 ${t("rsvp.updateConfirmation")} 🔄`
               ) : (
-                "🎉 שלח אישור הגעה! 🎉"
+                `🎉 ${t("rsvp.sendConfirmation")} 🎉`
               )
             ) : (
-              `מלא את כל השאלות (${numberOfAnsweredQuestions}/${visibleQuestions.length})`
+              t("rsvp.completeAllQuestions", {
+                completed: numberOfAnsweredQuestions,
+                total: visibleQuestions.length,
+              })
             )}
           </Button>
         </Box>

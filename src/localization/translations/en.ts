@@ -322,6 +322,13 @@ export const englishTranslations: Translations = {
     searchPlaceholder: "Edit name or type to search contacts...",
   },
   rsvp: {
+    confirmationTitle: "{{guestName}}, You're Invited to Our Wedding",
+    stepsCompleted: "{{completed}}/{{total}} steps completed",
+    updating: "Updating...",
+    sending: "Sending...",
+    updateConfirmation: "Update Confirmation",
+    sendConfirmation: "Send Confirmation!",
+    completeAllQuestions: "Complete all questions ({{completed}}/{{total}})",
     rsvpManagement: "RSVP Management",
     templates: "Templates",
     sendRSVP: "Send RSVP",
@@ -333,7 +340,6 @@ export const englishTranslations: Translations = {
       "This is a preview with the first guest's name. Each recipient will receive a personalized message.",
     bulkSendWarning:
       "You are about to send messages to {{count}} guests. This action cannot be undone.",
-    sending: "Sending...",
     sendToGuests: "Send to {{count}} guest(s)",
     noGuestsWithPhones: "No guests with phone numbers",
     addPhoneNumbers: "Add phone numbers to your guests to send RSVP messages",

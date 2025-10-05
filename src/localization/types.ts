@@ -344,6 +344,13 @@ export interface Translations {
     searchPlaceholder: string;
   };
   rsvp: {
+    confirmationTitle: string;
+    stepsCompleted: string;
+    updating: string;
+    sending: string;
+    updateConfirmation: string;
+    sendConfirmation: string;
+    completeAllQuestions: string;
     rsvpManagement: string;
     templates: string;
     sendRSVP: string;
@@ -353,7 +360,6 @@ export interface Translations {
     messagePreview: string;
     previewNote: string;
     bulkSendWarning: string;
-    sending: string;
     sendToGuests: string;
     noGuestsWithPhones: string;
     addPhoneNumbers: string;

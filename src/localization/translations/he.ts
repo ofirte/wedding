@@ -320,6 +320,13 @@ export const hebrewTranslations: Translations = {
     searchPlaceholder: "ערוך שם או הקלד לחיפוש אנשי קשר...",
   },
   rsvp: {
+    confirmationTitle: "{{guestName}}, מתרגשים להזמינכם",
+    stepsCompleted: "{{completed}}/{{total}} שלבים הושלמו",
+    updating: "מעדכן...",
+    sending: "שולח...",
+    updateConfirmation: "עדכן אישור הגעה",
+    sendConfirmation: "שלח אישור הגעה!",
+    completeAllQuestions: "מלא את כל השאלות ({{completed}}/{{total}})",
     rsvpManagement: "ניהול אישורי הגעה",
     templates: "תבניות",
     sendRSVP: "שלח אישור הגעה",
@@ -331,7 +338,6 @@ export const hebrewTranslations: Translations = {
       "הערה: תצוגה מקדימה זו עשויה להשתנות בהתאם למספרי הטלפון של המוזמנים.",
     bulkSendWarning:
       "שליחת הודעה ל-{{count}} אורחים. ודא שההודעה מתאימה לכולם.",
-    sending: "שולח הודעות...",
     sendToGuests: "שלח לאורחים",
     noGuestsWithPhones: "אין אורחים עם מספרי טלפון זמינים",
     addPhoneNumbers: "הוסף מספרי טלפון לאורחים",
