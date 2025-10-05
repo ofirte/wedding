@@ -51,10 +51,10 @@ export const createDefaultRSVPConfig = async (
 ): Promise<WeddingRSVPConfig> => {
   const resolvedWeddingId = await weddingFirebase.getWeddingId(weddingId);
 
-  // Enable attendance and guest_count by default (the two required questions)
+  // Enable attendance and amount by default (the two required questions)
   const defaultConfig: WeddingRSVPConfig = {
     weddingId: resolvedWeddingId,
-    enabledQuestionIds: ["attendance", "guest_count"],
+    enabledQuestionIds: ["attendance", "amount"],
     customQuestions: [],
     createdAt: new Date(),
     updatedAt: new Date(),

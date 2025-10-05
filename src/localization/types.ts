@@ -417,7 +417,7 @@ export interface Translations {
         other: string;
       };
     };
-    guest_count: {
+    amount: {
       question: string;
       displayName: string;
     };

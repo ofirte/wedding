@@ -28,9 +28,11 @@ const RSVPEventSummary: React.FC<RSVPEventSummaryProps> = ({ invitees }) => {
     );
 
     const totalGuestCount = attending.reduce(
-      (sum, invitee) => sum + (invitee.rsvpStatus?.amount || 1),
+      (sum, invitee) =>
+        sum + (parseInt(invitee.rsvpStatus?.amount.toString() || "1") || 1),
       0
     );
+    console.log("Total Guest Count:", totalGuestCount);
 
     const needingSleepover = attending.filter(
       (invitee) => invitee.rsvpStatus?.sleepover === true

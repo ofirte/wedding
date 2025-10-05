@@ -404,7 +404,7 @@ export const englishTranslations: Translations = {
         other: "Other",
       },
     },
-    guest_count: {
+    amount: {
       question: "How many guests will attend?",
       displayName: "Guests",
     },

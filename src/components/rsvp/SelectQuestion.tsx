@@ -70,7 +70,7 @@ const SelectQuestion: React.FC<SelectQuestionProps> = ({
               }}
             >
               {/* Add emojis for guest count question */}
-              {question.id === "guest_count" &&
+              {question.id === "amount" &&
                 (parseInt(option) === 1 ? "👤" : "👥")}{" "}
               {option}
             </Typography>

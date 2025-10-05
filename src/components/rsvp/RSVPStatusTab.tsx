@@ -2,46 +2,38 @@ import React, { useMemo, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { useSentMessages } from "../../hooks/rsvp/useSentMessages";
-import { useMessageTemplates } from "../../hooks/rsvp/useMessageTemplates";
+
 import { Invitee } from "../invitees/InviteList";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
 import SendMessageDialog from "./SendMessageDialog";
-import RSVPStatusSummary from "./RSVPStatusSummary";
-import RSVPDataTable from "./RSVPDataTable";
-import { InviteeWithRSVP } from "./RSVPTableColumns";
+import DynamicRSVPStatusSummary from "./DynamicRSVPStatusSummary";
+import DynamicRSVPDataTable from "./DynamicRSVPDataTable";
+import {
+  InviteeWithDynamicRSVP,
+  useDynamicRSVPTableColumns,
+} from "./DynamicRSVPTableColumns";
 import { responsivePatterns } from "../../utils/ResponsiveUtils";
 
 /**
- * RSVPStatusTab - The Wedding RSVP Management Story
+ * RSVPStatusTab - Dynamic RSVP Management based on configured questions
  *
- * This component orchestrates the complete RSVP management experience:
+ * This component provides complete RSVP management that adapts to the
+ * questions configured in the RSVP form builder:
  *
- * Chapter 1: Overview (RSVPStatusSummary)
- *   - Shows the big picture: how many attending, pending, etc.
- *   - Gives wedding planners immediate insight into response status
- *
- * Chapter 2: Detailed Management (RSVPDataTable)
- *   - Template filtering to focus on specific communication needs
- *   - Comprehensive guest information for planning decisions
- *   - Bulk messaging capabilities for efficient communication
- *
- * Chapter 3: Action (SendMessageDialog)
- *   - Direct communication with selected guests
- *   - Closes the loop on RSVP follow-up
- *
- * The component focuses on the wedding planning workflow:
- * Assess → Filter → Act → Follow-up
+ * 1. Dynamic Summary - Statistics based on enabled questions
+ * 2. Dynamic Table - Columns generated from configured questions
+ * 3. Flexible Filtering - Works with any question type
+ * 4. Consistent Data - Uses the same questions as the guest form
  */
 const RSVPStatusTab: React.FC = () => {
   const { t } = useTranslation();
 
-  // Data Management - The foundation of our story
-  const { data: inviteesWithRSVP, isLoading: isLoadingInvitees } =
-    useInvitees();
+  // Data Management
+  const { data: invitees, isLoading: isLoadingInvitees } = useInvitees();
   const { data: sentMessages = [] } = useSentMessages();
-  const { data: messageTemplatesData } = useMessageTemplates();
 
-  // Interactive State - What the user is currently working with
+  // Interactive State
   const [selectedGuests, setSelectedGuests] = useState<Invitee[]>([]);
   const [selectedTemplates, setSelectedTemplates] = useState<string[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -50,39 +42,61 @@ const RSVPStatusTab: React.FC = () => {
     value: any;
   } | null>(null);
 
-  // Apply status filter to data before sending to DSTable
+  // Transform invitees to include dynamic RSVP structure
+  const inviteesWithDynamicRSVP = useMemo(() => {
+    return (invitees || []).map((invitee) => ({
+      ...invitee,
+      rsvpStatus: invitee.rsvpStatus as unknown as InviteeRSVP,
+    })) as InviteeWithDynamicRSVP[];
+  }, [invitees]);
+
+  // Get dynamic table columns
+  const columns = useDynamicRSVPTableColumns({
+    selectedTemplates,
+    sentMessages,
+  });
+
+  // Apply dynamic filtering based on any question
   const filteredInvitees = useMemo(() => {
-    if (!statusFilter) return inviteesWithRSVP;
-    if (!inviteesWithRSVP) return [];
+    if (!statusFilter) return inviteesWithDynamicRSVP;
 
-    return inviteesWithRSVP.filter((invitee) => {
-      const rsvp = invitee.rsvpStatus;
-      if (!rsvp?.isSubmitted) return false; // Only show submitted RSVPs for status filters
-
-      switch (statusFilter.type) {
-        case "attendance":
-          return rsvp.attendance === statusFilter.value;
-        case "sleepover":
-          return (
-            rsvp.sleepover === statusFilter.value && rsvp.attendance === true
-          );
-        case "ride":
-          return (
-            rsvp.rideFromTelAviv === statusFilter.value &&
-            rsvp.attendance === true
-          );
-        default:
-          return true;
+    return inviteesWithDynamicRSVP.filter((invitee) => {
+      const rsvpStatus = invitee.rsvpStatus;
+      if (!rsvpStatus?.isSubmitted && statusFilter.type !== "submitted") {
+        return false; // Only show submitted RSVPs for question filters
       }
-    });
-  }, [inviteesWithRSVP, statusFilter]);
 
-  // Event Handlers - The story's interactive moments
+      // Handle different filter types dynamically
+      const fieldValue = rsvpStatus?.[statusFilter.type];
+
+      if (statusFilter.type === "submitted") {
+        return fieldValue === statusFilter.value;
+      }
+
+      // For attendance, ensure we handle properly
+      if (statusFilter.type === "attendance") {
+        return fieldValue === statusFilter.value;
+      }
+
+      // For boolean questions, only show if attending (if attendance exists)
+      if (typeof statusFilter.value === "boolean") {
+        const isAttending = rsvpStatus?.attendance;
+        if (isAttending === false) return false;
+
+        return fieldValue === statusFilter.value;
+      }
+
+      // For select questions
+      return fieldValue === statusFilter.value;
+    });
+  }, [inviteesWithDynamicRSVP, statusFilter]);
+
+  // Event Handlers
   const handleTemplateSelectionChange = (selected: string[]) => {
     setSelectedTemplates(selected);
   };
 
-  const handleGuestSelectionChange = (selected: InviteeWithRSVP[]) => {
+  const handleGuestSelectionChange = (selected: any[]) => {
     setSelectedGuests(selected);
   };
 
@@ -94,9 +108,8 @@ const RSVPStatusTab: React.FC = () => {
     setIsDialogOpen(false);
   };
 
-  const handleFilteredDataChange = (data: InviteeWithRSVP[]) => {
+  const handleFilteredDataChange = (data: any[]) => {
     // Optional: Track displayed data after DSTable filtering
-    // This is for any additional functionality you might need
   };
 
   const handleFilterClick = (filterType: string, value: any) => {
@@ -108,7 +121,7 @@ const RSVPStatusTab: React.FC = () => {
     }
   };
 
-  // Loading State - Setting the stage
+  // Loading State
   if (isLoadingInvitees) {
     return (
       <Box display="flex" justifyContent="center" p={4}>
@@ -119,21 +132,20 @@ const RSVPStatusTab: React.FC = () => {
 
   return (
     <Box sx={responsivePatterns.containerPadding}>
-      <RSVPStatusSummary
-        inviteesWithRSVP={inviteesWithRSVP ?? []}
+      <DynamicRSVPStatusSummary
+        inviteesWithRSVP={inviteesWithDynamicRSVP}
         onFilterClick={handleFilterClick}
         activeFilter={statusFilter}
       />
 
-      <RSVPDataTable
-        data={filteredInvitees ?? []}
+      <DynamicRSVPDataTable
+        data={filteredInvitees}
+        columns={columns}
         selectedTemplates={selectedTemplates}
         onTemplateSelectionChange={handleTemplateSelectionChange}
         selectedGuestsCount={selectedGuests.length}
         onSelectionChange={handleGuestSelectionChange}
         onSendMessage={handleOpenDialog}
-        templates={messageTemplatesData?.templates || []}
-        sentMessages={sentMessages}
         isLoading={isLoadingInvitees}
         onFilteredDataChange={handleFilteredDataChange}
       />

@@ -14,7 +14,6 @@ import WeddingRoute from "./components/wedding/WeddingRoute";
 import RootRedirect from "./components/auth/RootRedirect";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import GuestRSVPPage from "./components/rsvp/GuestRSVPPage";
-import GuestRSVPPageV2 from "./components/rsvp/GuestRSVPPageV2";
 
 const AppRoutes: FC = () => {
   return (
@@ -25,10 +24,6 @@ const AppRoutes: FC = () => {
       <Route
         path="/guest-rsvp/:weddingId/:guestId"
         element={<GuestRSVPPage />}
-      />
-      <Route
-        path="/guest-rsvp-v2/:weddingId/:guestId"
-        element={<GuestRSVPPageV2 />}
       />
       <Route element={<ProtectedRoute redirectPath="/login" />}>
         <Route path="wedding" element={<WeddingRoute />}>

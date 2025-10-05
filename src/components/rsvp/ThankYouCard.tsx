@@ -9,23 +9,35 @@ import {
   Button,
 } from "@mui/material";
 import { CheckCircle as CheckIcon } from "@mui/icons-material";
-import { RSVPFormData } from "./guestRSVPTypes";
 import { Wedding } from "../../api/wedding/weddingApi";
 import { Invitee } from "../invitees/InviteList";
+import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
 
 interface ThankYouCardProps {
-  formData: RSVPFormData;
+  rsvpData: Partial<InviteeRSVP>;
   weddingInfo: Wedding;
   guestInfo: Invitee;
   onUpdateInfo: () => void;
 }
 
 const ThankYouCard: React.FC<ThankYouCardProps> = ({
-  formData,
+  rsvpData,
   weddingInfo,
   guestInfo,
   onUpdateInfo,
 }) => {
+  // Extract the two mandatory fields
+  const isAttending = rsvpData.attendance === true;
+  const guestCount = (() => {
+    const amount = rsvpData.amount;
+    if (typeof amount === "number") return amount;
+    if (typeof amount === "string") {
+      const parsed = parseInt(amount);
+      return isNaN(parsed) ? 1 : parsed;
+    }
+    return 1;
+  })();
+
   return (
     <Box
       sx={{
@@ -73,7 +85,7 @@ const ThankYouCard: React.FC<ThankYouCardProps> = ({
           </Typography>
 
           <Typography variant="body1" sx={{ color: "#666666", mb: 4 }}>
-            {formData.attending === "yes"
+            {isAttending
               ? `אנחנו מתרגשים לחגוג איתכם ${
                   weddingInfo.date
                     ? `ב${new Date(
@@ -84,7 +96,7 @@ const ThankYouCard: React.FC<ThankYouCardProps> = ({
                         day: "numeric",
                       })}`
                     : ""
-                }! 💒`
+                }! ${guestCount > 1 ? `(${guestCount} אורחים)` : ""} 💒`
               : `אנחנו מצטערים שלא תוכלו להגיע ליום המיוחד שלנו${
                   weddingInfo.date
                     ? ` ב${new Date(

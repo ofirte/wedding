@@ -36,9 +36,9 @@ export const getPredefinedQuestions = (
     order: 1,
   },
   {
-    id: "guest_count",
-    questionText: t("rsvpQuestions.guest_count.question"),
-    displayName: t("rsvpQuestions.guest_count.displayName"),
+    id: "amount",
+    questionText: t("rsvpQuestions.amount.question"),
+    displayName: t("rsvpQuestions.amount.displayName"),
     type: "select",
     options: Array.from({ length: 10 }, (_, i) => (i + 1).toString()),
     required: true,

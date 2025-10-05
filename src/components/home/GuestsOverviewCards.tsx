@@ -35,7 +35,10 @@ const GuestOverviewCard: React.FC = () => {
     confirmed:
       guests?.reduce(
         (acc, guest) =>
-          acc + (guest?.rsvpStatus?.attendance === true ? guest.rsvpStatus.amount : 0),
+          acc +
+          (guest?.rsvpStatus?.attendance === true
+            ? parseInt(guest.rsvpStatus.amount.toString())
+            : 0),
         0
       ) || 0,
     pending:

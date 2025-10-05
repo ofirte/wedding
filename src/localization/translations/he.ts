@@ -403,7 +403,7 @@ export const hebrewTranslations: Translations = {
         other: "אחר",
       },
     },
-    guest_count: {
+    amount: {
       question: "כמה אורחים יגיעו?",
       displayName: "אורחים",
     },
