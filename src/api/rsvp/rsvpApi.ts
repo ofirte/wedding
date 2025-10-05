@@ -245,10 +245,6 @@ export const getSentMessages = async (
   try {
     const resolvedWeddingId =
       weddingId || (await weddingFirebase.getWeddingId());
-    const collectionRef = await weddingFirebase.getCollectionRef<SentMessage>(
-      "sentMessages",
-      resolvedWeddingId
-    );
 
     // This would typically use a query to get all documents
     // For now, we'll use the listener pattern which is already implemented

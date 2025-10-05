@@ -158,6 +158,13 @@ export interface Translations {
     item: string;
     noDataAvailable: string;
     noDataDescription: string;
+    fieldRequired: string;
+    updating: string;
+    submitting: string;
+    updateRSVP: string;
+    submitRSVP: string;
+    completeRequiredFields: string;
+    dear: string;
   };
   nav: {
     home: string;
@@ -320,6 +327,94 @@ export interface Translations {
     dateSent: string;
     status: string;
     messagesLog: string;
+    questions: string;
+  };
+  rsvpQuestionManager: {
+    title: string;
+    description: string;
+    questionBank: string;
+    createCustom: string;
+    saveForm: string;
+    unsavedChanges: string;
+    noQuestionsTitle: string;
+    noQuestionsDescription: string;
+    openQuestionBank: string;
+    createCustomQuestion: string;
+    predefinedQuestions: string;
+    customQuestions: string;
+    add: string;
+    close: string;
+    questionText: string;
+    displayNameLabel: string;
+    displayNameHelper: string;
+    questionType: string;
+    yesNoQuestion: string;
+    multipleChoiceQuestion: string;
+    answerOptions: string;
+    addOption: string;
+    cancel: string;
+    createQuestion: string;
+    displayNameAlert: string;
+    questionTextHelper: string;
+    yesNoType: string;
+    multipleChoiceType: string;
+    customLabel: string;
+    requiredLabel: string;
+    tableLabel: string;
+    formSavedSuccess: string;
+    formSaveError: string;
+    questionsCount: string;
+    bankDescription: string;
+    booleanOptions: string;
+    trueOptionLabel: string;
+    falseOptionLabel: string;
+    trueOptionHelper: string;
+    falseOptionHelper: string;
+  };
+  rsvpQuestions: {
+    attendance: {
+      question: string;
+      displayName: string;
+    };
+    sleepover: {
+      question: string;
+      displayName: string;
+    };
+    meal_preference: {
+      question: string;
+      displayName: string;
+      options: {
+        meat: string;
+        fish: string;
+        vegetarian: string;
+        vegan: string;
+      };
+    };
+    transportation: {
+      question: string;
+      displayName: string;
+      options: {
+        telAviv: string;
+        jerusalem: string;
+        haifa: string;
+        none: string;
+      };
+    };
+    dietary_restrictions: {
+      question: string;
+      displayName: string;
+      options: {
+        none: string;
+        glutenFree: string;
+        dairyFree: string;
+        nutAllergy: string;
+        other: string;
+      };
+    };
+    guest_count: {
+      question: string;
+      displayName: string;
+    };
   };
   rsvpStatusTab: {
     title: string;

@@ -4,27 +4,35 @@ import {
   Description as DescriptionIcon,
   History as HistoryIcon,
   Assessment as AssessmentIcon,
+  Settings as SettingsIcon,
 } from "@mui/icons-material";
 import { useSearchParams } from "react-router";
 import { useTranslation } from "../../localization/LocalizationContext";
 import MessageTemplateTable from "./MessageTemplateTable";
 import MessagesLogTab from "./MessagesLogTab";
 import RSVPStatusTab from "./RSVPStatusTab";
+import RSVPQuestionsManager from "./RSVPQuestionsManager";
 
 const TabValue = {
   TEMPLATES: "templates",
   SEND: "send",
   MESSAGES_LOG: "messagesLog",
   RSVP_STATUS: "rsvpStatus",
+  QUESTIONS: "questions",
 } as const;
 
-type TabValue = (typeof TabValue)[keyof typeof TabValue];
+type TabValueType = (typeof TabValue)[keyof typeof TabValue];
 
 const RSVPTabs = [
   {
     value: TabValue.RSVP_STATUS,
     icon: <AssessmentIcon />,
     labelKey: "rsvp.status",
+  },
+  {
+    value: TabValue.QUESTIONS,
+    icon: <SettingsIcon />,
+    labelKey: "rsvp.questions",
   },
   {
     value: TabValue.TEMPLATES,
@@ -43,12 +51,15 @@ const RSVPManager: FC = () => {
   const { t } = useTranslation();
 
   // Get tab from URL query param, default to TEMPLATES if not present or invalid
-  const tabFromUrl = searchParams.get("tab") as TabValue;
+  const tabFromUrl = searchParams.get("tab") as TabValueType;
   const isValidTab = Object.values(TabValue).includes(tabFromUrl);
   const activeTab = isValidTab ? tabFromUrl : TabValue.RSVP_STATUS;
 
   // Update URL when tab changes
-  const handleTabChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+  const handleTabChange = (
+    event: React.SyntheticEvent,
+    newValue: TabValueType
+  ) => {
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set("tab", newValue);
     setSearchParams(newSearchParams);
@@ -61,7 +72,7 @@ const RSVPManager: FC = () => {
       newSearchParams.set("tab", TabValue.RSVP_STATUS);
       setSearchParams(newSearchParams, { replace: true });
     }
-  }, []);
+  }, [tabFromUrl, isValidTab, searchParams, setSearchParams]);
 
   return (
     <Box>
@@ -82,11 +93,13 @@ const RSVPManager: FC = () => {
       </Tabs>
 
       <Box sx={{ minHeight: 400 }}>
+        {activeTab === TabValue.RSVP_STATUS && <RSVPStatusTab />}
+
+        {activeTab === TabValue.QUESTIONS && <RSVPQuestionsManager />}
+
         {activeTab === TabValue.TEMPLATES && <MessageTemplateTable />}
 
         {activeTab === TabValue.MESSAGES_LOG && <MessagesLogTab />}
-
-        {activeTab === TabValue.RSVP_STATUS && <RSVPStatusTab />}
       </Box>
     </Box>
   );
