@@ -4,6 +4,7 @@ import {
   updateInvitee,
 } from "../../api/invitees/inviteesApi";
 import { RSVPStatus } from "../../api/rsvp/rsvpStatusTypes";
+import { useParams } from "react-router";
 
 /**
  * Hook to fetch RSVP status for an invitee using denormalized data
@@ -28,6 +29,7 @@ export const useInviteeRSVP = (inviteeId: string) => {
  * @returns Mutation result object for updating RSVP status
  */
 export const useUpdateInviteeRSVP = () => {
+  const { weddingId } = useParams();
   return useWeddingMutation({
     mutationFn: ({
       inviteeId,
@@ -42,9 +44,10 @@ export const useUpdateInviteeRSVP = () => {
       Object.entries(rsvpStatus).forEach(([key, value]) => {
         dotSeparatedData[`rsvpStatus.${key}`] = value;
       });
-      console.log(dotSeparatedData)
+      console.log(dotSeparatedData);
+
       // Use updateInvitee with dot-separated data for proper Firebase field updates
-      return updateInvitee(inviteeId, dotSeparatedData);
+      return updateInvitee(inviteeId, dotSeparatedData, weddingId);
     },
     options: {
       onSuccess: () => {
