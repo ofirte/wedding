@@ -75,7 +75,6 @@ export const sendMessage = async (
   messageData: SendMessageRequest,
   weddingId?: string
 ): Promise<SendMessageResponse> => {
-  console.log(weddingId);
   try {
     const sendMessageFunction = await fetch(
       `${BASE_URL}/messages/send-message`,
@@ -228,7 +227,6 @@ export const saveSentMessage = async (
       sentMessage,
       resolvedWeddingId
     );
-    console.log("docRef", docRef);
     return docRef.id;
   } catch (error) {
     console.error("Error saving sent message to Firebase:", error);

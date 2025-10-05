@@ -12,6 +12,7 @@ import MessageTemplateTable from "./MessageTemplateTable";
 import MessagesLogTab from "./MessagesLogTab";
 import RSVPStatusTab from "./RSVPStatusTab";
 import RSVPQuestionsManager from "./RSVPQuestionsManager";
+import { useRSVPConfig } from "../../hooks/rsvp/useRSVPConfig";
 
 const TabValue = {
   TEMPLATES: "templates",
@@ -48,13 +49,25 @@ const RSVPTabs = [
 
 const RSVPManager: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const {
+    data: rsvpConfig,
+    isLoading: isRsvpConfigLoading,
+    isFetched: isRsvpConfigFetched,
+  } = useRSVPConfig();
   const { t } = useTranslation();
 
   // Get tab from URL query param, default to TEMPLATES if not present or invalid
   const tabFromUrl = searchParams.get("tab") as TabValueType;
   const isValidTab = Object.values(TabValue).includes(tabFromUrl);
-  const activeTab = isValidTab ? tabFromUrl : TabValue.RSVP_STATUS;
 
+  // Only consider config as "not set" if we've actually fetched the data and it's null
+  const isNoConfigSet =
+    isRsvpConfigFetched && !isRsvpConfigLoading && rsvpConfig == null;
+  const activeTab = isNoConfigSet
+    ? TabValue.QUESTIONS
+    : isValidTab
+    ? tabFromUrl
+    : TabValue.RSVP_STATUS;
   // Update URL when tab changes
   const handleTabChange = (
     event: React.SyntheticEvent,
@@ -67,13 +80,22 @@ const RSVPManager: FC = () => {
 
   // Set initial tab in URL if not present
   useEffect(() => {
+    if (tabFromUrl !== TabValue.QUESTIONS && isNoConfigSet) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("tab", TabValue.QUESTIONS);
+      setSearchParams(newSearchParams, { replace: true });
+    }
     if (!tabFromUrl || !isValidTab) {
       const newSearchParams = new URLSearchParams(searchParams);
       newSearchParams.set("tab", TabValue.RSVP_STATUS);
       setSearchParams(newSearchParams, { replace: true });
     }
-  }, [tabFromUrl, isValidTab, searchParams, setSearchParams]);
+  }, [tabFromUrl, isValidTab, searchParams, setSearchParams, isNoConfigSet]);
 
+  // Show loading while we're still fetching the initial data
+  if (isRsvpConfigLoading || !isRsvpConfigFetched) {
+    return <div>Loading...</div>;
+  }
   return (
     <Box>
       <Tabs
@@ -88,6 +110,7 @@ const RSVPManager: FC = () => {
             icon={tab.icon}
             iconPosition="start"
             label={t(tab.labelKey)}
+            disabled={tab.value !== TabValue.QUESTIONS && isNoConfigSet}
           />
         ))}
       </Tabs>

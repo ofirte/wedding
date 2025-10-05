@@ -35,14 +35,22 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
   filterConfigs,
   onFilterChange,
 }) => {
-  const handleFilterChange = (filterId: string, event: SelectChangeEvent<any>) => {
+  const handleFilterChange = (
+    filterId: string,
+    event: SelectChangeEvent<any>
+  ) => {
     const newValue = event.target.value;
-    const filterConfig = filterConfigs.find((config: ResolvedFilterConfig) => config.id === filterId);
-    
+    const filterConfig = filterConfigs.find(
+      (config: ResolvedFilterConfig) => config.id === filterId
+    );
+
     // Always handle as array for consistency
-    const valueAsArray = filterConfig?.type === "multiple" 
-      ? newValue 
-      : newValue === "" ? [] : [newValue];
+    const valueAsArray =
+      filterConfig?.type === "multiple"
+        ? newValue
+        : newValue === ""
+        ? []
+        : [newValue];
     onFilterChange(filterId, valueAsArray);
   };
   return (
@@ -75,9 +83,9 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
             <CloseIcon fontSize="small" />
           </IconButton>
         </Box>
-        
+
         <Divider />
-        
+
         {filterConfigs.map((filterConfig: ResolvedFilterConfig) => {
           const filterValues = filters.find((f) => f.id === filterConfig.id);
           return (
@@ -85,7 +93,11 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
               <InputLabel>{filterConfig.label}</InputLabel>
               <Select
                 multiple={filterConfig.type === "multiple"}
-                value={filterConfig.type === "multiple" ? filterValues?.value ?? [] : filterValues?.value?.[0] || ""}
+                value={
+                  filterConfig.type === "multiple"
+                    ? filterValues?.value ?? []
+                    : filterValues?.value?.[0] || ""
+                }
                 onChange={(e) => handleFilterChange(filterConfig.id, e)}
                 label={filterConfig.label}
                 renderValue={
@@ -99,7 +111,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                     <em>All</em>
                   </MenuItem>
                 )}
-                
+
                 {filterConfig.resolvedOptions?.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}

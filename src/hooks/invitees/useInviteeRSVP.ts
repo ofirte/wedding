@@ -44,7 +44,6 @@ export const useUpdateInviteeRSVP = () => {
       Object.entries(rsvpStatus).forEach(([key, value]) => {
         dotSeparatedData[`rsvpStatus.${key}`] = value;
       });
-      console.log(dotSeparatedData);
 
       // Use updateInvitee with dot-separated data for proper Firebase field updates
       return updateInvitee(inviteeId, dotSeparatedData, weddingId);

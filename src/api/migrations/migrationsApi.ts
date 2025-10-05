@@ -19,13 +19,11 @@ export const fetchMigrationRecords = async (
   weddingId?: string
 ): Promise<MigrationRecord[]> => {
   try {
-    console.log(weddingId, 'wow')
     const collectionRef =
       await weddingFirebase.getCollectionRef<MigrationRecord>(
         "migrations",
         weddingId
       );
-    console.log(collectionRef);
     const snapshot = await getDocs(collectionRef);
     return snapshot.docs.map((doc) => ({
       id: doc.id,
