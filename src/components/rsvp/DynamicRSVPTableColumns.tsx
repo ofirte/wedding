@@ -137,7 +137,7 @@ export const useDynamicRSVPTableColumns = ({
       } else if (question.id === "amount") {
         // Special handling for guest count
         columns.push({
-          id: "guestCount",
+          id: "amount",
           label: question.displayName || t("rsvpStatusTab.guestCount"),
           render: (row) => {
             const status = row.rsvpStatus;

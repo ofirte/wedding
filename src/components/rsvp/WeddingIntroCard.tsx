@@ -94,30 +94,23 @@ const WeddingIntroCard: React.FC<WeddingIntroCardProps> = ({
             label="15:30"
             sx={{ bgcolor: "#D1E4C4", width: ({ spacing }) => spacing(12) }}
           />
-          <Link
-            href="https://www.goshvil.co.il/#shvil"
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{ textDecoration: "none" }}
-          >
-            <Chip
-              icon={<LocationIcon />}
-              label={"שביל הגבעה"}
-              sx={{
-                bgcolor: "#D1E4C4",
-                width: ({ spacing }) => spacing(18),
-                cursor: "pointer",
-                "&:hover": {
-                  bgcolor: "#9BBB9B",
+          <Chip
+            icon={<LocationIcon />}
+            label={weddingInfo.venueName}
+            sx={{
+              bgcolor: "#D1E4C4",
+              width: ({ spacing }) => spacing(18),
+              cursor: "pointer",
+              "&:hover": {
+                bgcolor: "#9BBB9B",
+                color: "white",
+                "& .MuiSvgIcon-root": {
                   color: "white",
-                  "& .MuiSvgIcon-root": {
-                    color: "white",
-                  },
                 },
-                transition: "all 0.3s ease",
-              }}
-            />
-          </Link>
+              },
+              transition: "all 0.3s ease",
+            }}
+          />
         </Stack>
       </CardContent>
     </Card>

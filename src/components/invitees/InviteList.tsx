@@ -15,8 +15,8 @@ import { useBulkDeleteInvitees } from "../../hooks/invitees/useBulkDeleteInvitee
 import InviteeTable from "./InviteeTable";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { isGoogleContactsConfigured } from "../../api/contacts/googleContactsApi";
-import { RSVPStatus } from "../../api/rsvp/rsvpStatusTypes";
 import { isNil } from "lodash";
+import { RSVPStatus } from "../../api/rsvp/rsvpStatusTypes";
 
 export interface Invitee {
   id: string;
@@ -36,16 +36,15 @@ const WeddingInviteTable = () => {
   const { data: invitees = [] } = useInvitees();
 
   // Use denormalized RSVP data directly from invitees
-  const inviteesWithRSVP: Invitee[] = useMemo(() => {
+  const inviteesWithRSVP = useMemo(() => {
     return invitees.map((invitee) => ({
       ...invitee,
-      amountConfirm: invitee.rsvpStatus?.amount || 0,
-      rsvp:
-        invitee.rsvpStatus?.attendance === true
-          ? "Confirmed"
-          : isNil(invitee.rsvpStatus?.attendance)
-          ? "Pending"
-          : "Declined",
+      amountConfirm: Number(invitee.rsvpStatus?.amount || 0),
+      rsvp: (invitee.rsvpStatus?.attendance === true
+        ? "Confirmed"
+        : isNil(invitee.rsvpStatus?.attendance)
+        ? "Pending"
+        : "Declined") as "Confirmed" | "Pending" | "Declined",
     }));
   }, [invitees]);
 

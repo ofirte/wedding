@@ -22,6 +22,7 @@ import {
   WhatsApp as RSVPIcon,
   Build as MigrationIcon,
   Logout as LogoutIcon,
+  Settings as SettingsIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router";
 import { useCurrentUser, useSignOut, useWeddingDetails } from "./hooks/auth";
@@ -145,7 +146,26 @@ const Sidebar: React.FC<SidebarProps> = ({
               {currentUser?.displayName || currentUser?.email}
             </Typography>
           </Box>
-          {!isMobile && <LanguageSwitcher />}
+          {!isMobile && (
+            <Stack direction="row" spacing={1}>
+              <LanguageSwitcher />
+              <Button
+                size="small"
+                variant="text"
+                onClick={() => handleNavigate("/settings")}
+                sx={{
+                  minWidth: "auto",
+                  p: 0.5,
+                  color: theme.palette.sage.dark,
+                  "&:hover": {
+                    backgroundColor: theme.palette.sage.light,
+                  },
+                }}
+              >
+                <SettingsIcon fontSize="small" />
+              </Button>
+            </Stack>
+          )}
         </Stack>
       </Box>
 
@@ -154,7 +174,6 @@ const Sidebar: React.FC<SidebarProps> = ({
         {menuItems.map((item, index) => {
           const isActive = isMenuItemActive(item.path);
           const styles = getMenuItemStyles(isActive);
-
           return (
             <React.Fragment key={item.text}>
               <ListItem disablePadding>

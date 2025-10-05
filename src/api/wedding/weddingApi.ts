@@ -9,7 +9,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import {  generateInvitationCode } from "../auth/authApi";
+import { generateInvitationCode } from "../auth/authApi";
 
 export interface Wedding {
   id: string;
@@ -19,6 +19,7 @@ export interface Wedding {
   userIds: string[];
   brideName?: string;
   groomName?: string;
+  venueName?: string;
   invitationCode?: string;
 }
 
@@ -113,6 +114,27 @@ export const joinWedding = async (
     };
   } catch (error) {
     console.error("Error joining wedding:", error);
+    throw error;
+  }
+};
+
+// Update wedding details
+export const updateWeddingDetails = async (
+  weddingId: string,
+  data: Partial<Wedding>
+): Promise<void> => {
+  try {
+    const weddingRef = doc(db, "weddings", weddingId);
+
+    // Convert Date to Timestamp if date is provided
+    const updateData = { ...data };
+    if (updateData.date && updateData.date instanceof Date) {
+      updateData.date = Timestamp.fromDate(updateData.date);
+    }
+
+    await setDoc(weddingRef, updateData, { merge: true });
+  } catch (error) {
+    console.error("Error updating wedding details:", error);
     throw error;
   }
 };

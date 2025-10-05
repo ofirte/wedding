@@ -10,6 +10,7 @@ import MigrationManager from "./migrations/components/MigrationManager";
 import LoginPage from "./components/auth/LoginPage";
 import RegisterPage from "./components/auth/RegisterPage";
 import SetupWeddingPage from "./components/wedding/SetupWeddingPage";
+import WeddingSettings from "./components/wedding/WeddingSettings";
 import WeddingRoute from "./components/wedding/WeddingRoute";
 import RootRedirect from "./components/auth/RootRedirect";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -34,6 +35,7 @@ const AppRoutes: FC = () => {
             <Route path="budget" element={<BudgetPlanner />} />
             <Route path="tasks" element={<TaskManager />} />
             <Route path="rsvp" element={<RSVPManager />} />
+            <Route path="settings" element={<WeddingSettings />} />
             <Route path="migrations" element={<MigrationManager />} />
           </Route>
         </Route>

@@ -32,13 +32,16 @@ const StatCards: React.FC<StatCardsProps> = () => {
   const { data: tasks } = useTasks();
   const weddingDateInfo = useWeddingDate();
   const totalBudgetAmount = totalBudget?.amount || 0;
+  const submittedRSVPGuests = guests?.filter(
+    (guest) => guest.rsvpStatus?.submitted
+  );
   const guestStats = {
     total:
       guests?.reduce((acc, i) => acc + parseInt(i.amount.toString()), 0) || 0,
     confirmed:
-      guests?.filter((guest) => guest.rsvp === "confirmed").length || 0,
-    pending: guests?.filter((guest) => guest.rsvp === "pending").length || 0,
-    declined: guests?.filter((guest) => guest.rsvp === "declined").length || 0,
+      guests?.reduce((acc, guest) => acc + (parseInt(guest.rsvpStatus?.amount?.toString() ?? "0") || 0), 0) || 0,
+    pending: guests?.filter((guest) => guest.rsvpStatus?.attendance === undefined).length || 0,
+    declined: guests?.filter((guest) => guest.rsvpStatus?.attendance === false).length || 0,
   };
 
   const totalSpent =

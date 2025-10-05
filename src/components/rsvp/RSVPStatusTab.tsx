@@ -1,14 +1,15 @@
-import React, { useMemo, useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Box, Typography } from "@mui/material";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { useSentMessages } from "../../hooks/rsvp/useSentMessages";
+import { useMessageTemplates } from "../../hooks/rsvp/useMessageTemplates";
 
 import { Invitee } from "../invitees/InviteList";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
-import SendMessageDialog from "./SendMessageDialog";
 import DynamicRSVPStatusSummary from "./DynamicRSVPStatusSummary";
 import DynamicRSVPDataTable from "./DynamicRSVPDataTable";
+import SendMessageDialog from "./SendMessageDialog";
 import {
   InviteeWithDynamicRSVP,
   useDynamicRSVPTableColumns,
@@ -32,6 +33,7 @@ const RSVPStatusTab: React.FC = () => {
   // Data Management
   const { data: invitees, isLoading: isLoadingInvitees } = useInvitees();
   const { data: sentMessages = [] } = useSentMessages();
+  const { data: messageTemplatesData } = useMessageTemplates();
 
   // Interactive State
   const [selectedGuests, setSelectedGuests] = useState<Invitee[]>([]);
@@ -146,8 +148,12 @@ const RSVPStatusTab: React.FC = () => {
         selectedGuestsCount={selectedGuests.length}
         onSelectionChange={handleGuestSelectionChange}
         onSendMessage={handleOpenDialog}
-        isLoading={isLoadingInvitees}
         onFilteredDataChange={handleFilteredDataChange}
+        templates={messageTemplatesData?.templates || []}
+        sentMessages={sentMessages}
+        isLoading={isLoadingInvitees}
+        showSelectColumn={true}
+        showExport={true}
       />
 
       <SendMessageDialog

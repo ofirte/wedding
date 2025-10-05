@@ -17,5 +17,3 @@ export type {
   TwilioMessageStatus,
 } from "../../api/rsvp/rsvpApi";
 
-// Export RSVP Status types
-export type { RSVPStatus, RSVPFormData } from "../../api/rsvp/rsvpStatusTypes";
