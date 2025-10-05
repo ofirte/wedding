@@ -20,6 +20,9 @@ export interface Wedding {
   brideName?: string;
   groomName?: string;
   venueName?: string;
+  venueLink?: string;
+  startTime?: string;
+  invitationPhoto?: string;
   invitationCode?: string;
 }
 
@@ -126,8 +129,15 @@ export const updateWeddingDetails = async (
   try {
     const weddingRef = doc(db, "weddings", weddingId);
 
+    // Filter out undefined values to allow partial updates
+    const updateData: any = {};
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined) {
+        updateData[key] = value;
+      }
+    });
+
     // Convert Date to Timestamp if date is provided
-    const updateData = { ...data };
     if (updateData.date && updateData.date instanceof Date) {
       updateData.date = Timestamp.fromDate(updateData.date);
     }

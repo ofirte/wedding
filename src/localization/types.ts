@@ -165,6 +165,11 @@ export interface Translations {
     submitRSVP: string;
     completeRequiredFields: string;
     dear: string;
+    notAvailable: string;
+    weddingInvitation: string;
+    weddingDetails: string;
+    time: string;
+    venue: string;
   };
   nav: {
     home: string;
@@ -264,6 +269,40 @@ export interface Translations {
     details: string;
     planner: string;
     studio: string;
+  };
+  weddingSettings: {
+    title: string;
+    weddingName: string;
+    brideName: string;
+    groomName: string;
+    venueName: string;
+    venueLink: string;
+    weddingDate: string;
+    startTime: string;
+    invitationPhoto: string;
+    uploadInvitationPhoto: string;
+    invitationPhotoDescription: string;
+    saveSettings: string;
+    saving: string;
+    settingsUpdatedSuccess: string;
+    weddingNameRequired: string;
+    weddingIdNotFound: string;
+    updateFailed: string;
+    currentWeddingInfo: string;
+    weddingId: string;
+    created: string;
+    notSet: string;
+    uploaded: string;
+    notUploaded: string;
+    invitationCode: string;
+    notGenerated: string;
+    users: string;
+    members: string;
+    weddingNamePlaceholder: string;
+    brideNamePlaceholder: string;
+    groomNamePlaceholder: string;
+    venueNamePlaceholder: string;
+    venueLinkPlaceholder: string;
   };
   labels: {
     due: string;

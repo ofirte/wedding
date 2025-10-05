@@ -9,18 +9,24 @@ import {
   Stack,
   Grid,
   Divider,
+  Card,
+  CardMedia,
+  IconButton,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { Save as SaveIcon, ArrowBack as BackIcon } from "@mui/icons-material";
-import { useNavigate } from "react-router";
+import { Save as SaveIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { UploadFile } from "../common/UploadFile";
 import { useWeddingDetails, useUpdateWedding } from "../../hooks/auth";
 import { Wedding } from "../../api/wedding/weddingApi";
 import { responsivePatterns } from "../../utils/ResponsiveUtils";
+import { useTranslation } from "../../localization/LocalizationContext";
+import CurrentWeddingInfo from "./CurrentWeddingInfo";
 
 const WeddingSettings: React.FC = () => {
-  const navigate = useNavigate();
+  const { t } = useTranslation();
   const { data: weddingDetails, isLoading } = useWeddingDetails();
   const { mutate: updateWedding, isPending: isUpdating } = useUpdateWedding();
 
@@ -30,7 +36,10 @@ const WeddingSettings: React.FC = () => {
     brideName: "",
     groomName: "",
     venueName: "",
+    venueLink: "",
     date: null as Date | null,
+    startTime: null as Date | null,
+    invitationPhoto: "",
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -38,32 +47,34 @@ const WeddingSettings: React.FC = () => {
   // Initialize form data when wedding details load
   useEffect(() => {
     if (weddingDetails) {
+      const parseTime = (timeString?: string) => {
+        if (!timeString) return null;
+        const [hours, minutes] = timeString.split(":").map(Number);
+        const date = new Date();
+        date.setHours(hours, minutes, 0, 0);
+        return date;
+      };
+
       setFormData({
         name: weddingDetails.name || "",
         brideName: weddingDetails.brideName || "",
         groomName: weddingDetails.groomName || "",
         venueName: weddingDetails.venueName || "",
+        venueLink: weddingDetails.venueLink || "",
         date: weddingDetails.date
           ? new Date(weddingDetails.date.seconds * 1000)
           : null,
+        startTime: parseTime(weddingDetails.startTime),
+        invitationPhoto: weddingDetails.invitationPhoto || "",
       });
     }
   }, [weddingDetails]);
 
-  const handleInputChange =
-    (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: event.target.value,
-      }));
-      setError(null);
-      setSuccess(false);
-    };
-
-  const handleDateChange = (date: Date | null) => {
+  // Single unified handler for all form data changes
+  const handleFormDataChange = (field: string, value: any) => {
     setFormData((prev) => ({
       ...prev,
-      date,
+      [field]: value,
     }));
     setError(null);
     setSuccess(false);
@@ -75,12 +86,12 @@ const WeddingSettings: React.FC = () => {
     setSuccess(false);
 
     if (!weddingDetails?.id) {
-      setError("Wedding ID not found");
+      setError(t("weddingSettings.weddingIdNotFound"));
       return;
     }
 
     if (!formData.name.trim()) {
-      setError("Wedding name is required");
+      setError(t("weddingSettings.weddingNameRequired"));
       return;
     }
 
@@ -90,10 +101,26 @@ const WeddingSettings: React.FC = () => {
         brideName: formData.brideName.trim() || undefined,
         groomName: formData.groomName.trim() || undefined,
         venueName: formData.venueName.trim() || undefined,
+        venueLink: formData.venueLink.trim() || undefined,
       };
 
       if (formData.date) {
         updateData.date = formData.date as any; // Will be converted to Timestamp in the API
+      }
+
+      if (formData.startTime) {
+        const hours = formData.startTime.getHours().toString().padStart(2, "0");
+        const minutes = formData.startTime
+          .getMinutes()
+          .toString()
+          .padStart(2, "0");
+        updateData.startTime = `${hours}:${minutes}`;
+      }
+
+      if (formData.invitationPhoto.trim()) {
+        updateData.invitationPhoto = formData.invitationPhoto.trim();
+      } else if (formData.invitationPhoto === "") {
+        updateData.invitationPhoto = undefined; // This will remove the field
       }
 
       await new Promise<void>((resolve, reject) => {
@@ -105,19 +132,15 @@ const WeddingSettings: React.FC = () => {
               resolve();
             },
             onError: (error: any) => {
-              setError(error.message || "Failed to update wedding settings");
+              setError(error.message || t("weddingSettings.updateFailed"));
               reject(error);
             },
           }
         );
       });
     } catch (err: any) {
-      setError(err.message || "Failed to update wedding settings");
+      setError(err.message || t("weddingSettings.updateFailed"));
     }
-  };
-
-  const handleBack = () => {
-    navigate("../home");
   };
 
   if (isLoading) {
@@ -159,29 +182,13 @@ const WeddingSettings: React.FC = () => {
       >
         <Stack spacing={4}>
           {/* Header */}
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
-            }}
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{ fontWeight: "bold", color: "info.dark" }}
           >
-            <Button
-              variant="text"
-              startIcon={<BackIcon />}
-              onClick={handleBack}
-              sx={{ color: "text.secondary" }}
-            >
-              Back
-            </Button>
-            <Typography
-              variant="h4"
-              component="h1"
-              sx={{ fontWeight: "bold", color: "info.dark" }}
-            >
-              Wedding Settings
-            </Typography>
-          </Box>
+            {t("weddingSettings.title")}
+          </Typography>
 
           <Divider />
 
@@ -194,7 +201,7 @@ const WeddingSettings: React.FC = () => {
 
           {success && (
             <Alert severity="success" onClose={() => setSuccess(false)}>
-              Wedding settings updated successfully!
+              {t("weddingSettings.settingsUpdatedSuccess")}
             </Alert>
           )}
 
@@ -207,10 +214,10 @@ const WeddingSettings: React.FC = () => {
                   required
                   fullWidth
                   id="weddingName"
-                  label="Wedding Name"
+                  label={t("weddingSettings.weddingName")}
                   value={formData.name}
-                  onChange={handleInputChange("name")}
-                  placeholder="Enter wedding name"
+                  onChange={(e) => handleFormDataChange("name", e.target.value)}
+                  placeholder={t("weddingSettings.weddingNamePlaceholder")}
                 />
 
                 {/* Couple Names */}
@@ -219,20 +226,24 @@ const WeddingSettings: React.FC = () => {
                     <TextField
                       fullWidth
                       id="brideName"
-                      label="Bride Name"
+                      label={t("weddingSettings.brideName")}
                       value={formData.brideName}
-                      onChange={handleInputChange("brideName")}
-                      placeholder="Enter bride name"
+                      onChange={(e) =>
+                        handleFormDataChange("brideName", e.target.value)
+                      }
+                      placeholder={t("weddingSettings.brideNamePlaceholder")}
                     />
                   </Grid>
                   <Grid size={{ xs: 12, md: 6 }}>
                     <TextField
                       fullWidth
                       id="groomName"
-                      label="Groom Name"
+                      label={t("weddingSettings.groomName")}
                       value={formData.groomName}
-                      onChange={handleInputChange("groomName")}
-                      placeholder="Enter groom name"
+                      onChange={(e) =>
+                        handleFormDataChange("groomName", e.target.value)
+                      }
+                      placeholder={t("weddingSettings.groomNamePlaceholder")}
                     />
                   </Grid>
                 </Grid>
@@ -241,23 +252,107 @@ const WeddingSettings: React.FC = () => {
                 <TextField
                   fullWidth
                   id="venueName"
-                  label="Venue Name"
+                  label={t("weddingSettings.venueName")}
                   value={formData.venueName}
-                  onChange={handleInputChange("venueName")}
-                  placeholder="Enter venue name"
+                  onChange={(e) =>
+                    handleFormDataChange("venueName", e.target.value)
+                  }
+                  placeholder={t("weddingSettings.venueNamePlaceholder")}
                 />
 
-                {/* Wedding Date */}
-                <DatePicker
-                  label="Wedding Date"
-                  value={formData.date}
-                  onChange={handleDateChange}
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                    },
-                  }}
+                {/* Venue Link */}
+                <TextField
+                  fullWidth
+                  id="venueLink"
+                  label={t("weddingSettings.venueLink")}
+                  value={formData.venueLink}
+                  onChange={(e) =>
+                    handleFormDataChange("venueLink", e.target.value)
+                  }
+                  placeholder={t("weddingSettings.venueLinkPlaceholder")}
+                  type="url"
                 />
+
+                {/* Wedding Date and Time */}
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, md: 8 }}>
+                    <DatePicker
+                      label={t("weddingSettings.weddingDate")}
+                      value={formData.date}
+                      onChange={(date) => handleFormDataChange("date", date)}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                        },
+                      }}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 4 }}>
+                    <TimePicker
+                      label={t("weddingSettings.startTime")}
+                      value={formData.startTime}
+                      onChange={(time) =>
+                        handleFormDataChange("startTime", time)
+                      }
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                        },
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+
+                {/* Invitation Photo */}
+                <Box>
+                  <Typography variant="subtitle1" gutterBottom>
+                    {t("weddingSettings.invitationPhoto")}
+                  </Typography>
+                  {formData.invitationPhoto ? (
+                    <Box sx={{ position: "relative", display: "inline-block" }}>
+                      <Card sx={{ maxWidth: 300, mb: 2 }}>
+                        <CardMedia
+                          component="img"
+                          height="200"
+                          image={formData.invitationPhoto}
+                          alt={t("weddingSettings.invitationPhoto")}
+                          sx={{ objectFit: "contain" }}
+                        />
+                      </Card>
+                      <IconButton
+                        onClick={() =>
+                          handleFormDataChange("invitationPhoto", "")
+                        }
+                        sx={{
+                          position: "absolute",
+                          top: 8,
+                          right: 8,
+                          bgcolor: "background.paper",
+                          "&:hover": { bgcolor: "background.default" },
+                        }}
+                        size="small"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
+                  ) : (
+                    <UploadFile
+                      onUploadComplete={(url) =>
+                        handleFormDataChange("invitationPhoto", url)
+                      }
+                      uploadPath={`weddings/${
+                        weddingDetails?.id || "temp"
+                      }/invitation-photos`}
+                      buttonText={t("weddingSettings.uploadInvitationPhoto")}
+                      fileTypes=".jpg,.jpeg,.png,.gif,.webp"
+                      buttonColor="#9c88ff"
+                      buttonHoverColor="#8c78ef"
+                    />
+                  )}
+                  <Typography variant="body2" color="text.secondary">
+                    {t("weddingSettings.invitationPhotoDescription")}
+                  </Typography>
+                </Box>
 
                 {/* Save Button */}
                 <Button
@@ -272,10 +367,10 @@ const WeddingSettings: React.FC = () => {
                   {isUpdating ? (
                     <>
                       <CircularProgress size={20} sx={{ mr: 1 }} />
-                      Saving...
+                      {t("weddingSettings.saving")}
                     </>
                   ) : (
-                    "Save Settings"
+                    t("weddingSettings.saveSettings")
                   )}
                 </Button>
               </Stack>
@@ -285,30 +380,7 @@ const WeddingSettings: React.FC = () => {
           <Divider />
 
           {/* Wedding Information Display */}
-          <Box>
-            <Typography variant="h6" gutterBottom>
-              Current Wedding Information
-            </Typography>
-            <Stack spacing={1} sx={{ color: "text.secondary" }}>
-              <Typography variant="body2">
-                <strong>Wedding ID:</strong> {weddingDetails.id}
-              </Typography>
-              <Typography variant="body2">
-                <strong>Created:</strong>{" "}
-                {weddingDetails.createdAt
-                  ? new Date(weddingDetails.createdAt).toLocaleDateString()
-                  : "N/A"}
-              </Typography>
-              <Typography variant="body2">
-                <strong>Invitation Code:</strong>{" "}
-                {weddingDetails.invitationCode || "Not generated"}
-              </Typography>
-              <Typography variant="body2">
-                <strong>Users:</strong> {weddingDetails.userIds?.length || 0}{" "}
-                member(s)
-              </Typography>
-            </Stack>
-          </Box>
+          <CurrentWeddingInfo weddingDetails={weddingDetails} />
         </Stack>
       </Box>
     </Box>

@@ -1,20 +1,8 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Avatar,
-  Stack,
-  Chip,
-} from "@mui/material";
-import {
-  Favorite as HeartIcon,
-  CalendarToday as DateIcon,
-  LocationOn as LocationIcon,
-  AccessTime as TimeIcon,
-} from "@mui/icons-material";
 import { Wedding } from "../../api/wedding/weddingApi";
 import { Invitee } from "../invitees/InviteList";
+import WeddingInvitePhotoCard from "./WeddingInvitePhotoCard";
+import WeddingInfoCard from "./WeddingInfoCard";
 
 interface WeddingIntroCardProps {
   weddingInfo: Wedding;
@@ -25,116 +13,13 @@ const WeddingIntroCard: React.FC<WeddingIntroCardProps> = ({
   weddingInfo,
   guestInfo,
 }) => {
-  return (
-    <Card
-      elevation={6}
-      sx={{
-        mb: 4,
-        borderRadius: 4,
-        background: "linear-gradient(135deg, #FFFFFF, #FFF8E7)",
-        direction: "rtl",
-      }}
-    >
-      <CardContent sx={{ p: 4, textAlign: "center" }}>
-        <Avatar
-          sx={{
-            width: 80,
-            height: 80,
-            bgcolor: "#9BBB9B",
-            mx: "auto",
-            mb: 3,
-          }}
-        >
-          <HeartIcon sx={{ fontSize: 40, color: "white" }} />
-        </Avatar>
+  // If there's an invitation photo, render only the photo card
+  if (weddingInfo.invitationPhoto) {
+    return <WeddingInvitePhotoCard weddingInfo={weddingInfo} />;
+  }
 
-        <Typography
-          variant="h3"
-          sx={{ color: "#333333", mb: 2, fontWeight: 300 }}
-        >
-          {weddingInfo.brideName || "כלה"} & {weddingInfo.groomName || "חתן"}
-        </Typography>
-
-        <Typography
-          variant="h5"
-          sx={{ color: "#333333", mb: 1, fontWeight: 400 }}
-        >
-          {guestInfo.name}
-        </Typography>
-
-        <Typography variant="h6" sx={{ color: "#666666", mb: 1 }}>
-          הנכם מוזמנים לחתונה שלנו! 💒
-        </Typography>
-        <Stack
-          direction="row"
-          spacing={2}
-          justifyContent="center"
-          flexWrap="wrap"
-          sx={{ gap: 2 }}
-        >
-          <Chip
-            icon={<DateIcon />}
-            label={
-              weddingInfo.date
-                ? new Date(weddingInfo.date.seconds * 1000).toLocaleDateString(
-                    "he-IL",
-                    {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    }
-                  )
-                : "TBD"
-            }
-            sx={{
-              bgcolor: "#D1E4C4",
-              minWidth: "fit-content",
-              maxWidth: "200px",
-              "& .MuiChip-label": {
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              },
-            }}
-          />
-          <Chip
-            icon={<TimeIcon />}
-            label="15:30"
-            sx={{
-              bgcolor: "#D1E4C4",
-              minWidth: "fit-content",
-              "& .MuiChip-label": {
-                whiteSpace: "nowrap",
-              },
-            }}
-          />
-          <Chip
-            icon={<LocationIcon />}
-            label={weddingInfo.venueName}
-            sx={{
-              bgcolor: "#D1E4C4",
-              minWidth: "fit-content",
-              maxWidth: "250px",
-              cursor: "pointer",
-              "& .MuiChip-label": {
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              },
-              "&:hover": {
-                bgcolor: "#9BBB9B",
-                color: "white",
-                "& .MuiSvgIcon-root": {
-                  color: "white",
-                },
-              },
-              transition: "all 0.3s ease",
-            }}
-          />
-        </Stack>
-      </CardContent>
-    </Card>
-  );
+  // Otherwise, render the wedding info card
+  return <WeddingInfoCard weddingInfo={weddingInfo} guestInfo={guestInfo} />;
 };
 
 export default WeddingIntroCard;

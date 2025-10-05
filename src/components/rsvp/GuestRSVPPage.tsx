@@ -7,7 +7,7 @@ import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
 import WeddingIntroCard from "./WeddingIntroCard";
 import DynamicRSVPForm from "./DynamicRSVPForm";
 import ThankYouCard from "./ThankYouCard";
-import WeddingDetailsCard from "./WeddingDetailsCard";
+
 import { useWeddingDetails } from "../../hooks/auth";
 import {
   useInvitee,
@@ -281,9 +281,6 @@ const GuestRSVPPage: React.FC = () => {
             <CircularProgress sx={{ mt: 2, color: "#9BBB9B" }} />
           </Box>
         )}
-
-        {/* Step 3: Provide additional wedding details */}
-        <WeddingDetailsCard weddingInfo={weddingInfo} />
       </Container>
     </Box>
   );
