@@ -147,7 +147,13 @@ const GuestRSVPPage: React.FC = () => {
             },
           });
         }
-
+        if (updatedFormData.attendance === false) {
+          return {
+            attendance: false,
+            isSubmitted: updatedFormData.isSubmitted,
+            submittedAt: updatedFormData.submittedAt,
+          };
+        }
         return updatedFormData;
       });
     },
