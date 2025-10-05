@@ -309,6 +309,13 @@ export const hebrewTranslations: Translations = {
     messagesLog: "יומן הודעות",
     questions: "שאלות",
   },
+  rsvpEmptyState: {
+    title: "צור טופס אישור הגעה",
+    description:
+      "התחל על ידי יצירת טופס אישור הגעה לחתונה שלך. תוכל להוסיף שאלות, להתאים אפשרויות ולנהל תגובות מהמוזמנים שלך.",
+    createButton: "צור טופס אישור הגעה",
+    creating: "יוצר...",
+  },
   rsvpQuestionManager: {
     title: "בונה טופס אישור הגעה",
     description:

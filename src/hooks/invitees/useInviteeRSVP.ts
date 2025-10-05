@@ -1,7 +1,7 @@
 import { useWeddingQuery, useWeddingMutation } from "../common";
 import {
-  updateInviteeRSVP,
   fetchInviteeRSVP,
+  updateInvitee,
 } from "../../api/invitees/inviteesApi";
 import { RSVPStatus } from "../../api/rsvp/rsvpStatusTypes";
 
@@ -24,6 +24,7 @@ export const useInviteeRSVP = (inviteeId: string) => {
 
 /**
  * Hook to update RSVP status for an invitee using denormalized data
+ * Converts rsvpStatus object to dot-separated syntax for Firebase updates
  * @returns Mutation result object for updating RSVP status
  */
 export const useUpdateInviteeRSVP = () => {
@@ -34,7 +35,17 @@ export const useUpdateInviteeRSVP = () => {
     }: {
       inviteeId: string;
       rsvpStatus: Partial<RSVPStatus> | Record<string, any>;
-    }) => updateInviteeRSVP(inviteeId, rsvpStatus),
+    }) => {
+      // Convert rsvpStatus object to dot-separated syntax
+      const dotSeparatedData: Record<string, any> = {};
+
+      Object.entries(rsvpStatus).forEach(([key, value]) => {
+        dotSeparatedData[`rsvpStatus.${key}`] = value;
+      });
+      console.log(dotSeparatedData)
+      // Use updateInvitee with dot-separated data for proper Firebase field updates
+      return updateInvitee(inviteeId, dotSeparatedData);
+    },
     options: {
       onSuccess: () => {
         console.log("RSVP status updated successfully");

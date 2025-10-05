@@ -10,7 +10,9 @@ import {
 } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import {
-  useEnsureRSVPConfig,
+  useRSVPConfig,
+  useRSVPFormQuestions,
+  useCreateDefaultRSVPConfig,
   useAddCustomQuestion,
   useUpdateEnabledQuestions,
 } from "../../hooks/rsvp/useRSVPQuestions";
@@ -21,10 +23,13 @@ import {
 import { useLocalization } from "../../localization/LocalizationContext";
 import CustomQuestionForm from "./CustomQuestionForm";
 import QuestionBankModal from "./QuestionBankModal";
+import RSVPFormEmptyState from "./RSVPFormEmptyState";
 
 const RSVPQuestionsManager: React.FC = () => {
   const { t } = useLocalization();
-  const { config, ensureConfig, isLoading } = useEnsureRSVPConfig();
+  const { data: config, isLoading } = useRSVPConfig();
+  const { questions: enabledQuestions } = useRSVPFormQuestions();
+  const createDefaultConfig = useCreateDefaultRSVPConfig();
   const updateEnabled = useUpdateEnabledQuestions();
   const addCustom = useAddCustomQuestion();
 
@@ -50,24 +55,14 @@ const RSVPQuestionsManager: React.FC = () => {
     },
   });
 
-  // Initialize and load data
-  useEffect(() => {
-    ensureConfig();
-  }, [ensureConfig]);
-
+  // No automatic config creation - user must explicitly create
   useEffect(() => {
     if (config) {
-      const allQuestions = [
-        ...PREDEFINED_QUESTIONS,
-        ...(config.customQuestions || []),
-      ];
-      const enabled = allQuestions.filter((q) =>
-        config.enabledQuestionIds?.includes(q.id)
-      );
-      setSelectedQuestions(enabled);
+      // Use enabledQuestions from the hook for consistency
+      setSelectedQuestions(enabledQuestions);
       setCustomQuestions(config.customQuestions || []);
     }
-  }, [config, PREDEFINED_QUESTIONS]);
+  }, [config, enabledQuestions]);
 
   // Handlers
   const handleAddFromBank = async (question: RSVPQuestion) => {
@@ -208,6 +203,16 @@ const RSVPQuestionsManager: React.FC = () => {
       >
         <CircularProgress size={40} />
       </Box>
+    );
+  }
+
+  // Show empty state if no config exists
+  if (!config && !isLoading) {
+    return (
+      <RSVPFormEmptyState
+        onCreateForm={() => createDefaultConfig.mutate()}
+        isCreating={createDefaultConfig.isPending}
+      />
     );
   }
 

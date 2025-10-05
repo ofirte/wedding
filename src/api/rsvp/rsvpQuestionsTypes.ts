@@ -36,6 +36,16 @@ export const getPredefinedQuestions = (
     order: 1,
   },
   {
+    id: "guest_count",
+    questionText: t("rsvpQuestions.guest_count.question"),
+    displayName: t("rsvpQuestions.guest_count.displayName"),
+    type: "select",
+    options: Array.from({ length: 10 }, (_, i) => (i + 1).toString()),
+    required: true,
+    isCustom: false,
+    order: 2,
+  },
+  {
     id: "sleepover",
     questionText: t("rsvpQuestions.sleepover.question"),
     displayName: t("rsvpQuestions.sleepover.displayName"),
@@ -46,7 +56,7 @@ export const getPredefinedQuestions = (
     },
     required: false,
     isCustom: false,
-    order: 2,
+    order: 3,
   },
   {
     id: "meal_preference",
@@ -61,7 +71,7 @@ export const getPredefinedQuestions = (
     ],
     required: true,
     isCustom: false,
-    order: 3,
+    order: 4,
   },
   {
     id: "transportation",
@@ -76,7 +86,7 @@ export const getPredefinedQuestions = (
     ],
     required: false,
     isCustom: false,
-    order: 4,
+    order: 5,
   },
   {
     id: "dietary_restrictions",
@@ -91,16 +101,6 @@ export const getPredefinedQuestions = (
       t("rsvpQuestions.dietary_restrictions.options.other"),
     ],
     required: false,
-    isCustom: false,
-    order: 5,
-  },
-  {
-    id: "guest_count",
-    questionText: t("rsvpQuestions.guest_count.question"),
-    displayName: t("rsvpQuestions.guest_count.displayName"),
-    type: "select",
-    options: Array.from({ length: 10 }, (_, i) => (i + 1).toString()),
-    required: true,
     isCustom: false,
     order: 6,
   },
@@ -165,12 +165,5 @@ export const getAllAvailableQuestions = (
 
 export const generateCustomQuestionId = (questionText: string): string => {
   // Generate a safe field name from question text
-  return (
-    "custom_" +
-    questionText
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, "_")
-      .replace(/_+/g, "_")
-      .substring(0, 30)
-  );
+  return "custom_" + questionText.toLowerCase();
 };

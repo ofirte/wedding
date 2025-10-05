@@ -24,7 +24,10 @@ export const getRSVPConfig = async (
       resolvedWeddingId
     );
 
-    if (!config) return null;
+    if (!config) {
+      console.log(`No RSVP config found for wedding ${resolvedWeddingId}`);
+      return null;
+    }
 
     return {
       weddingId: resolvedWeddingId,
@@ -35,7 +38,8 @@ export const getRSVPConfig = async (
     };
   } catch (error) {
     console.error("Error getting RSVP config:", error);
-    throw error;
+    // Don't throw the error - return null instead to prevent default config creation during network issues
+    return null;
   }
 };
 
@@ -47,10 +51,10 @@ export const createDefaultRSVPConfig = async (
 ): Promise<WeddingRSVPConfig> => {
   const resolvedWeddingId = await weddingFirebase.getWeddingId(weddingId);
 
-  // Enable attendance by default
+  // Enable attendance and guest_count by default (the two required questions)
   const defaultConfig: WeddingRSVPConfig = {
     weddingId: resolvedWeddingId,
-    enabledQuestionIds: ["attendance"],
+    enabledQuestionIds: ["attendance", "guest_count"],
     customQuestions: [],
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -123,7 +127,7 @@ export const addCustomQuestion = async (
     }
 
     // Generate unique ID for custom question
-    const questionId = generateCustomQuestionId(request.question.questionText);
+    const questionId = generateCustomQuestionId(request.question.displayName ?? "custom_question");
 
     // Ensure ID is unique
     let finalId = questionId;

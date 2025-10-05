@@ -329,6 +329,12 @@ export interface Translations {
     messagesLog: string;
     questions: string;
   };
+  rsvpEmptyState: {
+    title: string;
+    description: string;
+    createButton: string;
+    creating: string;
+  };
   rsvpQuestionManager: {
     title: string;
     description: string;

@@ -310,6 +310,13 @@ export const englishTranslations: Translations = {
     messagesLog: "Messages Log",
     questions: "Questions",
   },
+  rsvpEmptyState: {
+    title: "Create Your RSVP Form",
+    description:
+      "Get started by creating your wedding RSVP form. You'll be able to add questions, customize options, and manage responses from your guests.",
+    createButton: "Create RSVP Form",
+    creating: "Creating...",
+  },
   rsvpQuestionManager: {
     title: "RSVP Form Builder",
     description:
