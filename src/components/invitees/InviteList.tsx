@@ -2,10 +2,12 @@ import React, { useState, useMemo } from "react";
 import { Box, Button, Typography, Stack } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 import SummaryInfo from "./SummaryInfo";
 import { createColumns } from "./InviteListColumns";
 import AddGuestsDialog from "./AddGuestsDialog";
 import ContactMatcher from "../contacts/ContactMatcher";
+import CSVUploadDialog from "./CSVUploadDialog";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { useCreateInvitee } from "../../hooks/invitees/useCreateInvitee";
 import { useUpdateInvitee } from "../../hooks/invitees/useUpdateInvitee";
@@ -52,6 +54,7 @@ const WeddingInviteTable = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingInvitee, setEditingInvitee] = useState<Invitee | null>(null);
   const [isContactMatcherOpen, setIsContactMatcherOpen] = useState(false);
+  const [isCSVUploadOpen, setIsCSVUploadOpen] = useState(false);
   const { t } = useTranslation();
 
   // Use the mutation hooks
@@ -170,6 +173,14 @@ const WeddingInviteTable = () => {
     setIsContactMatcherOpen(false);
   };
 
+  const handleCSVUploadOpen = () => {
+    setIsCSVUploadOpen(true);
+  };
+
+  const handleCSVUploadClose = () => {
+    setIsCSVUploadOpen(false);
+  };
+
   // Count invitees without phone numbers
   const inviteesNeedingPhones = inviteesWithRSVP.filter(
     (invitee) => !invitee.cellphone || invitee.cellphone.trim() === ""
@@ -224,6 +235,17 @@ const WeddingInviteTable = () => {
                 </Button>
               )}
               <Button
+                variant="outlined"
+                startIcon={<UploadFileIcon />}
+                onClick={handleCSVUploadOpen}
+                color="secondary"
+                sx={{
+                  borderRadius: 2,
+                }}
+              >
+                Upload CSV
+              </Button>
+              <Button
                 variant="contained"
                 startIcon={<PersonAddIcon />}
                 onClick={handleDialogOpen}
@@ -263,6 +285,11 @@ const WeddingInviteTable = () => {
         onClose={handleContactMatcherClose}
         invitees={inviteesWithRSVP}
         onComplete={handleContactMatcherComplete}
+      />
+      <CSVUploadDialog
+        open={isCSVUploadOpen}
+        onClose={handleCSVUploadClose}
+        existingInvitees={inviteesWithRSVP}
       />
     </Box>
   );

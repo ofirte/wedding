@@ -25,7 +25,7 @@ export const LANGUAGE_CONFIG: Record<
   },
 };
 
-export const DEFAULT_LANGUAGE: Language = "en";
+export const DEFAULT_LANGUAGE: Language = "he";
 
 // Translation key structure - expandable for different sections
 export interface Translations {

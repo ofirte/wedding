@@ -300,12 +300,6 @@ const DynamicRSVPForm: React.FC<DynamicRSVPFormProps> = ({
       >
         🎉 אישור הגעה 🎉
       </Typography>
-      <Typography
-        variant="h6"
-        sx={{ color: "#666666", mb: 4, textAlign: "center" }}
-      >
-        {guestName} יקר/ה
-      </Typography>
 
       <Box sx={{ mb: 3 }}>
         <Typography

@@ -6,7 +6,6 @@ import {
   Avatar,
   Stack,
   Chip,
-  Link,
 } from "@mui/material";
 import {
   Favorite as HeartIcon,
@@ -87,20 +86,41 @@ const WeddingIntroCard: React.FC<WeddingIntroCardProps> = ({
                   )
                 : "TBD"
             }
-            sx={{ bgcolor: "#D1E4C4", width: ({ spacing }) => spacing(24) }}
+            sx={{
+              bgcolor: "#D1E4C4",
+              minWidth: "fit-content",
+              maxWidth: "200px",
+              "& .MuiChip-label": {
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              },
+            }}
           />
           <Chip
             icon={<TimeIcon />}
             label="15:30"
-            sx={{ bgcolor: "#D1E4C4", width: ({ spacing }) => spacing(12) }}
+            sx={{
+              bgcolor: "#D1E4C4",
+              minWidth: "fit-content",
+              "& .MuiChip-label": {
+                whiteSpace: "nowrap",
+              },
+            }}
           />
           <Chip
             icon={<LocationIcon />}
             label={weddingInfo.venueName}
             sx={{
               bgcolor: "#D1E4C4",
-              width: ({ spacing }) => spacing(18),
+              minWidth: "fit-content",
+              maxWidth: "250px",
               cursor: "pointer",
+              "& .MuiChip-label": {
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              },
               "&:hover": {
                 bgcolor: "#9BBB9B",
                 color: "white",
