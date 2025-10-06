@@ -51,38 +51,53 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
   showSelectColumn = true,
   showExport = true,
 }) => {
-  // Helper to check if templates were sent to an invitee
-  const wasAnySelectedTemplateSentToInvitee = useCallback(
-    (invitee: InviteeWithDynamicRSVP): boolean => {
-      if (!sentMessages.length || !selectedTemplates.length) return false;
+  // Helper to get sent messages info for an invitee
+  const getInviteeSentMessagesInfo = useCallback(
+    (invitee: InviteeWithDynamicRSVP) => {
+      if (!sentMessages.length || !selectedTemplates.length) {
+        return { sent: false, messageTypes: [] };
+      }
+
       const inviteeDeliveredMessages = sentMessages.filter(
         (message) =>
           message.userId === invitee.id &&
-          !["failed", "undelivered"].includes(message.status)
+          !["failed", "undelivered"].includes(message.status) &&
+          selectedTemplates.includes(message.contentSid)
       );
 
-      return inviteeDeliveredMessages.some((message) =>
-        selectedTemplates.includes(message.contentSid)
+      const messageTypes = Array.from(
+        new Set(
+          inviteeDeliveredMessages.map((msg) => msg.messageType || "whatsapp")
+        )
       );
+
+      return {
+        sent: inviteeDeliveredMessages.length > 0,
+        messageTypes,
+      };
     },
     [sentMessages, selectedTemplates]
   );
 
   // Preprocess data to add computed properties for filtering
   const enrichedData = useMemo(() => {
-    return data.map((row) => ({
-      ...row,
-      templateSent:
-        selectedTemplates.length === 0
-          ? "all"
-          : wasAnySelectedTemplateSentToInvitee(row)
-          ? "sent"
-          : "notSent",
-      // Add flattened properties for filtering based on dynamic RSVP data
-      attendance: row.rsvpStatus?.attendance,
-      submitted: row.rsvpStatus?.isSubmitted,
-    }));
-  }, [data, selectedTemplates, wasAnySelectedTemplateSentToInvitee]);
+    return data.map((row) => {
+      const sentInfo = getInviteeSentMessagesInfo(row);
+      return {
+        ...row,
+        templateSent:
+          selectedTemplates.length === 0
+            ? "all"
+            : sentInfo.sent
+            ? "sent"
+            : "notSent",
+        sentMessageTypes: sentInfo.messageTypes,
+        // Add flattened properties for filtering based on dynamic RSVP data
+        attendance: row.rsvpStatus?.attendance,
+        submitted: row.rsvpStatus?.isSubmitted,
+      };
+    });
+  }, [data, selectedTemplates, getInviteeSentMessagesInfo]);
 
   const handleSelectionChange = (selected: InviteeWithDynamicRSVP[]) => {
     // Filter selected guests to only include those with phone numbers

@@ -73,6 +73,71 @@ api.post("/messages/send-message", async (req, res) => {
   }
 });
 
+// SMS endpoint - same signature as WhatsApp but converts template to plain text
+api.post("/messages/send-sms", async (req, res) => {
+  const accountSid = twilioAccountSid.value();
+  const authToken = twilioAuthToken.value();
+  const twilioClient =
+    accountSid && authToken ? twilio(accountSid, authToken) : null;
+
+  if (!twilioClient) {
+    return res.status(500).json({ error: "Twilio client not configured." });
+  }
+
+  try {
+    const { to, contentSid, contentVariables } = req.body;
+
+    // Get template and convert to SMS text
+    const contentList = await twilioClient.content.v2.contents.list();
+    const template = contentList.find((content) => content.sid === contentSid);
+
+    if (!template) {
+      return res.status(400).json({ error: "Template not found" });
+    }
+
+    // Extract template body and replace variables
+    const textType =
+      template.types?.["twilio/text"] || template.types?.["whatsapp"];
+    const templateBody = (textType as any)?.body;
+
+    if (!templateBody || typeof templateBody !== "string") {
+      return res.status(400).json({ error: "No template body found" });
+    }
+
+    let smsText = templateBody;
+    Object.entries(contentVariables).forEach(([key, value]) => {
+      smsText = smsText.replace(
+        new RegExp(`\\{\\{${key}\\}\\}`, "g"),
+        value as string
+      );
+    });
+
+    // Clean phone number and send SMS
+    const cleanPhoneNumber = to.replace(/^whatsapp:/, "");
+
+    const message = await twilioClient.messages.create({
+      from: "weddingPlan",
+      to: cleanPhoneNumber,
+      body: smsText,
+    });
+
+    return res.status(200).json({
+      sid: message.sid,
+      status: message.status,
+      from: message.from,
+      to: message.to,
+      dateCreated: message.dateCreated,
+      messageType: "sms",
+    });
+  } catch (error) {
+    console.error("Error sending SMS:", error);
+    return res.status(500).json({
+      error: "Failed to send SMS",
+      details: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
 api.get("/messages/templates", async (req, res) => {
   const accountSid = twilioAccountSid.value();
   const authToken = twilioAuthToken.value();

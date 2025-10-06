@@ -372,22 +372,50 @@ export const useDynamicRSVPTableColumns = ({
               </Typography>
             );
           }
-          return row.templateSent === "sent" ? (
-            <Chip
-              icon={<MessageIcon />}
-              label={t("rsvpStatusTab.sent")}
-              size="small"
-              color="success"
-            />
-          ) : (
-            <Chip
-              icon={<MessageIcon />}
-              label={t("rsvpStatusTab.notSent")}
-              size="small"
-              color="default"
-              variant="outlined"
-            />
-          );
+          if (row.templateSent === "sent") {
+            // Show message type in a single elegant chip
+            const messageTypes = (row as any).sentMessageTypes || [];
+            const hasWhatsApp = messageTypes.includes("whatsapp");
+            const hasSMS = messageTypes.includes("sms");
+
+            let label = t("rsvpStatusTab.sent");
+
+            if (hasWhatsApp && hasSMS) {
+              label = `${t("rsvpStatusTab.sent")} (Both)`;
+            } else if (hasSMS) {
+              label = `${t("rsvpStatusTab.sent")} (SMS)`;
+            } else if (hasWhatsApp) {
+              label = `${t("rsvpStatusTab.sent")} (WA)`;
+            }
+
+            return (
+              <Chip
+                icon={<MessageIcon />}
+                label={label}
+                size="small"
+                color="success"
+                sx={{
+                  maxWidth: "none",
+                  "& .MuiChip-label": {
+                    whiteSpace: "nowrap",
+                    overflow: "visible",
+                    textOverflow: "unset",
+                    fontSize: "0.75rem",
+                  },
+                }}
+              />
+            );
+          } else {
+            return (
+              <Chip
+                icon={<MessageIcon />}
+                label={t("rsvpStatusTab.notSent")}
+                size="small"
+                color="default"
+                variant="outlined"
+              />
+            );
+          }
         },
       }
     );

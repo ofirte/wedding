@@ -10,6 +10,14 @@ export interface SendMessageRequest {
   userId?: string; // Optional user ID for tracking
 }
 
+// SMS-specific request interface (same as WhatsApp)
+export interface SendSMSRequest {
+  to: string;
+  contentSid: string; // Template SID to extract text from
+  contentVariables: Record<string, string>;
+  userId?: string;
+}
+
 export interface SendMessageResponse {
   sid: string;
   status: string;
@@ -18,6 +26,13 @@ export interface SendMessageResponse {
   dateCreated: string;
   dateSent?: string;
   errorMessage?: string;
+}
+
+// SMS-specific response interface
+export interface SendSMSResponse extends SendMessageResponse {
+  messageType: "sms";
+  smsSegments?: number;
+  processedText?: string;
 }
 
 // Types for Twilio Content Templates
@@ -49,6 +64,8 @@ export interface SentMessage {
   errorMessage?: string;
   weddingId: string;
   userId?: string;
+  messageType?: "whatsapp" | "sms"; // Track message type
+  smsSegments?: number; // For SMS only
 }
 
 const getBaseUrl = (): string => {
@@ -98,6 +115,62 @@ export const sendMessage = async (
     return response;
   } catch (error) {
     console.error("Error sending message:", error);
+    throw error;
+  }
+};
+
+/**
+ * Send SMS message using WhatsApp template content
+ */
+export const sendSMSMessage = async (
+  messageData: SendSMSRequest,
+  weddingId?: string
+): Promise<SendSMSResponse> => {
+  try {
+    const response = await fetch(`${BASE_URL}/messages/send-sms`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(messageData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = (await response.json()) as SendSMSResponse;
+
+    // Save SMS message to Firebase - clean undefined fields
+    const resolvedWeddingId =
+      weddingId || (await weddingFirebase.getWeddingId());
+
+    const sentMessage: Omit<SentMessage, "id"> = {
+      sid: result.sid || "",
+      to: result.to || "",
+      from: result.from || "",
+      status: result.status || "unknown",
+      contentSid: messageData.contentSid || "",
+      contentVariables: messageData.contentVariables || {},
+      templateId: messageData.contentSid || "",
+      dateCreated: result.dateCreated || new Date().toISOString(),
+      dateSent: result.dateCreated || new Date().toISOString(),
+      dateUpdated: new Date().toISOString(),
+      errorMessage: result.errorMessage || "",
+      weddingId: resolvedWeddingId,
+      userId: messageData.userId || "",
+      messageType: "sms",
+      ...(result.smsSegments && { smsSegments: result.smsSegments }), // Only add if defined
+    };
+
+    await weddingFirebase.addDocument(
+      "sentMessages",
+      sentMessage,
+      resolvedWeddingId
+    );
+    return result;
+  } catch (error) {
+    console.error("Error sending SMS:", error);
     throw error;
   }
 };
@@ -220,6 +293,7 @@ export const saveSentMessage = async (
       errorMessage: messageResponse.errorMessage ?? "",
       weddingId: resolvedWeddingId,
       userId: messageRequest.userId || "", // Optional user ID for tracking
+      messageType: "whatsapp", // Default to WhatsApp for existing messages
     };
 
     const docRef = await weddingFirebase.addDocument(

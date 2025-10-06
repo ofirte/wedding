@@ -5,24 +5,24 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Typography,
   Box,
-  TextField,
   Alert,
   CircularProgress,
   Chip,
   Stack,
+  Divider,
 } from "@mui/material";
 import { Send as SendIcon, Close as CloseIcon } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { useMessageTemplates } from "../../hooks/rsvp/useMessageTemplates";
 import { useSendMessage } from "../../hooks/rsvp/useSendMessage";
-import { Invitee } from "../invitees/InviteList";
+import { useSendSMSMessage } from "../../hooks/rsvp/useSendSMSMessage";
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
+import { Invitee } from "../invitees/InviteList";
+import MessageTypeToggle from "./MessageTypeToggle";
+import TemplateSelector from "./TemplateSelector";
+import MessagePreview from "./MessagePreview";
 
 interface SendMessageDialogProps {
   open: boolean;
@@ -37,12 +37,19 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
 }) => {
   const { t } = useTranslation();
   const { data: templatesResponse } = useMessageTemplates();
-  const { mutate: sendMessage, isPending } = useSendMessage();
+  const { mutate: sendMessage } = useSendMessage();
+  const { mutate: sendSMSMessage } = useSendSMSMessage();
   const { data: wedding } = useWeddingDetails();
   // Extract templates array from the response
-  const templates = templatesResponse?.templates || [];
+  const templates = useMemo(
+    () => templatesResponse?.templates || [],
+    [templatesResponse?.templates]
+  );
 
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
+  const [messageType, setMessageType] = useState<"whatsapp" | "sms">(
+    "whatsapp"
+  );
   const [sending, setSending] = useState(false);
 
   // Get the selected template
@@ -52,70 +59,47 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
     );
   }, [templates, selectedTemplateId]);
 
-  // Helper function to extract body text from template types
-  const getTemplateBody = (template: any): string => {
-    if (!template.types) return "No body available";
-
-    // Look for WhatsApp template body
-    const whatsappType =
-      template.types["twilio/text"] || template.types["whatsapp"];
-    if (
-      whatsappType &&
-      typeof whatsappType === "object" &&
-      whatsappType !== null
-    ) {
-      const body = (whatsappType as any).body;
-      if (body) return body;
-    }
-
-    // Fallback to any available body
-    const firstType = Object.values(template.types)[0];
-    if (firstType && typeof firstType === "object" && "body" in firstType) {
-      return (firstType as any).body || "No body available";
-    }
-
-    return "No body available";
-  };
-
-  // Generate preview message by replacing variables
-  const previewMessage = useMemo(() => {
-    if (!selectedTemplate) return "";
-
-    let message = getTemplateBody(selectedTemplate);
-
-    // Replace common variables like {{1}} with first guest's name as example
-    if (selectedGuests.length > 0) {
-      message = message.replace(/\{\{1\}\}/g, selectedGuests[0].name);
-      message = message.replace(/\{guest\}/g, selectedGuests[0].name);
-      message = message.replace(/\{גוסט\}/g, selectedGuests[0].name);
-    }
-
-    return message;
-  }, [selectedTemplate, selectedGuests]);
-
   const handleSend = async () => {
     if (!selectedTemplate || selectedGuests.length === 0) return;
+
+    // Basic validation
 
     setSending(true);
 
     try {
-      for (const guest of selectedGuests) {
-        const phoneNumber = guest.cellphone.startsWith("+")
-          ? `whatsapp:${guest.cellphone}`
-          : `whatsapp:+972${guest.cellphone}`;
+      const sendPromises = selectedGuests.map((guest) => {
+        const contentVariables = {
+          guestName: guest.name,
+          guestId: guest.id,
+          weddingId: wedding?.id ?? "",
+        };
 
-        sendMessage({
-          to: phoneNumber,
-          contentSid: selectedTemplate.sid,
-          contentVariables: {
-            guestName: guest.name,
-            guestId: guest.id,
-            weddingId: wedding?.id ?? "",
-          },
-          userId: guest.id,
-        });
-      }
+        if (messageType === "whatsapp") {
+          const phoneNumber = guest.cellphone.startsWith("+")
+            ? `whatsapp:${guest.cellphone}`
+            : `whatsapp:+972${guest.cellphone}`;
 
+          return sendMessage({
+            to: phoneNumber,
+            contentSid: selectedTemplate.sid,
+            contentVariables,
+            userId: guest.id,
+          });
+        } else {
+          // SMS
+          const phoneNumber = guest.cellphone.startsWith("+")
+            ? guest.cellphone
+            : `+972${guest.cellphone}`;
+          return sendSMSMessage({
+            to: phoneNumber,
+            contentSid: selectedTemplate.sid,
+            contentVariables,
+            userId: guest.id,
+          });
+        }
+      });
+
+      await Promise.all(sendPromises);
       onClose();
     } catch (error) {
       console.error("Error sending messages:", error);
@@ -127,6 +111,7 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
   const handleClose = () => {
     if (!sending) {
       setSelectedTemplateId("");
+      setMessageType("whatsapp");
       onClose();
     }
   };
@@ -149,7 +134,10 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
             justifyContent: "space-between",
           }}
         >
-          <Typography variant="h6">{t("rsvp.sendMessage")}</Typography>
+          <Typography variant="h6">
+            {t("rsvp.sendMessage")} (
+            {messageType === "whatsapp" ? "WhatsApp" : "SMS"})
+          </Typography>
           <Button
             onClick={handleClose}
             disabled={sending}
@@ -186,54 +174,30 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
             </Box>
           </Box>
 
+          {/* Message Type Selection */}
+          <MessageTypeToggle
+            value={messageType}
+            onChange={setMessageType}
+            disabled={sending}
+          />
+
+          <Divider />
+
           {/* Template selection */}
-          <FormControl fullWidth>
-            <InputLabel>{t("rsvp.selectTemplate")}</InputLabel>
-            <Select
-              value={selectedTemplateId}
-              label={t("rsvp.selectTemplate")}
-              onChange={(e) => setSelectedTemplateId(e.target.value)}
-              disabled={sending}
-            >
-              {templates.map((template: any) => (
-                <MenuItem key={template.sid} value={template.sid}>
-                  {template.friendlyName || template.sid}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <TemplateSelector
+            templates={templates}
+            selectedTemplateId={selectedTemplateId}
+            onChange={setSelectedTemplateId}
+            disabled={sending}
+          />
 
           {/* Message preview */}
-          {selectedTemplate && (
-            <Box>
-              <Typography variant="subtitle2" gutterBottom>
-                {t("rsvp.messagePreview")}
-              </Typography>
-              <TextField
-                multiline
-                rows={6}
-                fullWidth
-                value={previewMessage}
-                InputProps={{
-                  readOnly: true,
-                }}
-                variant="outlined"
-                sx={{
-                  "& .MuiInputBase-input": {
-                    fontFamily: "monospace",
-                    fontSize: "0.875rem",
-                  },
-                }}
-              />
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ mt: 1, display: "block" }}
-              >
-                {t("rsvp.previewNote")}
-              </Typography>
-            </Box>
-          )}
+          <MessagePreview
+            template={selectedTemplate || null}
+            messageType={messageType}
+            guests={selectedGuests}
+            wedding={wedding}
+          />
 
           {/* Warning for multiple recipients */}
           {selectedGuests.length > 1 && (
@@ -256,7 +220,9 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
         >
           {sending
             ? t("rsvp.sending")
-            : t("rsvp.sendToGuests", { count: selectedGuests.length })}
+            : `Send ${messageType === "whatsapp" ? "WhatsApp" : "SMS"} (${
+                selectedGuests.length
+              })`}
         </Button>
       </DialogActions>
     </Dialog>
