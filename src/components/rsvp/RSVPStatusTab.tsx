@@ -64,31 +64,7 @@ const RSVPStatusTab: React.FC = () => {
 
     return inviteesWithDynamicRSVP.filter((invitee) => {
       const rsvpStatus = invitee.rsvpStatus;
-      if (!rsvpStatus?.isSubmitted && statusFilter.type !== "submitted") {
-        return false; // Only show submitted RSVPs for question filters
-      }
-
-      // Handle different filter types dynamically
       const fieldValue = rsvpStatus?.[statusFilter.type];
-
-      if (statusFilter.type === "submitted") {
-        return fieldValue === statusFilter.value;
-      }
-
-      // For attendance, ensure we handle properly
-      if (statusFilter.type === "attendance") {
-        return fieldValue === statusFilter.value;
-      }
-
-      // For boolean questions, only show if attending (if attendance exists)
-      if (typeof statusFilter.value === "boolean") {
-        const isAttending = rsvpStatus?.attendance;
-        if (isAttending === false) return false;
-
-        return fieldValue === statusFilter.value;
-      }
-
-      // For select questions
       return fieldValue === statusFilter.value;
     });
   }, [inviteesWithDynamicRSVP, statusFilter]);

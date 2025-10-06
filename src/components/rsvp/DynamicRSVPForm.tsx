@@ -170,11 +170,7 @@ const DynamicRSVPForm: React.FC<DynamicRSVPFormProps> = ({
 
   const validateForm = (): boolean => {
     // Check if all visible required questions are answered
-    const requiredVisibleQuestions = visibleQuestions.filter(
-      (q: RSVPQuestion) => q.required
-    );
-
-    for (const question of requiredVisibleQuestions) {
+    for (const question of visibleQuestions) {
       const value = formData[question.id];
       if (value === undefined || value === null || value === "") {
         return false;

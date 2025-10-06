@@ -94,6 +94,7 @@ const ThankYouCard: React.FC<ThankYouCardProps> = ({
                         year: "numeric",
                         month: "long",
                         day: "numeric",
+                        timeZone: "Asia/Jerusalem",
                       })}`
                     : ""
                 }! ${guestCount > 1 ? `(${guestCount} אורחים)` : ""} 💒`
@@ -105,6 +106,7 @@ const ThankYouCard: React.FC<ThankYouCardProps> = ({
                         year: "numeric",
                         month: "long",
                         day: "numeric",
+                        timeZone: "Asia/Jerusalem",
                       })}`
                     : ""
                 }, אבל תודה שהודעתם לנו.`}

@@ -500,5 +500,8 @@ export interface Translations {
     selectTemplateFirst: string;
     invitationLink: string;
     copyInvitationLink: string;
+    responseRate: string;
+    responded: string;
+    selectionBreakdown: string;
   };
 }
