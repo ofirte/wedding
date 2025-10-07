@@ -83,7 +83,7 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
   const enrichedData = useMemo(() => {
     return data.map((row) => {
       const sentInfo = getInviteeSentMessagesInfo(row);
-      return {
+      const flattened: any = {
         ...row,
         templateSent:
           selectedTemplates.length === 0
@@ -92,10 +92,15 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
             ? "sent"
             : "notSent",
         sentMessageTypes: sentInfo.messageTypes,
-        // Add flattened properties for filtering based on dynamic RSVP data
-        attendance: row.rsvpStatus?.attendance,
-        submitted: row.rsvpStatus?.isSubmitted,
       };
+      // Flatten all RSVP status properties for filtering
+      if (row.rsvpStatus) {
+        Object.keys(row.rsvpStatus).forEach((key) => {
+          flattened[key] = row.rsvpStatus![key];
+        });
+      }
+
+      return flattened;
     });
   }, [data, selectedTemplates, getInviteeSentMessagesInfo]);
 
