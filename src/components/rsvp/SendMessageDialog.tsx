@@ -23,6 +23,7 @@ import { Invitee } from "../invitees/InviteList";
 import MessageTypeToggle from "./MessageTypeToggle";
 import TemplateSelector from "./TemplateSelector";
 import MessagePreview from "./MessagePreview";
+import PersonalWhatsAppList from "./PersonalWhatsAppList";
 
 interface SendMessageDialogProps {
   open: boolean;
@@ -47,9 +48,9 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
   );
 
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
-  const [messageType, setMessageType] = useState<"whatsapp" | "sms">(
-    "whatsapp"
-  );
+  const [messageType, setMessageType] = useState<
+    "whatsapp" | "sms" | "personal-whatsapp"
+  >("whatsapp");
   const [sending, setSending] = useState(false);
 
   // Get the selected template
@@ -62,11 +63,10 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
   const handleSend = async () => {
     if (!selectedTemplate || selectedGuests.length === 0) return;
 
-    // Basic validation
-
     setSending(true);
 
     try {
+      // API-based sending (WhatsApp or SMS) - Personal WhatsApp is handled separately
       const sendPromises = selectedGuests.map((guest) => {
         const contentVariables = {
           guestName: guest.name,
@@ -116,6 +116,12 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
     }
   };
 
+  const handlePersonalMessageSent = async (guestId: string) => {
+    // Personal messages are handled entirely by PersonalWhatsAppList
+    // This function is just for interface compliance
+    console.log(`Personal message sent for guest ${guestId}`);
+  };
+
   return (
     <Dialog
       open={open}
@@ -136,7 +142,12 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
         >
           <Typography variant="h6">
             {t("rsvp.sendMessage")} (
-            {messageType === "whatsapp" ? "WhatsApp" : "SMS"})
+            {messageType === "whatsapp"
+              ? "WhatsApp"
+              : messageType === "sms"
+              ? "SMS"
+              : "Personal WhatsApp"}
+            )
           </Typography>
           <Button
             onClick={handleClose}
@@ -191,39 +202,56 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
             disabled={sending}
           />
 
-          {/* Message preview */}
-          <MessagePreview
-            template={selectedTemplate || null}
-            messageType={messageType}
-            guests={selectedGuests}
-            wedding={wedding}
-          />
+          {/* Personal WhatsApp List - Show when personal WhatsApp is selected and template is chosen */}
+          {messageType === "personal-whatsapp" && selectedTemplate ? (
+            <PersonalWhatsAppList
+              guests={selectedGuests}
+              template={selectedTemplate}
+              onGuestSent={handlePersonalMessageSent}
+            />
+          ) : (
+            <>
+              {/* Message preview for other message types */}
+              <MessagePreview
+                template={selectedTemplate || null}
+                messageType={messageType}
+                guests={selectedGuests}
+                wedding={wedding}
+              />
 
-          {/* Warning for multiple recipients */}
-          {selectedGuests.length > 1 && (
-            <Alert severity="info">
-              {t("rsvp.bulkSendWarning", { count: selectedGuests.length })}
-            </Alert>
+              {/* Warning for multiple recipients */}
+              {selectedGuests.length > 1 && (
+                <Alert severity="info">
+                  {t("rsvp.bulkSendWarning", { count: selectedGuests.length })}
+                </Alert>
+              )}
+            </>
           )}
         </Stack>
       </DialogContent>
 
       <DialogActions sx={{ p: 2 }}>
         <Button onClick={handleClose} disabled={sending} variant="outlined">
-          {t("common.cancel")}
+          {messageType === "personal-whatsapp" ? "Done" : t("common.cancel")}
         </Button>
-        <Button
-          onClick={handleSend}
-          disabled={!selectedTemplate || selectedGuests.length === 0 || sending}
-          variant="contained"
-          startIcon={sending ? <CircularProgress size={20} /> : <SendIcon />}
-        >
-          {sending
-            ? t("rsvp.sending")
-            : `Send ${messageType === "whatsapp" ? "WhatsApp" : "SMS"} (${
-                selectedGuests.length
-              })`}
-        </Button>
+
+        {/* Only show Send button for API-based messaging, not for personal WhatsApp */}
+        {messageType !== "personal-whatsapp" && (
+          <Button
+            onClick={handleSend}
+            disabled={
+              !selectedTemplate || selectedGuests.length === 0 || sending
+            }
+            variant="contained"
+            startIcon={sending ? <CircularProgress size={20} /> : <SendIcon />}
+          >
+            {sending
+              ? t("rsvp.sending")
+              : `Send ${messageType === "whatsapp" ? "WhatsApp" : "SMS"} (${
+                  selectedGuests.length
+                })`}
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

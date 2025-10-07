@@ -19,7 +19,7 @@ interface Wedding {
 
 interface MessagePreviewProps {
   template: Template | null;
-  messageType: "whatsapp" | "sms";
+  messageType: "whatsapp" | "sms" | "personal-whatsapp";
   guests: Guest[];
   wedding?: Wedding | null;
 }
@@ -90,7 +90,12 @@ const MessagePreview: FC<MessagePreviewProps> = ({
     <Box>
       <Typography variant="subtitle2" gutterBottom>
         {t("rsvp.messagePreview")} (
-        {messageType === "whatsapp" ? "WhatsApp" : "SMS"})
+        {messageType === "whatsapp"
+          ? "WhatsApp"
+          : messageType === "sms"
+          ? "SMS"
+          : "Personal WhatsApp"}
+        )
       </Typography>
       <TextField
         multiline

@@ -64,7 +64,7 @@ export interface SentMessage {
   errorMessage?: string;
   weddingId: string;
   userId?: string;
-  messageType?: "whatsapp" | "sms"; // Track message type
+  messageType?: "whatsapp" | "sms" | "personal-whatsapp"; // Track message type
   smsSegments?: number; // For SMS only
 }
 
@@ -304,6 +304,52 @@ export const saveSentMessage = async (
     return docRef.id;
   } catch (error) {
     console.error("Error saving sent message to Firebase:", error);
+    throw error;
+  }
+};
+
+/**
+ * Save a personal WhatsApp message (manually sent via personal WhatsApp)
+ */
+export const savePersonalWhatsAppMessage = async (
+  contentSid: string,
+  contentVariables: Record<string, any>,
+  userId: string,
+  phoneNumber: string,
+  weddingId?: string
+): Promise<string> => {
+  try {
+    const resolvedWeddingId =
+      weddingId || (await weddingFirebase.getWeddingId());
+
+    const now = new Date().toISOString();
+    const sentMessage: Omit<SentMessage, "id"> = {
+      sid: `personal-wa-${Date.now()}-${Math.random()
+        .toString(36)
+        .substr(2, 9)}`, // Generate unique ID
+      to: phoneNumber,
+      from: "personal-whatsapp", // Indicate this was sent via personal WhatsApp
+      status: "delivered", // Assume delivered since it's manual
+      contentSid,
+      contentVariables,
+      templateId: contentSid, // Use contentSid as templateId for consistency
+      dateCreated: now,
+      dateSent: now,
+      dateUpdated: now,
+      errorMessage: "",
+      weddingId: resolvedWeddingId,
+      userId,
+      messageType: "personal-whatsapp",
+    };
+
+    const docRef = await weddingFirebase.addDocument(
+      "sentMessages",
+      sentMessage,
+      resolvedWeddingId
+    );
+    return docRef.id;
+  } catch (error) {
+    console.error("Error saving personal WhatsApp message to Firebase:", error);
     throw error;
   }
 };

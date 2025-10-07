@@ -55,24 +55,53 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
   const getInviteeSentMessagesInfo = useCallback(
     (invitee: InviteeWithDynamicRSVP) => {
       if (!sentMessages.length || !selectedTemplates.length) {
-        return { sent: false, messageTypes: [] };
+        return { status: "notSent", messageTypes: [] };
       }
 
-      const inviteeDeliveredMessages = sentMessages.filter(
+      // Get all message attempts for this invitee and selected templates
+      const inviteeMessages = sentMessages.filter(
         (message) =>
           message.userId === invitee.id &&
-          !["failed", "undelivered"].includes(message.status) &&
           selectedTemplates.includes(message.contentSid)
+      );
+
+      if (inviteeMessages.length === 0) {
+        return { status: "notSent", messageTypes: [] };
+      }
+
+      // Check for successful messages
+      const deliveredMessages = inviteeMessages.filter(
+        (message) => !["failed", "undelivered"].includes(message.status)
+      );
+
+      // Check for failed messages
+      const failedMessages = inviteeMessages.filter((message) =>
+        ["failed", "undelivered"].includes(message.status)
       );
 
       const messageTypes = Array.from(
         new Set(
-          inviteeDeliveredMessages.map((msg) => msg.messageType || "whatsapp")
+          deliveredMessages
+            .map((msg) => msg.messageType || "whatsapp")
         )
       );
 
+      // Determine status priority: if ANY attempt succeeded, mark as sent
+      // Only mark as failed if ALL attempts failed
+      let status: "sent" | "failed" | "notSent";
+      if (deliveredMessages.length > 0) {
+        // At least one message was delivered successfully
+        status = "sent";
+      } else if (failedMessages.length > 0) {
+        // Only failed messages exist (no successful deliveries)
+        status = "failed";
+      } else {
+        // No message attempts at all
+        status = "notSent";
+      }
+
       return {
-        sent: inviteeDeliveredMessages.length > 0,
+        status,
         messageTypes,
       };
     },
@@ -85,12 +114,7 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
       const sentInfo = getInviteeSentMessagesInfo(row);
       const flattened: any = {
         ...row,
-        templateSent:
-          selectedTemplates.length === 0
-            ? "all"
-            : sentInfo.sent
-            ? "sent"
-            : "notSent",
+        templateSent: selectedTemplates.length === 0 ? "all" : sentInfo.status, // Use the status directly: "sent", "failed", or "notSent"
         sentMessageTypes: sentInfo.messageTypes,
       };
       // Flatten all RSVP status properties for filtering

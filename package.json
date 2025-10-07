@@ -43,8 +43,8 @@
     "build:prod": "env-cmd -f .env.production react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy:dev": "npm run build:dev && firebase deploy --only hosting:development",
-    "deploy:prod": "npm run build:prod && firebase deploy --only hosting:production -P production",
+    "deploy:dev": "npm run build:dev && firebase use wedding-c89a1 && firebase deploy --only hosting:development",
+    "deploy:prod": "npm run build:prod && firebase use wedding-c89a1 && firebase deploy --only hosting:production -P production",
     "migrate-wedding": "node migrateWedding.cjs"
   },
   "eslintConfig": {

@@ -5,11 +5,15 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import { WhatsApp as WhatsAppIcon, Sms as SmsIcon } from "@mui/icons-material";
+import {
+  WhatsApp as WhatsAppIcon,
+  Sms as SmsIcon,
+  PersonalVideo as PersonalIcon,
+} from "@mui/icons-material";
 
 interface MessageTypeToggleProps {
-  value: "whatsapp" | "sms";
-  onChange: (type: "whatsapp" | "sms") => void;
+  value: "whatsapp" | "sms" | "personal-whatsapp";
+  onChange: (type: "whatsapp" | "sms" | "personal-whatsapp") => void;
   disabled?: boolean;
 }
 
@@ -49,6 +53,13 @@ const MessageTypeToggle: FC<MessageTypeToggleProps> = ({
         >
           <SmsIcon fontSize="small" />
           SMS
+        </ToggleButton>
+        <ToggleButton
+          value="personal-whatsapp"
+          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+        >
+          <PersonalIcon fontSize="small" />
+          Personal WhatsApp
         </ToggleButton>
       </ToggleButtonGroup>
     </Box>

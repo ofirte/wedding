@@ -8,6 +8,7 @@ import {
   Message as MessageIcon,
   Link as LinkIcon,
   ContentCopy as CopyIcon,
+  Error as ErrorIcon,
 } from "@mui/icons-material";
 import { Column } from "../common/DSTable";
 import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
@@ -19,7 +20,7 @@ import { useRSVPFormQuestions } from "../../hooks/rsvp/useRSVPFormQuestions";
 
 export type InviteeWithDynamicRSVP = Invitee & {
   rsvpStatus?: InviteeRSVP;
-  templateSent?: "sent" | "notSent" | "all";
+  templateSent?: "sent" | "failed" | "notSent" | "all";
 };
 
 interface UseDynamicRSVPTableColumnsProps {
@@ -351,9 +352,10 @@ export const useDynamicRSVPTableColumns = ({
         label: t("rsvpStatusTab.sent"),
         sortable: true,
         sortFn: (a, b) => {
-          const aSent = a.templateSent === "sent";
-          const bSent = b.templateSent === "sent";
-          return aSent === bSent ? 0 : aSent ? -1 : 1;
+          const statusOrder = { sent: 4, failed: 3, notSent: 2, all: 1 };
+          const aOrder = statusOrder[a.templateSent as keyof typeof statusOrder] || 2;
+          const bOrder = statusOrder[b.templateSent as keyof typeof statusOrder] || 2;
+          return aOrder - bOrder; 
         },
         filterConfig: {
           id: "templateSent",
@@ -361,6 +363,7 @@ export const useDynamicRSVPTableColumns = ({
           label: t("rsvpStatusTab.sent"),
           options: [
             { value: "sent", label: t("rsvpStatusTab.sent") },
+            { value: "failed", label: "Failed" },
             { value: "notSent", label: t("rsvpStatusTab.notSent") },
           ],
         },
@@ -377,13 +380,24 @@ export const useDynamicRSVPTableColumns = ({
             const messageTypes = (row as any).sentMessageTypes || [];
             const hasWhatsApp = messageTypes.includes("whatsapp");
             const hasSMS = messageTypes.includes("sms");
+            const hasPersonalWhatsApp =
+              messageTypes.includes("personal-whatsapp");
 
             let label = t("rsvpStatusTab.sent");
 
-            if (hasWhatsApp && hasSMS) {
-              label = `${t("rsvpStatusTab.sent")} (Both)`;
+            // Determine the appropriate label based on message types
+            const totalTypes = [
+              hasWhatsApp,
+              hasSMS,
+              hasPersonalWhatsApp,
+            ].filter(Boolean).length;
+
+            if (totalTypes > 1) {
+              label = `${t("rsvpStatusTab.sent")} (Multiple)`;
             } else if (hasSMS) {
               label = `${t("rsvpStatusTab.sent")} (SMS)`;
+            } else if (hasPersonalWhatsApp) {
+              label = `${t("rsvpStatusTab.sent")} (Personal WA)`;
             } else if (hasWhatsApp) {
               label = `${t("rsvpStatusTab.sent")} (WA)`;
             }
@@ -394,6 +408,42 @@ export const useDynamicRSVPTableColumns = ({
                 label={label}
                 size="small"
                 color="success"
+                sx={{
+                  maxWidth: "none",
+                  "& .MuiChip-label": {
+                    whiteSpace: "nowrap",
+                    overflow: "visible",
+                    textOverflow: "unset",
+                    fontSize: "0.75rem",
+                  },
+                }}
+              />
+            );
+          } else if (row.templateSent === "failed") {
+            // Show failed message with message type information
+            const messageTypes = (row as any).sentMessageTypes || [];
+            const hasWhatsApp = messageTypes.includes("whatsapp");
+            const hasSMS = messageTypes.includes("sms");
+            const hasPersonalWhatsApp =
+              messageTypes.includes("personal-whatsapp");
+
+            let label = "Failed";
+
+            // Add message type to failed label for context
+            if (hasSMS) {
+              label = "Failed (SMS)";
+            } else if (hasPersonalWhatsApp) {
+              label = "Failed (Personal WA)";
+            } else if (hasWhatsApp) {
+              label = "Failed (WA)";
+            }
+
+            return (
+              <Chip
+                icon={<ErrorIcon />}
+                label={label}
+                size="small"
+                color="error"
                 sx={{
                   maxWidth: "none",
                   "& .MuiChip-label": {
