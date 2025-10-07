@@ -48,7 +48,10 @@ const TableContent = <T extends { id: string | number }>({
   return (
     <>
       {data.map((rowData, index) => (
-        <TableRow key={`${rowData.id}-${index}`} sx={{ "&:hover": { bgcolor: "#f5f5f5" } }}>
+        <TableRow
+          key={`${rowData.id}-${index}`}
+          sx={{ "&:hover": { bgcolor: "#f5f5f5" } }}
+        >
           {showSelectColumn && (
             <TableCell align="center" sx={{ width: "48px", minWidth: "48px" }}>
               <Checkbox

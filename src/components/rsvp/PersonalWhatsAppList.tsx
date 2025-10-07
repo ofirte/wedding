@@ -30,6 +30,8 @@ interface PersonalWhatsAppListProps {
   guests: Invitee[];
   template: Template;
   onGuestSent: (guestId: string) => void;
+  onGuestClicked?: (guestId: string) => void;
+  clickedGuests?: Set<string>;
 }
 
 /**
@@ -39,6 +41,8 @@ const PersonalWhatsAppList: FC<PersonalWhatsAppListProps> = ({
   guests,
   template,
   onGuestSent,
+  onGuestClicked,
+  clickedGuests = new Set(),
 }) => {
   const { data: wedding } = useWeddingDetails();
   const { generateWhatsAppURL, generatePersonalizedMessage, cleanPhoneNumber } =
@@ -55,6 +59,9 @@ const PersonalWhatsAppList: FC<PersonalWhatsAppListProps> = ({
 
       // Generate WhatsApp URL
       const whatsappURL = generateWhatsAppURL(guest, message);
+
+      // Track that this guest was clicked
+      onGuestClicked?.(guest.id);
 
       // Open WhatsApp
       window.open(whatsappURL, "_blank");
@@ -116,14 +123,21 @@ const PersonalWhatsAppList: FC<PersonalWhatsAppListProps> = ({
       {guests.map((guest) => {
         const isSent = sentGuests.has(guest.id);
         const isSending = sendingGuests.has(guest.id);
+        const isClicked = clickedGuests.has(guest.id);
 
         return (
           <Card
             key={guest.id}
             variant="outlined"
             sx={{
-              bgcolor: isSent ? "success.light" : "background.paper",
+              bgcolor: isSent
+                ? "success.light"
+                : isClicked
+                ? "warning.light"
+                : "background.paper",
               opacity: isSent ? 0.7 : 1,
+              borderColor: isClicked && !isSent ? "warning.main" : undefined,
+              borderWidth: isClicked && !isSent ? 2 : 1,
             }}
           >
             <CardContent>
@@ -155,67 +169,49 @@ const PersonalWhatsAppList: FC<PersonalWhatsAppListProps> = ({
 
                 {/* Status & Actions */}
                 <Box display="flex" alignItems="center" gap={1}>
-                  {isSent ? (
+                  {isClicked && (
                     <Chip
-                      label="Sent"
-                      color="success"
+                      label="Clicked"
+                      color="warning"
                       size="small"
-                      icon={<CheckIcon />}
+                      sx={{ mr: 1 }}
                     />
-                  ) : (
-                    <>
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        startIcon={<WhatsAppIcon />}
-                        onClick={() => handleSendMessage(guest)}
-                        disabled={isSending}
-                        sx={{
-                          color: "#25d366",
-                          borderColor: "#25d366",
-                          "&:hover": {
-                            bgcolor: "#25d366",
-                            color: "white",
-                          },
-                        }}
-                      >
-                        Send Message
-                      </Button>
-
-                      <Button
-                        variant="contained"
-                        size="small"
-                        color="success"
-                        startIcon={<CheckIcon />}
-                        onClick={() => handleMarkAsSent(guest)}
-                        disabled={isSending}
-                      >
-                        Mark as Sent
-                      </Button>
-                    </>
                   )}
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<WhatsAppIcon />}
+                    onClick={() => handleSendMessage(guest)}
+                    disabled={isSending}
+                    sx={{
+                      color: "#25d366",
+                      borderColor: "#25d366",
+                      "&:hover": {
+                        bgcolor: "#25d366",
+                        color: "white",
+                      },
+                    }}
+                  >
+                    Send Message
+                  </Button>
+                  <>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      color="success"
+                      startIcon={<CheckIcon />}
+                      onClick={() => handleMarkAsSent(guest)}
+                      disabled={isSending}
+                    >
+                      Mark as Sent
+                    </Button>
+                  </>
                 </Box>
               </Box>
             </CardContent>
           </Card>
         );
       })}
-
-      {/* Summary */}
-      <Box
-        sx={{
-          mt: 2,
-          p: 2,
-          bgcolor: "background.default",
-          borderRadius: 1,
-          border: 1,
-          borderColor: "divider",
-        }}
-      >
-        <Typography variant="body2" color="text.secondary">
-          Progress: {sentGuests.size} of {guests.length} messages sent
-        </Typography>
-      </Box>
     </Stack>
   );
 };

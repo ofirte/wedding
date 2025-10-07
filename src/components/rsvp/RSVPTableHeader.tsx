@@ -70,7 +70,11 @@ const RSVPTableHeader: React.FC<RSVPTableHeaderProps> = ({
         startIcon={<SendIcon />}
         onClick={onSendMessage}
         color="primary"
-        disabled={selectedGuestsCount === 0 || isLoading}
+        disabled={
+          selectedGuestsCount === 0 ||
+          selectedTemplates.length === 0 ||
+          isLoading
+        }
         sx={{ whiteSpace: "nowrap" }}
       >
         {t("rsvp.sendMessage")}{" "}

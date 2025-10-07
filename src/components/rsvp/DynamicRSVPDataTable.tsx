@@ -80,10 +80,7 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
       );
 
       const messageTypes = Array.from(
-        new Set(
-          deliveredMessages
-            .map((msg) => msg.messageType || "whatsapp")
-        )
+        new Set(deliveredMessages.map((msg) => msg.messageType || "whatsapp"))
       );
 
       // Determine status priority: if ANY attempt succeeded, mark as sent

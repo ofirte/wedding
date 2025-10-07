@@ -39,6 +39,18 @@ const RSVPStatusTab: React.FC = () => {
   const [selectedGuests, setSelectedGuests] = useState<Invitee[]>([]);
   const [selectedTemplates, setSelectedTemplates] = useState<string[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Get the first selected template for SendMessageDialog
+  const selectedTemplate = useMemo(() => {
+    if (!selectedTemplates.length || !messageTemplatesData?.templates)
+      return null;
+
+    return (
+      messageTemplatesData.templates.find(
+        (template) => template.sid === selectedTemplates[0]
+      ) || null
+    );
+  }, [selectedTemplates, messageTemplatesData?.templates]);
   const [statusFilter, setStatusFilter] = useState<{
     type: string;
     value: any;
@@ -79,6 +91,15 @@ const RSVPStatusTab: React.FC = () => {
   };
 
   const handleOpenDialog = () => {
+    // Only open dialog if template and guests are selected
+    if (selectedTemplates.length === 0) {
+      console.warn("Please select a template first");
+      return;
+    }
+    if (selectedGuests.length === 0) {
+      console.warn("Please select guests first");
+      return;
+    }
     setIsDialogOpen(true);
   };
 
@@ -136,6 +157,7 @@ const RSVPStatusTab: React.FC = () => {
         open={isDialogOpen}
         onClose={handleCloseDialog}
         selectedGuests={selectedGuests}
+        selectedTemplate={selectedTemplate}
       />
     </Box>
   );

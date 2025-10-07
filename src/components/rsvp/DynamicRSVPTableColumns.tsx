@@ -353,9 +353,11 @@ export const useDynamicRSVPTableColumns = ({
         sortable: true,
         sortFn: (a, b) => {
           const statusOrder = { sent: 4, failed: 3, notSent: 2, all: 1 };
-          const aOrder = statusOrder[a.templateSent as keyof typeof statusOrder] || 2;
-          const bOrder = statusOrder[b.templateSent as keyof typeof statusOrder] || 2;
-          return aOrder - bOrder; 
+          const aOrder =
+            statusOrder[a.templateSent as keyof typeof statusOrder] || 2;
+          const bOrder =
+            statusOrder[b.templateSent as keyof typeof statusOrder] || 2;
+          return aOrder - bOrder;
         },
         filterConfig: {
           id: "templateSent",
