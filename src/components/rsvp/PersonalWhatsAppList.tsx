@@ -16,6 +16,7 @@ import {
   Phone as PhoneIcon,
 } from "@mui/icons-material";
 import { Invitee } from "../invitees/InviteList";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
 import { savePersonalWhatsAppMessage } from "../../api/rsvp/rsvpApi";
@@ -45,6 +46,7 @@ const PersonalWhatsAppList: FC<PersonalWhatsAppListProps> = ({
   onGuestClicked,
   clickedGuests = new Set(),
 }) => {
+  const { t } = useTranslation();
   const { data: wedding } = useWeddingDetails();
   const { generateWhatsAppURL, generatePersonalizedMessage, cleanPhoneNumber } =
     usePersonalWhatsApp();
@@ -113,7 +115,8 @@ const PersonalWhatsAppList: FC<PersonalWhatsAppListProps> = ({
   return (
     <Stack spacing={2}>
       <Typography variant="h6" gutterBottom>
-        Personal WhatsApp Messages ({guests.length} guests)
+        {t("rsvp.personalWhatsappMessages")} ({guests.length}{" "}
+        {t("common.guests")})
       </Typography>
 
       <Typography variant="body2" color="text.secondary" gutterBottom>

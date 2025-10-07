@@ -12,6 +12,7 @@ import { CheckCircle as CheckIcon } from "@mui/icons-material";
 import { Wedding } from "../../api/wedding/weddingApi";
 import { Invitee } from "../invitees/InviteList";
 import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface ThankYouCardProps {
   rsvpData: Partial<InviteeRSVP>;
@@ -26,6 +27,7 @@ const ThankYouCard: React.FC<ThankYouCardProps> = ({
   guestInfo,
   onUpdateInfo,
 }) => {
+  const { t } = useTranslation();
   // Extract the two mandatory fields
   const isAttending = rsvpData.attendance === true;
   const guestCount = (() => {
@@ -77,52 +79,56 @@ const ThankYouCard: React.FC<ThankYouCardProps> = ({
             gutterBottom
             sx={{ color: "#333333", mb: 2 }}
           >
-            תודה רבה, {guestInfo.name}! 🎉
+            {t("thankYou.thankYouTitle", { guestName: guestInfo.name })}
           </Typography>
 
           <Typography variant="h6" sx={{ color: "#666666", mb: 3 }}>
-            אישור ההגעה שלכם נשלח בהצלחה
+            {t("thankYou.rsvpSentSuccessfully")}
           </Typography>
 
           <Typography variant="body1" sx={{ color: "#666666", mb: 4 }}>
             {isAttending
-              ? `אנחנו מתרגשים לחגוג איתכם ${
-                  weddingInfo.date
-                    ? `ב${new Date(
+              ? t("thankYou.excitedToCelebrate", {
+                  weddingDate: weddingInfo.date
+                    ? new Date(
                         weddingInfo.date.seconds * 1000
                       ).toLocaleDateString("he-IL", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
                         timeZone: "Asia/Jerusalem",
-                      })}`
-                    : ""
-                }! ${guestCount > 1 ? `(${guestCount} אורחים)` : ""} 💒`
-              : `אנחנו מצטערים שלא תוכלו להגיע ליום המיוחד שלנו${
-                  weddingInfo.date
-                    ? ` ב${new Date(
+                      })
+                    : "",
+                  guestCount:
+                    guestCount > 1
+                      ? `(${guestCount} ${t("common.guests")})`
+                      : "",
+                })
+              : t("thankYou.sorryYouCantAttend", {
+                  weddingDate: weddingInfo.date
+                    ? new Date(
                         weddingInfo.date.seconds * 1000
                       ).toLocaleDateString("he-IL", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
                         timeZone: "Asia/Jerusalem",
-                      })}`
-                    : ""
-                }, אבל תודה שהודעתם לנו.`}
+                      })
+                    : "",
+                })}
           </Typography>
 
           <Divider sx={{ my: 3 }} />
 
           <Typography variant="body2" sx={{ color: "#666666", mb: 2 }}>
-            תוכלו לעדכן את אישור ההגעה שלכם בכל זמן דרך הקישור שקיבלתם 💌
+            {t("thankYou.canUpdateAnytime")}
           </Typography>
           <Button
             variant="contained"
             sx={{ mt: 2, bgcolor: "#9BBB9B", color: "white" }}
             onClick={onUpdateInfo}
           >
-            עדכון אישור הגעה
+            {t("thankYou.updateRsvp")}
           </Button>
         </Paper>
       </Container>

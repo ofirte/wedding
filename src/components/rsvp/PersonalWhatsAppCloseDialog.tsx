@@ -18,6 +18,7 @@ import {
   Close as CloseIcon,
 } from "@mui/icons-material";
 import { Invitee } from "../invitees/InviteList";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface PersonalWhatsAppCloseDialogProps {
   open: boolean;
@@ -38,8 +39,9 @@ const PersonalWhatsAppCloseDialog: FC<PersonalWhatsAppCloseDialogProps> = ({
   onMarkAsSentAndClose,
   onCloseWithoutSaving,
 }) => {
+  const { t } = useTranslation();
   // Filter to only show guests that were clicked but not already marked as sent
-  const pendingGuests = clickedGuests
+  const pendingGuests = clickedGuests;
 
   const handleMarkAsSentAndClose = () => {
     const guestIds = pendingGuests.map((guest) => guest.id);
@@ -72,25 +74,24 @@ const PersonalWhatsAppCloseDialog: FC<PersonalWhatsAppCloseDialogProps> = ({
       <DialogTitle sx={{ pb: 1 }}>
         <Box display="flex" alignItems="center" gap={1}>
           <WhatsAppIcon color="success" />
-          <Typography variant="h6">Mark Messages as Sent?</Typography>
+          <Typography variant="h6">{t("rsvp.markMessagesAsSent")}</Typography>
         </Box>
       </DialogTitle>
 
       <DialogContent>
         <Stack spacing={2}>
           <Alert severity="info">
-            You clicked "Send Message" for {pendingGuests.length} guest(s) but
-            haven't marked them as sent yet.
+            {t("rsvp.clickedSendButNotMarked", { count: pendingGuests.length })}
           </Alert>
 
           <Typography variant="body1" gutterBottom>
-            Which guests did you actually send messages to?
+            {t("rsvp.whichGuestsDidYouSendTo")}
           </Typography>
 
           {/* List of pending guests */}
           <Box>
             <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-              Pending guests:
+              {t("rsvp.pendingGuests")}
             </Typography>
             <Stack spacing={1}>
               {pendingGuests.map((guest) => (
@@ -115,7 +116,7 @@ const PersonalWhatsAppCloseDialog: FC<PersonalWhatsAppCloseDialogProps> = ({
 
       <DialogActions sx={{ p: 2, gap: 1 }}>
         <Button onClick={handleStay} variant="outlined" color="primary">
-          Stay & Continue
+          {t("rsvp.stayContinue")}
         </Button>
 
         <Button
@@ -124,7 +125,7 @@ const PersonalWhatsAppCloseDialog: FC<PersonalWhatsAppCloseDialogProps> = ({
           color="error"
           startIcon={<CloseIcon />}
         >
-          Leave Without Saving
+          {t("rsvp.leaveWithoutSaving")}
         </Button>
 
         <Button
@@ -133,7 +134,7 @@ const PersonalWhatsAppCloseDialog: FC<PersonalWhatsAppCloseDialogProps> = ({
           color="success"
           startIcon={<CheckIcon />}
         >
-          Mark All as Sent & Close
+          {t("rsvp.markAllAsSentAndClose")}
         </Button>
       </DialogActions>
     </Dialog>

@@ -135,6 +135,8 @@ export const englishTranslations: Translations = {
     fieldRequired: "This field is required",
     updating: "Updating...",
     submitting: "Submitting...",
+    creating: "Creating...",
+    done: "Done",
     updateRSVP: "🔄 Update RSVP 🔄",
     submitRSVP: "🎉 Submit RSVP! 🎉",
     completeRequiredFields: "Please complete all required fields",
@@ -144,6 +146,14 @@ export const englishTranslations: Translations = {
     weddingDetails: "Wedding Details",
     time: "Time",
     venue: "Venue",
+    whatsapp: "WhatsApp",
+    sms: "SMS",
+    personalWhatsapp: "Personal WhatsApp",
+    send: "Send",
+    noBodyAvailable: "No body available",
+    noVariables: "No variables",
+    unnamedTemplate: "Unnamed Template",
+    unknown: "Unknown",
   },
   nav: {
     home: "Home",
@@ -355,6 +365,20 @@ export const englishTranslations: Translations = {
     status: "Status",
     messagesLog: "Messages Log",
     questions: "Questions",
+    personalWhatsappMessages: "Personal WhatsApp Messages",
+    messageType: "Message Type",
+    templateName: "Template Name",
+    messageBody: "Message Body",
+    variables: "Variables",
+    dateCreated: "Date Created",
+    markMessagesAsSent: "Mark Messages as Sent?",
+    clickedSendButNotMarked:
+      'You clicked "Send Message" for {{count}} guest(s) but haven\'t marked them as sent yet.',
+    whichGuestsDidYouSendTo: "Which guests did you actually send messages to?",
+    pendingGuests: "Pending guests:",
+    stayContinue: "Stay & Continue",
+    leaveWithoutSaving: "Leave Without Saving",
+    markAllAsSentAndClose: "Mark All as Sent & Close",
   },
   rsvpEmptyState: {
     title: "Create Your RSVP Form",
@@ -495,5 +519,17 @@ export const englishTranslations: Translations = {
     noTemplatesAvailable: "No templates available",
     unknownError: "Unknown error",
     selectGuestsFirst: "Please select guests first",
+  },
+  thankYou: {
+    thankYouTitle: "Thank you so much, {{guestName}}! 🎉",
+    rsvpSentSuccessfully: "Your RSVP has been sent successfully",
+    excitedToCelebrate:
+      "We're excited to celebrate with you on {{weddingDate}}! {{guestCount}}",
+    sorryYouCantAttend:
+      "We're sorry you can't make it to our special day on {{weddingDate}}, but thank you for letting us know.",
+    thanksForLettingUsKnow: "but thank you for letting us know.",
+    canUpdateAnytime:
+      "You can update your RSVP anytime through the link you received 💌",
+    updateRsvp: "Update RSVP",
   },
 };

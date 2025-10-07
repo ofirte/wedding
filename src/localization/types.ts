@@ -161,6 +161,8 @@ export interface Translations {
     fieldRequired: string;
     updating: string;
     submitting: string;
+    creating: string;
+    done: string;
     updateRSVP: string;
     submitRSVP: string;
     completeRequiredFields: string;
@@ -170,6 +172,14 @@ export interface Translations {
     weddingDetails: string;
     time: string;
     venue: string;
+    whatsapp: string;
+    sms: string;
+    personalWhatsapp: string;
+    send: string;
+    noBodyAvailable: string;
+    noVariables: string;
+    unnamedTemplate: string;
+    unknown: string;
   };
   nav: {
     home: string;
@@ -373,6 +383,19 @@ export interface Translations {
     status: string;
     messagesLog: string;
     questions: string;
+    personalWhatsappMessages: string;
+    messageType: string;
+    templateName: string;
+    messageBody: string;
+    variables: string;
+    dateCreated: string;
+    markMessagesAsSent: string;
+    clickedSendButNotMarked: string;
+    whichGuestsDidYouSendTo: string;
+    pendingGuests: string;
+    stayContinue: string;
+    leaveWithoutSaving: string;
+    markAllAsSentAndClose: string;
   };
   rsvpEmptyState: {
     title: string;
@@ -507,5 +530,14 @@ export interface Translations {
     noTemplatesAvailable: string;
     unknownError: string;
     selectGuestsFirst: string;
+  };
+  thankYou: {
+    thankYouTitle: string;
+    rsvpSentSuccessfully: string;
+    excitedToCelebrate: string;
+    sorryYouCantAttend: string;
+    thanksForLettingUsKnow: string;
+    canUpdateAnytime: string;
+    updateRsvp: string;
   };
 }

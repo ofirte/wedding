@@ -11,7 +11,7 @@ import {
 const MessageTemplateTable: React.FC = () => {
   const { t } = useTranslation();
   const { data, isLoading, error } = useMessageTemplates();
-  const columns = createMessageTemplateColumns();
+  const columns = createMessageTemplateColumns(t);
   const transformedData: MessageTemplateRow[] = React.useMemo(() => {
     if (!data?.templates) return [];
 

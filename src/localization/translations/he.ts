@@ -135,6 +135,8 @@ export const hebrewTranslations: Translations = {
     fieldRequired: "שדה זה דרוש",
     updating: "מעדכן...",
     submitting: "שולח...",
+    creating: "יוצר...",
+    done: "סיום",
     updateRSVP: "🔄 עדכן אישור הגעה 🔄",
     submitRSVP: "🎉 שלח אישור הגעה! 🎉",
     completeRequiredFields: "אנא השלם את כל השדות הנדרשים",
@@ -144,6 +146,14 @@ export const hebrewTranslations: Translations = {
     weddingDetails: "פרטי החתונה",
     time: "שעה",
     venue: "מקום האירוע",
+    whatsapp: "WhatsApp",
+    sms: "SMS",
+    personalWhatsapp: "WhatsApp אישי",
+    send: "שלח",
+    noBodyAvailable: "תוכן לא זמין",
+    noVariables: "אין משתנים",
+    unnamedTemplate: "תבנית ללא שם",
+    unknown: "לא ידוע",
   },
   nav: {
     home: "בית",
@@ -353,6 +363,20 @@ export const hebrewTranslations: Translations = {
     status: "סטטוס",
     messagesLog: "יומן הודעות",
     questions: "שאלות",
+    personalWhatsappMessages: "הודעות WhatsApp אישיות",
+    messageType: "סוג הודעה",
+    templateName: "שם תבנית",
+    messageBody: "תוכן הודעה",
+    variables: "משתנים",
+    dateCreated: "תאריך יצירה",
+    markMessagesAsSent: "סמן הודעות כנשלחו?",
+    clickedSendButNotMarked:
+      'לחצת על "שלח הודעה" עבור {{count}} אורח(ים) אך לא סימנת אותם כנשלחו עדיין.',
+    whichGuestsDidYouSendTo: "לאילו אורחים באמת שלחת הודעות?",
+    pendingGuests: "אורחים ממתינים:",
+    stayContinue: "השאר והמשך",
+    leaveWithoutSaving: "צא מבלי לשמור",
+    markAllAsSentAndClose: "סמן הכל כנשלח וסגור",
   },
   rsvpEmptyState: {
     title: "צור טופס אישור הגעה",
@@ -493,5 +517,17 @@ export const hebrewTranslations: Translations = {
     noTemplatesAvailable: "אין תבניות זמינות",
     unknownError: "שגיאה לא ידועה",
     selectGuestsFirst: "אנא בחר אורחים תחילה",
+  },
+  thankYou: {
+    thankYouTitle: "תודה רבה, {{guestName}}! 🎉",
+    rsvpSentSuccessfully: "אישור ההגעה שלכם נשלח בהצלחה",
+    excitedToCelebrate:
+      "אנחנו מתרגשים לחגוג איתכם {{weddingDate}}! {{guestCount}} 💒",
+    sorryYouCantAttend:
+      "אנחנו מצטערים שלא תוכלו להגיע ליום המיוחד שלנו{{weddingDate}}, אבל תודה שהודעתם לנו.",
+    thanksForLettingUsKnow: "אבל תודה שהודעתם לנו.",
+    canUpdateAnytime:
+      "תוכלו לעדכן את אישור ההגעה שלכם בכל זמן דרך הקישור שקיבלתם 💌",
+    updateRsvp: "עדכון אישור הגעה",
   },
 };

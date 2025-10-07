@@ -39,7 +39,7 @@ const MessagePreview: FC<MessagePreviewProps> = ({
 
   // Helper function to extract body text from template types
   const getTemplateBody = (template: Template): string => {
-    if (!template.types) return "No body available";
+    if (!template.types) return t("common.noBodyAvailable");
 
     // Look for WhatsApp template body
     const whatsappType =
@@ -56,10 +56,10 @@ const MessagePreview: FC<MessagePreviewProps> = ({
     // Fallback to any available body
     const firstType = Object.values(template.types)[0];
     if (firstType && typeof firstType === "object" && "body" in firstType) {
-      return (firstType as any).body || "No body available";
+      return (firstType as any).body || t("common.noBodyAvailable");
     }
 
-    return "No body available";
+    return t("common.noBodyAvailable");
   };
 
   // Generate preview message by replacing variables
@@ -91,10 +91,10 @@ const MessagePreview: FC<MessagePreviewProps> = ({
       <Typography variant="subtitle2" gutterBottom>
         {t("rsvp.messagePreview")} (
         {messageType === "whatsapp"
-          ? "WhatsApp"
+          ? t("common.whatsapp")
           : messageType === "sms"
-          ? "SMS"
-          : "Personal WhatsApp"}
+          ? t("common.sms")
+          : t("common.personalWhatsapp")}
         )
       </Typography>
       <TextField

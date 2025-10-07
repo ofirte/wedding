@@ -286,7 +286,9 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
 
         <DialogActions sx={{ p: 2 }}>
           <Button onClick={handleClose} disabled={sending} variant="outlined">
-            {messageType === "personal-whatsapp" ? "Done" : t("common.cancel")}
+            {messageType === "personal-whatsapp"
+              ? t("common.done")
+              : t("common.cancel")}
           </Button>
 
           {/* Only show Send button for API-based messaging, not for personal WhatsApp */}
@@ -303,9 +305,11 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
             >
               {sending
                 ? t("rsvp.sending")
-                : `Send ${messageType === "whatsapp" ? "WhatsApp" : "SMS"} (${
-                    selectedGuests.length
-                  })`}
+                : `${t("common.send")} ${
+                    messageType === "whatsapp"
+                      ? t("common.whatsapp")
+                      : t("common.sms")
+                  } (${selectedGuests.length})`}
             </Button>
           )}
         </DialogActions>

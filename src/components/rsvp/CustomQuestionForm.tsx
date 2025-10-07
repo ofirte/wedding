@@ -485,7 +485,9 @@ const CustomQuestionForm: React.FC<CustomQuestionFormProps> = ({
             minWidth: 120,
           }}
         >
-          {submitting ? "Creating..." : t("rsvpQuestionManager.createQuestion")}
+          {submitting
+            ? t("common.creating")
+            : t("rsvpQuestionManager.createQuestion")}
         </Button>
       </DialogActions>
     </Dialog>

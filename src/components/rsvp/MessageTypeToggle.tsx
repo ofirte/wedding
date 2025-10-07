@@ -10,6 +10,7 @@ import {
   Sms as SmsIcon,
   PersonalVideo as PersonalIcon,
 } from "@mui/icons-material";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface MessageTypeToggleProps {
   value: "whatsapp" | "sms" | "personal-whatsapp";
@@ -27,10 +28,11 @@ const MessageTypeToggle: FC<MessageTypeToggleProps> = ({
   onChange,
   disabled = false,
 }) => {
+  const { t } = useTranslation();
   return (
     <Box>
       <Typography variant="subtitle2" gutterBottom>
-        Message Type
+        {t("rsvp.messageType")}
       </Typography>
       <ToggleButtonGroup
         value={value}
@@ -45,21 +47,21 @@ const MessageTypeToggle: FC<MessageTypeToggleProps> = ({
           sx={{ display: "flex", alignItems: "center", gap: 1 }}
         >
           <WhatsAppIcon fontSize="small" />
-          WhatsApp
+          {t("common.whatsapp")}
         </ToggleButton>
         <ToggleButton
           value="sms"
           sx={{ display: "flex", alignItems: "center", gap: 1 }}
         >
           <SmsIcon fontSize="small" />
-          SMS
+          {t("common.sms")}
         </ToggleButton>
         <ToggleButton
           value="personal-whatsapp"
           sx={{ display: "flex", alignItems: "center", gap: 1 }}
         >
           <PersonalIcon fontSize="small" />
-          Personal WhatsApp
+          {t("common.personalWhatsapp")}
         </ToggleButton>
       </ToggleButtonGroup>
     </Box>
