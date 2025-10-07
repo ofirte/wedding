@@ -77,7 +77,7 @@ const MessagePreview: FC<MessagePreviewProps> = ({
       message = message.replace(/\{\{1\}\}/g, guestName);
       message = message.replace(/\{\{guestName\}\}/g, guestName);
       message = message.replace(/\{\{weddingId\}\}/g, weddingId);
-      message = message.replace(/\{guest\}/g, guestName);
+      message = message.replace(/\{\{guestId\}\}/g, guests[0].id);
       message = message.replace(/\{גוסט\}/g, guestName);
     }
 

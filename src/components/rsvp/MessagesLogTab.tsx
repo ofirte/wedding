@@ -29,8 +29,9 @@ const MessagesLogTab: FC = () => {
     return (
       <Box p={3}>
         <Typography color="error">
-          Error loading messages:{" "}
-          {error instanceof Error ? error.message : "Unknown error"}
+          {error instanceof Error
+            ? error.message
+            : t("rsvpStatusTab.unknownError")}
         </Typography>
       </Box>
     );

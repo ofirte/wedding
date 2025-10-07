@@ -489,5 +489,9 @@ export const hebrewTranslations: Translations = {
     selectTemplateFirst: "בחר תבניות כדי לסנן",
     invitationLink: "קישור להזמנה",
     copyInvitationLink: "העתק קישור הזמנה לאורח",
+    failed: "נכשל",
+    noTemplatesAvailable: "אין תבניות זמינות",
+    unknownError: "שגיאה לא ידועה",
+    selectGuestsFirst: "אנא בחר אורחים תחילה",
   },
 };

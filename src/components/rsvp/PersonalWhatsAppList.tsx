@@ -16,9 +16,10 @@ import {
   Phone as PhoneIcon,
 } from "@mui/icons-material";
 import { Invitee } from "../invitees/InviteList";
-import { usePersonalWhatsApp } from "../../hooks/rsvp/usePersonalWhatsApp";
+
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
 import { savePersonalWhatsAppMessage } from "../../api/rsvp/rsvpApi";
+import { usePersonalWhatsApp } from "../../hooks/rsvp";
 
 interface Template {
   sid: string;

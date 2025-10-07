@@ -2,12 +2,14 @@ import React from "react";
 import { Box, Typography, Alert, CircularProgress } from "@mui/material";
 import DSTable from "../common/DSTable";
 import { useMessageTemplates } from "../../hooks/rsvp/useMessageTemplates";
+import { useTranslation } from "../../localization/LocalizationContext";
 import {
   createMessageTemplateColumns,
   MessageTemplateRow,
 } from "./MessageTemplateColumns";
 
 const MessageTemplateTable: React.FC = () => {
+  const { t } = useTranslation();
   const { data, isLoading, error } = useMessageTemplates();
   const columns = createMessageTemplateColumns();
   const transformedData: MessageTemplateRow[] = React.useMemo(() => {
@@ -44,7 +46,9 @@ const MessageTemplateTable: React.FC = () => {
     return (
       <Alert severity="error" sx={{ mb: 2 }}>
         Failed to load message templates:{" "}
-        {error instanceof Error ? error.message : "Unknown error"}
+        {error instanceof Error
+          ? error.message
+          : t("rsvpStatusTab.unknownError")}
       </Alert>
     );
   }

@@ -57,8 +57,7 @@ export const usePersonalWhatsApp = () => {
       message = message.replace(/\{\{1\}\}/g, guestName);
       message = message.replace(/\{\{guestName\}\}/g, guestName);
       message = message.replace(/\{\{weddingId\}\}/g, weddingId);
-      message = message.replace(/\{guest\}/g, guestName);
-      message = message.replace(/\{גוסט\}/g, guestName);
+      message = message.replace(/\{\{guestId\}\}/g, guest.id);
 
       return message;
     },
@@ -82,7 +81,9 @@ export const usePersonalWhatsApp = () => {
   const generateWhatsAppURL = useCallback(
     (guest: Invitee, message: string): string => {
       const cleanNumber = cleanPhoneNumber(guest.cellphone);
+      console.log(message)
       const encodedMessage = encodeURIComponent(message);
+      console.log(`https://wa.me/${cleanNumber}?text=${encodedMessage}`)
       return `https://wa.me/${cleanNumber}?text=${encodedMessage}`;
     },
     [cleanPhoneNumber]

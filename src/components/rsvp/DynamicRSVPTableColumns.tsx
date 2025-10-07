@@ -24,7 +24,7 @@ export type InviteeWithDynamicRSVP = Invitee & {
 };
 
 interface UseDynamicRSVPTableColumnsProps {
-  selectedTemplates: string[];
+  selectedTemplate: string | undefined;
   sentMessages: any[];
 }
 
@@ -35,7 +35,7 @@ interface UseDynamicRSVPTableColumnsProps {
  * in the RSVP form, ensuring the table always reflects the current form structure.
  */
 export const useDynamicRSVPTableColumns = ({
-  selectedTemplates,
+  selectedTemplate,
   sentMessages,
 }: UseDynamicRSVPTableColumnsProps): Column<InviteeWithDynamicRSVP>[] => {
   const { t } = useTranslation();
@@ -365,12 +365,12 @@ export const useDynamicRSVPTableColumns = ({
           label: t("rsvpStatusTab.sent"),
           options: [
             { value: "sent", label: t("rsvpStatusTab.sent") },
-            { value: "failed", label: "Failed" },
+            { value: "failed", label: t("rsvpStatusTab.failed") },
             { value: "notSent", label: t("rsvpStatusTab.notSent") },
           ],
         },
         render: (row) => {
-          if (selectedTemplates.length === 0) {
+          if (!selectedTemplate) {
             return (
               <Typography variant="body2" color="text.disabled">
                 {t("rsvpStatusTab.selectTemplateFirst")}
@@ -429,15 +429,15 @@ export const useDynamicRSVPTableColumns = ({
             const hasPersonalWhatsApp =
               messageTypes.includes("personal-whatsapp");
 
-            let label = "Failed";
+            let label = t("rsvpStatusTab.failed");
 
             // Add message type to failed label for context
             if (hasSMS) {
-              label = "Failed (SMS)";
+              label = `${t("rsvpStatusTab.failed")} (SMS)`;
             } else if (hasPersonalWhatsApp) {
-              label = "Failed (Personal WA)";
+              label = `${t("rsvpStatusTab.failed")} (Personal WA)`;
             } else if (hasWhatsApp) {
-              label = "Failed (WA)";
+              label = `${t("rsvpStatusTab.failed")} (WA)`;
             }
 
             return (
@@ -473,5 +473,5 @@ export const useDynamicRSVPTableColumns = ({
     );
 
     return columns;
-  }, [t, questions, selectedTemplates, wedding?.id]);
+  }, [t, questions, selectedTemplate, wedding?.id]);
 };

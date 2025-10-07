@@ -491,5 +491,9 @@ export const englishTranslations: Translations = {
     responseRate: "Response Rate",
     responded: "Responded",
     selectionBreakdown: "Selection Breakdown",
+    failed: "Failed",
+    noTemplatesAvailable: "No templates available",
+    unknownError: "Unknown error",
+    selectGuestsFirst: "Please select guests first",
   },
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, Tooltip } from "@mui/material";
 import { Send as SendIcon } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
 import MessageTemplateSelector from "./MessageTemplateSelector";
@@ -10,8 +10,8 @@ interface MessageTemplate {
 }
 
 interface RSVPTableHeaderProps {
-  selectedTemplates: string[];
-  onTemplateSelectionChange: (selected: string[]) => void;
+  selectedTemplate: string;
+  onTemplateSelectionChange: (selected: string) => void;
   selectedGuestsCount: number;
   onSendMessage: () => void;
   templates?: MessageTemplate[];
@@ -28,7 +28,7 @@ interface RSVPTableHeaderProps {
  * 4. Creates a clear action-oriented header that guides user behavior
  */
 const RSVPTableHeader: React.FC<RSVPTableHeaderProps> = ({
-  selectedTemplates,
+  selectedTemplate,
   onTemplateSelectionChange,
   selectedGuestsCount,
   onSendMessage,
@@ -59,27 +59,42 @@ const RSVPTableHeader: React.FC<RSVPTableHeaderProps> = ({
           {t("rsvpStatusTab.rsvpList")}
         </Typography>
         <MessageTemplateSelector
-          selectedTemplates={selectedTemplates}
+          selectedTemplate={selectedTemplate}
           onSelectionChange={onTemplateSelectionChange}
           templates={templates}
           disabled={isLoading}
         />
       </Box>
-      <Button
-        variant="contained"
-        startIcon={<SendIcon />}
-        onClick={onSendMessage}
-        color="primary"
-        disabled={
-          selectedGuestsCount === 0 ||
-          selectedTemplates.length === 0 ||
-          isLoading
+      <Tooltip
+        title={
+          selectedGuestsCount === 0
+            ? t("rsvpStatusTab.selectGuestsFirst")
+            : !selectedTemplate
+            ? t("rsvpStatusTab.selectTemplateFirst")
+            : isLoading
+            ? t("common.loading")
+            : ""
         }
-        sx={{ whiteSpace: "nowrap" }}
+        disableHoverListener={
+          selectedGuestsCount > 0 && !!selectedTemplate && !isLoading
+        }
       >
-        {t("rsvp.sendMessage")}{" "}
-        {selectedGuestsCount > 0 && `(${selectedGuestsCount})`}
-      </Button>
+        <span>
+          <Button
+            variant="contained"
+            startIcon={<SendIcon />}
+            onClick={onSendMessage}
+            color="primary"
+            disabled={
+              selectedGuestsCount === 0 || !selectedTemplate || isLoading
+            }
+            sx={{ whiteSpace: "nowrap" }}
+          >
+            {t("rsvp.sendMessage")}{" "}
+            {selectedGuestsCount > 0 && `(${selectedGuestsCount})`}
+          </Button>
+        </span>
+      </Tooltip>
     </Box>
   );
 };

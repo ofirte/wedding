@@ -503,5 +503,9 @@ export interface Translations {
     responseRate: string;
     responded: string;
     selectionBreakdown: string;
+    failed: string;
+    noTemplatesAvailable: string;
+    unknownError: string;
+    selectGuestsFirst: string;
   };
 }

@@ -14,8 +14,8 @@ interface MessageTemplate {
 interface DynamicRSVPDataTableProps {
   data: InviteeWithDynamicRSVP[];
   columns: Column<InviteeWithDynamicRSVP>[];
-  selectedTemplates: string[];
-  onTemplateSelectionChange: (selected: string[]) => void;
+  selectedTemplate: string | undefined;
+  onTemplateSelectionChange: (selected: string) => void;
   selectedGuestsCount: number;
   onSelectionChange: (selected: InviteeWithDynamicRSVP[]) => void;
   onSendMessage: () => void;
@@ -39,7 +39,7 @@ interface DynamicRSVPDataTableProps {
 const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
   data,
   columns,
-  selectedTemplates,
+  selectedTemplate,
   onTemplateSelectionChange,
   selectedGuestsCount,
   onSelectionChange,
@@ -54,7 +54,7 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
   // Helper to get sent messages info for an invitee
   const getInviteeSentMessagesInfo = useCallback(
     (invitee: InviteeWithDynamicRSVP) => {
-      if (!sentMessages.length || !selectedTemplates.length) {
+      if (!sentMessages.length || !selectedTemplate) {
         return { status: "notSent", messageTypes: [] };
       }
 
@@ -62,7 +62,7 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
       const inviteeMessages = sentMessages.filter(
         (message) =>
           message.userId === invitee.id &&
-          selectedTemplates.includes(message.contentSid)
+          message.contentSid === selectedTemplate
       );
 
       if (inviteeMessages.length === 0) {
@@ -102,7 +102,7 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
         messageTypes,
       };
     },
-    [sentMessages, selectedTemplates]
+    [sentMessages, selectedTemplate]
   );
 
   // Preprocess data to add computed properties for filtering
@@ -111,7 +111,7 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
       const sentInfo = getInviteeSentMessagesInfo(row);
       const flattened: any = {
         ...row,
-        templateSent: selectedTemplates.length === 0 ? "all" : sentInfo.status, // Use the status directly: "sent", "failed", or "notSent"
+        templateSent: !selectedTemplate ? "all" : sentInfo.status, // Use the status directly: "sent", "failed", or "notSent"
         sentMessageTypes: sentInfo.messageTypes,
       };
       // Flatten all RSVP status properties for filtering
@@ -123,7 +123,7 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
 
       return flattened;
     });
-  }, [data, selectedTemplates, getInviteeSentMessagesInfo]);
+  }, [data, selectedTemplate, getInviteeSentMessagesInfo]);
 
   const handleSelectionChange = (selected: InviteeWithDynamicRSVP[]) => {
     // Filter selected guests to only include those with phone numbers
@@ -160,7 +160,7 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
         }}
       >
         <RSVPTableHeader
-          selectedTemplates={selectedTemplates}
+          selectedTemplate={selectedTemplate || ""}
           onTemplateSelectionChange={onTemplateSelectionChange}
           selectedGuestsCount={selectedGuestsCount}
           onSendMessage={onSendMessage}

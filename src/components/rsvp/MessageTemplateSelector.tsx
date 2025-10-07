@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Chip,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from "@mui/material";
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface MessageTemplate {
@@ -15,8 +8,8 @@ interface MessageTemplate {
 }
 
 interface MessageTemplateSelectorProps {
-  selectedTemplates: string[];
-  onSelectionChange: (selected: string[]) => void;
+  selectedTemplate: string;
+  onSelectionChange: (selected: string) => void;
   templates?: MessageTemplate[];
   disabled?: boolean;
 }
@@ -30,7 +23,7 @@ interface MessageTemplateSelectorProps {
  * 3. Provides clear visual feedback of current selections
  */
 const MessageTemplateSelector: React.FC<MessageTemplateSelectorProps> = ({
-  selectedTemplates,
+  selectedTemplate,
   onSelectionChange,
   templates = [],
   disabled = false,
@@ -39,31 +32,7 @@ const MessageTemplateSelector: React.FC<MessageTemplateSelectorProps> = ({
 
   const handleChange = (event: any) => {
     const value = event.target.value;
-    onSelectionChange(typeof value === "string" ? value.split(",") : value);
-  };
-
-  const renderSelectedTemplates = (selected: string[]) => {
-    if (selected.length === 0) return "";
-
-    const firstTemplate = templates.find((t) => t.sid === selected[0]);
-
-    if (selected.length === 1) {
-      return (
-        <Chip label={firstTemplate?.friendlyName || "Unknown"} size="small" />
-      );
-    }
-
-    return (
-      <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
-        <Chip label={firstTemplate?.friendlyName || "Unknown"} size="small" />
-        <Chip
-          label={`+${selected.length - 1}`}
-          size="small"
-          variant="outlined"
-          color="primary"
-        />
-      </Box>
-    );
+    onSelectionChange(value);
   };
 
   return (
@@ -77,11 +46,9 @@ const MessageTemplateSelector: React.FC<MessageTemplateSelectorProps> = ({
       </InputLabel>
       <Select
         labelId="template-select-label"
-        multiple
-        value={selectedTemplates}
+        value={selectedTemplate}
         label={t("rsvpStatusTab.filterByTemplate")}
         onChange={handleChange}
-        renderValue={renderSelectedTemplates}
       >
         {templates && templates.length > 0 ? (
           templates.map((template) => (
@@ -90,7 +57,9 @@ const MessageTemplateSelector: React.FC<MessageTemplateSelectorProps> = ({
             </MenuItem>
           ))
         ) : (
-          <MenuItem disabled>No templates available</MenuItem>
+          <MenuItem disabled>
+            {t("rsvpStatusTab.noTemplatesAvailable")}
+          </MenuItem>
         )}
       </Select>
     </FormControl>
