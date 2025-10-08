@@ -34,7 +34,7 @@ const initializeTwilioClient = () => {
 
 const corsMiddleware = cors({
   origin: true,
-  methods: ["GET", "POST", "OPTIONS"],
+  methods: ["GET", "POST", "OPTIONS", "DELETE"],
   credentials: true,
 });
 
