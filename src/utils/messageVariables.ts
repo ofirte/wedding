@@ -5,6 +5,7 @@
 
 import { Wedding } from "../api/wedding/weddingApi";
 import { Invitee } from "../components/invitees/InviteList";
+import { Language } from "../localization/types";
 
 export interface TemplateVariable {
   key: string;
@@ -32,20 +33,23 @@ export type MessageGuest = Pick<Invitee, "id" | "name"> & {
 };
 
 /**
- * Predefined variables available for all message templates
- * These variables can be used in template creation and will be populated during message sending
+ * Get localized predefined variables based on current language
+ * @param locale The current language ('en' or 'he')
+ * @returns Array of template variables with localized placeholders
  */
-export const PREDEFINED_VARIABLES: TemplateVariable[] = [
+export const getPredefinedVariables = (
+  locale: Language = "en"
+): TemplateVariable[] => [
   {
     key: "guestName",
     label: "Guest Name",
-    placeholder: "John & Jane",
+    placeholder: locale === "he" ? "יוחנן ושרה" : "John & Jane",
     description: "The name of the guest or couple receiving the message",
   },
   {
     key: "eventDate",
     label: "Event Date",
-    placeholder: "June 15, 2025",
+    placeholder: locale === "he" ? "15 ביוני 2025" : "June 15, 2025",
     description: "The wedding date",
   },
   {
@@ -57,7 +61,7 @@ export const PREDEFINED_VARIABLES: TemplateVariable[] = [
   {
     key: "coupleName",
     label: "Couple Name",
-    placeholder: "Sarah & David",
+    placeholder: locale === "he" ? "שרה ודוד" : "Sarah & David",
     description: "The names of the bride and groom",
   },
   {
@@ -127,14 +131,38 @@ export const generatePaymentLink = (
 };
 
 /**
+ * Format date according to locale preferences
+ * @param date The date to format
+ * @param locale The locale ('en' or 'he')
+ * @returns Formatted date string
+ */
+export const formatLocalizedDate = (
+  date: Date,
+  locale: Language = "en"
+): string => {
+  if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+    return "TBD";
+  }
+  if (locale === "he") {
+    // Hebrew: use Hebrew locale with Hebrew calendar if available
+    return date.toLocaleDateString("he-IL").replace(/\./g, "/");
+  } else {
+    // English: use US format
+    return date.toLocaleDateString("en-US").replace(/\./g, "/");
+  }
+};
+
+/**
  * Populate all predefined variables with actual values for a specific guest and wedding
  * @param guest The guest receiving the message
  * @param wedding The wedding context
+ * @param locale Optional locale for date formatting ('en' or 'he')
  * @returns Object with all variables populated with real values
  */
 export const populateVariables = (
   guest: MessageGuest,
-  wedding: MessageWedding
+  wedding: MessageWedding,
+  locale: Language = "en"
 ): PopulatedVariables => {
   // Generate couple name from individual names or use provided coupleName
   const coupleName =
@@ -143,11 +171,18 @@ export const populateVariables = (
       ? `${wedding.brideName} & ${wedding.groomName}`
       : wedding.name || "The Happy Couple");
 
-  // Format event date from wedding date if available
-  const eventDate =
-    wedding.eventDate ||
-    (wedding as any).date?.toDate?.()?.toLocaleDateString() ||
-    "TBD";
+  // Format event date from wedding date with proper localization
+  let eventDate = "TBD";
+  if (wedding.eventDate) {
+    // If eventDate is already a string, use it as is
+    eventDate = wedding.eventDate;
+  } else if ((wedding as any).date) {
+    // If we have a Firestore Timestamp, convert and format with locale
+    const weddingDate = (wedding as any).date?.toDate?.();
+    if (weddingDate instanceof Date) {
+      eventDate = formatLocalizedDate(weddingDate, locale);
+    }
+  }
 
   return {
     guestName: guest.name || "Dear Guest",
@@ -209,8 +244,9 @@ export const validateTemplateVariables = (
   unsupportedVariables: string[];
   supportedVariables: string[];
 } => {
+  const predefinedVariables = getPredefinedVariables();
   const usedVariables = extractUsedVariables(templateText);
-  const supportedVariableKeys = PREDEFINED_VARIABLES.map((v) => v.key);
+  const supportedVariableKeys = predefinedVariables.map((v) => v.key);
 
   // Add legacy variables for backward compatibility
   supportedVariableKeys.push("guestId", "weddingId");
@@ -238,5 +274,6 @@ export const validateTemplateVariables = (
 export const getVariableDefinition = (
   key: string
 ): TemplateVariable | undefined => {
-  return PREDEFINED_VARIABLES.find((v) => v.key === key);
+  const predefinedVariables = getPredefinedVariables();
+  return predefinedVariables.find((v) => v.key === key);
 };

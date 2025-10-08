@@ -44,7 +44,7 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
   selectedGuests,
   selectedTemplate,
 }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { mutate: sendMessage } = useSendMessage();
   const { mutate: sendSMSMessage } = useSendSMSMessage();
   const { data: wedding } = useWeddingDetails();
@@ -63,10 +63,11 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
     try {
       // API-based sending (WhatsApp or SMS) - Personal WhatsApp is handled separately
       const sendPromises = selectedGuests.map((guest) => {
-        // Use centralized variable population system
+        // Use centralized variable population system with locale
         const contentVariables = populateVariables(
           guest,
-          wedding || { id: "" }
+          wedding || { id: "" },
+          language
         );
 
         if (messageType === "whatsapp") {
@@ -140,7 +141,8 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
 
           const contentVariables = populateVariables(
             guest,
-            wedding || { id: "" }
+            wedding || { id: "" },
+            language
           );
 
           // Import the savePersonalWhatsAppMessage function

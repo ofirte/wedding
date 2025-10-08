@@ -32,7 +32,7 @@ const MessagePreview: FC<MessagePreviewProps> = ({
   guests,
   wedding,
 }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   // Helper function to extract body text from template types
   const getTemplateBody = useCallback(
@@ -70,12 +70,12 @@ const MessagePreview: FC<MessagePreviewProps> = ({
 
     // Use centralized variable replacement with first guest as example
     if (guests.length > 0 && wedding) {
-      const variables = populateVariables(guests[0], wedding);
+      const variables = populateVariables(guests[0], wedding, language);
       message = replaceVariables(message, variables);
     }
 
     return message;
-  }, [template, guests, wedding, getTemplateBody]);
+  }, [template, guests, wedding, getTemplateBody, language]);
 
   if (!template) return null;
 

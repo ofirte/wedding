@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, use, useMemo } from "react";
+import React, { useState, useRef, useCallback, useMemo } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -21,10 +21,14 @@ import { useTranslation } from "../../localization/LocalizationContext";
 import { CreateTemplateRequest } from "../../api/rsvp/templateApi";
 import { formatTemplateName } from "../../utils/templatesUtils";
 import {
-  PREDEFINED_VARIABLES,
+  getPredefinedVariables,
   TemplateVariable,
   extractUsedVariables,
+  populateVariables,
+  replaceVariables,
 } from "../../utils/messageVariables";
+import { useInvitees } from "../../hooks/invitees";
+import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
 
 interface CreateTemplateFormProps {
   open: boolean;
@@ -41,14 +45,27 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
   isSubmitting,
   weddingId,
 }) => {
-  const { t } = useTranslation();
+  const { t, language: environmentLanguage } = useTranslation();
   const [templateName, setTemplateName] = useState("");
-  const [language, setLanguage] = useState<"en" | "he">("en");
+  const [language, setLanguage] = useState<"en" | "he">(environmentLanguage);
+  const predefinedVariables = getPredefinedVariables(language);
   const [messageText, setMessageText] = useState("");
   const usedVariables = useMemo(() => {
     return extractUsedVariables(messageText);
   }, [messageText]);
+  const { data: invitees } = useInvitees();
+  const { data: wedding } = useWeddingDetails();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const previewText = useMemo(() => {
+    let message = messageText;
+    const guest = invitees?.[0]; // Use first guest for preview context
+    if (guest && wedding) {
+      const variables = populateVariables(guest, wedding, language);
+      message = replaceVariables(message, variables);
+    }
+
+    return message;
+  }, [messageText, invitees, wedding, language]);
 
   const insertVariable = useCallback(
     (variable: TemplateVariable) => {
@@ -84,7 +101,7 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
     // Create variables object from used variables
     const variables: Record<string, string> = {};
     usedVariables.forEach((varKey) => {
-      const variable = PREDEFINED_VARIABLES.find((v) => v.key === varKey);
+      const variable = predefinedVariables.find((v) => v.key === varKey);
       if (variable) {
         variables[varKey] = variable.placeholder;
       }
@@ -171,7 +188,7 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
               {t("templates.clickToInsert")}
             </Typography>
             <Stack direction="row" flexWrap="wrap" gap={1}>
-              {PREDEFINED_VARIABLES.map((variable) => (
+              {predefinedVariables.map((variable) => (
                 <Chip
                   key={variable.key}
                   label={variable.label}
@@ -191,13 +208,13 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
             </Stack>
           </Box>
 
-          {messageText && (
+          {previewText && (
             <Box>
               <Typography variant="subtitle2" gutterBottom>
                 {t("templates.preview")}
               </Typography>
               <Alert severity="info" sx={{ whiteSpace: "pre-wrap" }}>
-                {messageText}
+                {previewText}
               </Alert>
             </Box>
           )}
