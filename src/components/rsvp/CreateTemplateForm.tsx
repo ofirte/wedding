@@ -20,22 +20,11 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { CreateTemplateRequest } from "../../api/rsvp/templateApi";
 import { formatTemplateName } from "../../utils/templatesUtils";
-
-interface TemplateVariable {
-  key: string;
-  label: string;
-  placeholder: string;
-}
-
-const PREDEFINED_VARIABLES: TemplateVariable[] = [
-  { key: "guestName", label: "Guest Name", placeholder: "John & Jane" },
-  { key: "eventDate", label: "Event Date", placeholder: "June 15, 2025" },
-  { key: "eventStartTime", label: "Event Start Time", placeholder: "18:00" },
-  { key: "coupleName", label: "Couple Name", placeholder: "Sarah & David" },
-  { key: "rsvpLink", label: "RSVP Link", placeholder: "https://..." },
-  { key: "paymentLink", label: "Payment Link", placeholder: "https://..." },
-  { key: "giftLink", label: "Gift Link", placeholder: "https://..." },
-];
+import {
+  PREDEFINED_VARIABLES,
+  TemplateVariable,
+  extractUsedVariables,
+} from "../../utils/messageVariables";
 
 interface CreateTemplateFormProps {
   open: boolean;
@@ -57,10 +46,7 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
   const [language, setLanguage] = useState<"en" | "he">("en");
   const [messageText, setMessageText] = useState("");
   const usedVariables = useMemo(() => {
-    const usedVars = PREDEFINED_VARIABLES.filter((variable) =>
-      messageText.includes(`{{${variable.key}}}`)
-    );
-    return usedVars.map((v) => v.key);
+    return extractUsedVariables(messageText);
   }, [messageText]);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 

@@ -1,5 +1,4 @@
 // Export all RSVP hooks for easier imports
-export { useMessageTemplates } from "./useMessageTemplates";
 export { useSendMessage } from "./useSendMessage";
 export { useSendSMSMessage } from "./useSendSMSMessage";
 export { usePersonalWhatsApp } from "./usePersonalWhatsApp";
@@ -22,7 +21,6 @@ export type {
   SendSMSRequest,
   SendSMSResponse,
   SentMessage,
-  MessageTemplatesResponse,
   ContentInsight,
   TwilioMessageStatus,
 } from "../../api/rsvp/rsvpApi";

@@ -1,6 +1,7 @@
 import React from "react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { stripWeddingIdFromTemplateName } from "../../utils/templatesUtils";
 
 interface MessageTemplate {
   sid: string;
@@ -53,7 +54,7 @@ const MessageTemplateSelector: React.FC<MessageTemplateSelectorProps> = ({
         {templates && templates.length > 0 ? (
           templates.map((template) => (
             <MenuItem key={template.sid} value={template.sid}>
-              {template.friendlyName}
+               {stripWeddingIdFromTemplateName(template.friendlyName)}
             </MenuItem>
           ))
         ) : (

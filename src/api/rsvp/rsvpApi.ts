@@ -195,28 +195,6 @@ export const sendBulkMessages = async (
   return results;
 };
 
-export const getMessageTemplates =
-  async (): Promise<MessageTemplatesResponse> => {
-    try {
-      const response = await fetch(`${BASE_URL}/messages/templates`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = (await response.json()) as MessageTemplatesResponse;
-      return data;
-    } catch (error) {
-      console.error("Error fetching message templates:", error);
-      throw error;
-    }
-  };
-
 /**
  * Check message status from Twilio API
  * @param messageSid The Twilio message SID to check

@@ -19,11 +19,11 @@ import { useSendMessage } from "../../hooks/rsvp/useSendMessage";
 import { useSendSMSMessage } from "../../hooks/rsvp/useSendSMSMessage";
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
 import { Invitee } from "../invitees/InviteList";
+import { populateVariables } from "../../utils/messageVariables";
 import MessageTypeToggle from "./MessageTypeToggle";
 import MessagePreview from "./MessagePreview";
 import PersonalWhatsAppList from "./PersonalWhatsAppList";
 import PersonalWhatsAppCloseDialog from "./PersonalWhatsAppCloseDialog";
-import { set } from "lodash";
 
 interface Template {
   sid: string;
@@ -63,11 +63,11 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
     try {
       // API-based sending (WhatsApp or SMS) - Personal WhatsApp is handled separately
       const sendPromises = selectedGuests.map((guest) => {
-        const contentVariables = {
-          guestName: guest.name,
-          guestId: guest.id,
-          weddingId: wedding?.id ?? "",
-        };
+        // Use centralized variable population system
+        const contentVariables = populateVariables(
+          guest,
+          wedding || { id: "" }
+        );
 
         if (messageType === "whatsapp") {
           const phoneNumber = guest.cellphone.startsWith("+")
@@ -138,11 +138,10 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
             ? guest.cellphone
             : `+972${guest.cellphone}`;
 
-          const contentVariables = {
-            guestName: guest.name,
-            guestId: guest.id,
-            weddingId: wedding?.id ?? "",
-          };
+          const contentVariables = populateVariables(
+            guest,
+            wedding || { id: "" }
+          );
 
           // Import the savePersonalWhatsAppMessage function
           const { savePersonalWhatsAppMessage } = await import(

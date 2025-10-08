@@ -1,15 +1,12 @@
 import { useCallback } from "react";
 import { Invitee } from "../../components/invitees/InviteList";
 import { savePersonalWhatsAppMessage } from "../../api/rsvp/rsvpApi";
+import { MessageWedding } from "../../utils/messageVariables";
 
 interface Template {
   sid: string;
   friendlyName?: string;
   types?: Record<string, any>;
-}
-
-interface Wedding {
-  id: string;
 }
 
 /**
@@ -46,7 +43,11 @@ export const usePersonalWhatsApp = () => {
 
   // Generate personalized message for a guest
   const generatePersonalizedMessage = useCallback(
-    (template: Template, guest: Invitee, wedding?: Wedding | null): string => {
+    (
+      template: Template,
+      guest: Invitee,
+      wedding?: MessageWedding | null
+    ): string => {
       let message = getTemplateBody(template);
 
       // Replace variables with guest's information
@@ -81,9 +82,9 @@ export const usePersonalWhatsApp = () => {
   const generateWhatsAppURL = useCallback(
     (guest: Invitee, message: string): string => {
       const cleanNumber = cleanPhoneNumber(guest.cellphone);
-      console.log(message)
+      console.log(message);
       const encodedMessage = encodeURIComponent(message);
-      console.log(`https://wa.me/${cleanNumber}?text=${encodedMessage}`)
+      console.log(`https://wa.me/${cleanNumber}?text=${encodedMessage}`);
       return `https://wa.me/${cleanNumber}?text=${encodedMessage}`;
     },
     [cleanPhoneNumber]
@@ -94,7 +95,7 @@ export const usePersonalWhatsApp = () => {
     async (
       guests: Invitee[],
       template: Template,
-      wedding?: Wedding | null,
+      wedding?: MessageWedding | null,
       onProgress?: (current: number, total: number, guestName: string) => void
     ): Promise<void> => {
       for (let i = 0; i < guests.length; i++) {
@@ -150,7 +151,7 @@ export const usePersonalWhatsApp = () => {
     async (
       guests: Invitee[],
       template: Template,
-      wedding?: Wedding | null
+      wedding?: MessageWedding | null
     ): Promise<void> => {
       const savePromises = guests.map(async (guest) => {
         try {
