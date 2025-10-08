@@ -41,10 +41,11 @@
     "watch": "cd ./functions && tsc --watch",
     "build:dev": "env-cmd -f .env.development react-scripts build",
     "build:prod": "env-cmd -f .env.production react-scripts build",
-    "test": "react-scripts test",
+
     "eject": "react-scripts eject",
     "deploy:dev": "npm run build:dev && firebase use wedding-c89a1 && firebase deploy --only hosting:development",
-    "deploy:prod": "npm run build:prod && firebase use wedding-c89a1 && firebase deploy --only hosting:production -P production",
+    "deploy:prod": "npm run build:prod && firebase use wedding-prod-f13a0 && firebase deploy --only hosting:production -P production",
+    "deploy:functions:prod": "cd ./functions && npm run build && firebase use wedding-prod-f13a0 && firebase deploy --only functions",
     "migrate-wedding": "node migrateWedding.cjs"
   },
   "eslintConfig": {

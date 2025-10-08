@@ -8,7 +8,7 @@ import {
 } from "@mui/icons-material";
 import { useSearchParams } from "react-router";
 import { useTranslation } from "../../localization/LocalizationContext";
-import MessageTemplateTable from "./MessageTemplateTable";
+import TemplatesManager from "./TemplatesManager";
 import MessagesLogTab from "./MessagesLogTab";
 import RSVPStatusTab from "./RSVPStatusTab";
 import RSVPQuestionsManager from "./RSVPQuestionsManager";
@@ -119,9 +119,7 @@ const RSVPManager: FC = () => {
         {activeTab === TabValue.RSVP_STATUS && <RSVPStatusTab />}
 
         {activeTab === TabValue.QUESTIONS && <RSVPQuestionsManager />}
-
-        {activeTab === TabValue.TEMPLATES && <MessageTemplateTable />}
-
+        {activeTab === TabValue.TEMPLATES && <TemplatesManager />}
         {activeTab === TabValue.MESSAGES_LOG && <MessagesLogTab />}
       </Box>
     </Box>

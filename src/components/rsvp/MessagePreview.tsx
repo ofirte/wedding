@@ -1,6 +1,12 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, useMemo, useCallback } from "react";
 import { Box, Typography, TextField } from "@mui/material";
 import { useTranslation } from "../../localization/LocalizationContext";
+import {
+  populateVariables,
+  replaceVariables,
+  MessageGuest,
+  MessageWedding,
+} from "../../utils/messageVariables";
 
 interface Template {
   sid: string;
@@ -8,20 +14,11 @@ interface Template {
   types?: Record<string, any>;
 }
 
-interface Guest {
-  id: string;
-  name: string;
-}
-
-interface Wedding {
-  id: string;
-}
-
 interface MessagePreviewProps {
   template: Template | null;
   messageType: "whatsapp" | "sms" | "personal-whatsapp";
-  guests: Guest[];
-  wedding?: Wedding | null;
+  guests: MessageGuest[];
+  wedding?: MessageWedding | null;
 }
 
 /**
@@ -35,32 +32,35 @@ const MessagePreview: FC<MessagePreviewProps> = ({
   guests,
   wedding,
 }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   // Helper function to extract body text from template types
-  const getTemplateBody = (template: Template): string => {
-    if (!template.types) return t("common.noBodyAvailable");
+  const getTemplateBody = useCallback(
+    (template: Template): string => {
+      if (!template.types) return t("common.noBodyAvailable");
 
-    // Look for WhatsApp template body
-    const whatsappType =
-      template.types["twilio/text"] || template.types["whatsapp"];
-    if (
-      whatsappType &&
-      typeof whatsappType === "object" &&
-      whatsappType !== null
-    ) {
-      const body = (whatsappType as any).body;
-      if (body) return body;
-    }
+      // Look for WhatsApp template body
+      const whatsappType =
+        template.types["twilio/text"] || template.types["whatsapp"];
+      if (
+        whatsappType &&
+        typeof whatsappType === "object" &&
+        whatsappType !== null
+      ) {
+        const body = (whatsappType as any).body;
+        if (body) return body;
+      }
 
-    // Fallback to any available body
-    const firstType = Object.values(template.types)[0];
-    if (firstType && typeof firstType === "object" && "body" in firstType) {
-      return (firstType as any).body || t("common.noBodyAvailable");
-    }
+      // Fallback to any available body
+      const firstType = Object.values(template.types)[0];
+      if (firstType && typeof firstType === "object" && "body" in firstType) {
+        return (firstType as any).body || t("common.noBodyAvailable");
+      }
 
-    return t("common.noBodyAvailable");
-  };
+      return t("common.noBodyAvailable");
+    },
+    [t]
+  );
 
   // Generate preview message by replacing variables
   const previewMessage = useMemo(() => {
@@ -68,21 +68,14 @@ const MessagePreview: FC<MessagePreviewProps> = ({
 
     let message = getTemplateBody(template);
 
-    // Replace variables with first guest's name as example
-    if (guests.length > 0) {
-      const guestName = guests[0].name;
-      const weddingId = wedding?.id ?? "";
-
-      // Replace various variable formats
-      message = message.replace(/\{\{1\}\}/g, guestName);
-      message = message.replace(/\{\{guestName\}\}/g, guestName);
-      message = message.replace(/\{\{weddingId\}\}/g, weddingId);
-      message = message.replace(/\{\{guestId\}\}/g, guests[0].id);
-      message = message.replace(/\{גוסט\}/g, guestName);
+    // Use centralized variable replacement with first guest as example
+    if (guests.length > 0 && wedding) {
+      const variables = populateVariables(guests[0], wedding, language);
+      message = replaceVariables(message, variables);
     }
 
     return message;
-  }, [template, guests, wedding]);
+  }, [template, guests, wedding, getTemplateBody, language]);
 
   if (!template) return null;
 

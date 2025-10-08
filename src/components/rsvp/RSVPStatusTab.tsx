@@ -2,7 +2,6 @@ import React, { useState, useMemo } from "react";
 import { Box, Typography } from "@mui/material";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { useSentMessages } from "../../hooks/rsvp/useSentMessages";
-import { useMessageTemplates } from "../../hooks/rsvp/useMessageTemplates";
 
 import { Invitee } from "../invitees/InviteList";
 import { useTranslation } from "../../localization/LocalizationContext";
@@ -15,6 +14,7 @@ import {
   useDynamicRSVPTableColumns,
 } from "./DynamicRSVPTableColumns";
 import { responsivePatterns } from "../../utils/ResponsiveUtils";
+import { useTemplates } from "../../hooks/rsvp";
 
 /**
  * RSVPStatusTab - Dynamic RSVP Management based on configured questions
@@ -33,7 +33,7 @@ const RSVPStatusTab: React.FC = () => {
   // Data Management
   const { data: invitees, isLoading: isLoadingInvitees } = useInvitees();
   const { data: sentMessages = [] } = useSentMessages();
-  const { data: messageTemplatesData } = useMessageTemplates();
+  const { data: weddingTemplates } = useTemplates();
 
   // Interactive State
   const [selectedGuests, setSelectedGuests] = useState<Invitee[]>([]);
@@ -42,14 +42,14 @@ const RSVPStatusTab: React.FC = () => {
 
   // Get the selected template object for SendMessageDialog
   const selectedTemplateObj = useMemo(() => {
-    if (!selectedTemplate || !messageTemplatesData?.templates) return null;
+    if (!selectedTemplate || !weddingTemplates) return null;
 
     return (
-      messageTemplatesData.templates.find(
+      weddingTemplates.templates.find(
         (template) => template.sid === selectedTemplate
       ) || null
     );
-  }, [selectedTemplate, messageTemplatesData?.templates]);
+  }, [selectedTemplate, weddingTemplates]);
   const [statusFilter, setStatusFilter] = useState<{
     type: string;
     value: any;
@@ -136,7 +136,7 @@ const RSVPStatusTab: React.FC = () => {
         onSelectionChange={handleGuestSelectionChange}
         onSendMessage={handleOpenDialog}
         onFilteredDataChange={handleFilteredDataChange}
-        templates={messageTemplatesData?.templates || []}
+        templates={weddingTemplates?.templates || []}
         sentMessages={sentMessages}
         isLoading={isLoadingInvitees}
         showSelectColumn={true}

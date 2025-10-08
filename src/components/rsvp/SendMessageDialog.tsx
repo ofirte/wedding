@@ -19,11 +19,11 @@ import { useSendMessage } from "../../hooks/rsvp/useSendMessage";
 import { useSendSMSMessage } from "../../hooks/rsvp/useSendSMSMessage";
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
 import { Invitee } from "../invitees/InviteList";
+import { populateVariables } from "../../utils/messageVariables";
 import MessageTypeToggle from "./MessageTypeToggle";
 import MessagePreview from "./MessagePreview";
 import PersonalWhatsAppList from "./PersonalWhatsAppList";
 import PersonalWhatsAppCloseDialog from "./PersonalWhatsAppCloseDialog";
-import { set } from "lodash";
 
 interface Template {
   sid: string;
@@ -44,7 +44,7 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
   selectedGuests,
   selectedTemplate,
 }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { mutate: sendMessage } = useSendMessage();
   const { mutate: sendSMSMessage } = useSendSMSMessage();
   const { data: wedding } = useWeddingDetails();
@@ -63,11 +63,12 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
     try {
       // API-based sending (WhatsApp or SMS) - Personal WhatsApp is handled separately
       const sendPromises = selectedGuests.map((guest) => {
-        const contentVariables = {
-          guestName: guest.name,
-          guestId: guest.id,
-          weddingId: wedding?.id ?? "",
-        };
+        // Use centralized variable population system with locale
+        const contentVariables = populateVariables(
+          guest,
+          wedding || { id: "" },
+          language
+        );
 
         if (messageType === "whatsapp") {
           const phoneNumber = guest.cellphone.startsWith("+")
@@ -138,11 +139,11 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
             ? guest.cellphone
             : `+972${guest.cellphone}`;
 
-          const contentVariables = {
-            guestName: guest.name,
-            guestId: guest.id,
-            weddingId: wedding?.id ?? "",
-          };
+          const contentVariables = populateVariables(
+            guest,
+            wedding || { id: "" },
+            language
+          );
 
           // Import the savePersonalWhatsAppMessage function
           const { savePersonalWhatsAppMessage } = await import(

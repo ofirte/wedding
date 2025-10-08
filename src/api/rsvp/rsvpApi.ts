@@ -1,6 +1,7 @@
 import { ContentInstance } from "twilio/lib/rest/content/v2/content";
 import { weddingFirebase } from "../weddingFirebaseHelpers";
 import { MessageInstance } from "twilio/lib/rest/api/v2010/account/message";
+import { getBaseUrl } from "../../utils/firebaseFunctionsUtil";
 
 export interface SendMessageRequest {
   to: string;
@@ -67,24 +68,6 @@ export interface SentMessage {
   messageType?: "whatsapp" | "sms" | "personal-whatsapp"; // Track message type
   smsSegments?: number; // For SMS only
 }
-
-const getBaseUrl = (): string => {
-  const isDevelopment = process.env.NODE_ENV === "development";
-  const isLocal =
-    window.location.hostname === "localhost" ||
-    window.location.hostname === "127.0.0.1";
-  const isProduction = process.env.NODE_ENV === "production";
-  if (isLocal) {
-    return "http://127.0.0.1:5001/wedding-c89a1/us-central1/app";
-  }
-  if (isProduction) {
-    return "https://app-ga5vulihbq-uc.a.run.app";
-  }
-  if (isDevelopment) {
-    return "https://app-fhntq3wlyq-uc.a.run.app";
-  }
-  return "http://127.0.0.1:5001/wedding-c89a1/us-central1/app";
-};
 
 const BASE_URL = getBaseUrl();
 
@@ -211,28 +194,6 @@ export const sendBulkMessages = async (
 
   return results;
 };
-
-export const getMessageTemplates =
-  async (): Promise<MessageTemplatesResponse> => {
-    try {
-      const response = await fetch(`${BASE_URL}/messages/templates`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = (await response.json()) as MessageTemplatesResponse;
-      return data;
-    } catch (error) {
-      console.error("Error fetching message templates:", error);
-      throw error;
-    }
-  };
 
 /**
  * Check message status from Twilio API
