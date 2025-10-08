@@ -9,6 +9,7 @@ export { useCheckMessageStatus } from "./useCheckMessageStatus";
 export { useUpdateMessageStatus } from "./useUpdateMessageStatus";
 export { useCreateTemplate } from "./useCreateTemplate";
 export { useTemplates } from "./useTemplates";
+export { useDeleteTemplate } from "./useDeleteTemplate";
 // Note: RSVP status hooks have been moved to invitees hooks since data is now denormalized
 
 // Also export types from rsvpApi for convenience

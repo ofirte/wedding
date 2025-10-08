@@ -30,6 +30,7 @@ export const DEFAULT_LANGUAGE: Language = "he";
 // Translation key structure - expandable for different sections
 export interface Translations {
   common: {
+    close: string;
     save: string;
     cancel: string;
     delete: string;
@@ -575,5 +576,11 @@ export interface Translations {
     submitted: string;
     rejected: string;
     noVariables: string;
+    templateInfo: string;
+    messageContent: string;
+    templateId: string;
+    deleteTemplate: string;
+    deleting: string;
+    submitForApproval: string;
   };
 }

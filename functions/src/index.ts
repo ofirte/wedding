@@ -207,6 +207,50 @@ api.post("/messages/create-template", async (req, res) => {
   }
 });
 
+// Delete a Twilio content template
+api.delete("/messages/delete-template/:templateSid", async (req, res) => {
+  const twilioClient = initializeTwilioClient();
+
+  if (!twilioClient) {
+    return res.status(500).json({ error: "Twilio client not configured." });
+  }
+
+  try {
+    const { templateSid } = req.params;
+
+    if (!templateSid) {
+      return res.status(400).json({
+        error: "Template SID is required",
+      });
+    }
+
+    // Delete the content template using Twilio API
+    await twilioClient.content.v1.contents(templateSid).remove();
+
+    return res.status(200).json({
+      success: true,
+      message: "Template deleted successfully",
+      templateSid: templateSid,
+    });
+  } catch (error) {
+    console.error("Error deleting Twilio content template:", error);
+
+    // Handle specific Twilio errors
+    if (error instanceof Error && error.message.includes("not found")) {
+      return res.status(404).json({
+        error: "Template not found",
+        details: error.message,
+        templateSid: req.params.templateSid,
+      });
+    }
+
+    return res.status(500).json({
+      error: "Failed to delete message template",
+      details: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
 // Get message status from Twilio
 api.get("/messages/status/:messageSid", async (req, res) => {
   const twilioClient = initializeTwilioClient();

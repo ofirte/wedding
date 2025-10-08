@@ -10,7 +10,6 @@ import {
   TextFields as TextFieldsIcon,
   Image as ImageIcon,
 } from "@mui/icons-material";
-import { ContentInstance } from "twilio/lib/rest/content/v2/content";
 import { stripWeddingIdFromTemplateName } from "../../utils/templatesUtils";
 
 export interface TemplateTableRow {
@@ -88,14 +87,29 @@ const getApprovalStatusColor = (
 };
 
 export const createTemplateColumns = (
-  t: (key: string) => string
+  t: (key: string) => string,
+  onTemplateClick?: (template: TemplateTableRow) => void
 ): Column<TemplateTableRow>[] => [
   {
     id: "friendlyName",
     label: t("templates.name"),
     sortable: true,
     render: (template: TemplateTableRow) => (
-      <Typography variant="body2" fontWeight="medium">
+      <Typography
+        variant="body2"
+        fontWeight="medium"
+        sx={{
+          cursor: onTemplateClick ? "pointer" : "default",
+          color: onTemplateClick ? "primary.main" : "inherit",
+          "&:hover": onTemplateClick
+            ? {
+                textDecoration: "underline",
+                opacity: 0.8,
+              }
+            : {},
+        }}
+        onClick={() => onTemplateClick?.(template)}
+      >
         {template.friendlyName || t("templates.unnamed")}
       </Typography>
     ),
@@ -183,10 +197,8 @@ export const createTemplateColumns = (
   },
 ];
 
-// Transform function to convert Twilio ContentInstance to TemplateTableRow
-export const transformTemplateData = (
-  templates: ContentInstance[]
-): TemplateTableRow[] => {
+// Transform function to convert combined template data to TemplateTableRow
+export const transformTemplateData = (templates: any[]): TemplateTableRow[] => {
   return templates.map((template) => {
     const hasText = !!template.types?.["twilio/text"];
     const hasMedia = !!template.types?.["twilio/media"];
@@ -203,15 +215,17 @@ export const transformTemplateData = (
     // Extract variables from text body
     const textContent = template.types?.["twilio/text"] as any;
     const body = textContent?.body || "";
+
     return {
       id: template.sid || "",
       sid: template.sid || "",
       friendlyName: stripWeddingIdFromTemplateName(template.friendlyName || ""),
       language: template.language || "",
       type,
-      approvalStatus: "pending", // Default since we don't have this info from Twilio yet
+      // Use Firebase approval status if available, otherwise default to pending
+      approvalStatus: template.approvalStatus || "pending",
       body,
-      dateCreated: "",
+      dateCreated: template.dateCreated || "",
     };
   });
 };

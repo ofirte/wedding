@@ -2,6 +2,7 @@ import { Translations } from "../types";
 
 export const englishTranslations: Translations = {
   common: {
+    close: "Close",
     save: "Save",
     cancel: "Cancel",
     delete: "Delete",
@@ -571,5 +572,11 @@ export const englishTranslations: Translations = {
     submitted: "Submitted",
     rejected: "Rejected",
     noVariables: "No variables",
+    templateInfo: "Template Information",
+    messageContent: "Message Content",
+    templateId: "Template ID",
+    deleteTemplate: "Delete Template",
+    deleting: "Deleting...",
+    submitForApproval: "Submit for WhatsApp Approval",
   },
 };

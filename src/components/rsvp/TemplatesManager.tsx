@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -9,7 +9,11 @@ import {
 import { Add as AddIcon } from "@mui/icons-material";
 import { useParams } from "react-router";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { useCreateTemplate, useTemplates } from "../../hooks/rsvp";
+import {
+  useCreateTemplate,
+  useTemplates,
+  useDeleteTemplate,
+} from "../../hooks/rsvp";
 import CreateTemplateForm from "./CreateTemplateForm";
 import { CreateTemplateRequest } from "../../api/rsvp/templateApi";
 import DSTable from "../common/DSTable";
@@ -18,13 +22,18 @@ import {
   transformTemplateData,
   TemplateTableRow,
 } from "./TemplateColumns";
+import TemplateDetailView from "./TemplateDetailView";
 
 const TemplatesManager: React.FC = () => {
   const { t } = useTranslation();
   const { weddingId } = useParams<{ weddingId: string }>();
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<TemplateTableRow | null>(null);
+  const [isDetailViewOpen, setIsDetailViewOpen] = useState(false);
 
   const createTemplateMutation = useCreateTemplate();
+  const deleteTemplateMutation = useDeleteTemplate();
   const { data: templatesData, isLoading, error } = useTemplates();
 
   const handleCreateTemplate = (templateData: CreateTemplateRequest) => {
@@ -38,7 +47,39 @@ const TemplatesManager: React.FC = () => {
     );
   };
 
-  const columns = useMemo(() => createTemplateColumns(t), [t]);
+  const handleTemplateClick = useCallback((template: TemplateTableRow) => {
+    setSelectedTemplate(template);
+    setIsDetailViewOpen(true);
+  }, []);
+
+  const handleCloseDetailView = () => {
+    setIsDetailViewOpen(false);
+    setSelectedTemplate(null);
+  };
+
+  const handleDeleteTemplate = (templateSid: string) => {
+    // Find the firebase ID from the selected template for more efficient deletion
+    const firebaseId = selectedTemplate?.id;
+
+    deleteTemplateMutation.mutate(
+      { templateSid, firebaseId },
+      {
+        onSuccess: () => {
+          handleCloseDetailView();
+        },
+      }
+    );
+  };
+
+  const handleSubmitForApproval = (templateSid: string) => {
+    // TODO: Implement WhatsApp approval submission
+    console.log("Submit for approval:", templateSid);
+  };
+
+  const columns = useMemo(
+    () => createTemplateColumns(t, handleTemplateClick),
+    [t, handleTemplateClick]
+  );
   const tableData: TemplateTableRow[] = useMemo(() => {
     const templates = templatesData?.templates || [];
     return transformTemplateData(templates);
@@ -101,6 +142,15 @@ const TemplatesManager: React.FC = () => {
         onSubmit={handleCreateTemplate}
         isSubmitting={createTemplateMutation.isPending}
         weddingId={weddingId}
+      />
+
+      <TemplateDetailView
+        open={isDetailViewOpen}
+        onClose={handleCloseDetailView}
+        template={selectedTemplate}
+        onDelete={handleDeleteTemplate}
+        onSubmitForApproval={handleSubmitForApproval}
+        isDeleting={deleteTemplateMutation.isPending}
       />
 
       {createTemplateMutation.isSuccess && (

@@ -2,6 +2,7 @@ import { Translations } from "../types";
 
 export const hebrewTranslations: Translations = {
   common: {
+    close: "סגור",
     save: "שמור",
     cancel: "בטל",
     delete: "מחק",
@@ -566,5 +567,11 @@ export const hebrewTranslations: Translations = {
     submitted: "נשלח",
     rejected: "נדחה",
     noVariables: "אין משתנים",
+    templateInfo: "מידע על התבנית",
+    messageContent: "תוכן ההודעה",
+    templateId: "מזהה התבנית",
+    deleteTemplate: "מחק תבנית",
+    deleting: "מוחק...",
+    submitForApproval: "שלח לאישור וואטסאפ",
   },
 };

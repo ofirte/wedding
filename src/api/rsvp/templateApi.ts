@@ -124,3 +124,161 @@ export const saveTemplateToFirebase = async (
     throw error;
   }
 };
+
+/**
+ * Get all template documents from Firebase for a specific wedding
+ * @param weddingId Optional wedding ID
+ * @returns Promise resolving to an array of template documents
+ */
+export const getTemplatesFromFirebase = async (
+  weddingId?: string
+): Promise<TemplateDocument[]> => {
+  try {
+    // Use listenToCollection with Promise pattern to get data once
+    return new Promise((resolve, reject) => {
+      weddingFirebase.listenToCollection<TemplateDocument>(
+        "templates",
+        (templates) => {
+          console.log(`Retrieved ${templates.length} templates from Firebase`);
+          resolve(templates);
+        },
+        (error) => reject(error),
+        weddingId
+      );
+    });
+  } catch (error) {
+    console.error("Error getting templates from Firebase:", error);
+    throw error;
+  }
+};
+
+/**
+ * Get templates that exist in both Twilio and Firebase (intersection)
+ * @param weddingId Optional wedding ID
+ * @returns Promise resolving to combined template data with Firebase metadata
+ */
+export const getWeddingTemplates = async (weddingId?: string) => {
+  try {
+    // Fetch from both sources in parallel
+    const [twilioResponse, firebaseTemplates] = await Promise.all([
+      fetch(`${getBaseUrl()}/messages/templates`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      }),
+      getTemplatesFromFirebase(weddingId),
+    ]);
+
+    const twilioTemplates = twilioResponse.templates || [];
+
+    // Create a map of Firebase templates by SID for quick lookup
+    const firebaseTemplateMap = new Map(
+      firebaseTemplates.map((template) => [template.sid, template])
+    );
+
+    // Find intersection: templates that exist in both Twilio and Firebase
+    const combinedTemplates = twilioTemplates
+      .filter((twilioTemplate: any) =>
+        firebaseTemplateMap.has(twilioTemplate.sid)
+      )
+      .map((twilioTemplate: any) => {
+        const firebaseTemplate = firebaseTemplateMap.get(twilioTemplate.sid)!;
+
+        // Merge Twilio and Firebase data, prioritizing Firebase metadata
+        return {
+          ...twilioTemplate,
+          approvalStatus: firebaseTemplate.approvalStatus,
+          createdBy: firebaseTemplate.createdBy,
+          firebaseId: firebaseTemplate.id,
+          // Keep Twilio as source of truth for template content and metadata
+          // But add Firebase-specific fields
+        };
+      });
+
+    console.log(
+      `Found ${combinedTemplates.length} templates in both Twilio and Firebase out of ${twilioTemplates.length} Twilio templates and ${firebaseTemplates.length} Firebase templates`
+    );
+
+    return {
+      templates: combinedTemplates,
+      length: combinedTemplates.length,
+    };
+  } catch (error) {
+    console.error("Error getting combined templates:", error);
+    throw error;
+  }
+};
+
+/**
+ * Delete a template from both Twilio and Firebase
+ * First calls Firebase Functions to delete from Twilio, then removes from Firebase
+ * @param templateSid The Twilio template SID to delete
+ * @param firebaseId Optional Firebase document ID (will be looked up if not provided)
+ * @param weddingId Optional wedding ID
+ * @returns Promise that resolves when deletion is complete
+ */
+export const deleteTemplate = async (
+  templateSid: string,
+  firebaseId?: string,
+  weddingId?: string
+): Promise<void> => {
+  try {
+    // Step 1: Delete from Twilio via Firebase Functions
+    const response = await fetch(
+      `${getBaseUrl()}/messages/delete-template/${templateSid}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        `HTTP error! status: ${response.status}, message: ${
+          errorData.error || "Unknown error"
+        }`
+      );
+    }
+
+    console.log(`Template ${templateSid} deleted from Twilio successfully`);
+
+    // Step 2: Delete from Firebase
+    // If firebaseId is not provided, find it by looking up the template
+    let documentIdToDelete = firebaseId;
+
+    if (!documentIdToDelete) {
+      const firebaseTemplates = await getTemplatesFromFirebase(weddingId);
+      const template = firebaseTemplates.find((t) => t.sid === templateSid);
+      if (template) {
+        documentIdToDelete = template.id;
+      }
+    }
+
+    if (documentIdToDelete) {
+      const resolvedWeddingId =
+        weddingId || (await weddingFirebase.getWeddingId());
+      await weddingFirebase.deleteDocument(
+        "templates",
+        documentIdToDelete,
+        resolvedWeddingId
+      );
+      console.log(`Template ${templateSid} deleted from Firebase successfully`);
+    } else {
+      console.warn(
+        `No Firebase document found for template ${templateSid}, but Twilio deletion succeeded`
+      );
+    }
+  } catch (error) {
+    console.error("Error deleting template:", error);
+    throw error;
+  }
+};
