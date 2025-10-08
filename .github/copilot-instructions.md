@@ -47,6 +47,46 @@ const useUpdateInvitee = () =>
   });
 ```
 
+### Hook Organization
+
+**Each custom hook should be in its own file:**
+
+- File naming: `use[HookName].ts` (e.g., `useCreateInvitee.ts`)
+- One hook per file for maintainability and clear separation of concerns
+- Related hooks can be grouped in a directory with an `index.ts` barrel export
+
+```typescript
+// ✅ Correct structure
+src / hooks / rsvp / useCreateTwilioTemplate.ts;
+useDeleteTwilioTemplate.ts;
+useTwilioTemplates.ts;
+index.ts; // Re-exports all hooks
+
+// ❌ Avoid - multiple hooks in one file
+src / hooks / rsvp / twilioTemplateHooks.ts; // Contains multiple hooks
+```
+
+**Hook file structure:**
+
+```typescript
+// Import dependencies
+import { useWeddingMutation } from "../common";
+import { createInvitee } from "../../api/invitees/inviteesApi";
+
+// Single responsibility hook
+export const useCreateInvitee = () => {
+  return useWeddingMutation({
+    mutationFn: (inviteeData, weddingId) =>
+      createInvitee(inviteeData, weddingId),
+    options: {
+      onSuccess: () => {
+        // Handle success
+      },
+    },
+  });
+};
+```
+
 ### Firebase Environment Handling
 
 The app uses environment-based Firebase config switching. Configuration is determined by:
