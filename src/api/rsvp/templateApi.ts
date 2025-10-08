@@ -39,7 +39,35 @@ export interface TemplateDocument {
   dateUpdated: string;
   weddingId: string;
   createdBy?: string; // Optional user ID who created the template
-  approvalStatus?: "pending" | "approved" | "rejected" | "submitted"; // Template approval status
+  approvalStatus?:
+    | "pending"
+    | "approved"
+    | "rejected"
+    | "submitted"
+    | "received"; // Template approval status
+}
+
+export interface ApprovalRequest {
+  name: string;
+  category: string;
+}
+
+export interface ApprovalResponse {
+  category: string;
+  status: "received" | "pending" | "approved" | "rejected";
+  rejection_reason?: string;
+  name: string;
+  content_type: string;
+}
+
+export interface ApprovalStatusResponse {
+  templateSid: string;
+  approvalData: {
+    url: string;
+    whatsapp?: ApprovalResponse;
+    account_sid: string;
+    sid: string;
+  };
 }
 
 const BASE_URL = getBaseUrl();
@@ -157,7 +185,12 @@ export const getTemplatesFromFirebase = async (
  * @param weddingId Optional wedding ID
  * @returns Promise resolving to combined template data with Firebase metadata
  */
-export const getWeddingTemplates = async (weddingId?: string) => {
+export interface WeddingTemplateData {
+  templates: Array<TemplateDocument & CreateTemplateResponse>;
+  length: number;
+}
+
+export const getWeddingTemplates = async (weddingId?: string): Promise<WeddingTemplateData> => {
   try {
     // Fetch from both sources in parallel
     const [twilioResponse, firebaseTemplates] = await Promise.all([
@@ -281,4 +314,147 @@ export const deleteTemplate = async (
     console.error("Error deleting template:", error);
     throw error;
   }
+};
+
+/**
+ * Submit a template for WhatsApp approval
+ * @param templateSid The Twilio template SID
+ * @param approvalRequest The approval request data (name and category)
+ * @returns Promise resolving to the approval response
+ */
+export const submitTemplateForApproval = async (
+  templateSid: string,
+  approvalRequest: ApprovalRequest
+): Promise<ApprovalResponse> => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/messages/submit-template-approval/${templateSid}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(approvalRequest),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        `HTTP error! status: ${response.status}, message: ${
+          errorData.error || "Unknown error"
+        }`
+      );
+    }
+
+    const approvalResponse = (await response.json()) as ApprovalResponse;
+
+    // Update the approval status in Firebase
+    await updateTemplateApprovalStatus(templateSid, approvalResponse.status);
+
+    return approvalResponse;
+  } catch (error) {
+    console.error("Error submitting template for approval:", error);
+    throw error;
+  }
+};
+
+/**
+ * Get the approval status of a template
+ * @param templateSid The Twilio template SID
+ * @returns Promise resolving to the approval status response
+ */
+export const getApprovalStatus = async (
+  templateSid: string
+): Promise<ApprovalStatusResponse> => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/messages/approval-status/${templateSid}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        `HTTP error! status: ${response.status}, message: ${
+          errorData.error || "Unknown error"
+        }`
+      );
+    }
+
+    const approvalStatusResponse =
+      (await response.json()) as ApprovalStatusResponse;
+
+    // Update the approval status in Firebase if WhatsApp data exists
+    if (approvalStatusResponse.approvalData.whatsapp) {
+      await updateTemplateApprovalStatus(
+        templateSid,
+        approvalStatusResponse.approvalData.whatsapp.status
+      );
+    }
+
+    return approvalStatusResponse;
+  } catch (error) {
+    console.error("Error getting approval status:", error);
+    throw error;
+  }
+};
+
+/**
+ * Update the approval status of a template in Firebase
+ * @param templateSid The Twilio template SID
+ * @param status The new approval status
+ * @param weddingId Optional wedding ID
+ * @returns Promise that resolves when the update is complete
+ */
+export const updateTemplateApprovalStatus = async (
+  templateSid: string,
+  status: "received" | "pending" | "approved" | "rejected" | "submitted",
+  weddingId?: string
+): Promise<void> => {
+  try {
+    // Find the template document in Firebase
+    const firebaseTemplates = await getTemplatesFromFirebase(weddingId);
+    const template = firebaseTemplates.find((t) => t.sid === templateSid);
+
+    if (template) {
+      const resolvedWeddingId =
+        weddingId || (await weddingFirebase.getWeddingId());
+      await weddingFirebase.updateDocument(
+        "templates",
+        template.id,
+        { approvalStatus: status },
+        resolvedWeddingId
+      );
+      console.log(
+        `Template ${templateSid} approval status updated to: ${status}`
+      );
+    } else {
+      console.warn(
+        `Template ${templateSid} not found in Firebase, cannot update approval status`
+      );
+    }
+  } catch (error) {
+    console.error("Error updating template approval status:", error);
+    throw error;
+  }
+};
+
+/**
+ * Check if a template should have its approval status synced
+ * Only templates that have been submitted need regular syncing
+ * @param approvalStatus The current Firebase approval status
+ * @returns Whether this template should be synced
+ */
+export const shouldSyncApprovalStatus = (approvalStatus?: string): boolean => {
+  // Only sync templates that might have status updates from WhatsApp
+  return !!(
+    approvalStatus &&
+    ["submitted", "received", "pending"].includes(approvalStatus)
+  );
 };

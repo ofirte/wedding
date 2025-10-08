@@ -34,7 +34,13 @@ const TemplatesManager: React.FC = () => {
 
   const createTemplateMutation = useCreateTemplate();
   const deleteTemplateMutation = useDeleteTemplate();
-  const { data: templatesData, isLoading, error } = useTemplates();
+  const {
+    data: templatesData,
+    isLoading,
+    error,
+  } = useTemplates({
+    syncApprovalStatus: true, // Enable background sync of approval statuses
+  });
 
   const handleCreateTemplate = (templateData: CreateTemplateRequest) => {
     createTemplateMutation.mutate(
@@ -69,11 +75,6 @@ const TemplatesManager: React.FC = () => {
         },
       }
     );
-  };
-
-  const handleSubmitForApproval = (templateSid: string) => {
-    // TODO: Implement WhatsApp approval submission
-    console.log("Submit for approval:", templateSid);
   };
 
   const columns = useMemo(
@@ -149,7 +150,6 @@ const TemplatesManager: React.FC = () => {
         onClose={handleCloseDetailView}
         template={selectedTemplate}
         onDelete={handleDeleteTemplate}
-        onSubmitForApproval={handleSubmitForApproval}
         isDeleting={deleteTemplateMutation.isPending}
       />
 

@@ -10,6 +10,9 @@ export { useUpdateMessageStatus } from "./useUpdateMessageStatus";
 export { useCreateTemplate } from "./useCreateTemplate";
 export { useTemplates } from "./useTemplates";
 export { useDeleteTemplate } from "./useDeleteTemplate";
+export { useSubmitTemplateApproval } from "./useSubmitTemplateApproval";
+export { useApprovalStatus } from "./useApprovalStatus";
+export { useApprovalStatusSync } from "./useApprovalStatusSync";
 // Note: RSVP status hooks have been moved to invitees hooks since data is now denormalized
 
 // Also export types from rsvpApi for convenience
@@ -29,4 +32,7 @@ export type {
   CreateTemplateRequest,
   CreateTemplateResponse,
   TemplateDocument,
+  ApprovalRequest,
+  ApprovalResponse,
+  ApprovalStatusResponse,
 } from "../../api/rsvp/templateApi";

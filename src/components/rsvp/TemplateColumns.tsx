@@ -11,6 +11,7 @@ import {
   Image as ImageIcon,
 } from "@mui/icons-material";
 import { stripWeddingIdFromTemplateName } from "../../utils/templatesUtils";
+import { get } from "lodash";
 
 export interface TemplateTableRow {
   id: string;
@@ -18,7 +19,12 @@ export interface TemplateTableRow {
   friendlyName: string;
   language: string;
   type: "text" | "media" | "both";
-  approvalStatus?: "pending" | "approved" | "rejected" | "submitted";
+  approvalStatus?:
+    | "pending"
+    | "approved"
+    | "rejected"
+    | "submitted"
+    | "received";
   body?: string;
   dateCreated: string;
 }
@@ -56,20 +62,6 @@ const getTypeColor = (
   }
 };
 
-const getApprovalStatusIcon = (status?: string) => {
-  switch (status) {
-    case "approved":
-      return <CheckCircleIcon color="success" fontSize="small" />;
-    case "rejected":
-      return <CancelIcon color="error" fontSize="small" />;
-    case "submitted":
-      return <SendIcon color="info" fontSize="small" />;
-    case "pending":
-    default:
-      return <ScheduleIcon color="warning" fontSize="small" />;
-  }
-};
-
 const getApprovalStatusColor = (
   status?: string
 ): "success" | "error" | "warning" | "info" | "default" => {
@@ -79,6 +71,7 @@ const getApprovalStatusColor = (
     case "rejected":
       return "error";
     case "submitted":
+    case "received":
       return "info";
     case "pending":
     default:
@@ -146,17 +139,7 @@ export const createTemplateColumns = (
     id: "type",
     label: t("templates.type"),
     sortable: true,
-    render: (template: TemplateTableRow) => (
-      <Box display="flex" alignItems="center" gap={1}>
-        {getTypeIcon(template.type)}
-        <Chip
-          label={template.type}
-          color={getTypeColor(template.type)}
-          size="small"
-          variant="outlined"
-        />
-      </Box>
-    ),
+    render: (template: TemplateTableRow) => getTypeIcon(template.type),
     filterConfig: {
       id: "type",
       label: t("templates.type"),
@@ -173,15 +156,12 @@ export const createTemplateColumns = (
     label: t("templates.eligibility"),
     sortable: true,
     render: (template: TemplateTableRow) => (
-      <Box display="flex" alignItems="center" gap={1}>
-        {getApprovalStatusIcon(template.approvalStatus)}
-        <Chip
-          label={template.approvalStatus || "pending"}
-          color={getApprovalStatusColor(template.approvalStatus)}
-          size="small"
-          sx={{ minWidth: 80 }}
-        />
-      </Box>
+      <Chip
+        label={template.approvalStatus || "pending"}
+        color={getApprovalStatusColor(template.approvalStatus)}
+        size="small"
+        sx={{ minWidth: 80 }}
+      />
     ),
     filterConfig: {
       id: "approvalStatus",
@@ -191,6 +171,7 @@ export const createTemplateColumns = (
         { value: "approved", label: t("templates.approved") },
         { value: "pending", label: t("templates.pending") },
         { value: "submitted", label: t("templates.submitted") },
+        { value: "received", label: t("templates.received") },
         { value: "rejected", label: t("templates.rejected") },
       ],
     },

@@ -251,6 +251,142 @@ api.delete("/messages/delete-template/:templateSid", async (req, res) => {
   }
 });
 
+// Submit template for WhatsApp approval
+api.post(
+  "/messages/submit-template-approval/:templateSid",
+  async (req, res) => {
+    const twilioClient = initializeTwilioClient();
+
+    if (!twilioClient) {
+      return res.status(500).json({ error: "Twilio client not configured." });
+    }
+
+    try {
+      const { templateSid } = req.params;
+      const { name, category } = req.body;
+
+      if (!templateSid) {
+        return res.status(400).json({
+          error: "Template SID is required",
+        });
+      }
+
+      if (!name || !category) {
+        return res.status(400).json({
+          error:
+            "Both 'name' and 'category' are required for WhatsApp approval",
+        });
+      }
+
+      // Submit the template for WhatsApp approval using Twilio Content API
+      // Based on Twilio docs: POST to /v1/Content/{ContentSid}/ApprovalRequests/whatsapp
+      const accountSid = twilioAccountSid.value();
+      const authToken = twilioAuthToken.value();
+      const url = `https://content.twilio.com/v1/Content/${templateSid}/ApprovalRequests/whatsapp`;
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            "Basic " +
+            Buffer.from(`${accountSid}:${authToken}`).toString("base64"),
+        },
+        body: JSON.stringify({
+          name: name,
+          category: category,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorData}`);
+      }
+
+      const approvalRequest = await response.json();
+
+      return res.status(201).json(approvalRequest);
+    } catch (error) {
+      console.error("Error submitting template for approval:", error);
+
+      if (error instanceof Error && error.message.includes("not found")) {
+        return res.status(404).json({
+          error: "Template not found",
+          details: error.message,
+          templateSid: req.params.templateSid,
+        });
+      }
+
+      return res.status(500).json({
+        error: "Failed to submit template for approval",
+        details: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  }
+);
+
+// Get template approval status
+api.get("/messages/approval-status/:templateSid", async (req, res) => {
+  const twilioClient = initializeTwilioClient();
+
+  if (!twilioClient) {
+    return res.status(500).json({ error: "Twilio client not configured." });
+  }
+
+  try {
+    const { templateSid } = req.params;
+
+    if (!templateSid) {
+      return res.status(400).json({
+        error: "Template SID is required",
+      });
+    }
+
+    // Fetch approval status from Twilio Content API
+    // Based on Twilio docs: GET /v1/Content/{ContentSid}/ApprovalRequests
+    const accountSid = twilioAccountSid.value();
+    const authToken = twilioAuthToken.value();
+    const url = `https://content.twilio.com/v1/Content/${templateSid}/ApprovalRequests`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization:
+          "Basic " +
+          Buffer.from(`${accountSid}:${authToken}`).toString("base64"),
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errorData}`);
+    }
+
+    const approvalData = await response.json();
+
+    return res.status(200).json({
+      templateSid: templateSid,
+      approvalData: approvalData,
+    });
+  } catch (error) {
+    console.error("Error fetching approval status:", error);
+
+    if (error instanceof Error && error.message.includes("not found")) {
+      return res.status(404).json({
+        error: "Template not found",
+        details: error.message,
+        templateSid: req.params.templateSid,
+      });
+    }
+
+    return res.status(500).json({
+      error: "Failed to fetch approval status",
+      details: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
 // Get message status from Twilio
 api.get("/messages/status/:messageSid", async (req, res) => {
   const twilioClient = initializeTwilioClient();

@@ -31,12 +31,14 @@ export const DEFAULT_LANGUAGE: Language = "he";
 export interface Translations {
   common: {
     close: string;
+    back: string;
     save: string;
     cancel: string;
     delete: string;
     edit: string;
     add: string;
     loading: string;
+    refresh: string;
     error: string;
     success: string;
     confirm: string;
@@ -575,6 +577,7 @@ export interface Translations {
     pending: string;
     submitted: string;
     rejected: string;
+    received: string;
     noVariables: string;
     templateInfo: string;
     messageContent: string;
@@ -582,5 +585,34 @@ export interface Translations {
     deleteTemplate: string;
     deleting: string;
     submitForApproval: string;
+    submitting: string;
+    approvalSuccess: string;
+    approvalError: string;
+    approvalStatus: string;
+    approvalCategory: string;
+    categoryUtility: string;
+    categoryMarketing: string;
+    categoryAuthentication: string;
+    rejectionReason: string;
+    checkApprovalStatus: string;
+    whatsappApproval: string;
+    submitForBusinessMessaging: string;
+    selectCategoryDescription: string;
+    whatHappensNext: string;
+    templateSubmittedForReview: string;
+    approvalTakesTime: string;
+    trackStatusInDetails: string;
+    onceApprovedUseForMessaging: string;
+    templateSubmittedSuccessMessage: string;
+    unknownError: string;
+    whatsappStatus: string;
+    approvedForBusinessMessaging: string;
+    underReviewTime: string;
+    receivedProcessingShortly: string;
+    rejectedCheckReason: string;
+    submitForWhatsappApprovalInfo: string;
+    requestApproval: string;
+    requestWhatsappApproval: string;
+    checkingApprovalStatus: string;
   };
 }

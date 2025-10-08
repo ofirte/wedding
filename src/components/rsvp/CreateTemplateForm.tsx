@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, use, useMemo } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -19,7 +19,7 @@ import {
 import { Add as AddIcon } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { CreateTemplateRequest } from "../../api/rsvp/templateApi";
-import { addWeddingIdToTemplateName } from "../../utils/templatesUtils";
+import { formatTemplateName } from "../../utils/templatesUtils";
 
 interface TemplateVariable {
   key: string;
@@ -56,7 +56,12 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
   const [templateName, setTemplateName] = useState("");
   const [language, setLanguage] = useState<"en" | "he">("en");
   const [messageText, setMessageText] = useState("");
-  const [usedVariables, setUsedVariables] = useState<string[]>([]);
+  const usedVariables = useMemo(() => {
+    const usedVars = PREDEFINED_VARIABLES.filter((variable) =>
+      messageText.includes(`{{${variable.key}}}`)
+    );
+    return usedVars.map((v) => v.key);
+  }, [messageText]);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const insertVariable = useCallback(
@@ -75,11 +80,6 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
 
       setMessageText(newText);
 
-      // Add to used variables if not already there
-      if (!usedVariables.includes(variable.key)) {
-        setUsedVariables((prev) => [...prev, variable.key]);
-      }
-
       // Set cursor position after the inserted variable
       setTimeout(() => {
         const newCursorPos = start + variableText.length;
@@ -87,7 +87,7 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
         textArea.focus();
       }, 0);
     },
-    [messageText, usedVariables]
+    [messageText]
   );
 
   const handleSubmit = () => {
@@ -105,9 +105,7 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
     });
 
     // Create the friendly name with wedding ID suffix
-    const friendlyName = weddingId
-      ? addWeddingIdToTemplateName(templateName, weddingId)
-      : templateName.trim().toLowerCase().replace(/\s+/g, "_");
+    const friendlyName = formatTemplateName(templateName);
 
     const templateData: CreateTemplateRequest = {
       friendly_name: friendlyName,
@@ -129,7 +127,6 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
       setTemplateName("");
       setLanguage("en");
       setMessageText("");
-      setUsedVariables([]);
       onClose();
     }
   };
@@ -191,7 +188,7 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
               {PREDEFINED_VARIABLES.map((variable) => (
                 <Chip
                   key={variable.key}
-                  label={`{{${variable.key}}}`}
+                  label={variable.label}
                   onClick={() => insertVariable(variable)}
                   color={
                     usedVariables.includes(variable.key) ? "primary" : "default"
@@ -199,35 +196,14 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
                   variant={
                     usedVariables.includes(variable.key) ? "filled" : "outlined"
                   }
-                  clickable
-                  disabled={isSubmitting}
+                  clickable={!usedVariables.includes(variable.key)}
+                  disabled={
+                    isSubmitting || usedVariables.includes(variable.key)
+                  }
                 />
               ))}
             </Stack>
           </Box>
-
-          {usedVariables.length > 0 && (
-            <Box>
-              <Typography variant="subtitle2" gutterBottom>
-                {t("templates.usedVariables")}
-              </Typography>
-              <Stack direction="row" flexWrap="wrap" gap={1}>
-                {usedVariables.map((varKey) => {
-                  const variable = PREDEFINED_VARIABLES.find(
-                    (v) => v.key === varKey
-                  );
-                  return (
-                    <Chip
-                      key={varKey}
-                      label={`${varKey}: ${variable?.placeholder}`}
-                      size="small"
-                      color="primary"
-                    />
-                  );
-                })}
-              </Stack>
-            </Box>
-          )}
 
           {messageText && (
             <Box>

@@ -2,24 +2,35 @@
  * Utility functions for template management and wedding ID handling
  */
 
-// Utility functions for wedding ID handling
+// Utility functions for template name formatting and display
 // Examples:
-// addWeddingIdToTemplateName("Welcome Message", "abc123def456") -> "welcome_message_abc123de"
-// stripWeddingIdFromTemplateName("welcome_message_abc123de") -> "Welcome Message"
+// formatTemplateName("Welcome Message!") -> "welcome_message"
+// formatTemplateName("RSVP @ 2024") -> "rsvp_2024"
+// stripWeddingIdFromTemplateName("welcome_message") -> "Welcome Message"
 
 /**
- * Adds a wedding ID suffix to a template name for Twilio storage
+ * Formats a template name to comply with Twilio requirements:
+ * - Only lowercase alphanumeric characters and underscores
+ * - No spaces or special characters allowed
  * @param name The user-friendly template name
- * @param weddingId The full wedding ID
- * @returns The template name with wedding ID suffix for Twilio
+ * @returns The Twilio-compliant template name
  */
-export const addWeddingIdToTemplateName = (
-  name: string,
-  weddingId: string
-): string => {
-  // Create a short version of wedding ID (first 8 characters)
-  const shortWeddingId = weddingId.substring(0, 8);
-  return `${name.trim().toLowerCase().replace(/\s+/g, "_")}_${shortWeddingId}`;
+export const formatTemplateName = (name: string): string => {
+  return (
+    name
+      .trim()
+      .toLowerCase()
+      // Replace spaces with underscores
+      .replace(/\s+/g, "_")
+      // Remove all characters that are not alphanumeric or underscore
+      .replace(/[^a-z0-9_]/g, "")
+      // Remove multiple consecutive underscores
+      .replace(/_+/g, "_")
+      // Remove leading/trailing underscores
+      .replace(/^_|_$/g, "") ||
+    // Ensure we have at least some content, fallback to "template" if empty
+    "template"
+  );
 };
 
 /**
@@ -31,9 +42,8 @@ export const stripWeddingIdFromTemplateName = (
   friendlyName: string
 ): string => {
   // Remove wedding ID suffix pattern: _[8-character-id] from the end
-  const cleanName = friendlyName.replace(/_[a-zA-Z0-9]{8}$/, "");
   // Convert underscores back to spaces and capitalize first letter of each word
-  return cleanName
+  return friendlyName
     .replace(/_/g, " ")
     .split(" ")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
