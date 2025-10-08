@@ -25,6 +25,13 @@ setGlobalOptions({
 
 const api = express();
 
+// Helper function to initialize Twilio client
+const initializeTwilioClient = () => {
+  const accountSid = twilioAccountSid.value();
+  const authToken = twilioAuthToken.value();
+  return accountSid && authToken ? twilio(accountSid, authToken) : null;
+};
+
 const corsMiddleware = cors({
   origin: true,
   methods: ["GET", "POST", "OPTIONS"],
@@ -40,11 +47,9 @@ api.get("/health", (req, res) => {
 });
 
 api.post("/messages/send-message", async (req, res) => {
-  const accountSid = twilioAccountSid.value();
-  const authToken = twilioAuthToken.value();
+  const twilioClient = initializeTwilioClient();
   const twilioPhone = twilioWhatsAppFrom.value();
-  const twilioClient =
-    accountSid && authToken ? twilio(accountSid, authToken) : null;
+
   if (!twilioClient) {
     return res.status(500).json({ error: "Twilio client not configured." });
   }
@@ -75,10 +80,7 @@ api.post("/messages/send-message", async (req, res) => {
 
 // SMS endpoint - same signature as WhatsApp but converts template to plain text
 api.post("/messages/send-sms", async (req, res) => {
-  const accountSid = twilioAccountSid.value();
-  const authToken = twilioAuthToken.value();
-  const twilioClient =
-    accountSid && authToken ? twilio(accountSid, authToken) : null;
+  const twilioClient = initializeTwilioClient();
 
   if (!twilioClient) {
     return res.status(500).json({ error: "Twilio client not configured." });
@@ -139,10 +141,7 @@ api.post("/messages/send-sms", async (req, res) => {
 });
 
 api.get("/messages/templates", async (req, res) => {
-  const accountSid = twilioAccountSid.value();
-  const authToken = twilioAuthToken.value();
-  const twilioClient =
-    accountSid && authToken ? twilio(accountSid, authToken) : null;
+  const twilioClient = initializeTwilioClient();
 
   if (!twilioClient) {
     return res.status(500).json({ error: "Twilio client not configured." });
@@ -165,12 +164,52 @@ api.get("/messages/templates", async (req, res) => {
   }
 });
 
+// Create a new Twilio content template
+api.post("/messages/create-template", async (req, res) => {
+  const twilioClient = initializeTwilioClient();
+
+  if (!twilioClient) {
+    return res.status(500).json({ error: "Twilio client not configured." });
+  }
+
+  try {
+    const { friendly_name, language, variables, types } = req.body;
+
+    // Validate required fields
+    if (!friendly_name || !language) {
+      return res.status(400).json({
+        error:
+          "Missing required fields: friendly_name and language are required",
+      });
+    }
+
+    if (!types || Object.keys(types).length === 0) {
+      return res.status(400).json({
+        error: "At least one content type must be provided in 'types' field",
+      });
+    }
+
+    // Create the content template using Twilio API
+    const createdTemplate = await twilioClient.content.v1.contents.create({
+      friendly_name: friendly_name,
+      language: language,
+      variables: variables || {},
+      types: types,
+    });
+
+    return res.status(201).json(createdTemplate);
+  } catch (error) {
+    console.error("Error creating Twilio content template:", error);
+    return res.status(500).json({
+      error: "Failed to create message template",
+      details: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
 // Get message status from Twilio
 api.get("/messages/status/:messageSid", async (req, res) => {
-  const accountSid = twilioAccountSid.value();
-  const authToken = twilioAuthToken.value();
-  const twilioClient =
-    accountSid && authToken ? twilio(accountSid, authToken) : null;
+  const twilioClient = initializeTwilioClient();
 
   if (!twilioClient) {
     return res.status(500).json({ error: "Twilio client not configured." });

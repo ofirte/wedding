@@ -14,7 +14,10 @@ export interface CreateContentRequest {
   language: string;
   variables?: Record<string, string>;
   types?: {
-    "twilio/media": {
+    "twilio/text"?: {
+      body: string;
+    };
+    "twilio/media"?: {
       body: string;
       media?: string[];
     };

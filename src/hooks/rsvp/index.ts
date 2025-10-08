@@ -7,6 +7,8 @@ export { useSendBulkMessages } from "./useSendBulkMessages";
 export { useSentMessages } from "./useSentMessages";
 export { useCheckMessageStatus } from "./useCheckMessageStatus";
 export { useUpdateMessageStatus } from "./useUpdateMessageStatus";
+export { useCreateTemplate } from "./useCreateTemplate";
+export { useTemplates } from "./useTemplates";
 // Note: RSVP status hooks have been moved to invitees hooks since data is now denormalized
 
 // Also export types from rsvpApi for convenience
@@ -20,3 +22,10 @@ export type {
   ContentInsight,
   TwilioMessageStatus,
 } from "../../api/rsvp/rsvpApi";
+
+// Export types from templateApi
+export type {
+  CreateTemplateRequest,
+  CreateTemplateResponse,
+  TemplateDocument,
+} from "../../api/rsvp/templateApi";
