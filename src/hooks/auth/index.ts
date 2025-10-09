@@ -9,5 +9,8 @@ export { useWeddingDetails } from "../wedding/useWeddingDetails";
 export { useUpdateWedding } from "../wedding/useUpdateWedding";
 export { useCurrentUserWeddingId } from "./useCurrentUserWeddingId";
 
+// Custom claims hooks
+export * from "./useCustomClaims";
+
 // Also export types from authApi for convenience
 export type { WeddingUser } from "../../api/auth/authApi";
