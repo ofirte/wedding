@@ -5,6 +5,7 @@ import {
   updateDoc,
   deleteDoc,
   getDoc,
+  getDocs,
   setDoc,
   onSnapshot,
   DocumentReference,
@@ -189,6 +190,37 @@ class WeddingFirebaseService {
   }
 
   /**
+   * Get all documents from a collection once (no real-time updates)
+   * Uses getDocs for one-time fetch instead of listeners
+   * @param collectionName The name of the collection to get
+   * @param weddingId Optional wedding ID (will attempt to get current user's wedding ID if not provided)
+   * @returns A Promise that resolves with an array of documents
+   */
+  async getCollection<T = any>(
+    collectionName: string,
+    weddingId?: string
+  ): Promise<T[]> {
+    try {
+      const resolvedWeddingId = await this.getWeddingId(weddingId);
+      const collectionRef = await this.getCollectionRef<T>(
+        collectionName,
+        resolvedWeddingId
+      );
+
+      // Use getDocs for one-time fetch - much more reliable than listener hacks
+      const snapshot = await getDocs(collectionRef);
+
+      return snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as T[];
+    } catch (error) {
+      console.error(`Error fetching collection ${collectionName}:`, error);
+      throw error;
+    }
+  }
+
+  /**
    * Create a real-time listener for a collection within a wedding
    * @param collectionName The name of the collection to listen to
    * @param callback Function to call with the data when it changes
@@ -361,3 +393,78 @@ class WeddingFirebaseService {
 
 // Export a singleton instance
 export const weddingFirebase = new WeddingFirebaseService();
+
+/**
+ * Generic API factory that creates all CRUD operations for a collection
+ * This eliminates code duplication across all API files
+ */
+export const createCollectionAPI = <T extends { id?: string }>(
+  collectionName: string
+) => {
+  return {
+    /**
+     * Fetch all items from collection (one-time, auto-unsubscribe)
+     */
+    fetchAll: (weddingId?: string) =>
+      weddingFirebase.getCollection<T>(collectionName, weddingId),
+
+    /**
+     * Subscribe to collection with real-time updates
+     * Returns unsubscribe function for manual cleanup
+     */
+    subscribe: (
+      callback: (items: T[]) => void,
+      errorCallback?: (error: Error) => void,
+      weddingId?: string
+    ) =>
+      weddingFirebase.listenToCollection<T>(
+        collectionName,
+        callback,
+        errorCallback,
+        weddingId
+      ),
+
+    /**
+     * Get single item by ID
+     */
+    fetchById: (id: string, weddingId?: string) =>
+      weddingFirebase.getDocument<T>(collectionName, id, weddingId),
+
+    /**
+     * Create new item
+     */
+    create: (item: Omit<T, "id">, weddingId?: string) =>
+      weddingFirebase.addDocument(collectionName, item, weddingId),
+
+    /**
+     * Update existing item
+     */
+    update: (id: string, updates: Partial<T>, weddingId?: string) =>
+      weddingFirebase.updateDocument<T>(collectionName, id, updates, weddingId),
+
+    /**
+     * Delete item
+     */
+    delete: (id: string, weddingId?: string) =>
+      weddingFirebase.deleteDocument(collectionName, id, weddingId),
+
+    /**
+     * Bulk update multiple items
+     */
+    bulkUpdate: (
+      updates: Array<{ id: string; data: Partial<T> }>,
+      weddingId?: string
+    ) =>
+      weddingFirebase.bulkUpdateDocuments<T>(
+        collectionName,
+        updates,
+        weddingId
+      ),
+
+    /**
+     * Bulk delete multiple items
+     */
+    bulkDelete: (ids: string[], weddingId?: string) =>
+      weddingFirebase.bulkDeleteDocuments(collectionName, ids, weddingId),
+  };
+};

@@ -1,5 +1,11 @@
 import { weddingFirebase } from "../weddingFirebaseHelpers";
-import { getBaseUrl } from "../../utils/firebaseFunctionsUtil";
+import {
+  getMessageTemplates,
+  createMessageTemplate,
+  deleteMessageTemplate,
+  submitTemplateApproval,
+  getTemplateApprovalStatus,
+} from "../firebaseFunctions";
 
 export interface CreateTemplateRequest {
   friendly_name: string;
@@ -70,33 +76,22 @@ export interface ApprovalStatusResponse {
   };
 }
 
-const BASE_URL = getBaseUrl();
-
 export const createTemplate = async (
   templateData: CreateTemplateRequest,
   weddingId?: string,
   userId?: string
 ): Promise<CreateTemplateResponse> => {
   try {
-    // Call the Firebase Function to create the template
-    const response = await fetch(`${BASE_URL}/messages/create-template`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(templateData),
+    // Call Firebase callable function
+    const result = await createMessageTemplate({
+      friendly_name: templateData.friendly_name,
+      language: templateData.language,
+      variables: templateData.variables,
+      types: templateData.types,
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        `HTTP error! status: ${response.status}, message: ${
-          errorData.error || "Unknown error"
-        }`
-      );
-    }
-
-    const createdTemplate = (await response.json()) as CreateTemplateResponse;
+    const createdTemplate = (result.data as any)
+      .template as CreateTemplateResponse;
 
     // Save the template information to Firebase
     await saveTemplateToFirebase(createdTemplate, weddingId, userId);
@@ -143,9 +138,6 @@ export const saveTemplateToFirebase = async (
       resolvedWeddingId
     );
 
-    console.log(
-      `Template ${template.sid} saved to Firebase with ID: ${docRef.id}`
-    );
     return docRef.id;
   } catch (error) {
     console.error("Error saving template to Firebase:", error);
@@ -167,7 +159,6 @@ export const getTemplatesFromFirebase = async (
       weddingFirebase.listenToCollection<TemplateDocument>(
         "templates",
         (templates) => {
-          console.log(`Retrieved ${templates.length} templates from Firebase`);
           resolve(templates);
         },
         (error) => reject(error),
@@ -190,24 +181,16 @@ export interface WeddingTemplateData {
   length: number;
 }
 
-export const getWeddingTemplates = async (weddingId?: string): Promise<WeddingTemplateData> => {
+export const getWeddingTemplates = async (
+  weddingId?: string
+): Promise<WeddingTemplateData> => {
   try {
     // Fetch from both sources in parallel
-    const [twilioResponse, firebaseTemplates] = await Promise.all([
-      fetch(`${getBaseUrl()}/messages/templates`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      }),
+    const [twilioResult, firebaseTemplates] = await Promise.all([
+      getMessageTemplates(),
       getTemplatesFromFirebase(weddingId),
     ]);
-
+    const twilioResponse = twilioResult.data as any;
     const twilioTemplates = twilioResponse.templates || [];
 
     // Create a map of Firebase templates by SID for quick lookup
@@ -234,10 +217,6 @@ export const getWeddingTemplates = async (weddingId?: string): Promise<WeddingTe
         };
       });
 
-    console.log(
-      `Found ${combinedTemplates.length} templates in both Twilio and Firebase out of ${twilioTemplates.length} Twilio templates and ${firebaseTemplates.length} Firebase templates`
-    );
-
     return {
       templates: combinedTemplates,
       length: combinedTemplates.length,
@@ -258,58 +237,31 @@ export const getWeddingTemplates = async (weddingId?: string): Promise<WeddingTe
  */
 export const deleteTemplate = async (
   templateSid: string,
-  firebaseId?: string,
+  firebaseId: string,
   weddingId?: string
 ): Promise<void> => {
   try {
     // Step 1: Delete from Twilio via Firebase Functions
-    const response = await fetch(
-      `${getBaseUrl()}/messages/delete-template/${templateSid}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const result = await deleteMessageTemplate({
+      templateSid: templateSid,
+    });
 
-    if (!response.ok) {
-      const errorData = await response.json();
+    // Validate the deletion result
+    const deleteResult = result.data as any;
+    if (!deleteResult || deleteResult.error) {
       throw new Error(
-        `HTTP error! status: ${response.status}, message: ${
-          errorData.error || "Unknown error"
+        `Failed to delete template from Twilio: ${
+          deleteResult?.error || "Unknown error"
         }`
       );
     }
-
-    console.log(`Template ${templateSid} deleted from Twilio successfully`);
-
-    // Step 2: Delete from Firebase
-    // If firebaseId is not provided, find it by looking up the template
-    let documentIdToDelete = firebaseId;
-
-    if (!documentIdToDelete) {
-      const firebaseTemplates = await getTemplatesFromFirebase(weddingId);
-      const template = firebaseTemplates.find((t) => t.sid === templateSid);
-      if (template) {
-        documentIdToDelete = template.id;
-      }
-    }
-
-    if (documentIdToDelete) {
-      const resolvedWeddingId =
-        weddingId || (await weddingFirebase.getWeddingId());
-      await weddingFirebase.deleteDocument(
-        "templates",
-        documentIdToDelete,
-        resolvedWeddingId
-      );
-      console.log(`Template ${templateSid} deleted from Firebase successfully`);
-    } else {
-      console.warn(
-        `No Firebase document found for template ${templateSid}, but Twilio deletion succeeded`
-      );
-    }
+    const resolvedWeddingId =
+      weddingId || (await weddingFirebase.getWeddingId());
+    await weddingFirebase.deleteDocument(
+      "templates",
+      firebaseId,
+      resolvedWeddingId
+    );
   } catch (error) {
     console.error("Error deleting template:", error);
     throw error;
@@ -327,27 +279,14 @@ export const submitTemplateForApproval = async (
   approvalRequest: ApprovalRequest
 ): Promise<ApprovalResponse> => {
   try {
-    const response = await fetch(
-      `${BASE_URL}/messages/submit-template-approval/${templateSid}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(approvalRequest),
-      }
-    );
+    const result = await submitTemplateApproval({
+      templateSid: templateSid,
+      name: approvalRequest.name,
+      category: approvalRequest.category,
+    });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        `HTTP error! status: ${response.status}, message: ${
-          errorData.error || "Unknown error"
-        }`
-      );
-    }
-
-    const approvalResponse = (await response.json()) as ApprovalResponse;
+    const approvalResponse = (result.data as any)
+      .approvalRequest as ApprovalResponse;
 
     // Update the approval status in Firebase
     await updateTemplateApprovalStatus(templateSid, approvalResponse.status);
@@ -368,27 +307,11 @@ export const getApprovalStatus = async (
   templateSid: string
 ): Promise<ApprovalStatusResponse> => {
   try {
-    const response = await fetch(
-      `${BASE_URL}/messages/approval-status/${templateSid}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const result = await getTemplateApprovalStatus({
+      templateSid: templateSid,
+    });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        `HTTP error! status: ${response.status}, message: ${
-          errorData.error || "Unknown error"
-        }`
-      );
-    }
-
-    const approvalStatusResponse =
-      (await response.json()) as ApprovalStatusResponse;
+    const approvalStatusResponse = result.data as ApprovalStatusResponse;
 
     // Update the approval status in Firebase if WhatsApp data exists
     if (approvalStatusResponse.approvalData.whatsapp) {
@@ -430,9 +353,6 @@ export const updateTemplateApprovalStatus = async (
         template.id,
         { approvalStatus: status },
         resolvedWeddingId
-      );
-      console.log(
-        `Template ${templateSid} approval status updated to: ${status}`
       );
     } else {
       console.warn(

@@ -117,14 +117,9 @@ const DynamicRSVPForm: React.FC<DynamicRSVPFormProps> = ({
     return filteredData;
   }, [initialData, questions]);
 
-  // Initialize form data only when filtered data actually changes
+  // Initialize form data when filtered data changes
   useEffect(() => {
-    setFormData((prevData) => {
-      // Check if data actually changed to prevent unnecessary updates
-      const dataChanged =
-        JSON.stringify(prevData) !== JSON.stringify(filteredInitialData);
-      return dataChanged ? filteredInitialData : prevData;
-    });
+    setFormData(filteredInitialData);
   }, [filteredInitialData]);
 
   const handleFormDataChange = (newFormData: Partial<Record<string, any>>) => {

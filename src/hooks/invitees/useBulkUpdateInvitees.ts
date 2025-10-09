@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {  useQueryClient } from "@tanstack/react-query";
 import { bulkUpdateInvitees } from "../../api/invitees/inviteesApi";
 import { Invitee } from "../../components/invitees/InviteList";
 import { useWeddingMutation } from "../common";

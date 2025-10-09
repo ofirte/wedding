@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import {
   checkMessageStatus,
   TwilioMessageStatus,
@@ -21,7 +19,7 @@ export const useCheckMessageStatus = (messageSid?: string) => {
       return checkMessageStatus(messageSid);
     },
     options: {
-      enabled: !!messageSid,
+      enabled: !!messageSid && !messageSid.includes("personal"),
     },
   });
 };

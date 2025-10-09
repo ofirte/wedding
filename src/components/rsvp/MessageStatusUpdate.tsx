@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import { FC, useEffect } from "react";
 import { useCheckMessageStatus } from "../../hooks/rsvp/useCheckMessageStatus";
 import { useUpdateMessageStatus } from "../../hooks/rsvp/useUpdateMessageStatus";
 type MessageStatusUpdateProps = {
@@ -20,7 +20,7 @@ const MessageStatusUpdate: FC<MessageStatusUpdateProps> = ({
         status: messageStatus.messageInfo.status,
       });
     }
-  }, [messageStatus, originalStatus, messageSid]);
+  }, [messageStatus, originalStatus, messageSid, updateMessageStatus, messageId]);
 
   return null;
 };

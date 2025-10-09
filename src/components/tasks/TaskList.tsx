@@ -206,6 +206,7 @@ const TaskList: React.FC<TaskListProps> = ({
                     <Typography
                       variant="body2"
                       color="text.secondary"
+                      component="div"
                       sx={{ mb: 1 }}
                     >
                       {task.description}
@@ -214,7 +215,9 @@ const TaskList: React.FC<TaskListProps> = ({
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                     <Chip
                       size="small"
-                      label={`${t("common.priority")}: ${t(`common.${task.priority.toLowerCase()}`)}`}
+                      label={`${t("common.priority")}: ${t(
+                        `common.${task.priority.toLowerCase()}`
+                      )}`}
                       color={getPriorityColor(task.priority)}
                       icon={<PriorityIcon />}
                     />
@@ -231,7 +234,9 @@ const TaskList: React.FC<TaskListProps> = ({
                     {task.assignedTo && (
                       <Chip
                         size="small"
-                        label={`${t("labels.assigned")}: ${t(`common.${task.assignedTo.toLowerCase()}`)}`}
+                        label={`${t("labels.assigned")}: ${t(
+                          `common.${task.assignedTo.toLowerCase()}`
+                        )}`}
                         icon={<PersonIcon />}
                         color="primary"
                         variant="outlined"
@@ -240,6 +245,7 @@ const TaskList: React.FC<TaskListProps> = ({
                   </Box>
                 </Box>
               }
+              secondaryTypographyProps={{ component: "div" }}
             />
 
             <ListItemSecondaryAction>

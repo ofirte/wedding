@@ -1,7 +1,11 @@
 import { ContentInstance } from "twilio/lib/rest/content/v2/content";
 import { weddingFirebase } from "../weddingFirebaseHelpers";
 import { MessageInstance } from "twilio/lib/rest/api/v2010/account/message";
-import { getBaseUrl } from "../../utils/firebaseFunctionsUtil";
+import {
+  sendWhatsAppMessage,
+  sendSmsMessage,
+  getMessageStatus,
+} from "../firebaseFunctions";
 
 export interface SendMessageRequest {
   to: string;
@@ -69,29 +73,27 @@ export interface SentMessage {
   smsSegments?: number; // For SMS only
 }
 
-const BASE_URL = getBaseUrl();
-
 export const sendMessage = async (
   messageData: SendMessageRequest,
   weddingId?: string
 ): Promise<SendMessageResponse> => {
   try {
-    const sendMessageFunction = await fetch(
-      `${BASE_URL}/messages/send-message`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(messageData),
-      }
-    );
+    // Call Firebase callable function
+    const result = await sendWhatsAppMessage({
+      to: messageData.to,
+      contentSid: messageData.contentSid,
+      contentVariables: messageData.contentVariables,
+    });
 
-    if (!sendMessageFunction.ok) {
-      throw new Error(`HTTP error! status: ${sendMessageFunction.status}`);
-    }
-
-    const response = (await sendMessageFunction.json()) as SendMessageResponse;
+    // Transform the response to match expected format
+    const responseData = result.data as any;
+    const response: SendMessageResponse = {
+      sid: responseData.messageSid,
+      status: responseData.status,
+      to: responseData.to,
+      from: responseData.from,
+      dateCreated: responseData.dateCreated,
+    };
 
     await saveSentMessage(messageData, response, weddingId);
 
@@ -110,50 +112,48 @@ export const sendSMSMessage = async (
   weddingId?: string
 ): Promise<SendSMSResponse> => {
   try {
-    const response = await fetch(`${BASE_URL}/messages/send-sms`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(messageData),
+    // Call Firebase callable function
+    const result = await sendSmsMessage({
+      to: messageData.to,
+      contentSid: messageData.contentSid,
+      contentVariables: messageData.contentVariables,
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = (await response.json()) as SendSMSResponse;
-
-    // Save SMS message to Firebase - clean undefined fields
-    const resolvedWeddingId =
-      weddingId || (await weddingFirebase.getWeddingId());
-
-    const sentMessage: Omit<SentMessage, "id"> = {
-      sid: result.sid || "",
-      to: result.to || "",
-      from: result.from || "",
-      status: result.status || "unknown",
-      contentSid: messageData.contentSid || "",
-      contentVariables: messageData.contentVariables || {},
-      templateId: messageData.contentSid || "",
-      dateCreated: result.dateCreated || new Date().toISOString(),
-      dateSent: result.dateCreated || new Date().toISOString(),
-      dateUpdated: new Date().toISOString(),
-      errorMessage: result.errorMessage || "",
-      weddingId: resolvedWeddingId,
-      userId: messageData.userId || "",
+    // Transform the response to match expected format
+    const responseData = result.data as any;
+    const smsResponse: SendSMSResponse = {
+      sid: responseData.messageSid,
+      status: responseData.status,
+      to: responseData.to,
+      from: responseData.from,
+      dateCreated: responseData.dateCreated,
       messageType: "sms",
-      ...(result.smsSegments && { smsSegments: result.smsSegments }), // Only add if defined
     };
 
-    await weddingFirebase.addDocument(
-      "sentMessages",
-      sentMessage,
-      resolvedWeddingId
-    );
-    return result;
+    // Also save SMS message to Firebase for tracking
+    const messageRequest: SendMessageRequest = {
+      to: messageData.to,
+      contentSid: messageData.contentSid,
+      contentVariables: messageData.contentVariables,
+      userId: messageData.userId,
+    };
+
+    // Transform SMS response to standard message response format for saving
+    const messageResponse: SendMessageResponse = {
+      sid: smsResponse.sid,
+      status: smsResponse.status,
+      to: smsResponse.to,
+      from: smsResponse.from,
+      dateCreated: smsResponse.dateCreated,
+      dateSent: smsResponse.dateSent,
+      errorMessage: smsResponse.errorMessage,
+    };
+
+    await saveSentMessage(messageRequest, messageResponse, weddingId);
+
+    return smsResponse;
   } catch (error) {
-    console.error("Error sending SMS:", error);
+    console.error("Error sending SMS message:", error);
     throw error;
   }
 };
@@ -204,24 +204,15 @@ export const checkMessageStatus = async (
   messageSid: string
 ): Promise<TwilioMessageStatus> => {
   try {
-    const response = await fetch(`${BASE_URL}/messages/status/${messageSid}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+    // Call Firebase callable function
+    const result = await getMessageStatus({
+      messageSid: messageSid,
     });
 
-    if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error(`Message with SID ${messageSid} not found`);
-      }
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = (await response.json()) as TwilioMessageStatus;
-    return data;
+    // The result should match TwilioMessageStatus format
+    return result.data as TwilioMessageStatus;
   } catch (error) {
-    console.error("Error checking message status:", error);
+    console.error("Error fetching message status from Twilio:", error);
     throw error;
   }
 };

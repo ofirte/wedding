@@ -4,7 +4,7 @@ import { useWeddingMutation } from "../common";
 
 interface DeleteTemplateVariables {
   templateSid: string;
-  firebaseId?: string;
+  firebaseId: string;
 }
 
 /**

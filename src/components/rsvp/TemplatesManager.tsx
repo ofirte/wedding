@@ -65,7 +65,8 @@ const TemplatesManager: React.FC = () => {
 
   const handleDeleteTemplate = (templateSid: string) => {
     // Find the firebase ID from the selected template for more efficient deletion
-    const firebaseId = selectedTemplate?.id;
+    if (!selectedTemplate) return;
+    const firebaseId = selectedTemplate.id;
 
     deleteTemplateMutation.mutate(
       { templateSid, firebaseId },

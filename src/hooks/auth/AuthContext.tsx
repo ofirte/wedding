@@ -6,9 +6,8 @@ import React, {
   ReactNode,
 } from "react";
 
-import { User, onAuthStateChanged, signOut } from "firebase/auth";
+import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../api/firebaseConfig";
-import { useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface AuthContextType {
@@ -36,7 +35,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [queryClient]);
 
   return (
     <AuthContext.Provider value={{ currentUser, isLoading }}>

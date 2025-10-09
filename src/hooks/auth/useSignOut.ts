@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { signOutUser } from "../../api/auth/authApi";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 
 /**
  * Hook to handle user sign-out
@@ -11,7 +11,7 @@ export const useSignOut = () => {
   return useMutation({
     mutationFn: signOutUser,
     onSuccess: () => {
-      navigate("/login", {replace: true});
+      navigate("/login", { replace: true });
     },
   });
 };

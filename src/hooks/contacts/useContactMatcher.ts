@@ -1,7 +1,5 @@
-import { useState, useCallback } from "react";
-import {
-  GoogleContact,
-} from "../../api/contacts/googleContactsApi";
+import { useState, useCallback, useMemo } from "react";
+import { GoogleContact } from "../../api/contacts/googleContactsApi";
 import { Invitee } from "../../components/invitees/InviteList";
 import { useUpdateInvitee } from "../invitees/useUpdateInvitee";
 import { formatPhoneNumber } from "../../utils/PhoneUtils";
@@ -45,15 +43,16 @@ export const useContactMatcher = (): UseContactMatcherReturn => {
     (invitee) => !invitee.cellphone || invitee.cellphone.trim() === ""
   );
 
-  const currentMatch =
-    inviteesNeedingPhones.length > 0 &&
-    currentInviteeIndex < inviteesNeedingPhones.length
+  const currentMatch = useMemo(() => {
+    return inviteesNeedingPhones.length > 0 &&
+      currentInviteeIndex < inviteesNeedingPhones.length
       ? matches.get(inviteesNeedingPhones[currentInviteeIndex].id) || {
           invitee: inviteesNeedingPhones[currentInviteeIndex],
           selectedContact: null,
           phoneNumber: null,
         }
       : null;
+  }, [inviteesNeedingPhones, currentInviteeIndex, matches]);
 
   const progress = {
     current: currentInviteeIndex + 1,

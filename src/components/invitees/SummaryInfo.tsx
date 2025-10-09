@@ -7,7 +7,7 @@ import {
 } from "@mui/icons-material";
 import { Invitee } from "./InviteList";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { gu } from "date-fns/locale";
+
 interface SummaryInfoProps {
   invitees: Invitee[];
 }
@@ -17,14 +17,12 @@ const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
 
   const guestStats = useMemo(() => {
     const totalInviteeRecords = invitees.length;
-    console.log(invitees);
     // Total expected guests (including plus-ones)
     const totalExpectedGuests = invitees.reduce(
       (acc, invitee) =>
         acc + (isNaN(Number(invitee.amount)) ? 0 : Number(invitee.amount)),
       0
     );
-    console.log("Total Expected Guests:", totalExpectedGuests);
     const missingPhoneNumbers = invitees.filter(
       (invitee) => !invitee.cellphone || invitee.cellphone.trim() === ""
     ).length;

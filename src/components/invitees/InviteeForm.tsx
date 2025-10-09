@@ -54,7 +54,9 @@ const InviteeForm: React.FC<InviteeFormProps> = ({
                   freeSolo
                   options={relationOptions}
                   value={draftInvitee.relation}
-       
+                  onChange={(_, newValue) =>
+                    handleInputChange(column.id, newValue || "")
+                  }
                   renderInput={(params) => (
                     <TextField
                       {...params}

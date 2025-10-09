@@ -44,8 +44,8 @@ export const stripWeddingIdFromTemplateName = (
   // Remove wedding ID suffix pattern: _[8-character-id] from the end
   // Convert underscores back to spaces and capitalize first letter of each word
   return friendlyName
-    .replace(/_/g, " ")
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
+    ?.replace(/_/g, " ")
+    ?.split(" ")
+    ?.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    ?.join(" ");
 };

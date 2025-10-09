@@ -14,9 +14,6 @@ import {
 } from "@mui/material";
 import {
   ArrowForward as ArrowIcon,
-  Flag as PriorityIcon,
-  CalendarToday as DateIcon,
-  Person as PersonIcon,
   CheckCircleOutline as CheckIcon,
   RadioButtonUnchecked as UncheckIcon,
 } from "@mui/icons-material";

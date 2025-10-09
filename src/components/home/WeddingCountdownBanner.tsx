@@ -9,7 +9,7 @@ import { useTranslation } from "../../localization/LocalizationContext";
 
 interface WeddingCountdownBannerProps {}
 
-const WeddingCountdownBanner: React.FC<WeddingCountdownBannerProps> = ({}) => {
+const WeddingCountdownBanner: React.FC<WeddingCountdownBannerProps> = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   const weddingDateInfo = useWeddingDate();

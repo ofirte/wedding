@@ -112,8 +112,11 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                   </MenuItem>
                 )}
 
-                {filterConfig.resolvedOptions?.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
+                {filterConfig.resolvedOptions?.map((option, index) => (
+                  <MenuItem
+                    key={`${filterConfig.id}-option-${index}`}
+                    value={option.value}
+                  >
                     {option.label}
                   </MenuItem>
                 ))}

@@ -1,9 +1,7 @@
 import {
   useMutation,
   UseMutationOptions,
-  useQueryClient,
 } from "@tanstack/react-query";
-import { getCurrentUserData } from "../../api/auth/authApi";
 import { joinWedding, Wedding } from "../../api/wedding/weddingApi";
 
 export const useJoinWedding = (
