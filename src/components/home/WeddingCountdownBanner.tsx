@@ -6,6 +6,7 @@ import {
 } from "@mui/icons-material";
 import { useWeddingDate } from "../../hooks/wedding/useWeddingDate";
 import { useTranslation } from "../../localization/LocalizationContext";
+import InvitationShareButton from "./InvitationShareButton";
 
 interface WeddingCountdownBannerProps {}
 
@@ -26,6 +27,18 @@ const WeddingCountdownBanner: React.FC<WeddingCountdownBannerProps> = () => {
         overflow: "hidden",
       }}
     >
+      <Box
+        sx={{
+          position: "absolute",
+          top: 16,
+          right: 16,
+          zIndex: 10,
+          display: "flex",
+          justifyContent: { xs: "center", md: "flex-end" },
+        }}
+      >
+        <InvitationShareButton />
+      </Box>
       <Box
         sx={{
           position: "absolute",

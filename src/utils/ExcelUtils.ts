@@ -1,26 +1,31 @@
 import * as XLSX from "xlsx";
-import { Column } from "../components/common/DSTable";
+import { Column, ExportColumn } from "../components/common/DSTable";
 
 /**
  * Exports data to an Excel file
  * @param data The data to export
  * @param columns The columns configuration
+ * @param exportAddedColumns Additional columns to include in export but not shown in UI
  * @param filename The name of the file to be downloaded
  */
 export const exportToExcel = <T extends { id: string | number }>(
   data: T[],
   columns: Column<T>[],
+  exportAddedColumns: ExportColumn<T>[] = [],
   filename: string = "export"
 ): void => {
-  // Extract only the displayable data based on columns
-  const headers = columns.map((column) => column.label);
+  // Combine display columns with additional export columns
+  const displayHeaders = columns.map((column) => column.label);
+  const additionalHeaders = exportAddedColumns.map((column) => column.label);
+  const headers = [...displayHeaders, ...additionalHeaders];
 
   // Create worksheet data with headers
   const worksheetData = [
     headers,
     // For each data row, extract values based on columns
-    ...data.map((row) =>
-      columns.map((column) => {
+    ...data.map((row) => {
+      // Get display column values
+      const displayValues = columns.map((column) => {
         // Get the rendered content for this cell
         const renderedContent = column.render(row);
 
@@ -38,8 +43,16 @@ export const exportToExcel = <T extends { id: string | number }>(
         // This is a simplification - you might need to customize this based on your data structure
         const key = column.id as keyof T;
         return row[key]?.toString() || "";
-      })
-    ),
+      });
+
+      // Get additional column values directly from data
+      const additionalValues = exportAddedColumns.map((column) => {
+        const value = row[column.id];
+        return value?.toString() || "";
+      });
+
+      return [...displayValues, ...additionalValues];
+    }),
   ];
 
   // Create worksheet and workbook
@@ -63,9 +76,10 @@ export const exportToExcel = <T extends { id: string | number }>(
 export const useExcelExport = (filename: string = "export") => {
   const exportData = <T extends { id: string | number }>(
     data: T[],
-    columns: Column<T>[]
+    columns: Column<T>[],
+    exportAddedColumns: ExportColumn<T>[] = []
   ) => {
-    exportToExcel(data, columns, filename);
+    exportToExcel(data, columns, exportAddedColumns, filename);
   };
 
   return { exportData };
