@@ -177,6 +177,12 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
           <DSTable
             columns={columns}
             data={enrichedData}
+            exportAddedColumns={[
+              {
+                id: "cellphone",
+                label: "Phone Number",
+              },
+            ]}
             showSelectColumn={showSelectColumn}
             showExport={showExport}
             onSelectionChange={handleSelectionChange}

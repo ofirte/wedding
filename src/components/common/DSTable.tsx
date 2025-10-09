@@ -35,6 +35,11 @@ export type Column<T extends { id: string | number }> = {
   showOnMobileCard?: boolean;
 };
 
+export type ExportColumn<T extends { id: string | number }> = {
+  id: keyof T;
+  label: string;
+};
+
 type DSTableProps<T extends { id: string | number }> = {
   columns: Column<T>[];
   data: T[];
@@ -42,6 +47,7 @@ type DSTableProps<T extends { id: string | number }> = {
   onDisplayedDataChange?: (data: T[]) => void;
   showExport?: boolean;
   exportFilename?: string;
+  exportAddedColumns?: ExportColumn<T>[]; // Additional columns for export only
   showSelectColumn?: boolean;
   onSelectionChange?: (selectedRows: T[]) => void;
   BulkActions?: React.JSX.Element | null;
@@ -58,6 +64,7 @@ const DSTable: FC<DSTableProps<any>> = ({
   onDisplayedDataChange,
   showExport = false,
   exportFilename = "export",
+  exportAddedColumns = [],
   showSelectColumn = false,
   onSelectionChange,
   BulkActions,
@@ -132,7 +139,7 @@ const DSTable: FC<DSTableProps<any>> = ({
 
   // Handle export button click
   const handleExport = () => {
-    exportData(displayedData, columns);
+    exportData(displayedData, columns, exportAddedColumns);
   };
 
   return (
