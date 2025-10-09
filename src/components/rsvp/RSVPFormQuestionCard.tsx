@@ -100,6 +100,7 @@ const RSVPFormQuestionCard: React.FC<RSVPFormQuestionCardProps> = ({
           <Box
             sx={{
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
             }}
