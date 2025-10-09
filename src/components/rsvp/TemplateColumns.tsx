@@ -1,17 +1,12 @@
 import React from "react";
 import { Column } from "../common/DSTable";
-import { Chip, Box, Typography, Stack } from "@mui/material";
+import { Chip, Typography, Stack } from "@mui/material";
 import {
-  CheckCircle as CheckCircleIcon,
-  Schedule as ScheduleIcon,
-  Cancel as CancelIcon,
-  Send as SendIcon,
   Language as LanguageIcon,
   TextFields as TextFieldsIcon,
   Image as ImageIcon,
 } from "@mui/icons-material";
 import { stripWeddingIdFromTemplateName } from "../../utils/templatesUtils";
-import { get } from "lodash";
 
 export interface TemplateTableRow {
   id: string;
@@ -47,20 +42,6 @@ const getTypeIcon = (type: "text" | "media" | "both") => {
   }
 };
 
-const getTypeColor = (
-  type: "text" | "media" | "both"
-): "primary" | "secondary" | "info" => {
-  switch (type) {
-    case "text":
-      return "primary";
-    case "media":
-      return "secondary";
-    case "both":
-      return "info";
-    default:
-      return "primary";
-  }
-};
 
 const getApprovalStatusColor = (
   status?: string

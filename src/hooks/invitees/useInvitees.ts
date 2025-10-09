@@ -1,5 +1,3 @@
-// filepath: /Users/ofirtene/Projects/wedding-plan/src/hooks/invitees/useInvitees.ts
-import { useQuery } from "@tanstack/react-query";
 import { fetchInvitees } from "../../api/invitees/inviteesApi";
 import { useWeddingQuery } from "../common";
 

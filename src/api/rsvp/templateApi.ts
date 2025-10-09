@@ -1,6 +1,5 @@
 import { weddingFirebase } from "../weddingFirebaseHelpers";
 import {
-  callFirebaseFunction,
   getMessageTemplates,
   createMessageTemplate,
   deleteMessageTemplate,
@@ -84,14 +83,15 @@ export const createTemplate = async (
 ): Promise<CreateTemplateResponse> => {
   try {
     // Call Firebase callable function
-    const result = await callFirebaseFunction("createMessageTemplate", {
+    const result = await createMessageTemplate({
       friendly_name: templateData.friendly_name,
       language: templateData.language,
       variables: templateData.variables,
       types: templateData.types,
     });
 
-    const createdTemplate = result.template as CreateTemplateResponse;
+    const createdTemplate = (result.data as any)
+      .template as CreateTemplateResponse;
 
     // Save the template information to Firebase
     await saveTemplateToFirebase(createdTemplate, weddingId, userId);
@@ -138,9 +138,6 @@ export const saveTemplateToFirebase = async (
       resolvedWeddingId
     );
 
-    console.log(
-      `Template ${template.sid} saved to Firebase with ID: ${docRef.id}`
-    );
     return docRef.id;
   } catch (error) {
     console.error("Error saving template to Firebase:", error);
@@ -162,7 +159,6 @@ export const getTemplatesFromFirebase = async (
       weddingFirebase.listenToCollection<TemplateDocument>(
         "templates",
         (templates) => {
-          console.log(`Retrieved ${templates.length} templates from Firebase`);
           resolve(templates);
         },
         (error) => reject(error),
@@ -190,11 +186,11 @@ export const getWeddingTemplates = async (
 ): Promise<WeddingTemplateData> => {
   try {
     // Fetch from both sources in parallel
-    const [twilioResponse, firebaseTemplates] = await Promise.all([
-      callFirebaseFunction("getMessageTemplates"),
+    const [twilioResult, firebaseTemplates] = await Promise.all([
+      getMessageTemplates(),
       getTemplatesFromFirebase(weddingId),
     ]);
-    console.log(twilioResponse);
+    const twilioResponse = twilioResult.data as any;
     const twilioTemplates = twilioResponse.templates || [];
 
     // Create a map of Firebase templates by SID for quick lookup
@@ -221,10 +217,6 @@ export const getWeddingTemplates = async (
         };
       });
 
-    console.log(
-      `Found ${combinedTemplates.length} templates in both Twilio and Firebase out of ${twilioTemplates.length} Twilio templates and ${firebaseTemplates.length} Firebase templates`
-    );
-
     return {
       templates: combinedTemplates,
       length: combinedTemplates.length,
@@ -245,43 +237,31 @@ export const getWeddingTemplates = async (
  */
 export const deleteTemplate = async (
   templateSid: string,
-  firebaseId?: string,
+  firebaseId: string,
   weddingId?: string
 ): Promise<void> => {
   try {
     // Step 1: Delete from Twilio via Firebase Functions
-    const result = await callFirebaseFunction("deleteMessageTemplate", {
+    const result = await deleteMessageTemplate({
       templateSid: templateSid,
     });
 
-    console.log(`Template ${templateSid} deleted from Twilio successfully`);
-
-    // Step 2: Delete from Firebase
-    // If firebaseId is not provided, find it by looking up the template
-    let documentIdToDelete = firebaseId;
-
-    if (!documentIdToDelete) {
-      const firebaseTemplates = await getTemplatesFromFirebase(weddingId);
-      const template = firebaseTemplates.find((t) => t.sid === templateSid);
-      if (template) {
-        documentIdToDelete = template.id;
-      }
-    }
-
-    if (documentIdToDelete) {
-      const resolvedWeddingId =
-        weddingId || (await weddingFirebase.getWeddingId());
-      await weddingFirebase.deleteDocument(
-        "templates",
-        documentIdToDelete,
-        resolvedWeddingId
-      );
-      console.log(`Template ${templateSid} deleted from Firebase successfully`);
-    } else {
-      console.warn(
-        `No Firebase document found for template ${templateSid}, but Twilio deletion succeeded`
+    // Validate the deletion result
+    const deleteResult = result.data as any;
+    if (!deleteResult || deleteResult.error) {
+      throw new Error(
+        `Failed to delete template from Twilio: ${
+          deleteResult?.error || "Unknown error"
+        }`
       );
     }
+    const resolvedWeddingId =
+      weddingId || (await weddingFirebase.getWeddingId());
+    await weddingFirebase.deleteDocument(
+      "templates",
+      firebaseId,
+      resolvedWeddingId
+    );
   } catch (error) {
     console.error("Error deleting template:", error);
     throw error;
@@ -299,13 +279,14 @@ export const submitTemplateForApproval = async (
   approvalRequest: ApprovalRequest
 ): Promise<ApprovalResponse> => {
   try {
-    const result = await callFirebaseFunction("submitTemplateApproval", {
+    const result = await submitTemplateApproval({
       templateSid: templateSid,
       name: approvalRequest.name,
       category: approvalRequest.category,
     });
 
-    const approvalResponse = result.approvalRequest as ApprovalResponse;
+    const approvalResponse = (result.data as any)
+      .approvalRequest as ApprovalResponse;
 
     // Update the approval status in Firebase
     await updateTemplateApprovalStatus(templateSid, approvalResponse.status);
@@ -326,11 +307,11 @@ export const getApprovalStatus = async (
   templateSid: string
 ): Promise<ApprovalStatusResponse> => {
   try {
-    const result = await callFirebaseFunction("getTemplateApprovalStatus", {
+    const result = await getTemplateApprovalStatus({
       templateSid: templateSid,
     });
 
-    const approvalStatusResponse = result as ApprovalStatusResponse;
+    const approvalStatusResponse = result.data as ApprovalStatusResponse;
 
     // Update the approval status in Firebase if WhatsApp data exists
     if (approvalStatusResponse.approvalData.whatsapp) {
@@ -372,9 +353,6 @@ export const updateTemplateApprovalStatus = async (
         template.id,
         { approvalStatus: status },
         resolvedWeddingId
-      );
-      console.log(
-        `Template ${templateSid} approval status updated to: ${status}`
       );
     } else {
       console.warn(

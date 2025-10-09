@@ -4,34 +4,27 @@ import {
   Typography,
   Button,
   Container,
-  Paper,
   Grid,
   useTheme,
   Card,
   CardContent,
   Chip,
-  Divider,
-  Avatar,
+
 } from "@mui/material";
 import {
   Favorite as FavoriteIcon,
   People as PeopleIcon,
   Assignment as AssignmentIcon,
   AttachMoney as AttachMoneyIcon,
-  Star as StarIcon,
-  CheckCircle as CheckCircleIcon,
   Schedule as ScheduleIcon,
   PhotoCamera as PhotoCameraIcon,
-  Restaurant as RestaurantIcon,
   MusicNote as MusicNoteIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
-import { useTranslation } from "../../localization/LocalizationContext";
 
 const LandingPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   const features = [
     {
@@ -77,31 +70,6 @@ const LandingPage: React.FC = () => {
       highlight: "Playlist management",
     },
   ];
-
-  const testimonials = [
-    {
-      name: "Sarah & Michael",
-      review:
-        "This app made planning our wedding so much easier! The budget tracker saved us thousands.",
-      rating: 5,
-      avatar: "S",
-    },
-    {
-      name: "Emma & David",
-      review:
-        "Love how organized everything is. Our families could track RSVPs in real-time!",
-      rating: 5,
-      avatar: "E",
-    },
-    {
-      name: "Jessica & Ryan",
-      review:
-        "The timeline feature helped us coordinate our entire wedding day perfectly.",
-      rating: 5,
-      avatar: "J",
-    },
-  ];
-
 
 
   return (

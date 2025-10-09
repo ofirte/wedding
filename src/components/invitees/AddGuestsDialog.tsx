@@ -63,7 +63,6 @@ const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
   }, [editInvitee, open]);
 
   const handleInputChange = (field: string, value: any) => {
-    console.log(`Input changed: ${field} = ${value}`);
     setDraftInvitee({
       ...draftInvitee,
       [field]: value,
@@ -71,8 +70,6 @@ const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
   };
 
   const handleAddInvitee = () => {
-    console.log("Adding new invitee: ", draftInvitee);
-    // Create a new id based on the last id in the array.
     const newId =
       newInvitees.length > 0
         ? (parseInt(newInvitees[newInvitees.length - 1].id) + 1).toString()

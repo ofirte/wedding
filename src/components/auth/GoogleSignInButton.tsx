@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import React from "react";
 import { GoogleIcon } from "../../icons/GoogleIcon";
 import { useTranslation } from "../../localization/LocalizationContext";

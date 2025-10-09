@@ -5,7 +5,7 @@ import {
   Cancel as CancelIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { useResponsive, responsivePatterns } from "../../utils/ResponsiveUtils";
+import { useResponsive } from "../../utils/ResponsiveUtils";
 import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
 import { Invitee } from "../invitees/InviteList";
 import { useRSVPFormQuestions } from "../../hooks/rsvp/useRSVPFormQuestions";

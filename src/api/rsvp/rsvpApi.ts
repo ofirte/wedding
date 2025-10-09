@@ -2,7 +2,6 @@ import { ContentInstance } from "twilio/lib/rest/content/v2/content";
 import { weddingFirebase } from "../weddingFirebaseHelpers";
 import { MessageInstance } from "twilio/lib/rest/api/v2010/account/message";
 import {
-  callFirebaseFunction,
   sendWhatsAppMessage,
   sendSmsMessage,
   getMessageStatus,
@@ -80,19 +79,20 @@ export const sendMessage = async (
 ): Promise<SendMessageResponse> => {
   try {
     // Call Firebase callable function
-    const result = await callFirebaseFunction("sendWhatsAppMessage", {
+    const result = await sendWhatsAppMessage({
       to: messageData.to,
       contentSid: messageData.contentSid,
       contentVariables: messageData.contentVariables,
     });
 
     // Transform the response to match expected format
+    const responseData = result.data as any;
     const response: SendMessageResponse = {
-      sid: result.messageSid,
-      status: result.status,
-      to: result.to,
-      from: result.from,
-      dateCreated: result.dateCreated,
+      sid: responseData.messageSid,
+      status: responseData.status,
+      to: responseData.to,
+      from: responseData.from,
+      dateCreated: responseData.dateCreated,
     };
 
     await saveSentMessage(messageData, response, weddingId);
@@ -113,19 +113,20 @@ export const sendSMSMessage = async (
 ): Promise<SendSMSResponse> => {
   try {
     // Call Firebase callable function
-    const result = await callFirebaseFunction("sendSmsMessage", {
+    const result = await sendSmsMessage({
       to: messageData.to,
       contentSid: messageData.contentSid,
       contentVariables: messageData.contentVariables,
     });
 
     // Transform the response to match expected format
+    const responseData = result.data as any;
     const smsResponse: SendSMSResponse = {
-      sid: result.messageSid,
-      status: result.status,
-      to: result.to,
-      from: result.from,
-      dateCreated: result.dateCreated,
+      sid: responseData.messageSid,
+      status: responseData.status,
+      to: responseData.to,
+      from: responseData.from,
+      dateCreated: responseData.dateCreated,
       messageType: "sms",
     };
 
@@ -204,12 +205,12 @@ export const checkMessageStatus = async (
 ): Promise<TwilioMessageStatus> => {
   try {
     // Call Firebase callable function
-    const result = await callFirebaseFunction("getMessageStatus", {
+    const result = await getMessageStatus({
       messageSid: messageSid,
     });
 
     // The result should match TwilioMessageStatus format
-    return result as TwilioMessageStatus;
+    return result.data as TwilioMessageStatus;
   } catch (error) {
     console.error("Error fetching message status from Twilio:", error);
     throw error;
