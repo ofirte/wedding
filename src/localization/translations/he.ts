@@ -115,7 +115,7 @@ export const hebrewTranslations: Translations = {
     exportToExcel: "ייצא ל - Excel",
     filters: "סנן",
     // Invitation sharing
-    shareWedding: "שתף הזמנה",
+    shareWedding: "שתף חתונה",
     inviteOthers: "הזמן אחרים לחתונה שלך",
     shareInvitationDescription:
       "שתף את קוד ההזמנה לחתונה שלך עם משפחה וחברים כדי שיוכלו להצטרף לתכנון החתונה.",
