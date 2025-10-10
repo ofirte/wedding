@@ -27,6 +27,5 @@ export {
 } from "./types";
 
 // Export organized function collections
-export { authFunctions } from "./auth";
 export { messagingFunctions } from "./messaging";
 export { templateFunctions } from "./templates";
