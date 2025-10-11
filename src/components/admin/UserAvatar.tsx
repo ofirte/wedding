@@ -4,7 +4,7 @@ import { WeddingUser } from "../../api/auth/authApi";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface UserAvatarProps {
-  user: WeddingUser;
+  user: Partial<WeddingUser>;
   showDetails?: boolean;
 }
 
@@ -38,9 +38,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
         <Typography variant="body2" fontWeight="medium">
           {user.displayName || t("userManagement.noDisplayName")}
         </Typography>
-        <Typography variant="caption" color="text.secondary">
-          ID: {user.uid.slice(0, 8)}...
-        </Typography>
+
       </Box>
     </Box>
   );

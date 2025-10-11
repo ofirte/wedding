@@ -4,6 +4,7 @@
 export enum UserRolesFunctions {
   INITIALIZE_NEW_USER = "initializeNewUser",
   SET_USER_ROLE = "setUserRole",
+  LIST_USERS = "listUsers",
 }
 
 /**

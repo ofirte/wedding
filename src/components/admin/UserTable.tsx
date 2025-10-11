@@ -12,14 +12,14 @@ import {
   Box,
 } from "@mui/material";
 import { Edit as EditIcon } from "@mui/icons-material";
-import { WeddingUser } from "../../api/auth/authApi";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { UserAvatar } from "./UserAvatar";
 import { UserRoleChip } from "./UserRoleChip";
+import { UserInfo } from "../../hooks/auth/useUsersInfo";
 
 interface UserTableProps {
-  users: WeddingUser[];
-  onEditUser: (user: WeddingUser) => void;
+  users: UserInfo[];
+  onEditUser: (user: UserInfo) => void;
   isUpdating?: boolean;
 }
 
@@ -50,7 +50,13 @@ export const UserTable: React.FC<UserTableProps> = ({
             {users.map((user) => (
               <TableRow key={user.uid} hover>
                 <TableCell>
-                  <UserAvatar user={user} showDetails />
+                  <UserAvatar
+                    user={{
+                      displayName: user.displayName,
+                      photoURL: user.photoURL,
+                    }}
+                    showDetails
+                  />
                 </TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>

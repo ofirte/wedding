@@ -13,12 +13,12 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { WeddingUser } from "../../api/auth/authApi";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { UserInfo } from "../../hooks/auth/useUsersInfo";
 
 interface EditUserDialogProps {
   open: boolean;
-  user: WeddingUser | null;
+  user: UserInfo | null;
   onClose: () => void;
   onSave: (userId: string, role: string) => void;
   isLoading?: boolean;

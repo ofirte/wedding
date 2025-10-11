@@ -6,20 +6,21 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
-import { WeddingUser } from "../../api/auth/authApi";
+
 import { useTranslation } from "../../localization/LocalizationContext";
-import { useAllUsers } from "../../hooks/auth/useAllUsers";
 import { useUpdateUserRole } from "../../hooks/auth/useUpdateUserRole";
 import { UserTable } from "./UserTable";
 import { EditUserDialog } from "./EditUserDialog";
+import { useUsersInfo } from "../../hooks/auth";
+import { UserInfo } from "../../hooks/auth/useUsersInfo";
 
 const UserManagementPage: React.FC = () => {
   const { t } = useTranslation();
-  const [editingUser, setEditingUser] = useState<WeddingUser | null>(null);
+  const [editingUser, setEditingUser] = useState<UserInfo | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   // Fetch all users using the custom hook
-  const { data: users = [], isLoading, error } = useAllUsers();
+  const { data: users, isLoading, error } = useUsersInfo();
 
   // Update user role mutation using the custom hook
   const updateUserRoleMutation = useUpdateUserRole({
@@ -32,7 +33,7 @@ const UserManagementPage: React.FC = () => {
     },
   });
 
-  const handleEditUser = (user: WeddingUser) => {
+  const handleEditUser = (user: UserInfo) => {
     setEditingUser(user);
     setEditDialogOpen(true);
   };
@@ -68,7 +69,9 @@ const UserManagementPage: React.FC = () => {
       </Container>
     );
   }
-
+  if (!users) {
+    return null;
+  }
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Box mb={4}>
@@ -81,7 +84,7 @@ const UserManagementPage: React.FC = () => {
       </Box>
 
       <UserTable
-        users={users}
+        users={users.users}
         onEditUser={handleEditUser}
         isUpdating={updateUserRoleMutation.isPending}
       />

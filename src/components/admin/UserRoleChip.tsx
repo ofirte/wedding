@@ -4,11 +4,11 @@ import {
   AdminPanelSettings as AdminIcon,
   Person as UserIcon,
 } from "@mui/icons-material";
-import { WeddingUser } from "../../api/auth/authApi";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { UserInfo } from "../../hooks/auth/useUsersInfo";
 
 interface UserRoleChipProps {
-  user: WeddingUser;
+  user: UserInfo;
 }
 
 /**
