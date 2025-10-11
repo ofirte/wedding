@@ -1,10 +1,13 @@
 /**
- * Enum for Authentication-related Firebase Functions
+ * Enum for User Roles-related Firebase Functions
  */
-export enum AuthFunctions {
+export enum UserRolesFunctions {
+  INITIALIZE_NEW_USER = "initializeNewUser",
+  SET_USER_ROLE = "setUserRole",
+  SET_GLOBAL_ADMIN = "setGlobalAdmin",
+  GET_USER_CUSTOM_CLAIMS = "getUserCustomClaims",
   SET_USER_CUSTOM_CLAIMS = "setUserCustomClaims",
   REMOVE_USER_CUSTOM_CLAIMS = "removeUserCustomClaims",
-  GET_USER_CUSTOM_CLAIMS = "getUserCustomClaims",
   FIND_USER_BY_EMAIL = "findUserByEmail",
 }
 
@@ -32,7 +35,7 @@ export enum TemplateFunctions {
  * All Firebase Functions combined
  */
 export const AllFunctions = {
-  ...AuthFunctions,
+  ...UserRolesFunctions,
   ...MessagingFunctions,
   ...TemplateFunctions,
 } as const;
@@ -41,6 +44,6 @@ export const AllFunctions = {
  * Type for all function names
  */
 export type FunctionName =
-  | AuthFunctions
+  | UserRolesFunctions
   | MessagingFunctions
   | TemplateFunctions;

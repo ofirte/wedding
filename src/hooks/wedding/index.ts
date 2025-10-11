@@ -4,6 +4,7 @@
 export { useCreateWedding } from "./useCreateWedding";
 export { useJoinWedding } from "./useJoinWedding";
 export { useWeddingDetails } from "./useWeddingDetails";
+export { useWeddingsDetails } from "./useWeddingsDetails";
 export { useUpdateWedding } from "./useUpdateWedding";
 // Re-export types and constants for convenience
 export type {
@@ -11,4 +12,3 @@ export type {
   WeddingMemberInput,
   WeddingPlan,
 } from "../../api/wedding/types";
-

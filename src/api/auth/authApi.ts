@@ -22,6 +22,8 @@ export interface WeddingUser {
   photoURL?: string;
   weddingId?: string;
   weddingIds?: string[];
+  role?: string;
+  isAdmin?: boolean;
 }
 
 // Sign-up new user

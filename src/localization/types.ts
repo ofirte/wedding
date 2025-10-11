@@ -192,6 +192,41 @@ export interface Translations {
     rsvp: string;
     wedding: string;
   };
+  weddings: {
+    yourWeddings: string;
+    selectWeddingMessage: string;
+    noWeddingsMessage: string;
+    createFirstWedding: string;
+    createAnotherWedding: string;
+    openWedding: string;
+    invitationCode: string;
+    errorLoadingUserData: string;
+    errorLoadingWeddings: string;
+  };
+  userManagement: {
+    title: string;
+    description: string;
+    user: string;
+    role: string;
+    joinedAt: string;
+    editUser: string;
+    userInfo: string;
+    userId: string;
+    defaultRole: string;
+    globalAdmin: string;
+    roles: {
+      user: string;
+      producer: string;
+      admin: string;
+    };
+    editUserWarning: string;
+    errorLoadingUsers: string;
+    noUsers: string;
+    noDisplayName: string;
+    updating: string;
+    updateSuccess: string;
+    updateError: string;
+  };
   home: {
     title: string;
     welcome: string;

@@ -9,7 +9,7 @@
 export * from "./types";
 
 // Export auth functions
-export * from "./auth";
+export * from "./userRoles";
 
 // Export messaging functions
 export * from "./messaging";
@@ -19,7 +19,7 @@ export * from "./templates";
 
 // Convenience re-exports for commonly used items
 export {
-  AuthFunctions,
+  UserRolesFunctions,
   MessagingFunctions,
   TemplateFunctions,
   AllFunctions,
@@ -27,5 +27,6 @@ export {
 } from "./types";
 
 // Export organized function collections
+export { userRolesFunctions } from "./userRoles";
 export { messagingFunctions } from "./messaging";
 export { templateFunctions } from "./templates";
