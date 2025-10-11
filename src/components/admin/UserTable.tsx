@@ -1,21 +1,9 @@
 import React from "react";
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  IconButton,
-  Typography,
-  Box,
-} from "@mui/material";
-import { Edit as EditIcon } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { UserAvatar } from "./UserAvatar";
-import { UserRoleChip } from "./UserRoleChip";
 import { UserInfo } from "../../hooks/auth/useUsersInfo";
+import DSTable from "../common/DSTable";
+import { createUserTableColumns, UserTableData } from "./UserTableColumns";
+import { UserTableEmptyState } from "./UserTableEmptyState";
 
 interface UserTableProps {
   users: UserInfo[];
@@ -24,7 +12,7 @@ interface UserTableProps {
 }
 
 /**
- * Table component displaying all users with their information and actions
+ * Table component displaying all users with their information and actions using DSTable
  */
 export const UserTable: React.FC<UserTableProps> = ({
   users,
@@ -33,62 +21,34 @@ export const UserTable: React.FC<UserTableProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  return (
-    <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <TableContainer>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              <TableCell>{t("userManagement.user")}</TableCell>
-              <TableCell>{t("common.emailAddress")}</TableCell>
-              <TableCell>{t("userManagement.role")}</TableCell>
-              <TableCell>{t("userManagement.joinedAt")}</TableCell>
-              <TableCell align="center">{t("common.actions")}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {users.map((user) => (
-              <TableRow key={user.uid} hover>
-                <TableCell>
-                  <UserAvatar
-                    user={{
-                      displayName: user.displayName,
-                      photoURL: user.photoURL,
-                    }}
-                    showDetails
-                  />
-                </TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>
-                  <UserRoleChip user={user} />
-                </TableCell>
-                <TableCell>
-                  {user.createdAt
-                    ? new Date(user.createdAt).toLocaleDateString()
-                    : t("common.notAvailable")}
-                </TableCell>
-                <TableCell align="center">
-                  <IconButton
-                    onClick={() => onEditUser(user)}
-                    size="small"
-                    disabled={isUpdating}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+  // Transform users to include id field for DSTable
+  const tableData: UserTableData[] = users.map((user) => ({
+    ...user,
+    id: user.uid, // Use uid as id for DSTable
+  }));
 
-      {users.length === 0 && (
-        <Box p={4} textAlign="center">
-          <Typography variant="body1" color="text.secondary">
-            {t("userManagement.noUsers")}
-          </Typography>
-        </Box>
-      )}
-    </Paper>
+  // Get columns configuration from separate file
+  const columns = createUserTableColumns({
+    t,
+    onEditUser,
+    isUpdating,
+  });
+
+  // Simple mobile card title function
+  const mobileCardTitle = (user: UserTableData) =>
+    user.displayName || user.email || t("userManagement.noDisplayName");
+
+  if (users.length === 0) {
+    return <UserTableEmptyState message={t("userManagement.noUsers")} />;
+  }
+
+  return (
+    <DSTable
+      columns={columns}
+      data={tableData}
+      showExport={true}
+      exportFilename="users-export"
+      mobileCardTitle={mobileCardTitle}
+    />
   );
 };
