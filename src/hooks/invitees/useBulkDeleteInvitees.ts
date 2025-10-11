@@ -10,7 +10,7 @@ export const useBulkDeleteInvitees = () => {
   const queryClient = useQueryClient();
 
   return useWeddingMutation({
-    mutationFn: (inviteeIds: string[]) => bulkDeleteInvitees(inviteeIds),
+    mutationFn: bulkDeleteInvitees,
     options: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["invitees"] });

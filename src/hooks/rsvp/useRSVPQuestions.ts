@@ -1,5 +1,5 @@
 // Re-export all RSVP hooks from their separate files
-export { useRSVPConfig, rsvpKeys } from "./useRSVPConfig";
+export { useRSVPConfig } from "./useRSVPConfig";
 export { useAvailableQuestions } from "./useAvailableQuestions";
 export { useRSVPFormQuestions } from "./useRSVPFormQuestions";
 export { useCreateDefaultRSVPConfig } from "./useCreateDefaultRSVPConfig";

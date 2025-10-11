@@ -11,8 +11,10 @@ export const useUpdateInvitee = () => {
   const queryClient = useQueryClient();
 
   return useWeddingMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<Invitee> }) =>
-      updateInvitee(id, data),
+    mutationFn: (
+      { id, data }: { id: string; data: Partial<Invitee> },
+      weddingId?: string
+    ) => updateInvitee(id, data, weddingId),
     options: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["invitees"] });

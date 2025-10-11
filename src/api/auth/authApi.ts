@@ -8,75 +8,22 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import {
-  doc,
-  setDoc,
-  getDoc,
-  collection,
-  addDoc,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
-import { auth, db } from "../firebaseConfig";
+import { auth } from "../firebaseConfig";
+import { createGeneralCollectionAPI } from "../generalFirebaseHelpers";
 
-// Generate a unique invitation code with collision detection
-export const generateInvitationCode = async (
-  weddingName: string
-): Promise<string> => {
-  const generateCode = (name: string): string => {
-    // Use first 3-4 letters of wedding name for readability
-    const sanitizedName = name
-      .replace(/[^a-zA-Z0-9]/g, "")
-      .toUpperCase()
-      .substring(0, 3);
-
-    // Generate 5-6 random characters for better entropy
-    const randomSuffix = Math.random()
-      .toString(36)
-      .substring(2, 8)
-      .toUpperCase();
-    return `${sanitizedName}${randomSuffix}`;
-  };
-
-  // Check for uniqueness and retry if needed
-  let attempts = 0;
-  const maxAttempts = 10;
-
-  while (attempts < maxAttempts) {
-    const code = generateCode(weddingName);
-
-    try {
-      // Check if code already exists in weddings collection
-      const q = query(
-        collection(db, "weddings"),
-        where("invitationCode", "==", code)
-      );
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.empty) {
-        return code; // Unique code found
-      }
-
-      attempts++;
-    } catch (error) {
-      console.error("Error checking invitation code uniqueness:", error);
-      attempts++;
-    }
-  }
-
-  // Fallback to timestamp-based code if all attempts fail
-  const timestamp = Date.now().toString(36).toUpperCase();
-  return `WED${timestamp}`;
-};
-
+export const authApi = createGeneralCollectionAPI<WeddingUser>("users");
 // User interface
 export interface WeddingUser {
+  id?: string;
   uid: string;
   email: string;
   displayName?: string;
+  createdAt?: Date;
   photoURL?: string;
   weddingId?: string;
+  weddingIds?: string[];
+  role?: string;
+  isAdmin?: boolean;
 }
 
 // Sign-up new user
@@ -98,16 +45,12 @@ export const signUp = async (
     if (displayName) {
       await updateProfile(user, { displayName });
     }
-
-    // Create a user document without wedding ID
-    await setDoc(doc(db, "users", user.uid), {
+    await authApi.createWithId(user.uid, {
       uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
+      email: user.email || "",
+      displayName: user.displayName || undefined,
       createdAt: new Date(),
     });
-
     return {
       uid: user.uid,
       email: user.email || "",
@@ -132,12 +75,9 @@ export const signIn = async (
       password
     );
     const user = userCredential.user;
+    const userData = await authApi.fetchById(user.uid);
 
-    // Get user data including weddingId
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    const userData = userDoc.data() as WeddingUser;
-
-    return userData;
+    return userData as WeddingUser;
   } catch (error) {
     console.error("Error signing in:", error);
     throw error;
@@ -149,15 +89,13 @@ export const signInWithGoogle = async (): Promise<WeddingUser> => {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
+    const userData = await authApi.fetchById(user.uid);
 
-    // Check if user already exists in Firestore
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (!userDoc.exists()) {
-      await setDoc(doc(db, "users", user.uid), {
+    if (!userData) {
+      await authApi.create({
         uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL,
+        email: user.email || "",
+        displayName: user.displayName || "",
         createdAt: new Date(),
       });
     }
@@ -190,47 +128,10 @@ export const getCurrentUserData = async (): Promise<WeddingUser | null> => {
     const user = auth.currentUser;
     if (!user) return null;
 
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    return userDoc.data() as WeddingUser;
+    const userData = await authApi.fetchById(user.uid);
+    return userData;
   } catch (error) {
     console.error("Error getting current user data:", error);
-    throw error;
-  }
-};
-
-// Create a new wedding for a user
-export const createWedding = async (
-  userId: string,
-  weddingName: string,
-  brideName?: string,
-  groomName?: string,
-  weddingDate?: Date
-): Promise<string> => {
-  try {
-    // Generate unique invitation code for the wedding
-    const invitationCode = await generateInvitationCode(weddingName);
-
-    // Create a wedding document
-    const weddingRef = await addDoc(collection(db, "weddings"), {
-      name: weddingName,
-      date: weddingDate || null,
-      createdAt: new Date(),
-      userIds: [userId],
-      brideName: brideName || "",
-      groomName: groomName || "",
-      invitationCode,
-    });
-
-    // Update user document with weddingId
-    await setDoc(
-      doc(db, "users", userId),
-      { weddingId: weddingRef.id },
-      { merge: true }
-    );
-
-    return weddingRef.id;
-  } catch (error) {
-    console.error("Error creating wedding:", error);
     throw error;
   }
 };

@@ -2,7 +2,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { updateCustomQuestion } from "../../api/rsvp/rsvpQuestionsApi";
 import { RSVPQuestion } from "../../api/rsvp/rsvpQuestionsTypes";
 import { useWeddingMutation } from "../common/useWeddingMutation";
-import { rsvpKeys } from "./useRSVPConfig";
 
 interface UpdateCustomQuestionVariables {
   questionId: string;
@@ -30,7 +29,7 @@ export const useUpdateCustomQuestion = () => {
       onSuccess: () => {
         // Invalidate all RSVP queries
         queryClient.invalidateQueries({
-          queryKey: rsvpKeys.all,
+          queryKey: ["rsvpConfig"],
         });
       },
     },

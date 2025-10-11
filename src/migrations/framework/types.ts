@@ -98,6 +98,7 @@ export enum MigrationStatus {
 }
 
 export interface MigrationRecord {
+  id?: string;
   migrationId: string;
   status: MigrationStatus;
   executedAt?: Date;

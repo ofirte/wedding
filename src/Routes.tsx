@@ -15,6 +15,9 @@ import WeddingRoute from "./components/wedding/WeddingRoute";
 import RootRedirect from "./components/auth/RootRedirect";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import GuestRSVPPage from "./components/rsvp/GuestRSVPPage";
+import WeddingsPage from "./components/wedding/WeddingsPage";
+import UserManagementPage from "./components/admin/UserManagementPage";
+import WeddingManagementPage from "./components/weddingManagement/WeddingManagementPage";
 
 const AppRoutes: FC = () => {
   return (
@@ -39,6 +42,9 @@ const AppRoutes: FC = () => {
             <Route path="migrations" element={<MigrationManager />} />
           </Route>
         </Route>
+        <Route path="weddings" element={<WeddingsPage />} />
+        <Route path="admin/users" element={<UserManagementPage />} />
+        <Route path="admin/weddings" element={<WeddingManagementPage />} />
       </Route>
     </Routes>
   );

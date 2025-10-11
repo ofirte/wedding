@@ -7,9 +7,9 @@ import { useRSVPConfig } from "./useRSVPConfig";
  * Hook to get only the enabled RSVP form questions (filtered by enabledQuestionIds)
  * This ensures consistent question filtering across components
  */
-export const useRSVPFormQuestions = (weddingId?: string) => {
+export const useRSVPFormQuestions = () => {
   const { t } = useLocalization();
-  const { data: config, isLoading, error } = useRSVPConfig(weddingId);
+  const { data: config, isLoading, error } = useRSVPConfig();
 
   const questions = useMemo(() => {
     if (!config) return [];

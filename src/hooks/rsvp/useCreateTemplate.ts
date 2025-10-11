@@ -23,7 +23,7 @@ export const useCreateTemplate = () => {
       createTemplate(templateData, weddingId, userId),
     options: {
       onSuccess: (data) => {
-        queryClient.invalidateQueries({ queryKey: ["messageTemplates"] });
+        queryClient.invalidateQueries({ queryKey: ["templates"] });
         console.log(`Template created successfully: ${data.sid}`);
       },
     },

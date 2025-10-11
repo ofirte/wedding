@@ -12,7 +12,7 @@ export const useCreateTask = () => {
   const queryClient = useQueryClient();
 
   return useWeddingMutation({
-    mutationFn: (task: Omit<Task, "id">) => createTask(task),
+    mutationFn: createTask,
     options: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["tasks"] });

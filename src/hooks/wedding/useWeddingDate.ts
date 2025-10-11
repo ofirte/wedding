@@ -7,7 +7,6 @@ type WeddingDateInfo = {
 export const useWeddingDate = (weddingId?: string): WeddingDateInfo | null => {
   const { data: weddingDetails, isLoading: isLoadingWeddingDetails } =
     useWeddingDetails(weddingId);
-
   const calcuateDaysRemaning = (weddingDate: Date): number => {
     const today = new Date();
     const timeDiff = weddingDate.getTime() - today.getTime();
@@ -15,9 +14,8 @@ export const useWeddingDate = (weddingId?: string): WeddingDateInfo | null => {
   };
   if (isLoadingWeddingDetails) return null;
   if (!weddingDetails?.date) return null;
-  const weddingDate = new Date(weddingDetails.date.seconds * 1000);
   return {
-    weddingDate,
-    daysRemaining: calcuateDaysRemaning(weddingDate),
+    weddingDate: weddingDetails.date,
+    daysRemaining: calcuateDaysRemaning(weddingDetails.date),
   };
 };

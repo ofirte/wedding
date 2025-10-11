@@ -1,4 +1,4 @@
-import { weddingFirebase } from "../weddingFirebaseHelpers";
+import { createCollectionAPI } from "../weddingFirebaseHelpers";
 import {
   getMessageTemplates,
   createMessageTemplate,
@@ -43,7 +43,6 @@ export interface TemplateDocument {
   types: Record<string, any>;
   dateCreated: string;
   dateUpdated: string;
-  weddingId: string;
   createdBy?: string; // Optional user ID who created the template
   approvalStatus?:
     | "pending"
@@ -116,9 +115,6 @@ export const saveTemplateToFirebase = async (
   userId?: string
 ): Promise<string> => {
   try {
-    const resolvedWeddingId =
-      weddingId || (await weddingFirebase.getWeddingId());
-
     const templateDocument: Omit<TemplateDocument, "id"> = {
       sid: template.sid,
       friendlyName: template.friendlyName,
@@ -127,17 +123,11 @@ export const saveTemplateToFirebase = async (
       types: template.types,
       dateCreated: template.dateCreated,
       dateUpdated: template.dateUpdated,
-      weddingId: resolvedWeddingId,
       createdBy: userId,
       approvalStatus: "pending", // Default approval status when created
     };
 
-    const docRef = await weddingFirebase.addDocument(
-      "templates",
-      templateDocument,
-      resolvedWeddingId
-    );
-
+    const docRef = await templatesAPI.create(templateDocument, weddingId);
     return docRef.id;
   } catch (error) {
     console.error("Error saving template to Firebase:", error);
@@ -154,17 +144,7 @@ export const getTemplatesFromFirebase = async (
   weddingId?: string
 ): Promise<TemplateDocument[]> => {
   try {
-    // Use listenToCollection with Promise pattern to get data once
-    return new Promise((resolve, reject) => {
-      weddingFirebase.listenToCollection<TemplateDocument>(
-        "templates",
-        (templates) => {
-          resolve(templates);
-        },
-        (error) => reject(error),
-        weddingId
-      );
-    });
+    return await templatesAPI.fetchAll(weddingId);
   } catch (error) {
     console.error("Error getting templates from Firebase:", error);
     throw error;
@@ -255,13 +235,7 @@ export const deleteTemplate = async (
         }`
       );
     }
-    const resolvedWeddingId =
-      weddingId || (await weddingFirebase.getWeddingId());
-    await weddingFirebase.deleteDocument(
-      "templates",
-      firebaseId,
-      resolvedWeddingId
-    );
+    await templatesAPI.delete(firebaseId, weddingId);
   } catch (error) {
     console.error("Error deleting template:", error);
     throw error;
@@ -346,13 +320,10 @@ export const updateTemplateApprovalStatus = async (
     const template = firebaseTemplates.find((t) => t.sid === templateSid);
 
     if (template) {
-      const resolvedWeddingId =
-        weddingId || (await weddingFirebase.getWeddingId());
-      await weddingFirebase.updateDocument(
-        "templates",
+      await templatesAPI.update(
         template.id,
         { approvalStatus: status },
-        resolvedWeddingId
+        weddingId
       );
     } else {
       console.warn(
@@ -378,3 +349,15 @@ export const shouldSyncApprovalStatus = (approvalStatus?: string): boolean => {
     ["submitted", "received", "pending"].includes(approvalStatus)
   );
 };
+
+// Create collection API for templates
+const templatesAPI = createCollectionAPI<TemplateDocument>("templates");
+
+// Export the standard CRUD operations for templates
+export const fetchTemplates = templatesAPI.fetchAll;
+export const subscribeToTemplates = templatesAPI.subscribe;
+export const fetchTemplate = templatesAPI.fetchById;
+export const updateTemplate = templatesAPI.update;
+export const bulkUpdateTemplates = templatesAPI.bulkUpdate;
+export const bulkDeleteTemplates = templatesAPI.bulkDelete;
+export const fetchTemplatesByFilter = templatesAPI.fetchByFilter;

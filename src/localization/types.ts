@@ -192,6 +192,77 @@ export interface Translations {
     rsvp: string;
     wedding: string;
   };
+  weddings: {
+    yourWeddings: string;
+    selectWeddingMessage: string;
+    noWeddingsMessage: string;
+    createFirstWedding: string;
+    createAnotherWedding: string;
+    openWedding: string;
+    invitationCode: string;
+    errorLoadingUserData: string;
+    errorLoadingWeddings: string;
+  };
+  userManagement: {
+    title: string;
+    description: string;
+    user: string;
+    role: string;
+    joinedAt: string;
+    editUser: string;
+    userInfo: string;
+    userId: string;
+    defaultRole: string;
+    globalAdmin: string;
+    roles: {
+      user: string;
+      producer: string;
+      admin: string;
+    };
+    editUserWarning: string;
+    errorLoadingUsers: string;
+    noUsers: string;
+    noDisplayName: string;
+    updating: string;
+    updateSuccess: string;
+    updateError: string;
+    filterByName: string;
+    searchUsers: string;
+    searchByEmail: string;
+    filterByRole: string;
+  };
+  weddingManagement: {
+    title: string;
+    description: string;
+    weddingName: string;
+    couple: string;
+    weddingDate: string;
+    members: string;
+    invitationCode: string;
+    createdAt: string;
+    addUserToWedding: string;
+    weddingInfo: string;
+    weddingId: string;
+    currentMembers: string;
+    userId: string;
+    enterUserId: string;
+    userIdHelper: string;
+    membershipPlan: string;
+    plans: {
+      free: string;
+      paid: string;
+    };
+    addUserWarning: string;
+    addUser: string;
+    noWeddings: string;
+    noWeddingName: string;
+    errorLoadingWeddings: string;
+    addingUser: string;
+    addUserSuccess: string;
+    addUserError: string;
+    filterByName: string;
+    selectUser: string;
+  };
   home: {
     title: string;
     welcome: string;

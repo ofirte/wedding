@@ -113,7 +113,6 @@ export const PREDEFINED_QUESTIONS: RSVPQuestion[] = getPredefinedQuestions(
 
 // Wedding RSVP Configuration
 export interface WeddingRSVPConfig {
-  weddingId: string;
   enabledQuestionIds: string[]; // IDs of enabled predefined questions
   customQuestions: RSVPQuestion[]; // User-created questions
   createdAt: Date;
@@ -129,7 +128,6 @@ export interface InviteeRSVP {
 
 // Request types for API
 export interface CreateCustomQuestionRequest {
-  weddingId: string;
   question: Omit<RSVPQuestion, "id" | "isCustom">;
 }
 

@@ -18,7 +18,7 @@ export const useTemplates = (options: UseTemplatesOptions = {}) => {
   const { syncApprovalStatuses } = useApprovalStatusSync();
 
   const query = useWeddingQuery({
-    queryKey: ["templates", "combined"],
+    queryKey: ["templates"],
     queryFn: (weddingId) => getWeddingTemplates(weddingId),
   });
 

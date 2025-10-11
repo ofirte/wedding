@@ -28,3 +28,6 @@ yarn-error.log*
 # Firebase
 .firebase/
 firebase-debug.log*
+
+# Firebase Admin SDK private key
+functions/serviceAccountKey.json

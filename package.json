@@ -45,7 +45,9 @@
     "deploy:dev": "npm run build:dev && firebase use wedding-c89a1 && firebase deploy --only hosting:development",
     "deploy:prod": "npm run build:prod && firebase use wedding-prod-f13a0 && firebase deploy --only hosting:production -P production",
     "deploy:functions:prod": "cd ./functions && npm run build && firebase use wedding-prod-f13a0 && firebase deploy --only functions",
-    "migrate-wedding": "node migrateWedding.cjs"
+    "migrate-wedding": "node migrateWedding.cjs",
+    "deploy:prod:both": "npm run build:prod  && firebase deploy --only hosting:production,functions -P production",
+    "deploy:dev:both": "npm run build:dev && firebase use wedding-c89a1 && firebase deploy --only hosting:development,functions -P development"
   },
   "eslintConfig": {
     "extends": [

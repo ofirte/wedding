@@ -10,7 +10,7 @@ export const useDeleteTask = () => {
   const queryClient = useQueryClient();
 
   return useWeddingMutation({
-    mutationFn: (id: string) => deleteTask(id),
+    mutationFn: deleteTask,
     options: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["tasks"] });

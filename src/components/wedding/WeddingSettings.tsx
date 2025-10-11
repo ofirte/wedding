@@ -20,7 +20,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { Save as SaveIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { UploadFile } from "../common/UploadFile";
 import { useWeddingDetails, useUpdateWedding } from "../../hooks/auth";
-import { Wedding } from "../../api/wedding/weddingApi";
+import { Wedding } from "../../api/wedding/types";
 import { responsivePatterns } from "../../utils/ResponsiveUtils";
 import { useTranslation } from "../../localization/LocalizationContext";
 import CurrentWeddingInfo from "./CurrentWeddingInfo";
@@ -62,7 +62,7 @@ const WeddingSettings: React.FC = () => {
         venueName: weddingDetails.venueName || "",
         venueLink: weddingDetails.venueLink || "",
         date: weddingDetails.date
-          ? new Date(weddingDetails.date.seconds * 1000)
+          ? weddingDetails.date
           : null,
         startTime: parseTime(weddingDetails.startTime),
         invitationPhoto: weddingDetails.invitationPhoto || "",

@@ -25,10 +25,16 @@ import {
   Settings as SettingsIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router";
-import { useCurrentUser, useSignOut, useWeddingDetails } from "./hooks/auth";
+import {
+  useCurrentUser,
+  useSignOut,
+  useWeddingDetails,
+  useIsAdmin,
+} from "./hooks/auth";
 import { useTranslation } from "./localization/LocalizationContext";
 import { LanguageSwitcher } from "./components/common/LanguageSwitcher";
 import { useResponsive } from "./utils/ResponsiveUtils";
+import { i } from "react-router/dist/development/fog-of-war-Cm1iXIp7";
 
 interface SidebarProps {
   mobileOpen?: boolean;
@@ -47,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const { data: weddingDetails } = useWeddingDetails();
   const { mutate: signOut } = useSignOut();
   const { t } = useTranslation();
-
+  const { isAdmin } = useIsAdmin();
   const menuItems = [
     { text: t("nav.home"), icon: <HomeIcon />, path: "/home" },
     { text: t("nav.guests"), icon: <ListIcon />, path: "/invite" },
@@ -198,40 +204,44 @@ const Sidebar: React.FC<SidebarProps> = ({
         })}
       </List>
 
-      {/* Admin Section */}
-      <Divider />
-      <Box sx={{ px: 2, py: 1 }}>
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ fontWeight: "medium" }}
-        >
-          Admin Tools
-        </Typography>
-      </Box>
-      <List sx={{ py: 0, pb: 1 }}>
-        {adminMenuItems.map((item, index) => {
-          const isActive = isMenuItemActive(item.path);
-          const styles = getMenuItemStyles(isActive);
+      {/* Admin Section - Only visible to admins */}
+      {isAdmin && (
+        <>
+          <Divider />
+          <Box sx={{ px: 2, py: 1 }}>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ fontWeight: "medium" }}
+            >
+              Admin Tools
+            </Typography>
+          </Box>
+          <List sx={{ py: 0, pb: 1 }}>
+            {adminMenuItems.map((item, index) => {
+              const isActive = isMenuItemActive(item.path);
+              const styles = getMenuItemStyles(isActive);
 
-          return (
-            <ListItem key={item.text} disablePadding>
-              <ListItemButton
-                onClick={() => handleNavigate(item.path)}
-                sx={styles.listItemButton}
-              >
-                <ListItemIcon sx={styles.listItemIcon}>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  primaryTypographyProps={styles.listItemText}
-                />
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
-      </List>
+              return (
+                <ListItem key={item.text} disablePadding>
+                  <ListItemButton
+                    onClick={() => handleNavigate(item.path)}
+                    sx={styles.listItemButton}
+                  >
+                    <ListItemIcon sx={styles.listItemIcon}>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      primaryTypographyProps={styles.listItemText}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
+          </List>
+        </>
+      )}
 
       <Divider />
       <Box sx={{ p: 2 }}>

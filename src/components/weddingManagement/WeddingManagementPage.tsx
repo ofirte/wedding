@@ -1,0 +1,145 @@
+import React, { useState } from "react";
+import {
+  Container,
+  Typography,
+  Box,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
+import { useTranslation } from "../../localization/LocalizationContext";
+import { useAllWeddings } from "../../hooks/wedding/useAllWeddings";
+import { useAddUserToWedding } from "../../hooks/wedding/useAddUserToWedding";
+import { WeddingTable } from "./WeddingTable";
+import { AddUserToWeddingDialog } from "./AddUserToWeddingDialog";
+import { Wedding } from "../../api/wedding/types";
+import { useUpdateUser } from "../../hooks/auth";
+import { arrayUnion } from "firebase/firestore";
+
+const WeddingManagementPage: React.FC = () => {
+  const { t } = useTranslation();
+  const [selectedWedding, setSelectedWedding] = useState<Wedding | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { mutate: updateUser } = useUpdateUser({
+    onError: (error) => {
+      console.error("Error updating user weddingIds:", error);
+    },
+  });
+  // Fetch all weddings using the custom hook
+  const { data: weddings = [], isLoading, error } = useAllWeddings();
+
+  // Add user to wedding mutation using the custom hook
+  const addUserToWeddingMutation = useAddUserToWedding({
+    onSuccess: () => {
+      setDialogOpen(false);
+      setSelectedWedding(null);
+    },
+    onError: (error) => {
+      console.error("Error adding user to wedding:", error);
+    },
+  });
+
+  const handleAddUserToWedding = (wedding: Wedding) => {
+    setSelectedWedding(wedding);
+    setDialogOpen(true);
+  };
+
+  const handleSaveUser = (weddingId: string, userId: string, plan: string) => {
+    // First, update user's weddingIds array to include this wedding
+    updateUser({
+      userId: userId,
+      userData: {
+        weddingIds: arrayUnion(weddingId),
+      },
+    });
+
+    // Then add user to the wedding's members
+    addUserToWeddingMutation.mutate({
+      weddingId,
+      userId,
+      plan: plan as any, // Type assertion since we know it's a valid plan
+      addedBy: "admin",
+    });
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setSelectedWedding(null);
+  };
+
+  if (isLoading) {
+    return (
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="200px"
+        >
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Alert severity="error">
+          {t("weddingManagement.errorLoadingWeddings")}
+        </Alert>
+      </Container>
+    );
+  }
+
+  return (
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Box mb={4}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          {t("weddingManagement.title")}
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          {t("weddingManagement.description")}
+        </Typography>
+      </Box>
+
+      <WeddingTable
+        weddings={weddings}
+        onAddUserToWedding={handleAddUserToWedding}
+        isUpdating={addUserToWeddingMutation.isPending}
+      />
+
+      <AddUserToWeddingDialog
+        open={dialogOpen}
+        wedding={selectedWedding}
+        onClose={handleCloseDialog}
+        onSave={handleSaveUser}
+        isLoading={addUserToWeddingMutation.isPending}
+      />
+
+      {addUserToWeddingMutation.isPending && (
+        <Box position="fixed" top={16} right={16}>
+          <Alert severity="info" icon={<CircularProgress size={20} />}>
+            {t("weddingManagement.addingUser")}
+          </Alert>
+        </Box>
+      )}
+
+      {addUserToWeddingMutation.isSuccess && (
+        <Box position="fixed" top={16} right={16}>
+          <Alert severity="success">
+            {t("weddingManagement.addUserSuccess")}
+          </Alert>
+        </Box>
+      )}
+
+      {addUserToWeddingMutation.isError && (
+        <Box position="fixed" top={16} right={16}>
+          <Alert severity="error">{t("weddingManagement.addUserError")}</Alert>
+        </Box>
+      )}
+    </Container>
+  );
+};
+
+export default WeddingManagementPage;

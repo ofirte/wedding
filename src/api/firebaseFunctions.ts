@@ -1,12 +1,6 @@
-import {
-  getFunctions,
-  httpsCallable,
-  connectFunctionsEmulator,
-} from "firebase/functions";
+import { connectFunctionsEmulator, httpsCallable } from "firebase/functions";
 import { getAuth } from "firebase/auth";
-
-// Initialize Firebase Functions
-const functions = getFunctions();
+import { functions } from "./firebaseConfig";
 
 // Connect to emulator in development
 if (
@@ -71,7 +65,10 @@ export const callFirebaseFunction = async <T = any, P = any>(
   }
 };
 
-// Export individual callable functions for type safety
+// Re-export organized functions from the new structure
+export * from "./firebaseFunctions/index";
+
+// Legacy exports for backward compatibility
 export const sendWhatsAppMessage = httpsCallable(
   functions,
   "sendWhatsAppMessage"

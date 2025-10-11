@@ -1,5 +1,4 @@
-import { serverTimestamp } from "firebase/firestore";
-import { weddingFirebase } from "../weddingFirebaseHelpers";
+import { createCollectionAPI } from "../weddingFirebaseHelpers";
 import {
   WeddingRSVPConfig,
   RSVPQuestion,
@@ -10,6 +9,16 @@ import {
 
 const RSVP_CONFIG_COLLECTION = "rsvpConfigs";
 
+// Extended type for RSVP config with Firestore document ID
+interface RSVPConfigDocument extends WeddingRSVPConfig {
+  id?: string;
+}
+
+// Create collection API for RSVP configurations
+const rsvpConfigAPI = createCollectionAPI<RSVPConfigDocument>(
+  RSVP_CONFIG_COLLECTION
+);
+
 /**
  * Get RSVP configuration for a wedding
  */
@@ -17,24 +26,21 @@ export const getRSVPConfig = async (
   weddingId?: string
 ): Promise<WeddingRSVPConfig | null> => {
   try {
-    const resolvedWeddingId = await weddingFirebase.getWeddingId(weddingId);
-    const config = await weddingFirebase.getDocument<any>(
-      RSVP_CONFIG_COLLECTION,
-      resolvedWeddingId,
-      resolvedWeddingId
-    );
+    if (!weddingId) {
+      return null;
+    }
+    const config = await rsvpConfigAPI.fetchById(weddingId, weddingId);
 
     if (!config) {
-      console.log(`No RSVP config found for wedding ${resolvedWeddingId}`);
+      console.log(`No RSVP config found for wedding ${weddingId}`);
       return null;
     }
 
     return {
-      weddingId: resolvedWeddingId,
       enabledQuestionIds: config.enabledQuestionIds || [],
       customQuestions: config.customQuestions || [],
-      createdAt: config.createdAt?.toDate() || new Date(),
-      updatedAt: config.updatedAt?.toDate() || new Date(),
+      createdAt: config.createdAt || new Date(),
+      updatedAt: config.updatedAt || new Date(),
     };
   } catch (error) {
     console.error("Error getting RSVP config:", error);
@@ -49,18 +55,20 @@ export const getRSVPConfig = async (
 export const createDefaultRSVPConfig = async (
   weddingId?: string
 ): Promise<WeddingRSVPConfig> => {
-  const resolvedWeddingId = await weddingFirebase.getWeddingId(weddingId);
-
+  if (!weddingId) {
+    throw new Error(
+      "Wedding ID is required to create default RSVP configuration"
+    );
+  }
   // Enable attendance and amount by default (the two required questions)
   const defaultConfig: WeddingRSVPConfig = {
-    weddingId: resolvedWeddingId,
     enabledQuestionIds: ["attendance", "amount"],
     customQuestions: [],
     createdAt: new Date(),
     updatedAt: new Date(),
   };
 
-  await saveRSVPConfig(defaultConfig);
+  await rsvpConfigAPI.createWithId(weddingId, defaultConfig, weddingId);
   return defaultConfig;
 };
 
@@ -68,23 +76,21 @@ export const createDefaultRSVPConfig = async (
  * Save RSVP configuration
  */
 export const saveRSVPConfig = async (
-  config: WeddingRSVPConfig
+  config: WeddingRSVPConfig,
+  weddingId?: string
 ): Promise<void> => {
+  if (!weddingId) {
+    throw new Error("Wedding ID is required to save RSVP configuration");
+  }
   try {
-    const configData = {
-      weddingId: config.weddingId,
+    const configData: RSVPConfigDocument = {
       enabledQuestionIds: config.enabledQuestionIds,
       customQuestions: config.customQuestions,
       createdAt: config.createdAt,
-      updatedAt: serverTimestamp(),
+      updatedAt: new Date(), // Use Date instead of serverTimestamp for consistency
     };
-
-    await weddingFirebase.setDocument(
-      RSVP_CONFIG_COLLECTION,
-      config.weddingId,
-      configData,
-      config.weddingId
-    );
+    await rsvpConfigAPI.update(weddingId, configData, weddingId);
+    // Use the wedding ID as the document ID
   } catch (error) {
     console.error("Error saving RSVP config:", error);
     throw error;
@@ -95,8 +101,8 @@ export const saveRSVPConfig = async (
  * Update enabled questions
  */
 export const updateEnabledQuestions = async (
-  weddingId: string,
-  enabledQuestionIds: string[]
+  enabledQuestionIds: string[],
+  weddingId?: string
 ): Promise<void> => {
   try {
     const config = await getRSVPConfig(weddingId);
@@ -107,7 +113,7 @@ export const updateEnabledQuestions = async (
     config.enabledQuestionIds = enabledQuestionIds;
     config.updatedAt = new Date();
 
-    await saveRSVPConfig(config);
+    await saveRSVPConfig(config, weddingId);
   } catch (error) {
     console.error("Error updating enabled questions:", error);
     throw error;
@@ -118,16 +124,21 @@ export const updateEnabledQuestions = async (
  * Add custom question
  */
 export const addCustomQuestion = async (
-  request: CreateCustomQuestionRequest
+  request: CreateCustomQuestionRequest,
+  weddingId?: string
 ): Promise<RSVPQuestion> => {
+  console.log("Adding custom question:", request);
+  console.log("To wedding ID:", weddingId);
   try {
-    const config = await getRSVPConfig(request.weddingId);
+    const config = await getRSVPConfig(weddingId);
     if (!config) {
       throw new Error("RSVP configuration not found");
     }
 
     // Generate unique ID for custom question
-    const questionId = generateCustomQuestionId(request.question.displayName ?? "custom_question");
+    const questionId = generateCustomQuestionId(
+      request.question.displayName ?? "custom_question"
+    );
 
     // Ensure ID is unique
     let finalId = questionId;
@@ -152,7 +163,7 @@ export const addCustomQuestion = async (
     config.customQuestions.push(newQuestion);
     config.updatedAt = new Date();
 
-    await saveRSVPConfig(config);
+    await saveRSVPConfig(config, weddingId);
     return newQuestion;
   } catch (error) {
     console.error("Error adding custom question:", error);
@@ -187,7 +198,7 @@ export const updateCustomQuestion = async (
     };
     config.updatedAt = new Date();
 
-    await saveRSVPConfig(config);
+    await saveRSVPConfig(config, weddingId);
   } catch (error) {
     console.error("Error updating custom question:", error);
     throw error;
@@ -212,7 +223,7 @@ export const deleteCustomQuestion = async (
     );
     config.updatedAt = new Date();
 
-    await saveRSVPConfig(config);
+    await saveRSVPConfig(config, weddingId);
   } catch (error) {
     console.error("Error deleting custom question:", error);
     throw error;

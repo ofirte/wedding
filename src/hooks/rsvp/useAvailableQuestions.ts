@@ -8,10 +8,10 @@ import { useRSVPConfig } from "./useRSVPConfig";
 /**
  * Hook to get all available questions (enabled predefined + custom)
  */
-export const useAvailableQuestions = (weddingId?: string) => {
+export const useAvailableQuestions = () => {
   const { t } = useLocalization();
-  const { data: config, isLoading, error } = useRSVPConfig(weddingId);
-
+  const { data: config, isLoading, error } = useRSVPConfig();
+  console.log("RSVP Config:", config, ' Loading:', isLoading, ' Error:', error);
   const translatedPredefinedQuestions = getPredefinedQuestions(t);
   const questions = config
     ? getAllAvailableQuestions(config, translatedPredefinedQuestions)

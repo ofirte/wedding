@@ -10,8 +10,8 @@ export const useSendMessage = () => {
   const queryClient = useQueryClient();
 
   return useWeddingMutation({
-    mutationFn: (messageData: SendMessageRequest) =>
-      sendMessage(messageData),
+    mutationFn: (messageData: SendMessageRequest, weddingId?: string) =>
+      sendMessage(messageData, weddingId),
     options: {
       onSuccess: () => {
         // Invalidate message logs and sent messages to refresh the data

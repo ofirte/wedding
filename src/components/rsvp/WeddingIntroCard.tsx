@@ -1,5 +1,5 @@
 import React from "react";
-import { Wedding } from "../../api/wedding/weddingApi";
+import { Wedding } from "../../api/wedding/types";
 import { Invitee } from "../invitees/InviteList";
 import WeddingInvitePhotoCard from "./WeddingInvitePhotoCard";
 import WeddingInfoCard from "./WeddingInfoCard";
