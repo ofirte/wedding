@@ -32,7 +32,7 @@ export default function WeddingRoute() {
         if (!!weddingId && !paramsWeddingId) {
           navigate(`/wedding/${weddingId}/home`);
         }
-      } else if (!paramsWeddingId) {
+      } else if (!paramsWeddingId && currentWeddingUser?.weddingIds?.length > 1) {
         navigate("/weddings");
       }
     }

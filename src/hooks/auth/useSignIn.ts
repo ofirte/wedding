@@ -14,9 +14,7 @@ export const useSignIn = (
   return useMutation({
     mutationFn: (credentials: { email: string; password: string }) =>
       signIn(credentials.email, credentials.password),
-    onSuccess: () => {
-      
-    },
-    ...options
+    onSuccess: () => {},
+    ...options,
   });
 };

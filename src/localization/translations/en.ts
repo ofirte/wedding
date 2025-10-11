@@ -196,7 +196,8 @@ export const englishTranslations: Translations = {
       producer: "Producer",
       admin: "Admin",
     },
-    editUserWarning: "Changes to user roles will take effect immediately and may affect user permissions across all weddings.",
+    editUserWarning:
+      "Changes to user roles will take effect immediately and may affect user permissions across all weddings.",
     errorLoadingUsers: "Error loading users. Please try refreshing the page.",
     noUsers: "No users found.",
     noDisplayName: "No display name",

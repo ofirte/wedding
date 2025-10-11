@@ -10,6 +10,9 @@ export { useJoinWedding } from "../wedding/useJoinWedding";
 export { useWeddingDetails } from "../wedding/useWeddingDetails";
 export { useUpdateWedding } from "../wedding/useUpdateWedding";
 export { useCurrentUserWeddingId } from "./useCurrentUserWeddingId";
+export { useAllUsers } from "./useAllUsers";
+export { useUpdateUserRole } from "./useUpdateUserRole";
+export { useInitializeNewUser } from "./useInitializeNewUser";
 
 // Also export types from authApi for convenience
 export type { WeddingUser } from "../../api/auth/authApi";

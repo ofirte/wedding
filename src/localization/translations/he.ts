@@ -193,7 +193,8 @@ export const hebrewTranslations: Translations = {
       producer: "מפיק",
       admin: "מנהל",
     },
-    editUserWarning: "שינויים בתפקידי המשתמשים ייכנסו לתוקף מיד ועשויים להשפיע על הרשאות המשתמש בכל החתונות.",
+    editUserWarning:
+      "שינויים בתפקידי המשתמשים ייכנסו לתוקף מיד ועשויים להשפיע על הרשאות המשתמש בכל החתונות.",
     errorLoadingUsers: "שגיאה בטעינת המשתמשים. אנא נסה לרענן את הדף.",
     noUsers: "לא נמצאו משתמשים.",
     noDisplayName: "אין שם תצוגה",

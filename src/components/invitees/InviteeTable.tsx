@@ -6,6 +6,7 @@ import InviteeListActionCell from "./InviteeListActionCell";
 import InviteeBulkActions from "./InviteeBulkActions";
 import InviteeBulkUpdateDialog from "./InviteeBulkUpdateDialog";
 import InviteeBulkDeleteDialog from "./InviteeBulkDeleteDialog";
+import { useAuth } from "../../hooks/auth/AuthContext";
 
 interface InviteeTableProps {
   columns: Column<Invitee>[];
@@ -30,7 +31,8 @@ const InviteeTable: React.FC<InviteeTableProps> = ({
 }) => {
   const [selectedRows, setSelectedRows] = useState<Invitee[]>([]);
   const [bulkActionDialog, setBulkActionDialog] = useState<string | null>(null);
-
+  const { userClaims } = useAuth();
+  console.log("User role:", userClaims?.role);
   const handleSelectionChange = (selected: Invitee[]) => {
     setSelectedRows(selected);
   };

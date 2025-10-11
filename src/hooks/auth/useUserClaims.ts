@@ -19,10 +19,10 @@ export const useUserClaims = () => {
  * @returns Admin status from AuthContext
  */
 export const useIsAdmin = () => {
-  const { isAdmin, isClaimsLoading } = useAuth();
+  const { role, isClaimsLoading } = useAuth();
 
   return {
-    isAdmin,
+    isAdmin: role === "admin",
     isLoading: isClaimsLoading,
     error: null, // AuthContext handles errors internally
   };

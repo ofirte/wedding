@@ -4,11 +4,6 @@
 export enum UserRolesFunctions {
   INITIALIZE_NEW_USER = "initializeNewUser",
   SET_USER_ROLE = "setUserRole",
-  SET_GLOBAL_ADMIN = "setGlobalAdmin",
-  GET_USER_CUSTOM_CLAIMS = "getUserCustomClaims",
-  SET_USER_CUSTOM_CLAIMS = "setUserCustomClaims",
-  REMOVE_USER_CUSTOM_CLAIMS = "removeUserCustomClaims",
-  FIND_USER_BY_EMAIL = "findUserByEmail",
 }
 
 /**

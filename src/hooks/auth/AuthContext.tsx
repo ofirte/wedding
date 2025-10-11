@@ -9,11 +9,10 @@ import React, {
 import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../api/firebaseConfig";
 import { useQueryClient } from "@tanstack/react-query";
+import { useInitializeNewUser } from "./useInitializeNewUser";
 
 interface UserClaims {
-  isAdmin?: boolean;
   role?: string;
-  defaultWeddingRole?: string;
 }
 
 interface AuthContextType {
@@ -21,7 +20,6 @@ interface AuthContextType {
   userClaims: UserClaims;
   isLoading: boolean;
   isClaimsLoading: boolean;
-  isAdmin: boolean;
   role: string;
 }
 
@@ -37,40 +35,46 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [userClaims, setUserClaims] = useState<UserClaims>({});
   const [isClaimsLoading, setIsClaimsLoading] = useState(false);
   const queryClient = useQueryClient();
+  const { mutate: initializeNewUser } = useInitializeNewUser({
+    onSuccess: () => {
+      setUserClaims({ role: "user" });
+    },
+  });
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setIsLoading(false);
 
-      // Fetch user claims when user changes
       if (!user) {
         setUserClaims({});
         return;
       }
 
-      setIsClaimsLoading(true);
-      try {
-        const idTokenResult = await user.getIdTokenResult();
-        console.log("ID Token Result:", idTokenResult);
-        const claims: UserClaims = {
-          isAdmin: Boolean(idTokenResult.claims.admin),
-          role: (idTokenResult.claims.role as string) || "user",
-          defaultWeddingRole:
-            (idTokenResult.claims.defaultWeddingRole as string) || "user",
-        };
-        console.log("Fetched user claims:", claims);
-        setUserClaims(claims);
-      } catch (error) {
-        console.error("Error fetching user claims:", error);
-        setUserClaims({});
-      } finally {
-        setIsClaimsLoading(false);
-      }
+      const fetchClaims = async () => {
+        setIsClaimsLoading(true);
+        try {
+          const idTokenResult = await user.getIdTokenResult();
+          const claims: UserClaims = {
+            role: idTokenResult.claims.role as string | undefined,
+          };
 
-      queryClient.invalidateQueries({
-        queryKey: ["currentUser"],
-      });
+          if (!claims.role) {
+            initializeNewUser({ userId: user.uid });
+          }
+
+          setUserClaims(claims);
+        } catch (error) {
+          console.error("Error fetching claims:", error);
+          setUserClaims({});
+        } finally {
+          setIsClaimsLoading(false);
+        }
+
+        queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      };
+
+      fetchClaims();
     });
 
     return () => unsubscribe();
@@ -83,8 +87,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         userClaims,
         isLoading,
         isClaimsLoading,
-        isAdmin: userClaims.isAdmin || false,
-        role: userClaims.role || "user",
+        role: userClaims.role || "not set",
       }}
     >
       {!isLoading && children}
