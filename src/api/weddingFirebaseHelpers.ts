@@ -12,9 +12,14 @@ import {
   CollectionReference,
   Unsubscribe,
   writeBatch,
+  query,
+  where,
+  WhereFilterOp,
+  Timestamp,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import { getCurrentUserWeddingId } from "./auth/authApi";
+import { create } from "lodash";
 
 /**
  * A utility class to handle all Firebase operations with wedding ID context
@@ -161,7 +166,8 @@ class WeddingFirebaseService {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      return { id: docSnap.id, ...docSnap.data() } as T;
+      const docData = { id: docSnap.id, ...docSnap.data() } as T;
+      return this.convertTimestampsToDate(docData);
     } else {
       return null;
     }
@@ -210,10 +216,10 @@ class WeddingFirebaseService {
       // Use getDocs for one-time fetch - much more reliable than listener hacks
       const snapshot = await getDocs(collectionRef);
 
-      return snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as T[];
+      return snapshot.docs.map((doc) => {
+        const docData = { id: doc.id, ...doc.data() } as T;
+        return this.convertTimestampsToDate(docData);
+      });
     } catch (error) {
       console.error(`Error fetching collection ${collectionName}:`, error);
       throw error;
@@ -243,10 +249,10 @@ class WeddingFirebaseService {
       return onSnapshot(
         collectionRef,
         (snapshot) => {
-          const items = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          })) as T[];
+          const items = snapshot.docs.map((doc) => {
+            const docData = { id: doc.id, ...doc.data() } as T;
+            return this.convertTimestampsToDate(docData);
+          });
           callback(items);
         },
         (error) => {
@@ -284,11 +290,13 @@ class WeddingFirebaseService {
     const docSnap = await getDoc(settingsRef);
 
     if (docSnap.exists()) {
-      return { id: docSnap.id, ...docSnap.data() } as T;
+      const docData = { id: docSnap.id, ...docSnap.data() } as T;
+      return this.convertTimestampsToDate(docData);
     } else {
       // If no document exists, create one with default values
       await setDoc(settingsRef, defaultData);
-      return { id: settingId, ...defaultData } as T;
+      const newDocData = { id: settingId, ...defaultData } as T;
+      return this.convertTimestampsToDate(newDocData);
     }
   }
 
@@ -378,6 +386,33 @@ class WeddingFirebaseService {
   }
 
   /**
+   * Convert Firebase Timestamp values to JavaScript Date objects recursively
+   * @param data The document data that may contain Timestamp values
+   * @returns The same data structure with Timestamps converted to Dates
+   */
+  convertTimestampsToDate<T = any>(data: T): T {
+    if (!data) return data;
+
+    if (data instanceof Timestamp) {
+      return data.toDate() as T;
+    }
+
+    if (Array.isArray(data)) {
+      return data.map((item) => this.convertTimestampsToDate(item)) as T;
+    }
+
+    if (typeof data === "object" && data !== null) {
+      const result = {} as T;
+      for (const [key, value] of Object.entries(data)) {
+        (result as any)[key] = this.convertTimestampsToDate(value);
+      }
+      return result;
+    }
+
+    return data;
+  }
+
+  /**
    * Resolve the wedding ID from current user if not provided
    * @private
    */
@@ -433,9 +468,14 @@ export const createCollectionAPI = <T extends { id?: string }>(
     /**
      * Create new item
      */
-    create: (item: Omit<T, "id">, weddingId?: string) =>
-      weddingFirebase.addDocument(collectionName, item, weddingId),
-
+    create: (item: Omit<T, "id">, weddingId?: string) => {
+      console.log("Creating item in", collectionName, "with data:", item);
+      const val = weddingFirebase.addDocument(collectionName, item, weddingId);
+      console.log("Created item:", val);
+      return val;
+    },
+    createWithId: (id: string, item: Omit<T, "id">, weddingId?: string) =>
+      weddingFirebase.setDocument(collectionName, id, item, weddingId),
     /**
      * Update existing item
      */
@@ -466,5 +506,23 @@ export const createCollectionAPI = <T extends { id?: string }>(
      */
     bulkDelete: (ids: string[], weddingId?: string) =>
       weddingFirebase.bulkDeleteDocuments(collectionName, ids, weddingId),
+    fetchByFilter: async (
+      filters: Array<{ field: string; op: WhereFilterOp; value: unknown }>,
+      weddingId?: string
+    ): Promise<T[]> => {
+      const collectionRef = await weddingFirebase.getCollectionRef<T>(
+        collectionName,
+        weddingId
+      );
+      let q = query(collectionRef);
+      filters.forEach((filter) => {
+        q = query(q, where(filter.field, filter.op, filter.value));
+      });
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map((doc) => {
+        const docData = { id: doc.id, ...doc.data() } as T;
+        return weddingFirebase.convertTimestampsToDate(docData);
+      });
+    },
   };
 };

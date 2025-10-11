@@ -29,15 +29,17 @@ export const useInviteeRSVP = (inviteeId: string) => {
  * @returns Mutation result object for updating RSVP status
  */
 export const useUpdateInviteeRSVP = () => {
-  const { weddingId } = useParams();
   return useWeddingMutation({
-    mutationFn: ({
-      inviteeId,
-      rsvpStatus,
-    }: {
-      inviteeId: string;
-      rsvpStatus: Partial<RSVPStatus> | Record<string, any>;
-    }) => {
+    mutationFn: (
+      {
+        inviteeId,
+        rsvpStatus,
+      }: {
+        inviteeId: string;
+        rsvpStatus: Partial<RSVPStatus> | Record<string, any>;
+      },
+      weddingId?: string
+    ) => {
       // Convert rsvpStatus object to dot-separated syntax
       const dotSeparatedData: Record<string, any> = {};
 

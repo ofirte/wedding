@@ -1,5 +1,5 @@
 import { ContentInstance } from "twilio/lib/rest/content/v2/content";
-import { weddingFirebase } from "../weddingFirebaseHelpers";
+import { createCollectionAPI } from "../weddingFirebaseHelpers";
 import { MessageInstance } from "twilio/lib/rest/api/v2010/account/message";
 import {
   sendWhatsAppMessage,
@@ -67,11 +67,23 @@ export interface SentMessage {
   dateSent?: string;
   dateUpdated?: string;
   errorMessage?: string;
-  weddingId: string;
   userId?: string;
   messageType?: "whatsapp" | "sms" | "personal-whatsapp"; // Track message type
   smsSegments?: number; // For SMS only
 }
+
+// Create collection API for sent messages
+const sentMessagesAPI = createCollectionAPI<SentMessage>("sentMessages");
+
+// Export the standard CRUD operations for sent messages
+export const fetchSentMessages = sentMessagesAPI.fetchAll;
+export const subscribeToSentMessages = sentMessagesAPI.subscribe;
+export const fetchSentMessage = sentMessagesAPI.fetchById;
+export const updateSentMessage = sentMessagesAPI.update;
+export const deleteSentMessage = sentMessagesAPI.delete;
+export const bulkUpdateSentMessages = sentMessagesAPI.bulkUpdate;
+export const bulkDeleteSentMessages = sentMessagesAPI.bulkDelete;
+export const fetchSentMessagesByFilter = sentMessagesAPI.fetchByFilter;
 
 export const sendMessage = async (
   messageData: SendMessageRequest,
@@ -228,9 +240,6 @@ export const saveSentMessage = async (
   weddingId?: string
 ): Promise<string> => {
   try {
-    const resolvedWeddingId =
-      weddingId || (await weddingFirebase.getWeddingId());
-
     const sentMessage: Omit<SentMessage, "id"> = {
       sid: messageResponse.sid || "",
       to: messageResponse.to || "",
@@ -243,16 +252,11 @@ export const saveSentMessage = async (
       dateSent: messageResponse.dateSent || new Date().toISOString(),
       dateUpdated: new Date().toISOString(),
       errorMessage: messageResponse.errorMessage ?? "",
-      weddingId: resolvedWeddingId,
       userId: messageRequest.userId || "", // Optional user ID for tracking
       messageType: "whatsapp", // Default to WhatsApp for existing messages
     };
 
-    const docRef = await weddingFirebase.addDocument(
-      "sentMessages",
-      sentMessage,
-      resolvedWeddingId
-    );
+    const docRef = await sentMessagesAPI.create(sentMessage, weddingId);
     return docRef.id;
   } catch (error) {
     console.error("Error saving sent message to Firebase:", error);
@@ -271,9 +275,6 @@ export const savePersonalWhatsAppMessage = async (
   weddingId?: string
 ): Promise<string> => {
   try {
-    const resolvedWeddingId =
-      weddingId || (await weddingFirebase.getWeddingId());
-
     const now = new Date().toISOString();
     const sentMessage: Omit<SentMessage, "id"> = {
       sid: `personal-wa-${Date.now()}-${Math.random()
@@ -289,16 +290,11 @@ export const savePersonalWhatsAppMessage = async (
       dateSent: now,
       dateUpdated: now,
       errorMessage: "",
-      weddingId: resolvedWeddingId,
       userId,
       messageType: "personal-whatsapp",
     };
 
-    const docRef = await weddingFirebase.addDocument(
-      "sentMessages",
-      sentMessage,
-      resolvedWeddingId
-    );
+    const docRef = await sentMessagesAPI.create(sentMessage, weddingId);
     return docRef.id;
   } catch (error) {
     console.error("Error saving personal WhatsApp message to Firebase:", error);
@@ -313,19 +309,7 @@ export const getSentMessages = async (
   weddingId?: string
 ): Promise<SentMessage[]> => {
   try {
-    const resolvedWeddingId =
-      weddingId || (await weddingFirebase.getWeddingId());
-
-    // This would typically use a query to get all documents
-    // For now, we'll use the listener pattern which is already implemented
-    return new Promise((resolve, reject) => {
-      weddingFirebase.listenToCollection<SentMessage>(
-        "sentMessages",
-        (messages) => resolve(messages),
-        (error) => reject(error),
-        resolvedWeddingId
-      );
-    });
+    return await sentMessagesAPI.fetchAll(weddingId);
   } catch (error) {
     console.error("Error getting sent messages from Firebase:", error);
     throw error;
@@ -345,20 +329,12 @@ export const updateMessageStatus = async (
   weddingId?: string
 ): Promise<void> => {
   try {
-    const resolvedWeddingId =
-      weddingId || (await weddingFirebase.getWeddingId());
-
     const updateData: Partial<SentMessage> = {
       status,
       dateUpdated: new Date().toISOString(),
     };
 
-    await weddingFirebase.updateDocument(
-      "sentMessages",
-      messageId,
-      updateData,
-      resolvedWeddingId
-    );
+    await sentMessagesAPI.update(messageId, updateData, weddingId);
 
     console.log(`Updated message ${messageId} status to ${status}`);
   } catch (error) {

@@ -11,8 +11,7 @@ export const useBulkUpdateInvitees = () => {
   const queryClient = useQueryClient();
 
   return useWeddingMutation({
-    mutationFn: (updates: Array<{ id: string; data: Partial<Invitee> }>) =>
-      bulkUpdateInvitees(updates),
+    mutationFn: bulkUpdateInvitees,
     options: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["invitees"] });

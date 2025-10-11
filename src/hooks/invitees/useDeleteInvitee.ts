@@ -10,7 +10,7 @@ export const useDeleteInvitee = () => {
   const queryClient = useQueryClient();
 
   return useWeddingMutation({
-    mutationFn: (id: string) => deleteInvitee(id),
+    mutationFn: deleteInvitee,
     options: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["invitees"] });

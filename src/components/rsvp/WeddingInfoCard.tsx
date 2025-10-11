@@ -13,7 +13,7 @@ import {
   LocationOn as LocationIcon,
   AccessTime as TimeIcon,
 } from "@mui/icons-material";
-import { Wedding } from "../../api/wedding/weddingApi";
+import { Wedding } from "../../api/wedding/types";
 import { Invitee } from "../invitees/InviteList";
 import { useTranslation } from "../../localization/LocalizationContext";
 
@@ -78,13 +78,14 @@ const WeddingInfoCard: React.FC<WeddingInfoCardProps> = ({
           {weddingInfo.date && (
             <Chip
               icon={<DateIcon />}
-              label={new Date(
-                weddingInfo.date.seconds * 1000
-              ).toLocaleDateString(language === "he" ? "he-IL" : "en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              label={weddingInfo.date.toLocaleDateString(
+                language === "he" ? "he-IL" : "en-US",
+                {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }
+              )}
               sx={{
                 bgcolor: "#D1E4C4",
                 minWidth: "fit-content",

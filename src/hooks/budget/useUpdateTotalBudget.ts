@@ -5,7 +5,7 @@ import { useWeddingMutation } from "../common";
 export const useUpdateTotalBudget = () => {
   const queryClient = useQueryClient();
   return useWeddingMutation({
-    mutationFn: (totalBudget: number) => updateTotalBudget(totalBudget),
+    mutationFn: updateTotalBudget,
     options: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["totalBudget"] });

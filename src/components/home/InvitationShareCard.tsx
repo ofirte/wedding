@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -11,7 +11,6 @@ import {
   Snackbar,
   Alert,
   useTheme,
-  CircularProgress,
 } from "@mui/material";
 import {
   ContentCopy as CopyIcon,
@@ -21,7 +20,6 @@ import {
 } from "@mui/icons-material";
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { useEnsureInvitationCode } from "../../hooks/wedding/useEnsureInvitationCode";
 
 interface InvitationShareCardProps {
   isModal?: boolean;
@@ -35,23 +33,10 @@ const InvitationShareCard: React.FC<InvitationShareCardProps> = ({
   const { data: weddingDetails } = useWeddingDetails();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const ensureInvitationCodeMutation = useEnsureInvitationCode();
-
-  // Auto-generate invitation code for legacy weddings
-  useEffect(() => {
-    if (
-      weddingDetails &&
-      !weddingDetails.invitationCode &&
-      !ensureInvitationCodeMutation.isPending
-    ) {
-      ensureInvitationCodeMutation.mutate(weddingDetails.id);
-    }
-  }, [weddingDetails, ensureInvitationCodeMutation]);
 
   // Generate invitation link
   const baseUrl = window.location.origin;
-  const invitationCode =
-    weddingDetails?.invitationCode || ensureInvitationCodeMutation.data;
+  const invitationCode = weddingDetails?.invitationCode;
   const invitationLink = invitationCode
     ? `${baseUrl}/login?invite=${invitationCode}`
     : "";
@@ -85,36 +70,6 @@ const InvitationShareCard: React.FC<InvitationShareCardProps> = ({
     window.open(`https://wa.me/?text=${message}`);
   };
 
-  // Show loading while generating invitation code for legacy weddings
-  if (
-    weddingDetails &&
-    !invitationCode &&
-    ensureInvitationCodeMutation.isPending
-  ) {
-    return (
-      <Paper
-        elevation={isModal ? 0 : 2}
-        sx={{
-          p: 3,
-          mb: isModal ? 0 : 4,
-          borderRadius: isModal ? 0 : 3,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: 120,
-        }}
-      >
-        <Stack alignItems="center" spacing={2}>
-          <CircularProgress size={30} />
-          <Typography variant="body2" color="text.secondary">
-            Generating invitation code...
-          </Typography>
-        </Stack>
-      </Paper>
-    );
-  }
-
-  // Don't render if no wedding details or no invitation code
   if (!weddingDetails || !invitationCode) {
     return null;
   }

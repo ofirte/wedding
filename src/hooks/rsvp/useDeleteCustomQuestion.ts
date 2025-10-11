@@ -1,7 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { deleteCustomQuestion } from "../../api/rsvp/rsvpQuestionsApi";
 import { useWeddingMutation } from "../common/useWeddingMutation";
-import { rsvpKeys } from "./useRSVPConfig";
 
 interface DeleteCustomQuestionVariables {
   questionId: string;
@@ -24,7 +23,7 @@ export const useDeleteCustomQuestion = () => {
       onSuccess: () => {
         // Invalidate all RSVP queries
         queryClient.invalidateQueries({
-          queryKey: rsvpKeys.all,
+          queryKey: ["rsvpConfig"],
         });
       },
     },

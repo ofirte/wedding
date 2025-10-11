@@ -1,8 +1,8 @@
-import { initializeApp } from "firebase-admin/app";
 import { setGlobalOptions } from "firebase-functions/v2";
+import { initializeFirebaseAdmin } from "./shared/firebaseAdmin";
 
 // Initialize Firebase Admin SDK
-initializeApp();
+initializeFirebaseAdmin();
 
 // Set global options for all functions
 setGlobalOptions({
@@ -12,8 +12,8 @@ setGlobalOptions({
   concurrency: 50,
 });
 
-// Export all auth functions
-export * from "./auth/customClaims";
+// Export NEW auth functions (clean system)
+export * from "./auth/userRoles";
 
 // Export all messaging functions
 export * from "./messagesService/messaging";

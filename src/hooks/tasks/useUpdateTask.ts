@@ -11,8 +11,10 @@ export const useUpdateTask = () => {
   const queryClient = useQueryClient();
 
   return useWeddingMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<Task> }) =>
-      updateTask(id, data),
+    mutationFn: (
+      { id, data }: { id: string; data: Partial<Task> },
+      weddingId?: string
+    ) => updateTask(id, data, weddingId),
     options: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["tasks"] });

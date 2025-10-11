@@ -32,7 +32,7 @@ const RSVPQuestionsManager: React.FC = () => {
   const createDefaultConfig = useCreateDefaultRSVPConfig();
   const updateEnabled = useUpdateEnabledQuestions();
   const addCustom = useAddCustomQuestion();
-
+  console.log(config, "config state in component");
   // Get translated predefined questions
   const PREDEFINED_QUESTIONS = useMemo(() => getPredefinedQuestions(t), [t]);
 
@@ -66,19 +66,14 @@ const RSVPQuestionsManager: React.FC = () => {
 
   // Handlers
   const handleAddFromBank = async (question: RSVPQuestion) => {
-    if (
-      !selectedQuestions.find((q) => q.id === question.id) &&
-      config?.weddingId
-    ) {
+    if (!selectedQuestions.find((q) => q.id === question.id)) {
       const newSelectedQuestions = [...selectedQuestions, question];
       setSelectedQuestions(newSelectedQuestions);
 
       // Auto-save immediately
       try {
         const enabledIds = newSelectedQuestions.map((q) => q.id);
-        await updateEnabled.mutateAsync({
-          enabledQuestionIds: enabledIds,
-        });
+        await updateEnabled.mutateAsync(enabledIds);
       } catch (error) {
         console.error("Error auto-saving question:", error);
         // Revert on error
@@ -90,32 +85,27 @@ const RSVPQuestionsManager: React.FC = () => {
   };
 
   const handleRemoveQuestion = async (questionId: string) => {
-    if (config?.weddingId) {
-      const newSelectedQuestions = selectedQuestions.filter(
-        (q) => q.id !== questionId
-      );
-      setSelectedQuestions(newSelectedQuestions);
+    const newSelectedQuestions = selectedQuestions.filter(
+      (q) => q.id !== questionId
+    );
+    setSelectedQuestions(newSelectedQuestions);
 
-      // Auto-save immediately
-      try {
-        const enabledIds = newSelectedQuestions.map((q) => q.id);
-        await updateEnabled.mutateAsync({
-          enabledQuestionIds: enabledIds,
-        });
-      } catch (error) {
-        console.error("Error auto-saving after removal:", error);
-        // Revert on error
-        setSelectedQuestions((prev) => [
-          ...prev,
-          selectedQuestions.find((q) => q.id === questionId)!,
-        ]);
-      }
+    // Auto-save immediately
+    try {
+      const enabledIds = newSelectedQuestions.map((q) => q.id);
+      await updateEnabled.mutateAsync(enabledIds);
+    } catch (error) {
+      console.error("Error auto-saving after removal:", error);
+      // Revert on error
+      setSelectedQuestions((prev) => [
+        ...prev,
+        selectedQuestions.find((q) => q.id === questionId)!,
+      ]);
     }
   };
 
   const handleCreateCustomQuestion = async () => {
     if (
-      !config?.weddingId ||
       !newQuestion.text.trim() ||
       !newQuestion.displayName.trim() ||
       (newQuestion.type === "boolean" &&
@@ -142,7 +132,6 @@ const RSVPQuestionsManager: React.FC = () => {
       };
 
       await addCustom.mutateAsync({
-        weddingId: config.weddingId,
         question: questionToAdd,
       });
 
@@ -210,7 +199,7 @@ const RSVPQuestionsManager: React.FC = () => {
   if (!config && !isLoading) {
     return (
       <RSVPFormEmptyState
-        onCreateForm={() => createDefaultConfig.mutate()}
+        onCreateForm={() => createDefaultConfig.mutate("")}
         isCreating={createDefaultConfig.isPending}
       />
     );

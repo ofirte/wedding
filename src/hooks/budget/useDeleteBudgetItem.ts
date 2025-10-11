@@ -10,7 +10,7 @@ export const useDeleteBudgetItem = () => {
   const queryClient = useQueryClient();
 
   return useWeddingMutation({
-    mutationFn: (id: string) => deleteBudgetItem(id),
+    mutationFn: deleteBudgetItem,
     options: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["budgetItems"] });

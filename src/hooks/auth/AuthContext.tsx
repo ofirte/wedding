@@ -9,6 +9,7 @@ import React, {
 import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../api/firebaseConfig";
 import { useQueryClient } from "@tanstack/react-query";
+import useInitializeUserRole from "./useInitializeUserRole";
 
 interface AuthContextType {
   currentUser: User | null;
@@ -25,6 +26,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const queryClient = useQueryClient();
+
+  // Initialize user roles when authenticated
+  useInitializeUserRole();
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);

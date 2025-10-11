@@ -26,7 +26,7 @@ export default function WeddingRoute() {
   ]);
 
   if (isLoadingWeddingUser) {
-    return <DSLoading message="Loading wedding details..." />;
+    return <DSLoading message={"Loading wedding details..."} />;
   }
 
   return <Outlet />;

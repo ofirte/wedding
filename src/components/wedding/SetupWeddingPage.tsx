@@ -13,15 +13,12 @@ import {
   Stack,
 } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router";
-import {
-  useCurrentUser,
-  useCreateWedding,
-  useJoinWedding,
-} from "../../hooks/auth";
+import { useCurrentUser, useUpdateUser } from "../../hooks/auth";
+import { useCreateWedding, useJoinWedding } from "../../hooks/wedding";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { Wedding } from "../../api/wedding/weddingApi";
+import { Wedding } from "../../api/wedding/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface TabPanelProps {
@@ -62,9 +59,15 @@ const SetupWeddingPage: React.FC = () => {
   const [weddingDate, setWeddingDate] = useState<Date | null>(null);
 
   const { data: currentUser } = useCurrentUser();
+  const { mutate: updateUser } = useUpdateUser();
   const { mutate: createWedding, isPending: isCreating } = useCreateWedding({
     onSuccess: (weddingId) => {
       console.log("Wedding created successfully:", weddingId);
+      updateUser({
+        userData: {
+          weddingIds: [...(currentUser?.weddingIds || []), weddingId],
+        },
+      });
       navigate(`./${weddingId}/home`);
     },
   });
@@ -103,13 +106,23 @@ const SetupWeddingPage: React.FC = () => {
       return;
     }
 
+    if (weddingDate && weddingDate < new Date()) {
+      setError(t("common.weddingDateInPast"));
+      return;
+    }
+
+    if (!weddingDate) {
+      setError(t("common.pleaseEnterWeddingDate"));
+      return;
+    }
+
     try {
       createWedding({
         userId: currentUser.uid,
         weddingName,
-        brideName: brideName || undefined,
-        groomName: groomName || undefined,
-        weddingDate: weddingDate || undefined,
+        brideName: brideName,
+        groomName: groomName,
+        weddingDate: weddingDate,
       });
     } catch (err: any) {
       setError(err.message || t("common.unexpectedError"));
@@ -133,7 +146,7 @@ const SetupWeddingPage: React.FC = () => {
     try {
       joinWedding({
         userId: currentUser.uid,
-        weddingId: invitationCode,
+        weddingIdentifier: invitationCode,
         isInvitationCode: true,
       });
     } catch (err: any) {

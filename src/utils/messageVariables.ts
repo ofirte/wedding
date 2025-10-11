@@ -3,7 +3,7 @@
  * Handles variable definitions, population, and replacement across the RSVP system
  */
 
-import { Wedding } from "../api/wedding/weddingApi";
+import { Wedding } from "../api/wedding/types";
 import { Invitee } from "../components/invitees/InviteList";
 import { Language } from "../localization/types";
 

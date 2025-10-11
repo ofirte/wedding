@@ -9,7 +9,7 @@ import {
   Button,
 } from "@mui/material";
 import { CheckCircle as CheckIcon } from "@mui/icons-material";
-import { Wedding } from "../../api/wedding/weddingApi";
+import { Wedding } from "../../api/wedding/types";
 import { Invitee } from "../invitees/InviteList";
 import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
 import { useTranslation } from "../../localization/LocalizationContext";
@@ -90,9 +90,7 @@ const ThankYouCard: React.FC<ThankYouCardProps> = ({
             {isAttending
               ? t("thankYou.excitedToCelebrate", {
                   weddingDate: weddingInfo.date
-                    ? new Date(
-                        weddingInfo.date.seconds * 1000
-                      ).toLocaleDateString("he-IL", {
+                    ? weddingInfo.date.toLocaleDateString("he-IL", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -106,9 +104,7 @@ const ThankYouCard: React.FC<ThankYouCardProps> = ({
                 })
               : t("thankYou.sorryYouCantAttend", {
                   weddingDate: weddingInfo.date
-                    ? new Date(
-                        weddingInfo.date.seconds * 1000
-                      ).toLocaleDateString("he-IL", {
+                    ? weddingInfo.date.toLocaleDateString("he-IL", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",

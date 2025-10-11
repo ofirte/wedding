@@ -6,7 +6,7 @@ import {
   Assessment as AssessmentIcon,
   Settings as SettingsIcon,
 } from "@mui/icons-material";
-import { useSearchParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import { useTranslation } from "../../localization/LocalizationContext";
 import TemplatesManager from "./TemplatesManager";
 import MessagesLogTab from "./MessagesLogTab";
@@ -62,7 +62,8 @@ const RSVPManager: FC = () => {
 
   // Only consider config as "not set" if we've actually fetched the data and it's null
   const isNoConfigSet =
-    isRsvpConfigFetched && !isRsvpConfigLoading && rsvpConfig == null;
+    isRsvpConfigFetched && !isRsvpConfigLoading && rsvpConfig === null;
+
   const activeTab = isNoConfigSet
     ? TabValue.QUESTIONS
     : isValidTab

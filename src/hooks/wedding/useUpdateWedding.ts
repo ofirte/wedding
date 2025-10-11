@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateWeddingDetails } from "../../api/wedding/weddingApi";
-import { Wedding } from "../../api/wedding/weddingApi";
+import { Wedding } from "../../api/wedding/types";
 
 interface UpdateWeddingParams {
   weddingId: string;
