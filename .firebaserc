@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "wedding-c89a1",
+    "development": "wedding-c89a1",
     "production": "wedding-prod-f13a0"
   },
   "targets": {
