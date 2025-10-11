@@ -8,7 +8,7 @@ import { useCurrentUser } from "./useCurrentUser";
 
 interface UpdateUserVariables {
   userId?: string;
-  userData: Partial<WeddingUser>;
+  userData: Partial<WeddingUser> | Record<string, any>; // Allow Firestore field values
 }
 
 /**

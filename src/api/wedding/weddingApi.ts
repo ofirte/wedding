@@ -1,5 +1,10 @@
 import { createGeneralCollectionAPI } from "../generalFirebaseHelpers";
-import { Wedding, WeddingMemberInput, WeddingPlans } from "./types";
+import {
+  Wedding,
+  WeddingMemberInput,
+  WeddingPlans,
+  WeddingPlan,
+} from "./types";
 
 const WeddingApi = createGeneralCollectionAPI<Wedding>("weddings");
 // Find wedding by invitation code
@@ -116,6 +121,48 @@ export const updateWeddingDetails = async (
   } catch (error) {
     console.error("Error updating wedding details:", error);
     throw error;
+  }
+};
+
+// Add a user to a wedding
+export const addUserToWedding = async (
+  weddingId: string,
+  userId: string,
+  plan: WeddingPlan = WeddingPlans.FREE,
+  addedBy: string = "admin"
+): Promise<void> => {
+  try {
+    const wedding = await WeddingApi.fetchById(weddingId);
+    if (!wedding) {
+      throw new Error("Wedding not found");
+    }
+
+    const currentMembers = wedding.members || {};
+    const newMember: WeddingMemberInput = {
+      plan,
+      addedAt: new Date().toISOString(),
+      addedBy,
+    };
+
+    await WeddingApi.update(weddingId, {
+      members: {
+        ...currentMembers,
+        [userId]: newMember,
+      },
+    });
+  } catch (error) {
+    console.error("Error adding user to wedding:", error);
+    throw error;
+  }
+};
+
+// Get all weddings
+export const getAllWeddings = async (): Promise<Wedding[]> => {
+  try {
+    return await WeddingApi.fetchAll();
+  } catch (error) {
+    console.error("Error fetching all weddings:", error);
+    return [];
   }
 };
 

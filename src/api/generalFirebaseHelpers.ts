@@ -58,7 +58,7 @@ class GeneralFirebaseService {
    * Update an existing document in a top-level collection
    * @param collectionName The name of the collection
    * @param docId The document ID to update
-   * @param data The data to update
+   * @param data The data to update (supports Firestore field values like arrayUnion, arrayRemove, etc.)
    */
   async updateDocument<T extends object>(
     collectionName: string,
@@ -67,7 +67,7 @@ class GeneralFirebaseService {
   ) {
     const docRef = this.getDocRef(collectionName, docId);
 
-    // Remove undefined fields to prevent Firestore errors
+    // Remove undefined fields but preserve Firestore field values
     const sanitizedFields = Object.entries(data).reduce((acc, [key, value]) => {
       if (value !== undefined) {
         acc[key] = value;

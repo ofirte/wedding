@@ -226,6 +226,42 @@ export interface Translations {
     updating: string;
     updateSuccess: string;
     updateError: string;
+    filterByName: string;
+    searchUsers: string;
+    searchByEmail: string;
+    filterByRole: string;
+  };
+  weddingManagement: {
+    title: string;
+    description: string;
+    weddingName: string;
+    couple: string;
+    weddingDate: string;
+    members: string;
+    invitationCode: string;
+    createdAt: string;
+    addUserToWedding: string;
+    weddingInfo: string;
+    weddingId: string;
+    currentMembers: string;
+    userId: string;
+    enterUserId: string;
+    userIdHelper: string;
+    membershipPlan: string;
+    plans: {
+      free: string;
+      paid: string;
+    };
+    addUserWarning: string;
+    addUser: string;
+    noWeddings: string;
+    noWeddingName: string;
+    errorLoadingWeddings: string;
+    addingUser: string;
+    addUserSuccess: string;
+    addUserError: string;
+    filterByName: string;
+    selectUser: string;
   };
   home: {
     title: string;
