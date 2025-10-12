@@ -31,6 +31,7 @@ export interface SendMessageResponse {
   dateCreated: string;
   dateSent?: string;
   errorMessage?: string;
+  messageType?: "whatsapp" | "sms" | "personal-whatsapp"; // Track message type
 }
 
 // SMS-specific response interface
@@ -107,7 +108,7 @@ export const sendMessage = async (
       dateCreated: responseData.dateCreated,
     };
 
-    await saveSentMessage(messageData, response, weddingId);
+    await saveSentMessage(messageData, response, "whatsapp", weddingId);
 
     return response;
   } catch (error) {
@@ -133,14 +134,6 @@ export const sendSMSMessage = async (
 
     // Transform the response to match expected format
     const responseData = result.data as any;
-    const smsResponse: SendSMSResponse = {
-      sid: responseData.messageSid,
-      status: responseData.status,
-      to: responseData.to,
-      from: responseData.from,
-      dateCreated: responseData.dateCreated,
-      messageType: "sms",
-    };
 
     // Also save SMS message to Firebase for tracking
     const messageRequest: SendMessageRequest = {
@@ -152,18 +145,18 @@ export const sendSMSMessage = async (
 
     // Transform SMS response to standard message response format for saving
     const messageResponse: SendMessageResponse = {
-      sid: smsResponse.sid,
-      status: smsResponse.status,
-      to: smsResponse.to,
-      from: smsResponse.from,
-      dateCreated: smsResponse.dateCreated,
-      dateSent: smsResponse.dateSent,
-      errorMessage: smsResponse.errorMessage,
+      sid: responseData.sid,
+      status: responseData.status,
+      to: responseData.to,
+      from: responseData.from,
+      dateCreated: responseData.dateCreated,
+      dateSent: responseData.dateSent,
+      errorMessage: responseData.errorMessage,
     };
 
-    await saveSentMessage(messageRequest, messageResponse, weddingId);
+    await saveSentMessage(messageRequest, messageResponse, "sms", weddingId);
 
-    return smsResponse;
+    return messageResponse as SendSMSResponse;
   } catch (error) {
     console.error("Error sending SMS message:", error);
     throw error;
@@ -194,7 +187,7 @@ export const sendBulkMessages = async (
 
       // Save failed message to Firebase for tracking
       try {
-        await saveSentMessage(message, failedResult, weddingId);
+        await saveSentMessage(message, failedResult, "whatsapp", weddingId);
       } catch (saveError) {
         console.error(
           "Error saving failed bulk message to Firebase:",
@@ -237,6 +230,7 @@ export const checkMessageStatus = async (
 export const saveSentMessage = async (
   messageRequest: SendMessageRequest,
   messageResponse: SendMessageResponse,
+  messageType: "whatsapp" | "sms" | "personal-whatsapp",
   weddingId?: string
 ): Promise<string> => {
   try {
@@ -253,7 +247,7 @@ export const saveSentMessage = async (
       dateUpdated: new Date().toISOString(),
       errorMessage: messageResponse.errorMessage ?? "",
       userId: messageRequest.userId || "", // Optional user ID for tracking
-      messageType: "whatsapp", // Default to WhatsApp for existing messages
+      messageType,
     };
 
     const docRef = await sentMessagesAPI.create(sentMessage, weddingId);
