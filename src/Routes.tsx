@@ -14,6 +14,8 @@ import WeddingSettings from "./components/wedding/WeddingSettings";
 import WeddingRoute from "./components/wedding/WeddingRoute";
 import RootRedirect from "./components/auth/RootRedirect";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import WeddingProtectedRoute from "./components/auth/WeddingProtectedRoute";
+import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
 import GuestRSVPPage from "./components/rsvp/GuestRSVPPage";
 import WeddingsPage from "./components/wedding/WeddingsPage";
 import UserManagementPage from "./components/admin/UserManagementPage";
@@ -32,19 +34,25 @@ const AppRoutes: FC = () => {
       <Route element={<ProtectedRoute redirectPath="/login" />}>
         <Route path="wedding" element={<WeddingRoute />}>
           <Route index element={<SetupWeddingPage />} />
-          <Route path=":weddingId" element={<App />}>
-            <Route path="home" element={<Home />} />
-            <Route path="invite" element={<WeddingInviteTable />} />
-            <Route path="budget" element={<BudgetPlanner />} />
-            <Route path="tasks" element={<TaskManager />} />
-            <Route path="rsvp" element={<RSVPManager />} />
-            <Route path="settings" element={<WeddingSettings />} />
-            <Route path="migrations" element={<MigrationManager />} />
+          <Route element={<WeddingProtectedRoute />}>
+            <Route path=":weddingId" element={<App />}>
+              <Route path="home" element={<Home />} />
+              <Route path="invite" element={<WeddingInviteTable />} />
+              <Route path="budget" element={<BudgetPlanner />} />
+              <Route path="tasks" element={<TaskManager />} />
+              <Route path="rsvp" element={<RSVPManager />} />
+              <Route path="settings" element={<WeddingSettings />} />
+              <Route element={<AdminProtectedRoute />}>
+                <Route path="migrations" element={<MigrationManager />} />
+              </Route>
+            </Route>
           </Route>
         </Route>
         <Route path="weddings" element={<WeddingsPage />} />
-        <Route path="admin/users" element={<UserManagementPage />} />
-        <Route path="admin/weddings" element={<WeddingManagementPage />} />
+        <Route element={<AdminProtectedRoute />}>
+          <Route path="admin/users" element={<UserManagementPage />} />
+          <Route path="admin/weddings" element={<WeddingManagementPage />} />
+        </Route>
       </Route>
     </Routes>
   );

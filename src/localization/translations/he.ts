@@ -157,6 +157,11 @@ export const hebrewTranslations: Translations = {
     noVariables: "אין משתנים",
     unnamedTemplate: "תבנית ללא שם",
     unknown: "לא ידוע",
+    accessDenied: "הגישה נדחתה",
+    insufficientPermissions:
+      "אין לך הרשאה לגשת לעמוד זה. אנא פנה למנהל המערכת אם אתה מאמין שזו שגיאה.",
+    goToWeddings: "עבור לחתונות",
+    goBack: "חזור",
   },
   nav: {
     home: "בית",
@@ -238,6 +243,11 @@ export const hebrewTranslations: Translations = {
     addUserError: "שגיאה בהוספת המשתמש לחתונה. אנא נסה שנית.",
     filterByName: "סנן לפי שם",
     selectUser: "בחר משתמש",
+  },
+  admin: {
+    accessDenied: "הגישה נדחתה",
+    adminAccessRequired: "נדרשת גישת מנהל מערכת",
+    contactSystemAdmin: "אנא פנה למנהל מערכת לקבלת גישה.",
   },
   home: {
     title: "מתכנן חתונות",
@@ -330,6 +340,9 @@ export const hebrewTranslations: Translations = {
     details: "פרטים",
     planner: "מתכנן חתונות",
     studio: "אולפן מתכנן חתונות",
+    accessDenied: "הגישה נדחתה",
+    noAccessToWedding: "אין לך גישה לחתונה זו",
+    contactWeddingOwner: "אנא פנה לבעל החתונה כדי לבקש גישה.",
   },
   weddingSettings: {
     title: "הגדרות החתונה",

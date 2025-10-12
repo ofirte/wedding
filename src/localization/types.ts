@@ -183,6 +183,10 @@ export interface Translations {
     noVariables: string;
     unnamedTemplate: string;
     unknown: string;
+    accessDenied: string;
+    insufficientPermissions: string;
+    goToWeddings: string;
+    goBack: string;
   };
   nav: {
     home: string;
@@ -262,6 +266,11 @@ export interface Translations {
     addUserError: string;
     filterByName: string;
     selectUser: string;
+  };
+  admin: {
+    accessDenied: string;
+    adminAccessRequired: string;
+    contactSystemAdmin: string;
   };
   home: {
     title: string;
@@ -353,6 +362,9 @@ export interface Translations {
     details: string;
     planner: string;
     studio: string;
+    accessDenied: string;
+    noAccessToWedding: string;
+    contactWeddingOwner: string;
   };
   weddingSettings: {
     title: string;

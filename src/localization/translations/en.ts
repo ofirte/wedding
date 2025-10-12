@@ -157,6 +157,11 @@ export const englishTranslations: Translations = {
     noVariables: "No variables",
     unnamedTemplate: "Unnamed Template",
     unknown: "Unknown",
+    accessDenied: "Access Denied",
+    insufficientPermissions:
+      "You don't have permission to access this page. Please contact an administrator if you believe this is an error.",
+    goToWeddings: "Go to Weddings",
+    goBack: "Go Back",
   },
   nav: {
     home: "Home",
@@ -243,6 +248,11 @@ export const englishTranslations: Translations = {
     addUserError: "Error adding user to wedding. Please try again.",
     filterByName: "Filter by Name",
     selectUser: "Select User",
+  },
+  admin: {
+    accessDenied: "Access Denied",
+    adminAccessRequired: "Administrator access required",
+    contactSystemAdmin: "Please contact a system administrator for access.",
   },
   home: {
     title: "Wedding Planner",
@@ -335,6 +345,9 @@ export const englishTranslations: Translations = {
     details: "Details",
     planner: "Wedding Planner",
     studio: "Wedding Planner Studio",
+    accessDenied: "Access Denied",
+    noAccessToWedding: "You don't have access to this wedding",
+    contactWeddingOwner: "Please contact the wedding owner to request access.",
   },
   weddingSettings: {
     title: "Wedding Settings",
