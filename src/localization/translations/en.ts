@@ -170,6 +170,7 @@ export const englishTranslations: Translations = {
     tasks: "Tasks",
     rsvp: "RSVP",
     wedding: "Wedding",
+    admin: "Admin",
   },
   weddings: {
     yourWeddings: "Your Weddings",
@@ -250,9 +251,17 @@ export const englishTranslations: Translations = {
     selectUser: "Select User",
   },
   admin: {
+    title: "Administration",
+    description: "Manage users, weddings, and system settings",
     accessDenied: "Access Denied",
     adminAccessRequired: "Administrator access required",
     contactSystemAdmin: "Please contact a system administrator for access.",
+    navigationTabs: "Admin navigation tabs",
+    tabs: {
+      users: "Users",
+      weddings: "Weddings",
+      migrations: "Migrations",
+    },
   },
   home: {
     title: "Wedding Planner",

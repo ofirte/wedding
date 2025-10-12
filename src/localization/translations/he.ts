@@ -170,6 +170,7 @@ export const hebrewTranslations: Translations = {
     tasks: "משימות",
     rsvp: "אישור הגעה",
     wedding: "חתונה",
+    admin: "ניהול",
   },
   weddings: {
     yourWeddings: "החתונות שלך",
@@ -245,9 +246,17 @@ export const hebrewTranslations: Translations = {
     selectUser: "בחר משתמש",
   },
   admin: {
+    title: "ניהול",
+    description: "ניהול משתמשים, חתונות והגדרות מערכת",
     accessDenied: "הגישה נדחתה",
     adminAccessRequired: "נדרשת גישת מנהל מערכת",
     contactSystemAdmin: "אנא פנה למנהל מערכת לקבלת גישה.",
+    navigationTabs: "לשוניות ניווט ניהול",
+    tabs: {
+      users: "משתמשים",
+      weddings: "חתונות",
+      migrations: "העברת נתונים",
+    },
   },
   home: {
     title: "מתכנן חתונות",

@@ -7,3 +7,4 @@ export { UserActions } from "./UserActions";
 export { UserTableEmptyState } from "./UserTableEmptyState";
 export { createUserTableColumns, type UserTableData } from "./UserTableColumns";
 export { default as UserManagementPage } from "./UserManagementPage";
+export { default as AdminPage } from "./AdminPage";

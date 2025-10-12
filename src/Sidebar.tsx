@@ -20,7 +20,7 @@ import {
   Money as MoneyIcon,
   Assignment as TaskIcon,
   WhatsApp as RSVPIcon,
-  Build as MigrationIcon,
+  AdminPanelSettings as AdminIcon,
   Logout as LogoutIcon,
   Settings as SettingsIcon,
 } from "@mui/icons-material";
@@ -34,7 +34,6 @@ import {
 import { useTranslation } from "./localization/LocalizationContext";
 import { LanguageSwitcher } from "./components/common/LanguageSwitcher";
 import { useResponsive } from "./utils/ResponsiveUtils";
-import { i } from "react-router/dist/development/fog-of-war-Cm1iXIp7";
 
 interface SidebarProps {
   mobileOpen?: boolean;
@@ -63,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   const adminMenuItems = [
-    { text: "Migrations", icon: <MigrationIcon />, path: "/migrations" },
+    { text: t("nav.admin"), icon: <AdminIcon />, path: "/admin" },
   ];
 
   // Function to check if a menu item is currently active
@@ -107,8 +106,12 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
-  const handleNavigate = (path: string) => {
-    navigate(`.${path}`);
+  const handleNavigate = (path: string, isAbsolute = false) => {
+    if (isAbsolute) {
+      navigate(path);
+    } else {
+      navigate(`.${path}`);
+    }
     if (isMobile && onMobileClose) {
       onMobileClose();
     }
@@ -219,13 +222,13 @@ const Sidebar: React.FC<SidebarProps> = ({
           </Box>
           <List sx={{ py: 0, pb: 1 }}>
             {adminMenuItems.map((item, index) => {
-              const isActive = isMenuItemActive(item.path);
+              const isActive = location.pathname === item.path;
               const styles = getMenuItemStyles(isActive);
 
               return (
                 <ListItem key={item.text} disablePadding>
                   <ListItemButton
-                    onClick={() => handleNavigate(item.path)}
+                    onClick={() => handleNavigate(item.path, true)}
                     sx={styles.listItemButton}
                   >
                     <ListItemIcon sx={styles.listItemIcon}>

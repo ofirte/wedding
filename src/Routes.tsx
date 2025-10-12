@@ -6,7 +6,6 @@ import BudgetPlanner from "./components/budget/BudgetPlanner";
 import Home from "./components/home/Home";
 import TaskManager from "./components/tasks/TaskManager";
 import RSVPManager from "./components/rsvp/RSVPManager";
-import MigrationManager from "./migrations/components/MigrationManager";
 import LoginPage from "./components/auth/LoginPage";
 import RegisterPage from "./components/auth/RegisterPage";
 import SetupWeddingPage from "./components/wedding/SetupWeddingPage";
@@ -18,8 +17,7 @@ import WeddingProtectedRoute from "./components/auth/WeddingProtectedRoute";
 import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
 import GuestRSVPPage from "./components/rsvp/GuestRSVPPage";
 import WeddingsPage from "./components/wedding/WeddingsPage";
-import UserManagementPage from "./components/admin/UserManagementPage";
-import WeddingManagementPage from "./components/weddingManagement/WeddingManagementPage";
+import { AdminPage } from "./components/admin";
 
 const AppRoutes: FC = () => {
   return (
@@ -42,16 +40,13 @@ const AppRoutes: FC = () => {
               <Route path="tasks" element={<TaskManager />} />
               <Route path="rsvp" element={<RSVPManager />} />
               <Route path="settings" element={<WeddingSettings />} />
-              <Route element={<AdminProtectedRoute />}>
-                <Route path="migrations" element={<MigrationManager />} />
-              </Route>
             </Route>
           </Route>
         </Route>
-        <Route path="weddings" element={<WeddingsPage />} />
-        <Route element={<AdminProtectedRoute />}>
-          <Route path="admin/users" element={<UserManagementPage />} />
-          <Route path="admin/weddings" element={<WeddingManagementPage />} />
+        <Route path="weddings" element={<WeddingsPage />}>
+          <Route element={<AdminProtectedRoute />}>
+            <Route path="admin" element={<AdminPage />} />
+          </Route>
         </Route>
       </Route>
     </Routes>

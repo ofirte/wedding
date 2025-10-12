@@ -195,6 +195,7 @@ export interface Translations {
     tasks: string;
     rsvp: string;
     wedding: string;
+    admin: string;
   };
   weddings: {
     yourWeddings: string;
@@ -268,9 +269,17 @@ export interface Translations {
     selectUser: string;
   };
   admin: {
+    title: string;
+    description: string;
     accessDenied: string;
     adminAccessRequired: string;
     contactSystemAdmin: string;
+    navigationTabs: string;
+    tabs: {
+      users: string;
+      weddings: string;
+      migrations: string;
+    };
   };
   home: {
     title: string;
