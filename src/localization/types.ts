@@ -195,7 +195,13 @@ export interface Translations {
     tasks: string;
     rsvp: string;
     wedding: string;
+    weddings: string;
     admin: string;
+  };
+  manage: {
+    title: string;
+    subtitle: string;
+    adminTools: string;
   };
   weddings: {
     yourWeddings: string;

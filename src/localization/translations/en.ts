@@ -170,7 +170,13 @@ export const englishTranslations: Translations = {
     tasks: "Tasks",
     rsvp: "RSVP",
     wedding: "Wedding",
+    weddings: "Manage weddings",
     admin: "Admin",
+  },
+  manage: {
+    title: "Wedding Management",
+    subtitle: "Manage your weddings and settings",
+    adminTools: "Admin Tools",
   },
   weddings: {
     yourWeddings: "Your Weddings",

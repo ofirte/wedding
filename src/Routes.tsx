@@ -18,6 +18,7 @@ import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
 import GuestRSVPPage from "./components/rsvp/GuestRSVPPage";
 import WeddingsPage from "./components/wedding/WeddingsPage";
 import { AdminPage } from "./components/admin";
+import ManageApp from "./components/common/ManageApp";
 
 const AppRoutes: FC = () => {
   return (
@@ -43,7 +44,8 @@ const AppRoutes: FC = () => {
             </Route>
           </Route>
         </Route>
-        <Route path="weddings" element={<WeddingsPage />}>
+        <Route path="weddings" element={<ManageApp />}>
+          <Route index element={<WeddingsPage />} />
           <Route element={<AdminProtectedRoute />}>
             <Route path="admin" element={<AdminPage />} />
           </Route>

@@ -170,7 +170,13 @@ export const hebrewTranslations: Translations = {
     tasks: "משימות",
     rsvp: "אישור הגעה",
     wedding: "חתונה",
+    weddings: "נהל חתונות",
     admin: "ניהול",
+  },
+  manage: {
+    title: "ניהול חתונות",
+    subtitle: "נהל את החתונות וההגדרות שלך",
+    adminTools: "כלי ניהול",
   },
   weddings: {
     yourWeddings: "החתונות שלך",

@@ -15,33 +15,22 @@ import {
   ListItemButton,
 } from "@mui/material";
 import {
-  Home as HomeIcon,
-  List as ListIcon,
-  Money as MoneyIcon,
-  Assignment as TaskIcon,
-  WhatsApp as RSVPIcon,
+  Event as WeddingsIcon,
   AdminPanelSettings as AdminIcon,
   Logout as LogoutIcon,
-  Settings as SettingsIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router";
-import {
-  useCurrentUser,
-  useSignOut,
-  useWeddingDetails,
-  useIsAdmin,
-} from "./hooks/auth";
-import { useTranslation } from "./localization/LocalizationContext";
-import { LanguageSwitcher } from "./components/common/LanguageSwitcher";
-import { useResponsive } from "./utils/ResponsiveUtils";
-import ManageBackButton from "./components/common/ManageBackButton";
+import { useCurrentUser, useSignOut, useIsAdmin } from "../../hooks/auth";
+import { useTranslation } from "../../localization/LocalizationContext";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useResponsive } from "../../utils/ResponsiveUtils";
 
-interface SidebarProps {
+interface ManageSidebarProps {
   mobileOpen?: boolean;
   onMobileClose?: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({
+const ManageSidebar: React.FC<ManageSidebarProps> = ({
   mobileOpen = false,
   onMobileClose = () => {},
 }) => {
@@ -50,25 +39,27 @@ const Sidebar: React.FC<SidebarProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { data: currentUser } = useCurrentUser();
-  const { data: weddingDetails } = useWeddingDetails();
   const { mutate: signOut } = useSignOut();
   const { t } = useTranslation();
   const { isAdmin } = useIsAdmin();
+
   const menuItems = [
-    { text: t("nav.home"), icon: <HomeIcon />, path: "/home" },
-    { text: t("nav.guests"), icon: <ListIcon />, path: "/invite" },
-    { text: t("nav.budget"), icon: <MoneyIcon />, path: "/budget" },
-    { text: t("nav.tasks"), icon: <TaskIcon />, path: "/tasks" },
-    { text: t("nav.rsvp"), icon: <RSVPIcon />, path: "/rsvp" },
+    { text: t("nav.weddings"), icon: <WeddingsIcon />, path: "/weddings" },
   ];
 
   const adminMenuItems = [
-    { text: t("nav.admin"), icon: <AdminIcon />, path: "/admin" },
+    { text: t("nav.admin"), icon: <AdminIcon />, path: "/weddings/admin" },
   ];
 
   // Function to check if a menu item is currently active
   const isMenuItemActive = (itemPath: string) => {
-    return location.pathname.endsWith(itemPath);
+    if (itemPath === "/weddings") {
+      return (
+        location.pathname === "/weddings" ||
+        !location.pathname.includes("/admin")
+      );
+    }
+    return location.pathname.includes(itemPath);
   };
 
   // Function to get styles for menu items based on active state
@@ -107,12 +98,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
-  const handleNavigate = (path: string, isAbsolute = false) => {
-    if (isAbsolute) {
-      navigate(path);
-    } else {
-      navigate(`.${path}`);
-    }
+  const handleNavigate = (path: string) => {
+    navigate(path);
     if (isMobile && onMobileClose) {
       onMobileClose();
     }
@@ -133,14 +120,13 @@ const Sidebar: React.FC<SidebarProps> = ({
         }}
       >
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-          {t("home.title")}
+          {t("manage.title")}
         </Typography>
-        {weddingDetails && (
-          <Typography variant="body2" sx={{ mt: 1 }}>
-            {weddingDetails.name}
-          </Typography>
-        )}
+        <Typography variant="body2" sx={{ mt: 1 }}>
+          {t("manage.subtitle")}
+        </Typography>
       </Box>
+
       <Box sx={{ p: 2 }}>
         <Stack direction="row" spacing={2} alignItems="center">
           <Avatar
@@ -158,21 +144,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           {!isMobile && (
             <Stack direction="row" spacing={1}>
               <LanguageSwitcher />
-              <Button
-                size="small"
-                variant="text"
-                onClick={() => handleNavigate("/settings")}
-                sx={{
-                  minWidth: "auto",
-                  p: 0.5,
-                  color: theme.palette.sage.dark,
-                  "&:hover": {
-                    backgroundColor: theme.palette.sage.light,
-                  },
-                }}
-              >
-                <SettingsIcon fontSize="small" />
-              </Button>
             </Stack>
           )}
         </Stack>
@@ -199,26 +170,58 @@ const Sidebar: React.FC<SidebarProps> = ({
                   />
                 </ListItemButton>
               </ListItem>
-              {index < menuItems.length - 1 && (
-                <Divider variant="middle" sx={{ my: 0.5 }} />
-              )}
             </React.Fragment>
           );
         })}
       </List>
 
-      <Divider />
-      <Box sx={{ p: 2, gap: 2, display: "flex", flexDirection: "column" }}>
-        <ManageBackButton />
+      {/* Admin Section - Only visible to admins */}
+      {isAdmin && (
+        <>
+          <Divider />
+          <Box sx={{ px: 2, py: 1 }}>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ fontWeight: "medium" }}
+            >
+              {t("manage.adminTools")}
+            </Typography>
+          </Box>
+          <List sx={{ py: 0, pb: 1 }}>
+            {adminMenuItems.map((item, index) => {
+              const isActive = isMenuItemActive(item.path);
+              const styles = getMenuItemStyles(isActive);
 
+              return (
+                <ListItem key={item.text} disablePadding>
+                  <ListItemButton
+                    onClick={() => handleNavigate(item.path)}
+                    sx={styles.listItemButton}
+                  >
+                    <ListItemIcon sx={styles.listItemIcon}>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      primaryTypographyProps={styles.listItemText}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
+          </List>
+        </>
+      )}
+
+      <Divider />
+      <Box sx={{ p: 2 }}>
         <Button
           variant="outlined"
+          color="inherit"
           startIcon={<LogoutIcon />}
           onClick={handleLogout}
           fullWidth
-          sx={{
-            color: theme.palette.error.main,
-          }}
         >
           {t("common.signOut")}
         </Button>
@@ -272,4 +275,4 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
 };
 
-export default Sidebar;
+export default ManageSidebar;
