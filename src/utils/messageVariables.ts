@@ -25,6 +25,7 @@ export type MessageWedding = Partial<
   id: string; // id is required
   name?: string;
   eventDate?: string; // Computed from Wedding.date if needed
+  date?: Date;
   coupleName?: string; // Computed from brideName & groomName
 };
 
@@ -172,17 +173,9 @@ export const populateVariables = (
       : wedding.name || "The Happy Couple");
 
   // Format event date from wedding date with proper localization
-  let eventDate = "TBD";
-  if (wedding.eventDate) {
-    // If eventDate is already a string, use it as is
-    eventDate = wedding.eventDate;
-  } else if ((wedding as any).date) {
-    // If we have a Firestore Timestamp, convert and format with locale
-    const weddingDate = (wedding as any).date?.toDate?.();
-    if (weddingDate instanceof Date) {
-      eventDate = formatLocalizedDate(weddingDate, locale);
-    }
-  }
+  const eventDate = wedding.date
+    ? formatLocalizedDate(wedding.date, locale)
+    : "TBD";
 
   return {
     guestName: guest.name || "Dear Guest",
