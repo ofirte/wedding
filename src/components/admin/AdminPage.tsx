@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Box, Container, Tab, Tabs, Paper, Button } from "@mui/material";
-import { Settings, People, Favorite, ArrowBack } from "@mui/icons-material";
-import { useNavigate } from "react-router";
+import React, { useEffect } from "react";
+import { Box, Container, Tab, Tabs, Paper } from "@mui/material";
+import { Settings, People, Favorite } from "@mui/icons-material";
+import { useSearchParams } from "react-router";
 import { useTranslation } from "../../localization/LocalizationContext";
 import UserManagementPage from "./UserManagementPage";
 import WeddingManagementPage from "../weddingManagement/WeddingManagementPage";
@@ -33,19 +33,61 @@ const a11yProps = (index: number) => {
   };
 };
 
+// Tab values as constants for better type safety
+const TabValue = {
+  USERS: "users",
+  WEDDINGS: "weddings",
+  MIGRATIONS: "migrations",
+} as const;
+
+type TabValueType = (typeof TabValue)[keyof typeof TabValue];
+
+// Map tab values to numeric indices for Material-UI Tabs component
+const tabValueToIndex = {
+  [TabValue.USERS]: 0,
+  [TabValue.WEDDINGS]: 1,
+  [TabValue.MIGRATIONS]: 2,
+};
+
+const indexToTabValue: Record<number, TabValueType> = {
+  0: TabValue.USERS,
+  1: TabValue.WEDDINGS,
+  2: TabValue.MIGRATIONS,
+};
+
 export const AdminPage: React.FC = () => {
-  const [tabValue, setTabValue] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
+
+  // Get tab from URL query param, default to USERS if not present or invalid
+  const tabFromUrl = searchParams.get("tab") as TabValueType;
+  const isValidTab = Object.values(TabValue).includes(tabFromUrl);
+  const activeTabValue = isValidTab ? tabFromUrl : TabValue.USERS;
+  const activeTabIndex = tabValueToIndex[activeTabValue];
+
+  // Update URL when tab changes
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
+    const newTabValue = indexToTabValue[newValue];
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("tab", newTabValue);
+    setSearchParams(newSearchParams);
   };
+
+  // Set initial tab in URL if not present or invalid
+  useEffect(() => {
+    if (!tabFromUrl || !isValidTab) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("tab", TabValue.USERS);
+      setSearchParams(newSearchParams, { replace: true });
+    }
+  }, [tabFromUrl, isValidTab, searchParams, setSearchParams]);
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Paper elevation={0} sx={{ borderRadius: 2, overflow: "hidden" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
-            value={tabValue}
+            value={activeTabIndex}
             onChange={handleTabChange}
             aria-label={t("admin.navigationTabs")}
             sx={{
@@ -79,15 +121,15 @@ export const AdminPage: React.FC = () => {
           </Tabs>
         </Box>
 
-        <TabPanel value={tabValue} index={0}>
+        <TabPanel value={activeTabIndex} index={0}>
           <UserManagementPage />
         </TabPanel>
 
-        <TabPanel value={tabValue} index={1}>
+        <TabPanel value={activeTabIndex} index={1}>
           <WeddingManagementPage />
         </TabPanel>
 
-        <TabPanel value={tabValue} index={2}>
+        <TabPanel value={activeTabIndex} index={2}>
           <MigrationManager />
         </TabPanel>
       </Paper>
