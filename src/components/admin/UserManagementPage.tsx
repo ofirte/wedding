@@ -31,15 +31,14 @@ const UserManagementPage: React.FC = () => {
   const { mutate: deleteUser, isPending: isPendingUserDelete } = useDeleteUser({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["usersInfo"] });
-      setDeleteDialogOpen(false);
-      setDeletingUser(null);
+      handleCloseDeleteDialog();
     },
   });
   const { mutate: updateUser, isPending: isPendingUserUpdate } =
     useUpdateUserRole({
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["usersInfo"] });
-        handleCloseDeleteDialog();
+        handleCloseDialog();
       },
       onError: (error) => {
         console.error("Error updating user:", error);
