@@ -16,6 +16,7 @@ import { UserInfo } from "../../hooks/auth/useUsersInfo";
 import { useQueryClient } from "@tanstack/react-query";
 import { DeleteUserDialog } from "./deleteUserDialog";
 import { useDeleteUser } from "../../hooks/auth/useDeleteUser";
+import { on } from "events";
 
 const UserManagementPage: React.FC = () => {
   const { t } = useTranslation();
@@ -27,14 +28,18 @@ const UserManagementPage: React.FC = () => {
   // Fetch all users using the custom hook
   const { data: users, isLoading, error } = useUsersInfo();
 
-  const { mutate: deleteUser, isPending: isPendingUserDelete } =
-    useDeleteUser();
+  const { mutate: deleteUser, isPending: isPendingUserDelete } = useDeleteUser({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["usersInfo"] });
+      setDeleteDialogOpen(false);
+      setDeletingUser(null);
+    },
+  });
   const { mutate: updateUser, isPending: isPendingUserUpdate } =
     useUpdateUserRole({
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["usersInfo"] });
-        setEditDialogOpen(false);
-        setEditingUser(null);
+        handleCloseDeleteDialog();
       },
       onError: (error) => {
         console.error("Error updating user:", error);
@@ -56,7 +61,7 @@ const UserManagementPage: React.FC = () => {
   };
 
   const handleDeleteUser = (userId: string) => {
-    console.log('here')
+    console.log("here");
     deleteUser(userId);
   };
 
