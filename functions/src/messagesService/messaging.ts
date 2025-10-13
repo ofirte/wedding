@@ -6,7 +6,15 @@ import {
   twilioAuthToken,
   twilioWhatsAppFrom,
   twilioFunctionConfig,
-} from "../shared/config";
+} from "../common/config";
+import {
+  SendWhatsAppMessageRequest,
+  SendWhatsAppMessageResponse,
+  SendSmsMessageRequest,
+  SendSmsMessageResponse,
+  GetMessageStatusRequest,
+  GetMessageStatusResponse,
+} from "../shared";
 
 // Helper function to initialize Twilio client
 const initializeTwilioClient = () => {
@@ -18,9 +26,9 @@ const initializeTwilioClient = () => {
 /**
  * Send WhatsApp message using Twilio Content API
  */
-export const sendWhatsAppMessage = onCall(
+export const sendWhatsAppMessage = onCall<SendWhatsAppMessageRequest>(
   twilioFunctionConfig,
-  async (request) => {
+  async (request): Promise<SendWhatsAppMessageResponse> => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "User must be authenticated");
     }
@@ -74,7 +82,7 @@ export const sendWhatsAppMessage = onCall(
         to: message.to,
         dateCreated:
           message.dateCreated?.toISOString() || new Date().toISOString(),
-      };
+      } as SendWhatsAppMessageResponse;
     } catch (error) {
       logger.error("Failed to send WhatsApp message", {
         userId: request.auth.uid,
@@ -103,106 +111,114 @@ export const sendWhatsAppMessage = onCall(
 /**
  * Send SMS message (converts template to plain text)
  */
-export const sendSmsMessage = onCall(twilioFunctionConfig, async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "User must be authenticated");
-  }
-
-  const { to, contentSid, contentVariables } = request.data;
-
-  if (!to || !contentSid) {
-    throw new HttpsError(
-      "invalid-argument",
-      "Missing required fields: to, contentSid"
-    );
-  }
-
-  const twilioClient = initializeTwilioClient();
-  if (!twilioClient) {
-    throw new HttpsError("failed-precondition", "Twilio client not configured");
-  }
-
-  try {
-    logger.info("Converting template and sending SMS", {
-      userId: request.auth.uid,
-      to: to,
-      contentSid: contentSid,
-    });
-
-    // Get template and convert to SMS text
-    const contentList = await twilioClient.content.v2.contents.list();
-    const template = contentList.find((content) => content.sid === contentSid);
-
-    if (!template) {
-      throw new HttpsError("not-found", "Template not found");
+export const sendSmsMessage = onCall<SendSmsMessageRequest>(
+  twilioFunctionConfig,
+  async (request): Promise<SendSmsMessageResponse> => {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "User must be authenticated");
     }
 
-    // Extract template body and replace variables
-    const textType =
-      template.types?.["twilio/text"] || template.types?.["whatsapp"];
-    const templateBody = (textType as any)?.body;
+    const { to, contentSid, contentVariables } = request.data;
 
-    if (!templateBody || typeof templateBody !== "string") {
-      throw new HttpsError("failed-precondition", "No template body found");
+    if (!to || !contentSid) {
+      throw new HttpsError(
+        "invalid-argument",
+        "Missing required fields: to, contentSid"
+      );
     }
 
-    let smsText = templateBody;
-    if (contentVariables) {
-      Object.entries(contentVariables).forEach(([key, value]) => {
-        smsText = smsText.replace(
-          new RegExp(`\\{\\{${key}\\}\\}`, "g"),
-          value as string
-        );
+    const twilioClient = initializeTwilioClient();
+    if (!twilioClient) {
+      throw new HttpsError(
+        "failed-precondition",
+        "Twilio client not configured"
+      );
+    }
+
+    try {
+      logger.info("Converting template and sending SMS", {
+        userId: request.auth.uid,
+        to: to,
+        contentSid: contentSid,
       });
+
+      // Get template and convert to SMS text
+      const contentList = await twilioClient.content.v2.contents.list();
+      const template = contentList.find(
+        (content) => content.sid === contentSid
+      );
+
+      if (!template) {
+        throw new HttpsError("not-found", "Template not found");
+      }
+
+      // Extract template body and replace variables
+      const textType =
+        template.types?.["twilio/text"] || template.types?.["whatsapp"];
+      const templateBody = (textType as any)?.body;
+
+      if (!templateBody || typeof templateBody !== "string") {
+        throw new HttpsError("failed-precondition", "No template body found");
+      }
+
+      let smsText = templateBody;
+      if (contentVariables) {
+        Object.entries(contentVariables).forEach(([key, value]) => {
+          smsText = smsText.replace(
+            new RegExp(`\\{\\{${key}\\}\\}`, "g"),
+            value as string
+          );
+        });
+      }
+
+      // Clean phone number and send SMS
+      const cleanPhoneNumber = to.replace(/^whatsapp:/, "");
+
+      const message = await twilioClient.messages.create({
+        from: "weddingPlan",
+        to: cleanPhoneNumber,
+        body: smsText,
+      });
+
+      logger.info("SMS sent successfully", {
+        userId: request.auth.uid,
+        messageSid: message.sid,
+        status: message.status,
+      });
+
+      return {
+        success: true,
+        messageSid: message.sid,
+        status: message.status,
+        from: message.from,
+        to: message.to,
+        dateCreated:
+          message.dateCreated?.toISOString() || new Date().toISOString(),
+        messageType: "sms",
+      };
+    } catch (error) {
+      logger.error("Failed to send SMS", {
+        userId: request.auth.uid,
+        error: error instanceof Error ? error.message : "Unknown error",
+        to: to,
+        contentSid: contentSid,
+      });
+
+      if (error instanceof HttpsError) {
+        throw error;
+      }
+
+      throw new HttpsError("internal", "Failed to send SMS");
     }
-
-    // Clean phone number and send SMS
-    const cleanPhoneNumber = to.replace(/^whatsapp:/, "");
-
-    const message = await twilioClient.messages.create({
-      from: "weddingPlan",
-      to: cleanPhoneNumber,
-      body: smsText,
-    });
-
-    logger.info("SMS sent successfully", {
-      userId: request.auth.uid,
-      messageSid: message.sid,
-      status: message.status,
-    });
-
-    return {
-      success: true,
-      messageSid: message.sid,
-      status: message.status,
-      from: message.from,
-      to: message.to,
-      dateCreated:
-        message.dateCreated?.toISOString() || new Date().toISOString(),
-      messageType: "sms",
-    };
-  } catch (error) {
-    logger.error("Failed to send SMS", {
-      userId: request.auth.uid,
-      error: error instanceof Error ? error.message : "Unknown error",
-      to: to,
-      contentSid: contentSid,
-    });
-
-    if (error instanceof HttpsError) {
-      throw error;
-    }
-
-    throw new HttpsError("internal", "Failed to send SMS");
   }
-});
+);
 
 /**
  * Get message status from Twilio
  */
-export const getMessageStatus = onCall(
+export const getMessageStatus = onCall<GetMessageStatusRequest>(
   twilioFunctionConfig,
-  async (request) => {
+  async (request): Promise<GetMessageStatusResponse> => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "User must be authenticated");
     }

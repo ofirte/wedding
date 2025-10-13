@@ -1,5 +1,5 @@
 import { setGlobalOptions } from "firebase-functions/v2";
-import { initializeFirebaseAdmin } from "./shared/firebaseAdmin";
+import { initializeFirebaseAdmin } from "./common/firebaseAdmin";
 
 // Initialize Firebase Admin SDK
 initializeFirebaseAdmin();
@@ -14,9 +14,8 @@ setGlobalOptions({
 
 // Export NEW auth functions (clean system)
 export * from "./auth/userRoles";
+export * from "./auth/users";
 
 // Export all messaging functions
 export * from "./messagesService/messaging";
 export * from "./messagesService/templates";
-export * from "./auth/userRoles"
-export * from "./auth/users";

@@ -1,19 +1,20 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getAuth } from "firebase-admin/auth";
 import { logger } from "firebase-functions/v2";
-import { standardFunctionConfig } from "../shared/config";
-import { isAuthenticated, isSufficientWeddingRole } from "../shared/utils";
+import { standardFunctionConfig } from "../common/config";
+import { isAuthenticated, isSufficientWeddingRole } from "../common/utils";
 import { WeddingRoles } from "../shared/types";
+import { DeleteUserAuthRequest, DeleteUserAuthResponse } from "../shared";
 
-export const deleteUserAuth = onCall(
+export const deleteUserAuth = onCall<DeleteUserAuthRequest>(
   standardFunctionConfig,
-  async (request) => {
+  async (request): Promise<DeleteUserAuthResponse> => {
     isAuthenticated(request);
     isSufficientWeddingRole({
       userRole: request.auth.token.role,
       neededRole: WeddingRoles.ADMIN,
     });
-    const { userId } = request.data as { userId: string };
+    const { userId } = request.data;
 
     if (!userId) {
       throw new HttpsError("invalid-argument", "userId is required");
@@ -32,7 +33,7 @@ export const deleteUserAuth = onCall(
         success: true,
         message: `User ${userId} deleted successfully`,
         userId,
-      };
+      } as DeleteUserAuthResponse;
     } catch (error) {
       logger.error("Failed to delete user", {
         requestingUser: request.auth.uid,

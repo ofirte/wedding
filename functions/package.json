@@ -1,7 +1,8 @@
 {
   "name": "functions",
   "scripts": {
-    "build": "tsc",
+    "prebuild": "rm -rf ./src/shared && cp -r ../shared ./src/shared",
+    "build": "npm run prebuild && tsc",
     "build:watch": "tsc --watch",
     "serve": "npm run build && firebase use wedding-c89a1 && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",

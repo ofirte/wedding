@@ -22,7 +22,6 @@ export type {
   SendSMSResponse,
   SentMessage,
   ContentInsight,
-  TwilioMessageStatus,
 } from "../../api/rsvp/rsvpApi";
 
 // Export types from templateApi

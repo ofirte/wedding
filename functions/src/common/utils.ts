@@ -1,5 +1,5 @@
 import { CallableRequest, HttpsError } from "firebase-functions/https";
-import { WeddingRole } from "./types";
+import { WeddingRole } from "../shared";
 import { AuthData } from "firebase-functions/tasks";
 
 export const isAuthenticated: (

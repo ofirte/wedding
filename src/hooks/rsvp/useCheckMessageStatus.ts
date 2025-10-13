@@ -1,7 +1,5 @@
-import {
-  checkMessageStatus,
-  TwilioMessageStatus,
-} from "../../api/rsvp/rsvpApi";
+import { GetMessageStatusResponse } from "../../../shared/messagingTypes";
+import { checkMessageStatus } from "../../api/rsvp/rsvpApi";
 import { useWeddingQuery } from "../common";
 
 /**
@@ -10,7 +8,7 @@ import { useWeddingQuery } from "../common";
  * @returns Query result with checkStatus function
  */
 export const useCheckMessageStatus = (messageSid?: string) => {
-  return useWeddingQuery<TwilioMessageStatus>({
+  return useWeddingQuery<GetMessageStatusResponse>({
     queryKey: ["messageStatus", messageSid],
     queryFn: () => {
       if (!messageSid) {

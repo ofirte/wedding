@@ -1,11 +1,11 @@
 import { ContentInstance } from "twilio/lib/rest/content/v2/content";
 import { createCollectionAPI } from "../weddingFirebaseHelpers";
-import { MessageInstance } from "twilio/lib/rest/api/v2010/account/message";
 import {
   sendWhatsAppMessage,
   sendSmsMessage,
   getMessageStatus,
 } from "../firebaseFunctions";
+import { GetMessageStatusResponse } from "../../../shared";
 
 export interface SendMessageRequest {
   to: string;
@@ -49,10 +49,6 @@ export interface MessageTemplatesResponse {
   length: number;
 }
 
-// Twilio message status response from API
-export interface TwilioMessageStatus {
-  messageInfo: MessageInstance;
-}
 
 // Types for Firebase sent messages collection
 export interface SentMessage {
@@ -99,7 +95,7 @@ export const sendMessage = async (
     });
 
     // Transform the response to match expected format
-    const responseData = result.data as any;
+    const responseData = result.data;
     const response: SendMessageResponse = {
       sid: responseData.messageSid,
       status: responseData.status,
@@ -207,15 +203,13 @@ export const sendBulkMessages = async (
  */
 export const checkMessageStatus = async (
   messageSid: string
-): Promise<TwilioMessageStatus> => {
+): Promise<GetMessageStatusResponse> => {
   try {
-    // Call Firebase callable function
     const result = await getMessageStatus({
       messageSid: messageSid,
     });
 
-    // The result should match TwilioMessageStatus format
-    return result.data as TwilioMessageStatus;
+    return result.data;
   } catch (error) {
     console.error("Error fetching message status from Twilio:", error);
     throw error;
