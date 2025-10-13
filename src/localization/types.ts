@@ -243,6 +243,7 @@ export interface Translations {
     filterByRole: string;
   };
   weddingManagement: {
+
     title: string;
     description: string;
     weddingName: string;

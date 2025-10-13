@@ -10,7 +10,7 @@ import { useTranslation } from "../../localization/LocalizationContext";
 import { useAllWeddings } from "../../hooks/wedding/useAllWeddings";
 import { useAddUserToWedding } from "../../hooks/wedding/useAddUserToWedding";
 import { WeddingTable } from "./WeddingTable";
-import { AddUserToWeddingDialog } from "./AddUserToWeddingDialog";
+import { WeddingDetailsDialog } from "./WeddingDetailsDialog";
 import { Wedding } from "../../api/wedding/types";
 import { useUpdateUser } from "../../hooks/auth";
 import { arrayUnion } from "firebase/firestore";
@@ -109,35 +109,13 @@ const WeddingManagementPage: React.FC = () => {
         isUpdating={addUserToWeddingMutation.isPending}
       />
 
-      <AddUserToWeddingDialog
+      <WeddingDetailsDialog
         open={dialogOpen}
         wedding={selectedWedding}
         onClose={handleCloseDialog}
         onSave={handleSaveUser}
         isLoading={addUserToWeddingMutation.isPending}
       />
-
-      {addUserToWeddingMutation.isPending && (
-        <Box position="fixed" top={16} right={16}>
-          <Alert severity="info" icon={<CircularProgress size={20} />}>
-            {t("weddingManagement.addingUser")}
-          </Alert>
-        </Box>
-      )}
-
-      {addUserToWeddingMutation.isSuccess && (
-        <Box position="fixed" top={16} right={16}>
-          <Alert severity="success">
-            {t("weddingManagement.addUserSuccess")}
-          </Alert>
-        </Box>
-      )}
-
-      {addUserToWeddingMutation.isError && (
-        <Box position="fixed" top={16} right={16}>
-          <Alert severity="error">{t("weddingManagement.addUserError")}</Alert>
-        </Box>
-      )}
     </Container>
   );
 };

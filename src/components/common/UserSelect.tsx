@@ -1,9 +1,7 @@
 import React from "react";
 import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  Autocomplete,
+  TextField,
   CircularProgress,
   Alert,
   Box,
@@ -22,7 +20,7 @@ interface UserSelectProps {
 }
 
 /**
- * Select component that displays all users from the system
+ * Autocomplete component that displays all users from the system
  * Uses useUsersInfo hook to fetch user data
  */
 export const UserSelect: React.FC<UserSelectProps> = ({
@@ -36,6 +34,7 @@ export const UserSelect: React.FC<UserSelectProps> = ({
   const { data: usersResponse, isLoading, error } = useUsersInfo();
 
   const users = usersResponse?.users || [];
+  const selectedUser = users.find((user) => user.uid === value) || null;
 
   if (error) {
     return (
@@ -43,87 +42,75 @@ export const UserSelect: React.FC<UserSelectProps> = ({
     );
   }
 
-  const renderUserOption = (user: UserInfo) => (
-    <Box display="flex" alignItems="center" gap={2}>
-      <Avatar
-        alt={user.displayName || "User"}
-        src={user.photoURL || undefined}
-        sx={{ width: 24, height: 24 }}
-      >
-        {user.displayName?.[0] || user.email?.[0] || "U"}
-      </Avatar>
-      <Box>
-        <Typography variant="body2">
-          {user.displayName || t("userManagement.noDisplayName")}
-        </Typography>
-        <Typography variant="caption" color="text.secondary">
-          {user.email}
-        </Typography>
-      </Box>
-    </Box>
-  );
-
   return (
-    <FormControl fullWidth disabled={disabled}>
-      <InputLabel>{label || t("weddingManagement.selectUser")}</InputLabel>
-      <Select
-        value={value}
-        label={label || t("weddingManagement.selectUser")}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled || isLoading}
-        renderValue={(selectedUserId) => {
-          const selectedUser = users.find(
-            (user) => user.uid === selectedUserId
-          );
-          if (!selectedUser) {
-            return "";
-          }
-          return (
-            <Box display="flex" alignItems="center" gap={2}>
-              <Avatar
-                alt={selectedUser.displayName || "User"}
-                src={selectedUser.photoURL || undefined}
-                sx={{ width: 24, height: 24 }}
-              >
-                {selectedUser.displayName?.[0] ||
-                  selectedUser.email?.[0] ||
-                  "U"}
-              </Avatar>
-              <Typography variant="body2">
-                {selectedUser.displayName ||
-                  selectedUser.email ||
-                  t("userManagement.noDisplayName")}
-              </Typography>
-            </Box>
-          );
-        }}
-      >
-        {isLoading ? (
-          <MenuItem disabled>
-            <Box display="flex" alignItems="center" gap={2}>
-              <CircularProgress size={20} />
-              <Typography>{t("common.loading")}</Typography>
-            </Box>
-          </MenuItem>
-        ) : users.length === 0 ? (
-          <MenuItem disabled>
-            <Typography color="text.secondary">
-              {t("userManagement.noUsers")}
-            </Typography>
-          </MenuItem>
-        ) : (
-          users.map((user) => (
-            <MenuItem key={user.uid} value={user.uid}>
-              {renderUserOption(user)}
-            </MenuItem>
-          ))
-        )}
-      </Select>
-      {helperText && (
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
-          {helperText}
-        </Typography>
+    <Autocomplete
+      options={users}
+      value={selectedUser}
+      getOptionLabel={(user: UserInfo) =>
+        `${user.displayName || t("userManagement.noDisplayName")}`
+      }
+      isOptionEqualToValue={(option: UserInfo, value: UserInfo) =>
+        option.uid === value.uid
+      }
+      onChange={(_, newUser: UserInfo | null) => {
+        onChange(newUser?.uid || "");
+      }}
+      loading={isLoading}
+      disabled={disabled}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={label || t("weddingManagement.selectUser")}
+          helperText={helperText}
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <>
+                {isLoading ? (
+                  <CircularProgress color="inherit" size={20} />
+                ) : null}
+                {params.InputProps.endAdornment}
+              </>
+            ),
+          }}
+        />
       )}
-    </FormControl>
+      renderOption={(props, user: UserInfo) => (
+        <Box
+          component="li"
+          {...props}
+          sx={{ display: "flex", alignItems: "center", gap: 2 }}
+        >
+          <Avatar
+            alt={user.displayName || "User"}
+            src={user.photoURL || undefined}
+            sx={{ width: 32, height: 32 }}
+          >
+            {user.displayName?.[0] || user.email?.[0] || "U"}
+          </Avatar>
+          <Box>
+            <Typography variant="body2">
+              {user.displayName || t("userManagement.noDisplayName")}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {user.email}
+            </Typography>
+          </Box>
+        </Box>
+      )}
+      noOptionsText={
+        users.length === 0
+          ? t("userManagement.noUsers")
+          : t("userManagement.searchUsers")
+      }
+      filterOptions={(options, { inputValue }) => {
+        return options.filter((user) => {
+          const searchText = inputValue.toLowerCase();
+          const displayName = (user.displayName || "").toLowerCase();
+          const email = (user.email || "").toLowerCase();
+          return displayName.includes(searchText) || email.includes(searchText);
+        });
+      }}
+    />
   );
 };

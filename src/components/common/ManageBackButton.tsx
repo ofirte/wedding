@@ -1,10 +1,8 @@
 import React from "react";
-import { IconButton, Button, useTheme } from "@mui/material";
-import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
+import {  Button } from "@mui/material";
 import { useNavigate, useLocation } from "react-router";
 import { useCurrentUser } from "../../hooks/auth";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { useResponsive } from "../../utils/ResponsiveUtils";
 
 const ManageBackButton: React.FC = () => {
   const navigate = useNavigate();

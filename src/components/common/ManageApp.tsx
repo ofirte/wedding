@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { Box, useTheme, IconButton } from "@mui/material";
-import { Menu as MenuIcon } from "@mui/icons-material";
+import { Box, Container } from "@mui/material";
 import { Outlet } from "react-router";
 import ManageSidebar from "./ManageSidebar";
-import ManageBackButton from "./ManageBackButton";
-import { useResponsive } from "../../utils/ResponsiveUtils";
+import GeneralMobileAppBar from "./GeneralMobileAppBar";
+import { useTranslation } from "../../localization/LocalizationContext";
+import useResponsive from "../../utils/ResponsiveUtils";
 
 const ManageApp: React.FC = () => {
-  const theme = useTheme();
   const { isMobile } = useResponsive();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { t } = useTranslation();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -17,56 +17,32 @@ const ManageApp: React.FC = () => {
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <ManageSidebar
-        mobileOpen={mobileOpen}
-        onMobileClose={() => setMobileOpen(false)}
-      />
-
+      {isMobile && (
+        <GeneralMobileAppBar
+          onMenuClick={handleDrawerToggle}
+          title={t("manage.title")}
+          subtitle={t("manage.subtitle")}
+        />
+      )}
+      <ManageSidebar mobileOpen={mobileOpen} onMobileClose={handleDrawerToggle} />
       {/* Main content area */}
-      <Box
+      <Container
+        component="main"
+        maxWidth="xl"
         sx={{
           flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-
-          minHeight: "100vh",
+          py: { xs: 1, md: 2 },
+          px: { xs: 1, sm: 2, md: 3 },
+          mt: { xs: 7, md: 0 }, // Account for mobile app bar height
+          width: {
+            xs: "100%",
+            md: `calc(100% - 240px)`,
+          },
+          minHeight: { xs: "calc(100vh - 56px)", md: "100vh" },
         }}
       >
-        {/* Mobile header with menu button */}
-        {isMobile && (
-          <Box
-            sx={{
-              display: { xs: "flex", md: "none" },
-              alignItems: "center",
-              padding: 2,
-              backgroundColor: theme.palette.background.paper,
-              borderBottom: `1px solid ${theme.palette.divider}`,
-              gap: 1,
-            }}
-          >
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-            >
-              <MenuIcon />
-            </IconButton>
-            <ManageBackButton />
-          </Box>
-        )}
-
-        {/* Content area */}
-        <Box
-          sx={{
-            flexGrow: 1,
-            backgroundColor: theme.palette.background.default,
-          }}
-        >
-          <Outlet />
-        </Box>
-      </Box>
+        <Outlet />
+      </Container>
     </Box>
   );
 };

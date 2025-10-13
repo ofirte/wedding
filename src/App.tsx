@@ -3,12 +3,16 @@ import "./App.css";
 import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
 import { Outlet } from "react-router";
 import Sidebar from "./Sidebar";
-import MobileAppBar from "./components/common/MobileAppBar";
+import GeneralMobileAppBar from "./components/common/GeneralMobileAppBar";
+import { useWeddingDetails } from "./hooks/auth";
+import { useTranslation } from "./localization/LocalizationContext";
 
 function App() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const { data: weddingDetails } = useWeddingDetails();
+  const { t } = useTranslation();
 
   const handleMobileMenuToggle = () => {
     setMobileDrawerOpen(!mobileDrawerOpen);
@@ -20,7 +24,13 @@ function App() {
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
-      {isMobile && <MobileAppBar onMenuClick={handleMobileMenuToggle} />}
+      {isMobile && (
+        <GeneralMobileAppBar
+          onMenuClick={handleMobileMenuToggle}
+          title={t("home.title")}
+          subtitle={weddingDetails?.name}
+        />
+      )}
 
       <Sidebar
         mobileOpen={mobileDrawerOpen}

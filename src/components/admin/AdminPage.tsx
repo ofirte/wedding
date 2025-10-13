@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Container,
-  Tab,
-  Tabs,
-  Typography,
-  Paper,
-  Button,
-} from "@mui/material";
+import { Box, Container, Tab, Tabs, Paper, Button } from "@mui/material";
 import { Settings, People, Favorite, ArrowBack } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { useTranslation } from "../../localization/LocalizationContext";
@@ -23,14 +15,14 @@ interface TabPanelProps {
 
 const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
   return (
-    <div
+    <Box
       role="tabpanel"
       hidden={value !== index}
       id={`admin-tabpanel-${index}`}
       aria-labelledby={`admin-tab-${index}`}
     >
       {value === index && <Box sx={{ py: 3 }}>{children}</Box>}
-    </div>
+    </Box>
   );
 };
 
@@ -56,28 +48,6 @@ export const AdminPage: React.FC = () => {
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Box
-        sx={{
-          position: "absolute",
-          top: ({ spacing }) => spacing(6),
-          right: ({ spacing }) => spacing(6),
-          mb: 2,
-          zIndex: 1000,
-        }}
-      >
-        <Button
-          startIcon={<ArrowBack />}
-          onClick={handleBackToWeddings}
-          variant="outlined"
-          sx={{
-            borderRadius: 2,
-            textTransform: "none",
-          }}
-        >
-          {t("common.goToWeddings")}
-        </Button>
-      </Box>
-
       <Paper elevation={0} sx={{ borderRadius: 2, overflow: "hidden" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs

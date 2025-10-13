@@ -20,7 +20,11 @@ import {
   Logout as LogoutIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router";
-import { useCurrentUser, useSignOut, useIsAdmin } from "../../hooks/auth";
+import {
+  useCurrentUser,
+  useSignOut,
+  useIsAdmin,
+} from "../../hooks/auth";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useResponsive } from "../../utils/ResponsiveUtils";
@@ -54,10 +58,7 @@ const ManageSidebar: React.FC<ManageSidebarProps> = ({
   // Function to check if a menu item is currently active
   const isMenuItemActive = (itemPath: string) => {
     if (itemPath === "/weddings") {
-      return (
-        location.pathname === "/weddings" ||
-        !location.pathname.includes("/admin")
-      );
+      return location.pathname === "/weddings" || !location.pathname.includes("/admin");
     }
     return location.pathname.includes(itemPath);
   };
@@ -111,7 +112,7 @@ const ManageSidebar: React.FC<ManageSidebarProps> = ({
   }
 
   const drawerContent = (
-    <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    <Box sx={{ height: "100%", display: "flex", flexDirection: "column", mt: isMobile ? 6 : 0 }}>
       <Box
         sx={{
           padding: 2,

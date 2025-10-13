@@ -124,7 +124,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   }
 
   const drawerContent = (
-    <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    <Box sx={{ height: "100%", display: "flex", flexDirection: "column", mt: isMobile ? 6 : 0 }}>
       <Box
         sx={{
           padding: 2,
