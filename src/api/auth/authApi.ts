@@ -92,7 +92,7 @@ export const signInWithGoogle = async (): Promise<WeddingUser> => {
     const userData = await authApi.fetchById(user.uid);
 
     if (!userData) {
-      await authApi.create({
+      await authApi.createWithId(user.uid, {
         uid: user.uid,
         email: user.email || "",
         displayName: user.displayName || "",
