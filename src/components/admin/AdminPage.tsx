@@ -36,14 +36,8 @@ const a11yProps = (index: number) => {
 export const AdminPage: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
   const { t } = useTranslation();
-  const navigate = useNavigate();
-
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
-  };
-
-  const handleBackToWeddings = () => {
-    navigate("/weddings");
   };
 
   return (

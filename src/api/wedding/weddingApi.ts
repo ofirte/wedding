@@ -156,6 +156,32 @@ export const addUserToWedding = async (
   }
 };
 
+export const removeUserFromWedding = async (
+  weddingId: string,
+  userId: string
+): Promise<void> => {
+  try {
+    const wedding = await WeddingApi.fetchById(weddingId);
+    if (!wedding) {
+      throw new Error("Wedding not found");
+    }
+
+    const currentMembers = wedding.members || {};
+    if (!currentMembers[userId]) {
+      throw new Error("User is not a member of this wedding");
+    }
+
+    const { [userId]: _, ...updatedMembers } = currentMembers;
+
+    await WeddingApi.update(weddingId, {
+      members: updatedMembers,
+    });
+  } catch (error) {
+    console.error("Error removing user from wedding:", error);
+    throw error;
+  }
+}
+
 // Get all weddings
 export const getAllWeddings = async (): Promise<Wedding[]> => {
   try {

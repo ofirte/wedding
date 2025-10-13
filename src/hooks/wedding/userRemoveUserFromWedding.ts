@@ -3,15 +3,15 @@ import {
   UseMutationOptions,
   useQueryClient,
 } from "@tanstack/react-query";
-import { addUserToWedding } from "../../api/wedding/weddingApi";
+import {
+  addUserToWedding,
+  removeUserFromWedding,
+} from "../../api/wedding/weddingApi";
 import { WeddingPlan } from "../../api/wedding/types";
-import { on } from "events";
 
-interface AddUserToWeddingVariables {
+interface RemoveUserFromWeddingVariables {
   weddingId: string;
   userId: string;
-  plan?: WeddingPlan;
-  addedBy?: string;
 }
 
 /**
@@ -19,9 +19,9 @@ interface AddUserToWeddingVariables {
  * @param options Optional React Query mutation options
  * @returns Mutation hook for adding users to weddings
  */
-export const useAddUserToWedding = (
+export const useRemoveUserFromWedding = (
   options?: Omit<
-    UseMutationOptions<void, unknown, AddUserToWeddingVariables, unknown>,
+    UseMutationOptions<void, unknown, RemoveUserFromWeddingVariables, unknown>,
     "mutationFn"
   >
 ) => {
@@ -31,15 +31,16 @@ export const useAddUserToWedding = (
     mutationFn: async ({
       weddingId,
       userId,
-      plan,
-      addedBy,
-    }: AddUserToWeddingVariables) => {
-      await addUserToWedding(weddingId, userId, plan, addedBy);
+    }: RemoveUserFromWeddingVariables) => {
+      await removeUserFromWedding(weddingId, userId);
     },
     onSuccess: (data, variables) => {
       // Invalidate wedding queries to refresh the data
       queryClient.invalidateQueries({ queryKey: ["weddings"] });
       // Also invalidate the specific wedding if it's cached
+      queryClient.invalidateQueries({
+        queryKey: ["wedding", variables.weddingId],
+      });
       queryClient.invalidateQueries({
         queryKey: ["weddingDetails", variables.weddingId],
       });

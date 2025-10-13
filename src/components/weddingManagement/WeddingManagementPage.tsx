@@ -30,10 +30,6 @@ const WeddingManagementPage: React.FC = () => {
 
   // Add user to wedding mutation using the custom hook
   const addUserToWeddingMutation = useAddUserToWedding({
-    onSuccess: () => {
-      setDialogOpen(false);
-      setSelectedWedding(null);
-    },
     onError: (error) => {
       console.error("Error adding user to wedding:", error);
     },
@@ -111,7 +107,7 @@ const WeddingManagementPage: React.FC = () => {
 
       <WeddingDetailsDialog
         open={dialogOpen}
-        wedding={selectedWedding}
+        weddingId={selectedWedding?.id || ""}
         onClose={handleCloseDialog}
         onSave={handleSaveUser}
         isLoading={addUserToWeddingMutation.isPending}

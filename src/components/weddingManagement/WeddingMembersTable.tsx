@@ -1,29 +1,23 @@
 import React from "react";
 import { Chip, Box, Typography, Avatar, Stack } from "@mui/material";
 import { DSTable } from "../common";
-import { Column } from "../common/DSTable";
 import { useUsersByIds } from "../../hooks/auth/useUsersByIds";
-import { UserInfo } from "../../hooks/auth/useUsersInfo";
-import {
-  WeddingMembers,
-  WeddingMemberInput,
-  WeddingPlans,
-} from "../../api/wedding/types";
+
+import { WeddingMembers, WeddingPlans } from "../../api/wedding/types";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { format } from "date-fns";
+import {
+  getWeddingMembersTableColumns,
+  MemberTableRow,
+} from "./WeddingMembersTableColumns";
+import { WeddingMembersDeleteDialog } from "./WeddingMembersDeleteDialog";
 
 interface WeddingMembersTableProps {
+  weddingId: string;
   members: WeddingMembers;
 }
 
-interface MemberTableRow {
-  id: string;
-  userId: string;
-  user?: UserInfo;
-  memberInfo: WeddingMemberInput;
-}
-
 export const WeddingMembersTable: React.FC<WeddingMembersTableProps> = ({
+  weddingId,
   members,
 }) => {
   const { t } = useTranslation();
@@ -31,7 +25,20 @@ export const WeddingMembersTable: React.FC<WeddingMembersTableProps> = ({
   // Extract user IDs from members
   const userIds = Object.keys(members);
   const { data: users = [], isLoading } = useUsersByIds(userIds);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+  const [selectedUserId, setSelectedUserId] = React.useState<string | null>(
+    null
+  );
+  const onDeleteWeddingMember = (userId: string) => {
+    // Implement the logic to delete a wedding member
+    setSelectedUserId(userId);
+    setIsDeleteDialogOpen(true);
+  };
 
+  const columns = React.useMemo(
+    () => getWeddingMembersTableColumns(onDeleteWeddingMember, t),
+    [t]
+  );
   // Transform members data for table
   const tableData: MemberTableRow[] = React.useMemo(() => {
     return userIds.map((userId) => ({
@@ -41,75 +48,6 @@ export const WeddingMembersTable: React.FC<WeddingMembersTableProps> = ({
       memberInfo: members[userId],
     }));
   }, [userIds, users, members]);
-
-  const columns: Column<MemberTableRow>[] = [
-    {
-      id: "user",
-      label: t("weddingManagement.user"),
-      render: (row: MemberTableRow) => (
-        <Stack direction="row" spacing={2} alignItems="center">
-          <Avatar
-            src={row.user?.photoURL}
-            alt={row.user?.displayName || row.user?.email}
-            sx={{ width: 32, height: 32 }}
-          >
-            {row.user?.displayName?.[0] || row.user?.email?.[0] || "?"}
-          </Avatar>
-          <Box>
-            <Typography variant="body2" fontWeight="medium">
-              {row.user?.displayName || t("userManagement.noDisplayName")}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {row.user?.email}
-            </Typography>
-          </Box>
-        </Stack>
-      ),
-      mobileLabel: t("weddingManagement.user"),
-      showOnMobileCard: true,
-    },
-    {
-      id: "role",
-      label: t("userManagement.role"),
-      render: (row: MemberTableRow) => (
-        <Chip
-          label={row.user?.role || "user"}
-          size="small"
-          variant="outlined"
-          color={row.user?.role === "admin" ? "primary" : "default"}
-        />
-      ),
-      mobileLabel: t("userManagement.role"),
-      showOnMobileCard: true,
-    },
-    {
-      id: "plan",
-      label: t("weddingManagement.membershipPlan"),
-      render: (row: MemberTableRow) => (
-        <Chip
-          label={t(`weddingManagement.plans.${row.memberInfo.plan}`)}
-          size="small"
-          variant="filled"
-          color={
-            row.memberInfo.plan === WeddingPlans.PAID ? "success" : "default"
-          }
-        />
-      ),
-      mobileLabel: t("weddingManagement.membershipPlan"),
-      showOnMobileCard: true,
-    },
-    {
-      id: "addedAt",
-      label: t("userManagement.joinedAt"),
-      render: (row: MemberTableRow) => (
-        <Typography variant="body2" color="text.secondary">
-          {format(new Date(row.memberInfo.addedAt), "PPP")}
-        </Typography>
-      ),
-      mobileLabel: t("userManagement.joinedAt"),
-      hideOnMobile: true,
-    },
-  ];
 
   const renderMobileCard = (row: MemberTableRow) => (
     <Box>
@@ -164,15 +102,26 @@ export const WeddingMembersTable: React.FC<WeddingMembersTableProps> = ({
       </Typography>
     );
   }
-
+  console.log(selectedUserId, isDeleteDialogOpen);
   return (
-    <DSTable
-      columns={columns}
-      data={tableData}
-      renderMobileCard={renderMobileCard}
-      mobileCardTitle={(row) =>
-        row.user?.displayName || row.user?.email || row.userId
-      }
-    />
+    <>
+      <WeddingMembersDeleteDialog
+        open={isDeleteDialogOpen && !!selectedUserId}
+        memberId={selectedUserId ?? ""}
+        weddingId={weddingId}
+        onClose={() => {
+          setIsDeleteDialogOpen(false);
+          setSelectedUserId(null);
+        }}
+      />
+      <DSTable
+        columns={columns}
+        data={tableData}
+        renderMobileCard={renderMobileCard}
+        mobileCardTitle={(row) =>
+          row.user?.displayName || row.user?.email || row.userId
+        }
+      />
+    </>
   );
 };

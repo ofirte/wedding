@@ -219,6 +219,11 @@ export const hebrewTranslations: Translations = {
     filterByRole: "סנן לפי תפקיד",
   },
   weddingManagement: {
+    confirm: "אשר",
+    deleteMember: "מחק חבר",
+    confirmDeleteMember: "האם אתה בטוח שברצונך להסיר את החבר הבא מהחתונה?",
+    cancel: "בטל",
+    user: "משתמש",
     title: "ניהול חתונות",
     description: "נהל את כל החתונות והחברים שלהן ברחבי הפלטפורמה.",
     weddingName: "שם החתונה",

@@ -222,6 +222,11 @@ export const englishTranslations: Translations = {
     filterByRole: "Filter by Role",
   },
   weddingManagement: {
+    confirm: "Confirm",
+    deleteMember: "Delete Member",
+    confirmDeleteMember: "Are you sure you want to delete this member?",
+    cancel: "Cancel",
+    user: "User",
     title: "Wedding Management",
     description: "Manage all weddings and their members across the platform.",
     weddingName: "Wedding Name",

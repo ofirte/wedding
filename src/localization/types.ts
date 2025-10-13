@@ -243,7 +243,11 @@ export interface Translations {
     filterByRole: string;
   };
   weddingManagement: {
-
+    confirm: string;
+    user: string;
+    deleteMember: string;
+    confirmDeleteMember: string;
+    cancel: string;
     title: string;
     description: string;
     weddingName: string;

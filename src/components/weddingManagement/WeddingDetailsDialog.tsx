@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -10,15 +10,16 @@ import {
   AccordionDetails,
   Button,
 } from "@mui/material";
-import { Wedding, WeddingPlans } from "../../api/wedding/types";
+import { WeddingPlans } from "../../api/wedding/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { UserSelect } from "../common/UserSelect";
 import { WeddingMembersTable } from "./WeddingMembersTable";
-import { ExpandMore, PersonAdd, PlusOne } from "@mui/icons-material";
+import { ExpandMore, PersonAdd } from "@mui/icons-material";
+import { useWeddingDetails } from "../../hooks/auth";
 
 interface WeddingDetailsDialogProps {
   open: boolean;
-  wedding: Wedding | null;
+  weddingId: string;
   onClose: () => void;
   onSave: (weddingId: string, userId: string, plan: string) => void;
   isLoading?: boolean;
@@ -29,15 +30,19 @@ interface WeddingDetailsDialogProps {
  */
 export const WeddingDetailsDialog: React.FC<WeddingDetailsDialogProps> = ({
   open,
-  wedding,
+  weddingId,
   onClose,
   onSave,
   isLoading = false,
 }) => {
+  const { data: wedding } = useWeddingDetails(weddingId);
+
   const { t } = useTranslation();
   const [userId, setUserId] = useState("");
   const [plan, setPlan] = useState(WeddingPlans.FREE);
-  console.log(userId, 'userId', !!userId);
+  const weddingMembers = useMemo(() => {
+    return wedding?.members ?? {};
+  }, [wedding]);
   useEffect(() => {
     if (wedding) {
       setUserId("");
@@ -97,7 +102,10 @@ export const WeddingDetailsDialog: React.FC<WeddingDetailsDialogProps> = ({
             </Box>
           </Box>
 
-          <WeddingMembersTable members={wedding.members ?? {}} />
+          <WeddingMembersTable
+            weddingId={wedding.id}
+            members={weddingMembers}
+          />
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
               <Box
