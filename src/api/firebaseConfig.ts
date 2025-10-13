@@ -4,34 +4,14 @@ import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getAuth } from "firebase/auth";
-import { getFunctions } from "firebase/functions";
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Get environment from process.env
 const isProd = process.env.REACT_APP_ENV === "production";
 
-// Development Firebase configuration as fallback
-const devFirebaseConfig = {
-  apiKey: "AIzaSyA2exk9CEMRDrm1kLCT_2Va0Yyo3Og34Xk",
-  authDomain: "wedding-c89a1.firebaseapp.com",
-  projectId: "wedding-c89a1",
-  storageBucket: "wedding-c89a1.firebasestorage.app",
-  messagingSenderId: "206786649581",
-  appId: "1:206786649581:web:1d3ad0e2f96d483f975be4",
-  measurementId: "G-RTW3LZZ6HW",
-};
-
-// Production Firebase configuration as fallback
-const prodFirebaseConfig = {
-  apiKey: "AIzaSyCybM_iI_Ix87_yNCT8yTUidNxqnkbQKmQ",
-  authDomain: "wedding-prod-f13a0.firebaseapp.com",
-  projectId: "wedding-prod-f13a0",
-  storageBucket: "wedding-prod-f13a0.firebasestorage.app",
-  messagingSenderId: "130800835414",
-  appId: "1:130800835414:web:0e9ad92dc1d4db393c14f7",
-  measurementId: "G-QLS6532QGT",
-};
+// Remove hardcoded configurations - use environment variables only
 
 // Firebase configuration based on environment variables or fallback to constants
 const firebaseConfig = {
@@ -52,16 +32,17 @@ const isHostnameProd =
 // Determine the actual environment
 const isProduction = isProd || isHostnameProd;
 
-// If environment variables are missing, use the appropriate fallback
 // Check if any of the required config values are undefined
 const isConfigMissing = !firebaseConfig.apiKey || !firebaseConfig.projectId;
 
-// Apply fallback if necessary
-const finalFirebaseConfig = isConfigMissing
-  ? isProduction
-    ? prodFirebaseConfig
-    : devFirebaseConfig
-  : firebaseConfig;
+// Throw error if configuration is missing - no more hardcoded fallbacks
+if (isConfigMissing) {
+  throw new Error(
+    "Firebase configuration is missing! Please ensure all REACT_APP_FIREBASE_* environment variables are set."
+  );
+}
+
+const finalFirebaseConfig = firebaseConfig;
 
 console.log(
   `Running in ${
@@ -76,3 +57,18 @@ export const storage = getStorage(app);
 export const analytics = isProduction ? getAnalytics(app) : null;
 export const auth = getAuth(app);
 export const functions = getFunctions(app);
+
+if (
+  process.env.NODE_ENV === "development" &&
+  (window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1")
+) {
+  try {
+    connectFunctionsEmulator(functions, "localhost", 5001);
+    console.log("🔌 Connected to Firebase Functions emulator");
+  } catch (error) {
+    console.log(
+      "Functions emulator connection failed, using deployed functions"
+    );
+  }
+}

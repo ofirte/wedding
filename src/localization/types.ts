@@ -1,3 +1,5 @@
+import { deleteUser } from "firebase/auth";
+
 // Types for localization system
 export type Language = "en" | "he";
 
@@ -215,6 +217,8 @@ export interface Translations {
     errorLoadingWeddings: string;
   };
   userManagement: {
+    deleteUser: string;
+    deleteUserWarning: string;
     title: string;
     description: string;
     user: string;

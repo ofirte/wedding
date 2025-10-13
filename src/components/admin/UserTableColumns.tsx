@@ -15,6 +15,7 @@ export type UserTableData = UserInfo & { id: string };
 interface UserTableColumnsOptions {
   t: TFunction;
   onEditUser: (user: UserInfo) => void;
+  onDeleteUser: (user: UserInfo) => void;
   isUpdating?: boolean;
 }
 
@@ -24,6 +25,7 @@ interface UserTableColumnsOptions {
 export const createUserTableColumns = ({
   t,
   onEditUser,
+  onDeleteUser,
   isUpdating = false,
 }: UserTableColumnsOptions): Column<UserTableData>[] => [
   {
@@ -123,6 +125,7 @@ export const createUserTableColumns = ({
       <UserActions
         user={user}
         onEditUser={onEditUser}
+        onDeleteUser={onDeleteUser}
         isUpdating={isUpdating}
       />
     ),

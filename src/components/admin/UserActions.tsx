@@ -1,11 +1,12 @@
 import React from "react";
-import { IconButton } from "@mui/material";
-import { Edit as EditIcon } from "@mui/icons-material";
+import { Box, IconButton } from "@mui/material";
+import { DeleteOutline, Edit as EditIcon } from "@mui/icons-material";
 import { UserInfo } from "../../hooks/auth/useUsersInfo";
 
 interface UserActionsProps {
   user: UserInfo;
   onEditUser: (user: UserInfo) => void;
+  onDeleteUser: (user: UserInfo) => void;
   isUpdating?: boolean;
 }
 
@@ -15,16 +16,33 @@ interface UserActionsProps {
 export const UserActions: React.FC<UserActionsProps> = ({
   user,
   onEditUser,
+  onDeleteUser,
   isUpdating = false,
 }) => {
   return (
-    <IconButton
-      onClick={() => onEditUser(user)}
-      size="small"
-      disabled={isUpdating}
-      aria-label={`Edit user ${user.displayName || user.email}`}
-    >
-      <EditIcon />
-    </IconButton>
+    <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
+      <IconButton
+        onClick={() => onEditUser(user)}
+        size="small"
+        disabled={isUpdating}
+        aria-label={`Edit user ${user.displayName || user.email}`}
+        sx={{
+          color: (theme) => theme.palette.primary.main,
+        }}
+      >
+        <EditIcon fontSize="small" />
+      </IconButton>
+      <IconButton
+        onClick={() => onDeleteUser(user)}
+        size="small"
+        disabled={isUpdating}
+        aria-label={`Delete user ${user.displayName || user.email}`}
+        sx={{
+          color: (theme) => theme.palette.error.main,
+        }}
+      >
+        <DeleteOutline fontSize="small" />
+      </IconButton>
+    </Box>
   );
 };

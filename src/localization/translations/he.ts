@@ -190,6 +190,8 @@ export const hebrewTranslations: Translations = {
     errorLoadingWeddings: "שגיאה בטעינת החתונות. אנא נסה לרענן את הדף.",
   },
   userManagement: {
+    deleteUser: "מחק משתמש",
+    deleteUserWarning: "האם אתה בטוח שברצונך למחוק את המשתמש הבא?",
     title: "ניהול משתמשים",
     description: "ניהול תפקידים והרשאות משתמשים ברחבי הפלטפורמה.",
     user: "משתמש",

@@ -13,38 +13,61 @@ import { UserTable } from "./UserTable";
 import { EditUserDialog } from "./EditUserDialog";
 import { useUsersInfo } from "../../hooks/auth";
 import { UserInfo } from "../../hooks/auth/useUsersInfo";
+import { useQueryClient } from "@tanstack/react-query";
+import { DeleteUserDialog } from "./deleteUserDialog";
+import { useDeleteUser } from "../../hooks/auth/useDeleteUser";
 
 const UserManagementPage: React.FC = () => {
   const { t } = useTranslation();
   const [editingUser, setEditingUser] = useState<UserInfo | null>(null);
+  const [deletingUser, setDeletingUser] = useState<UserInfo | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-
+  const queryClient = useQueryClient();
   // Fetch all users using the custom hook
   const { data: users, isLoading, error } = useUsersInfo();
 
-  // Update user role mutation using the custom hook
-  const updateUserRoleMutation = useUpdateUserRole({
-    onSuccess: () => {
-      setEditDialogOpen(false);
-      setEditingUser(null);
-    },
-    onError: (error) => {
-      console.error("Error updating user:", error);
-    },
-  });
+  const { mutate: deleteUser, isPending: isPendingUserDelete } =
+    useDeleteUser();
+  const { mutate: updateUser, isPending: isPendingUserUpdate } =
+    useUpdateUserRole({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["usersInfo"] });
+        setEditDialogOpen(false);
+        setEditingUser(null);
+      },
+      onError: (error) => {
+        console.error("Error updating user:", error);
+      },
+    });
 
-  const handleEditUser = (user: UserInfo) => {
+  const handleSelectEditUser = (user: UserInfo) => {
     setEditingUser(user);
     setEditDialogOpen(true);
   };
 
+  const handleSelectDeleteUser = (user: UserInfo) => {
+    setDeletingUser(user);
+    setDeleteDialogOpen(true);
+  };
+
   const handleSaveUser = (userId: string, role: string) => {
-    updateUserRoleMutation.mutate({ userId, role });
+    updateUser({ userId, role });
+  };
+
+  const handleDeleteUser = (userId: string) => {
+    console.log('here')
+    deleteUser(userId);
   };
 
   const handleCloseDialog = () => {
     setEditDialogOpen(false);
     setEditingUser(null);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setDeletingUser(null);
   };
 
   if (isLoading) {
@@ -85,8 +108,9 @@ const UserManagementPage: React.FC = () => {
 
       <UserTable
         users={users.users}
-        onEditUser={handleEditUser}
-        isUpdating={updateUserRoleMutation.isPending}
+        onEditUser={handleSelectEditUser}
+        onDeleteUser={handleSelectDeleteUser}
+        isUpdating={isPendingUserUpdate}
       />
 
       <EditUserDialog
@@ -94,28 +118,15 @@ const UserManagementPage: React.FC = () => {
         user={editingUser}
         onClose={handleCloseDialog}
         onSave={handleSaveUser}
-        isLoading={updateUserRoleMutation.isPending}
+        isLoading={isPendingUserUpdate}
       />
-
-      {updateUserRoleMutation.isPending && (
-        <Box position="fixed" top={16} right={16}>
-          <Alert severity="info" icon={<CircularProgress size={20} />}>
-            {t("userManagement.updating")}
-          </Alert>
-        </Box>
-      )}
-
-      {updateUserRoleMutation.isSuccess && (
-        <Box position="fixed" top={16} right={16}>
-          <Alert severity="success">{t("userManagement.updateSuccess")}</Alert>
-        </Box>
-      )}
-
-      {updateUserRoleMutation.isError && (
-        <Box position="fixed" top={16} right={16}>
-          <Alert severity="error">{t("userManagement.updateError")}</Alert>
-        </Box>
-      )}
+      <DeleteUserDialog
+        open={deleteDialogOpen}
+        user={deletingUser}
+        onClose={handleCloseDeleteDialog}
+        onDelete={handleDeleteUser}
+        isLoading={isPendingUserDelete}
+      />
     </Container>
   );
 };

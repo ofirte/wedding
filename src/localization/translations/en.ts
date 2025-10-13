@@ -193,6 +193,10 @@ export const englishTranslations: Translations = {
       "Error loading weddings. Please try refreshing the page.",
   },
   userManagement: {
+    deleteUser: "Delete User",
+    deleteUserWarning:
+      "Are you sure you want to delete this user? This action cannot be undone.",
+
     title: "User Management",
     description: "Manage user roles and permissions across the platform.",
     user: "User",

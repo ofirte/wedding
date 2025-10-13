@@ -19,3 +19,4 @@ export * from "./auth/userRoles";
 export * from "./messagesService/messaging";
 export * from "./messagesService/templates";
 export * from "./auth/userRoles"
+export * from "./auth/users";

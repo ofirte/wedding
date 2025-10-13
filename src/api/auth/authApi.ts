@@ -10,6 +10,8 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import { createGeneralCollectionAPI } from "../generalFirebaseHelpers";
+import { deleteUserAuth } from "../firebaseFunctions/users";
+import { deleteUserMutationResponse } from "../../hooks/auth/useDeleteUser";
 
 export const authApi = createGeneralCollectionAPI<WeddingUser>("users");
 // User interface
@@ -150,4 +152,23 @@ export const getCurrentUserWeddingId = async (): Promise<string | null> => {
 // Authentication state observer
 export const onAuthStateChange = (callback: (user: User | null) => void) => {
   return onAuthStateChanged(auth, callback);
+};
+
+export const deleteUserAccount = async (
+  uid: string
+): Promise<deleteUserMutationResponse> => {
+  try {
+    await authApi.delete(uid);
+    await deleteUserAuth({
+      userId: uid,
+    });
+    return {
+      success: true,
+      message: "User account deleted successfully",
+      userId: uid,
+    };
+  } catch (error) {
+    console.error("Error deleting user account:", error);
+    throw error;
+  }
 };

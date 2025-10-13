@@ -27,6 +27,10 @@ export enum TemplateFunctions {
   GET_TEMPLATE_APPROVAL_STATUS = "getTemplateApprovalStatus",
 }
 
+export enum UsersFunctions {
+  DELETE_USER_AUTH = "deleteUserAuth",
+}
+
 /**
  * All Firebase Functions combined
  */
@@ -34,6 +38,7 @@ export const AllFunctions = {
   ...UserRolesFunctions,
   ...MessagingFunctions,
   ...TemplateFunctions,
+  ...UsersFunctions,
 } as const;
 
 /**
@@ -42,4 +47,5 @@ export const AllFunctions = {
 export type FunctionName =
   | UserRolesFunctions
   | MessagingFunctions
-  | TemplateFunctions;
+  | TemplateFunctions
+  | UsersFunctions;

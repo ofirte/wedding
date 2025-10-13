@@ -9,10 +9,7 @@ interface SetUserRoleRequest {
   role: WeddingRole;
 }
 
-/**
- * Set user's default role (affects all their wedding memberships)
- * Only global admins can call this function
- */
+
 export const setUserRole = onCall(standardFunctionConfig, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "User must be authenticated");

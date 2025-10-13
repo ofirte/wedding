@@ -101,7 +101,12 @@ export const EditUserDialog: React.FC<EditUserDialogProps> = ({
         <Button onClick={onClose} disabled={isLoading}>
           {t("common.cancel")}
         </Button>
-        <Button onClick={handleSave} variant="contained" disabled={isLoading}>
+        <Button
+          onClick={handleSave}
+          variant="contained"
+          disabled={isLoading}
+          loading={isLoading}
+        >
           {t("common.save")}
         </Button>
       </DialogActions>

@@ -8,6 +8,7 @@ import { UserTableEmptyState } from "./UserTableEmptyState";
 interface UserTableProps {
   users: UserInfo[];
   onEditUser: (user: UserInfo) => void;
+  onDeleteUser: (user: UserInfo) => void;
   isUpdating?: boolean;
 }
 
@@ -17,6 +18,7 @@ interface UserTableProps {
 export const UserTable: React.FC<UserTableProps> = ({
   users,
   onEditUser,
+  onDeleteUser,
   isUpdating = false,
 }) => {
   const { t } = useTranslation();
@@ -31,6 +33,7 @@ export const UserTable: React.FC<UserTableProps> = ({
   const columns = createUserTableColumns({
     t,
     onEditUser,
+    onDeleteUser,
     isUpdating,
   });
 
