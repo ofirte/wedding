@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
 import { Outlet } from "react-router";
@@ -6,12 +6,16 @@ import Sidebar from "./Sidebar";
 import GeneralMobileAppBar from "./components/common/GeneralMobileAppBar";
 import { useWeddingDetails } from "./hooks/auth";
 import { useTranslation } from "./localization/LocalizationContext";
+import { useAuth } from "./hooks/auth/AuthContext";
+import { useAddUserToWedding } from "./hooks/wedding";
 
 function App() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-  const { data: weddingDetails } = useWeddingDetails();
+  const { mutate: addWeddingMember } = useAddUserToWedding();
+  const { currentUser, isLoading: isLoadingUser } = useAuth();
+  const { data: weddingDetails, isLoading: isLoadingWeddingDetails } = useWeddingDetails();
   const { t } = useTranslation();
 
   const handleMobileMenuToggle = () => {
@@ -21,6 +25,18 @@ function App() {
   const handleMobileDrawerClose = () => {
     setMobileDrawerOpen(false);
   };
+
+  useEffect(() => {
+    const isUserMember = !!weddingDetails?.members?.[currentUser?.uid || ""];
+    if (!isUserMember && !isLoadingUser && !isLoadingWeddingDetails) {
+      addWeddingMember({
+        userId: currentUser?.uid || "",
+        weddingId: weddingDetails?.id || "",
+        plan: "free",
+        addedBy: currentUser?.uid || "",
+      });
+    }
+  }, [currentUser, weddingDetails, isLoadingUser, isLoadingWeddingDetails, addWeddingMember]);
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>

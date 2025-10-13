@@ -2,7 +2,6 @@ import { Outlet, useNavigate, useLocation, useParams } from "react-router";
 import { useCurrentUser, useUpdateUser } from "../../hooks/auth";
 import { useEffect } from "react";
 import DSLoading from "../common/DSLoading";
-import { is } from "date-fns/locale";
 
 export default function WeddingRoute() {
   const { data: currentWeddingUser, isLoading: isLoadingWeddingUser } =
