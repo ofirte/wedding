@@ -8,10 +8,8 @@ import {
   twilioFunctionConfig,
 } from "../common/config";
 import {
-  SendWhatsAppMessageRequest,
-  SendWhatsAppMessageResponse,
-  SendSmsMessageRequest,
-  SendSmsMessageResponse,
+  SendMessageRequest,
+  SendMessageResponse,
   GetMessageStatusRequest,
   GetMessageStatusResponse,
 } from "../shared";
@@ -26,9 +24,9 @@ const initializeTwilioClient = () => {
 /**
  * Send WhatsApp message using Twilio Content API
  */
-export const sendWhatsAppMessage = onCall<SendWhatsAppMessageRequest>(
+export const sendWhatsAppMessage = onCall<SendMessageRequest>(
   twilioFunctionConfig,
-  async (request): Promise<SendWhatsAppMessageResponse> => {
+  async (request): Promise<SendMessageResponse> => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "User must be authenticated");
     }
@@ -82,7 +80,7 @@ export const sendWhatsAppMessage = onCall<SendWhatsAppMessageRequest>(
         to: message.to,
         dateCreated:
           message.dateCreated?.toISOString() || new Date().toISOString(),
-      } as SendWhatsAppMessageResponse;
+      } as SendMessageResponse;
     } catch (error) {
       logger.error("Failed to send WhatsApp message", {
         userId: request.auth.uid,
@@ -111,9 +109,9 @@ export const sendWhatsAppMessage = onCall<SendWhatsAppMessageRequest>(
 /**
  * Send SMS message (converts template to plain text)
  */
-export const sendSmsMessage = onCall<SendSmsMessageRequest>(
+export const sendSmsMessage = onCall<SendMessageRequest>(
   twilioFunctionConfig,
-  async (request): Promise<SendSmsMessageResponse> => {
+  async (request): Promise<SendMessageResponse> => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "User must be authenticated");
     }
@@ -194,7 +192,6 @@ export const sendSmsMessage = onCall<SendSmsMessageRequest>(
         to: message.to,
         dateCreated:
           message.dateCreated?.toISOString() || new Date().toISOString(),
-        messageType: "sms",
       };
     } catch (error) {
       logger.error("Failed to send SMS", {

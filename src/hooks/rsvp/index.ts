@@ -2,7 +2,6 @@
 export { useSendMessage } from "./useSendMessage";
 export { useSendSMSMessage } from "./useSendSMSMessage";
 export { usePersonalWhatsApp } from "./usePersonalWhatsApp";
-export { useSendBulkMessages } from "./useSendBulkMessages";
 export { useSentMessages } from "./useSentMessages";
 export { useCheckMessageStatus } from "./useCheckMessageStatus";
 export { useUpdateMessageStatus } from "./useUpdateMessageStatus";
@@ -15,17 +14,4 @@ export { useApprovalStatusSync } from "./useApprovalStatusSync";
 // Note: RSVP status hooks have been moved to invitees hooks since data is now denormalized
 
 // Also export types from rsvpApi for convenience
-export type {
-  SendMessageRequest,
-  SendMessageResponse,
-  SendSMSRequest,
-  SendSMSResponse,
-  SentMessage,
-  ContentInsight,
-} from "../../api/rsvp/rsvpApi";
-
-// Export types from templateApi
-export type {
-  TemplateDocument,
-  ApprovalStatusResponse,
-} from "../../api/rsvp/templateApi";
+export type { SentMessage } from "../../api/rsvp/rsvpApi";

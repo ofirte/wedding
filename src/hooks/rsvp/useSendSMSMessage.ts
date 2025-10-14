@@ -1,8 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import {
   sendSMSMessage,
-  SendSMSRequest,
-  SendSMSResponse,
+  SendMessageApiRequest,
+  SentMessage
 } from "../../api/rsvp/rsvpApi";
 import { useWeddingMutation } from "../common";
 
@@ -13,8 +13,8 @@ import { useWeddingMutation } from "../common";
 export const useSendSMSMessage = () => {
   const queryClient = useQueryClient();
 
-  return useWeddingMutation<SendSMSResponse, SendSMSRequest>({
-    mutationFn: (messageData: SendSMSRequest, weddingId?: string) =>
+  return useWeddingMutation<SentMessage, SendMessageApiRequest>({
+    mutationFn: (messageData: SendMessageApiRequest, weddingId?: string) =>
       sendSMSMessage(messageData, weddingId),
     options: {
       onSuccess: () => {

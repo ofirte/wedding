@@ -2,12 +2,10 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "../firebaseConfig";
 import { MessagingFunctions } from "./types";
 import {
-  SendWhatsAppMessageRequest,
-  SendWhatsAppMessageResponse,
-  SendSmsMessageRequest,
-  SendSmsMessageResponse,
   GetMessageStatusRequest,
   GetMessageStatusResponse,
+  SendMessageRequest,
+  SendMessageResponse,
 } from "../../../shared";
 
 /**
@@ -15,12 +13,12 @@ import {
  */
 export const messagingFunctions = {
   [MessagingFunctions.SEND_WHATSAPP_MESSAGE]: httpsCallable<
-    SendWhatsAppMessageRequest,
-    SendWhatsAppMessageResponse
+    SendMessageRequest,
+    SendMessageResponse
   >(functions, MessagingFunctions.SEND_WHATSAPP_MESSAGE),
   [MessagingFunctions.SEND_SMS_MESSAGE]: httpsCallable<
-    SendSmsMessageRequest,
-    SendSmsMessageResponse
+    SendMessageRequest,
+    SendMessageResponse
   >(functions, MessagingFunctions.SEND_SMS_MESSAGE),
   [MessagingFunctions.GET_MESSAGE_STATUS]: httpsCallable<
     GetMessageStatusRequest,

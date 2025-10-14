@@ -4,37 +4,19 @@
 
 import { BaseResponse, ErrorResponse } from "./types";
 
-// Send WhatsApp Message
-export interface SendWhatsAppMessageRequest {
+export interface SendMessageRequest {
   to: string;
   contentSid: string;
   contentVariables?: Record<string, any>;
 }
 
-export interface SendWhatsAppMessageResponse extends BaseResponse {
+export interface SendMessageResponse extends BaseResponse {
   success: true;
   messageSid: string;
   status: string;
   from: string;
   to: string;
   dateCreated: string;
-}
-
-// Send SMS Message
-export interface SendSmsMessageRequest {
-  to: string;
-  contentSid: string;
-  contentVariables?: Record<string, any>;
-}
-
-export interface SendSmsMessageResponse extends BaseResponse {
-  success: true;
-  messageSid: string;
-  status: string;
-  from: string;
-  to: string;
-  dateCreated: string;
-  messageType: "sms";
 }
 
 // Get Message Status
@@ -42,28 +24,27 @@ export interface GetMessageStatusRequest {
   messageSid: string;
 }
 
+export interface MessageInfo {
+  sid: string;
+  status: string;
+  from: string;
+  to: string;
+  dateCreated?: string;
+  dateUpdated?: string;
+  errorCode?: number;
+  errorMessage?: string;
+}
 export interface GetMessageStatusResponse extends BaseResponse {
   success: true;
-  messageInfo: {
-    sid: string;
-    status: string;
-    from: string;
-    to: string;
-    dateCreated?: string;
-    dateUpdated?: string;
-    errorCode?: number;
-    errorMessage?: string;
-  };
+  messageInfo: MessageInfo;
 }
 
 // Union types for all messaging functions
 export type MessagingFunctionRequest =
-  | SendWhatsAppMessageRequest
-  | SendSmsMessageRequest
+  | SendMessageRequest
   | GetMessageStatusRequest;
 
 export type MessagingFunctionResponse =
-  | SendWhatsAppMessageResponse
-  | SendSmsMessageResponse
+  | SendMessageResponse
   | GetMessageStatusResponse
   | ErrorResponse;
