@@ -24,6 +24,7 @@ import MessageTypeToggle from "./MessageTypeToggle";
 import MessagePreview from "./MessagePreview";
 import PersonalWhatsAppList from "./PersonalWhatsAppList";
 import PersonalWhatsAppCloseDialog from "./PersonalWhatsAppCloseDialog";
+import SendProgressContent, { SendResult } from "./SendProgressContent";
 
 interface Template {
   sid: string;
@@ -45,8 +46,8 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
   selectedTemplate,
 }) => {
   const { t, language } = useTranslation();
-  const { mutate: sendMessage } = useSendMessage();
-  const { mutate: sendSMSMessage } = useSendSMSMessage();
+  const { mutateAsync: sendMessage } = useSendMessage();
+  const { mutateAsync: sendSMSMessage } = useSendSMSMessage();
   const { data: wedding } = useWeddingDetails();
   const [messageType, setMessageType] = useState<
     "whatsapp" | "sms" | "personal-whatsapp"
@@ -55,50 +56,73 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
   const [clickedGuests, setClickedGuests] = useState<Set<string>>(new Set());
   const [showCloseDialog, setShowCloseDialog] = useState(false);
 
-  const handleSend = async () => {
-    if (!selectedTemplate || selectedGuests.length === 0) return;
+  // Progress tracking states
+  const [sendPhase, setSendPhase] = useState<"idle" | "sending" | "summary">(
+    "idle"
+  );
+  const [sendProgress, setSendProgress] = useState(0);
+  const [sendResults, setSendResults] = useState<SendResult[]>([]);
+  const [currentGuestIndex, setCurrentGuestIndex] = useState(0);
+  const [sendError, setSendError] = useState<string | null>(null);
 
+  const handleSend = async () => {
+    if (!selectedTemplate || selectedGuests.length === 0 || !wedding) return;
     setSending(true);
+    setSendPhase("sending");
+    setSendProgress(0);
+    setSendResults([]);
+    setCurrentGuestIndex(0);
+    setSendError(null);
 
     try {
-      // API-based sending (WhatsApp or SMS) - Personal WhatsApp is handled separately
-      const sendPromises = selectedGuests.map((guest) => {
-        // Use centralized variable population system with locale
-        const contentVariables = populateVariables(
-          guest,
-          wedding || { id: "" },
-          language
-        );
+      const sendFunction =
+        messageType === "whatsapp" ? sendMessage : sendSMSMessage;
+      const phoneNumberPrefix = messageType === "whatsapp" ? "whatsapp:" : "";
+      const results: SendResult[] = [];
 
-        if (messageType === "whatsapp") {
+      // Send messages one by one to track progress
+      for (let i = 0; i < selectedGuests.length; i++) {
+        const guest = selectedGuests[i];
+        setCurrentGuestIndex(i);
+        setSendProgress((i / selectedGuests.length) * 100);
+
+        try {
+          const contentVariables = populateVariables(guest, wedding, language);
           const phoneNumber = guest.cellphone.startsWith("+")
-            ? `whatsapp:${guest.cellphone}`
-            : `whatsapp:+972${guest.cellphone}`;
+            ? `${phoneNumberPrefix}${guest.cellphone}`
+            : `${phoneNumberPrefix}+972${guest.cellphone}`;
 
-          return sendMessage({
+          const response = await sendFunction({
             to: phoneNumber,
             contentSid: selectedTemplate.sid,
             contentVariables,
             userId: guest.id,
           });
-        } else {
-          // SMS
-          const phoneNumber = guest.cellphone.startsWith("+")
-            ? guest.cellphone
-            : `+972${guest.cellphone}`;
-          return sendSMSMessage({
-            to: phoneNumber,
-            contentSid: selectedTemplate.sid,
-            contentVariables,
-            userId: guest.id,
+
+          results.push({
+            guest,
+            success: true,
+            messageId: (response as any)?.sid || (response as any)?.id,
+          });
+        } catch (error) {
+          console.error(`Error sending message to ${guest.name}:`, error);
+          results.push({
+            guest,
+            success: false,
+            error: error instanceof Error ? error.message : "Unknown error",
           });
         }
-      });
 
-      await Promise.all(sendPromises);
-      onClose();
+        setSendResults([...results]);
+      }
+
+      // Complete progress and move to summary
+      setCurrentGuestIndex(selectedGuests.length);
+      setSendProgress(100);
+      setSendPhase("summary");
     } catch (error) {
       console.error("Error sending messages:", error);
+      setSendError(error instanceof Error ? error.message : "Unknown error");
     } finally {
       setSending(false);
     }
@@ -125,6 +149,14 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
     setMessageType("whatsapp");
     setClickedGuests(new Set());
     setShowCloseDialog(false);
+
+    // Reset progress states
+    setSendPhase("idle");
+    setSendProgress(0);
+    setSendResults([]);
+    setCurrentGuestIndex(0);
+    setSendError(null);
+
     onClose();
   };
 
@@ -207,111 +239,158 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
               justifyContent: "space-between",
             }}
           >
-            <Typography variant="h6">{`${t("rsvp.sendMessage")} (${
-              selectedTemplate?.friendlyName
-            })`}</Typography>
-            <Button
-              onClick={handleClose}
-              disabled={sending}
-              size="small"
-              sx={{ minWidth: "auto", p: 1 }}
-            >
-              <CloseIcon />
-            </Button>
+            <Typography variant="h6">
+              {sendPhase === "sending"
+                ? t("rsvp.sendingMessages")
+                : sendPhase === "summary"
+                ? t("rsvp.messageSummary")
+                : `${t("rsvp.sendMessage")} (${
+                    selectedTemplate?.friendlyName
+                  })`}
+            </Typography>
+            {sendPhase === "idle" && (
+              <Button
+                onClick={handleClose}
+                disabled={sending}
+                size="small"
+                sx={{ minWidth: "auto", p: 1 }}
+              >
+                <CloseIcon />
+              </Button>
+            )}
           </Box>
         </DialogTitle>
 
         <DialogContent dividers>
-          <Stack spacing={3}>
-            {/* Message Type Selection */}
-            <MessageTypeToggle
-              value={messageType}
-              onChange={setMessageType}
-              disabled={sending}
+          {/* Show progress content when sending or showing summary */}
+          {sendPhase === "sending" || sendPhase === "summary" ? (
+            <SendProgressContent
+              selectedGuests={selectedGuests}
+              phase={sendPhase}
+              progress={sendProgress}
+              results={sendResults}
+              currentGuestIndex={currentGuestIndex}
+              error={sendError}
             />
-            <Box>
-              <Typography variant="subtitle2" gutterBottom>
-                {t("rsvp.selectedGuests")} ({selectedGuests.length})
-              </Typography>
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                {selectedGuests.slice(0, 5).map((guest) => (
-                  <Chip
-                    key={guest.id}
-                    label={guest.name}
-                    size="small"
-                    variant="outlined"
-                  />
-                ))}
-                {selectedGuests.length > 5 && (
-                  <Chip
-                    label={`+${selectedGuests.length - 5} ${t("common.more")}`}
-                    size="small"
-                    variant="outlined"
-                  />
-                )}
-              </Box>
-            </Box>
-            <Divider />
-
-            {/* Personal WhatsApp List - Show when personal WhatsApp is selected and template is chosen */}
-            {messageType === "personal-whatsapp" && selectedTemplate ? (
-              <PersonalWhatsAppList
-                guests={selectedGuests}
-                template={selectedTemplate}
-                onGuestSent={handlePersonalMessageSent}
-                onGuestClicked={handleGuestClicked}
-                clickedGuests={clickedGuests}
+          ) : (
+            <Stack spacing={3}>
+              {/* Message Type Selection */}
+              <MessageTypeToggle
+                value={messageType}
+                onChange={setMessageType}
+                disabled={sending}
               />
-            ) : (
-              <>
-                {/* Message preview for other message types */}
-                <MessagePreview
-                  template={selectedTemplate || null}
-                  messageType={messageType}
-                  guests={selectedGuests}
-                  wedding={wedding}
-                />
+              <Box>
+                <Typography variant="subtitle2" gutterBottom>
+                  {t("rsvp.selectedGuests")} ({selectedGuests.length})
+                </Typography>
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                  {selectedGuests.slice(0, 5).map((guest) => (
+                    <Chip
+                      key={guest.id}
+                      label={guest.name}
+                      size="small"
+                      variant="outlined"
+                    />
+                  ))}
+                  {selectedGuests.length > 5 && (
+                    <Chip
+                      label={`+${selectedGuests.length - 5} ${t(
+                        "common.more"
+                      )}`}
+                      size="small"
+                      variant="outlined"
+                    />
+                  )}
+                </Box>
+              </Box>
+              <Divider />
 
-                {/* Warning for multiple recipients */}
-                {selectedGuests.length > 1 && (
-                  <Alert severity="info">
-                    {t("rsvp.bulkSendWarning", {
-                      count: selectedGuests.length,
-                    })}
-                  </Alert>
-                )}
-              </>
-            )}
-          </Stack>
+              {/* Personal WhatsApp List - Show when personal WhatsApp is selected and template is chosen */}
+              {messageType === "personal-whatsapp" && selectedTemplate ? (
+                <PersonalWhatsAppList
+                  guests={selectedGuests}
+                  template={selectedTemplate}
+                  onGuestSent={handlePersonalMessageSent}
+                  onGuestClicked={handleGuestClicked}
+                  clickedGuests={clickedGuests}
+                />
+              ) : (
+                <>
+                  {/* Message preview for other message types */}
+                  <MessagePreview
+                    template={selectedTemplate || null}
+                    messageType={messageType}
+                    guests={selectedGuests}
+                    wedding={wedding}
+                  />
+
+                  {/* Warning for multiple recipients */}
+                  {selectedGuests.length > 1 && (
+                    <Alert severity="info">
+                      {t("rsvp.bulkSendWarning", {
+                        count: selectedGuests.length,
+                      })}
+                    </Alert>
+                  )}
+                </>
+              )}
+            </Stack>
+          )}
         </DialogContent>
 
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={handleClose} disabled={sending} variant="outlined">
-            {messageType === "personal-whatsapp"
-              ? t("common.done")
-              : t("common.cancel")}
-          </Button>
-
-          {/* Only show Send button for API-based messaging, not for personal WhatsApp */}
-          {messageType !== "personal-whatsapp" && (
+          {sendPhase === "summary" ? (
             <Button
-              onClick={handleSend}
-              disabled={
-                !selectedTemplate || selectedGuests.length === 0 || sending
-              }
+              onClick={handleClose}
               variant="contained"
-              startIcon={
-                sending ? <CircularProgress size={20} /> : <SendIcon />
-              }
+              startIcon={<CloseIcon />}
+              fullWidth
             >
-              {sending
-                ? t("rsvp.sending")
-                : `${t("common.send")} ${
-                    messageType === "whatsapp"
-                      ? t("common.whatsapp")
-                      : t("common.sms")
-                  } (${selectedGuests.length})`}
+              {t("common.close")}
             </Button>
+          ) : sendPhase === "sending" ? (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ mx: "auto" }}
+            >
+              {t("rsvp.pleaseWait")}...
+            </Typography>
+          ) : (
+            <>
+              <Button
+                onClick={handleClose}
+                disabled={sending}
+                variant="outlined"
+              >
+                {messageType === "personal-whatsapp"
+                  ? t("common.done")
+                  : t("common.cancel")}
+              </Button>
+
+              {/* Only show Send button for API-based messaging, not for personal WhatsApp */}
+              {messageType !== "personal-whatsapp" && (
+                <Button
+                  onClick={handleSend}
+                  disabled={
+                    !selectedTemplate || selectedGuests.length === 0 || sending
+                  }
+                  variant="contained"
+                  startIcon={
+                    sending ? <CircularProgress size={20} /> : <SendIcon />
+                  }
+                >
+                  {sending
+                    ? t("rsvp.sending")
+                    : `${t("common.send")} ${
+                        messageType === "whatsapp"
+                          ? t("common.whatsapp")
+                          : t("common.sms")
+                      } (${selectedGuests.length})`}
+                </Button>
+              )}
+            </>
           )}
         </DialogActions>
       </Dialog>
