@@ -17,6 +17,9 @@ import {
   SubmitTemplateApprovalResponse,
   GetTemplateApprovalStatusRequest,
   GetTemplateApprovalStatusResponse,
+  Template,
+  TemplateApprovalResponse,
+  TemplateApprovalStatusData,
 } from "../shared";
 
 // Helper function to initialize Twilio client
@@ -24,6 +27,35 @@ const initializeTwilioClient = () => {
   const accountSid = twilioAccountSid.value();
   const authToken = twilioAuthToken.value();
   return accountSid && authToken ? twilio(accountSid, authToken) : null;
+};
+
+// Helper function to convert Twilio content response to our Template type
+const convertTwilioToTemplate = (twilioContent: any): Template => {
+  return {
+    sid: twilioContent.sid,
+    friendlyName: twilioContent.friendlyName || "",
+    language: twilioContent.language || "",
+    variables: twilioContent.variables || {},
+    types: twilioContent.types || {},
+    dateCreated:
+      twilioContent.dateCreated?.toISOString() || new Date().toISOString(),
+    dateUpdated:
+      twilioContent.dateUpdated?.toISOString() || new Date().toISOString(),
+    accountSid: twilioContent.accountSid || "",
+  };
+};
+
+// Helper function to convert Twilio approval response to our type
+const convertTwilioApprovalResponse = (
+  twilioApproval: any
+): TemplateApprovalResponse => {
+  return {
+    category: twilioApproval.category || "",
+    status: twilioApproval.status || "pending",
+    rejection_reason: twilioApproval.rejection_reason,
+    name: twilioApproval.name || "",
+    content_type: twilioApproval.content_type || "",
+  };
 };
 
 /**
@@ -51,17 +83,8 @@ export const getMessageTemplates = onCall<GetMessageTemplatesRequest>(
 
       const contentList = await twilioClient.content.v2.contents.list();
 
-      // Clean the template data to avoid circular references
-      const cleanTemplates = contentList.map((template) => ({
-        sid: template.sid,
-        friendlyName: template.friendlyName,
-        language: template.language,
-        variables: template.variables,
-        types: template.types,
-        dateCreated: template.dateCreated?.toISOString(),
-        dateUpdated: template.dateUpdated?.toISOString(),
-        accountSid: template.accountSid,
-      }));
+      // Convert Twilio response to our Template type
+      const cleanTemplates = contentList.map(convertTwilioToTemplate);
 
       logger.info("Templates fetched successfully", {
         userId: request.auth.uid,
@@ -139,17 +162,8 @@ export const createMessageTemplate = onCall<CreateMessageTemplateRequest>(
         friendly_name,
       });
 
-      // Clean the template data to avoid circular references
-      const cleanTemplate = {
-        sid: createdTemplate.sid,
-        friendlyName: createdTemplate.friendlyName,
-        language: createdTemplate.language,
-        variables: createdTemplate.variables,
-        types: createdTemplate.types,
-        dateCreated: createdTemplate.dateCreated?.toISOString(),
-        dateUpdated: createdTemplate.dateUpdated?.toISOString(),
-        accountSid: createdTemplate.accountSid,
-      };
+      // Convert Twilio response to our Template type
+      const cleanTemplate = convertTwilioToTemplate(createdTemplate);
 
       return {
         success: true,
@@ -277,7 +291,12 @@ export const submitTemplateApproval = onCall<SubmitTemplateApprovalRequest>(
         throw new Error(`HTTP ${response.status}: ${errorData}`);
       }
 
-      const approvalRequest = await response.json();
+      const twilioApprovalResponse = await response.json();
+
+      // Convert Twilio response to our type
+      const approvalRequest = convertTwilioApprovalResponse(
+        twilioApprovalResponse
+      );
 
       logger.info("Template submitted for approval", {
         userId: request.auth.uid,
@@ -352,7 +371,17 @@ export const getTemplateApprovalStatus =
           throw new Error(`HTTP ${response.status}: ${errorData}`);
         }
 
-        const approvalData = await response.json();
+        const twilioApprovalData = await response.json();
+
+        // Convert to our type structure
+        const approvalData: TemplateApprovalStatusData = {
+          url: twilioApprovalData.url || "",
+          whatsapp: twilioApprovalData.whatsapp
+            ? convertTwilioApprovalResponse(twilioApprovalData.whatsapp)
+            : undefined,
+          account_sid: twilioApprovalData.account_sid || "",
+          sid: twilioApprovalData.sid || "",
+        };
 
         logger.info("Approval status fetched successfully", {
           userId: request.auth.uid,
