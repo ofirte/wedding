@@ -21,21 +21,47 @@ import {
   TemplateApprovalResponse,
   TemplateApprovalStatusData,
 } from "../shared";
+import {
+  getValidatedData,
+  handleFunctionError,
+  isAuthenticated,
+} from "../common/utils";
+import { ContentInstance as ContentInstanceV2 } from "twilio/lib/rest/content/v2/content";
+import { ContentInstance as ContentInstanceV1 } from "twilio/lib/rest/content/v1/content";
 
 // Helper function to initialize Twilio client
 const initializeTwilioClient = () => {
-  const accountSid = twilioAccountSid.value();
-  const authToken = twilioAuthToken.value();
-  return accountSid && authToken ? twilio(accountSid, authToken) : null;
+  try {
+    const accountSid = twilioAccountSid.value();
+    const authToken = twilioAuthToken.value();
+    if (!accountSid || !authToken) {
+      logger.error("Twilio credentials are not set");
+      throw new HttpsError(
+        "failed-precondition",
+        "Twilio credentials are not configured"
+      );
+    }
+    return twilio(accountSid, authToken);
+  } catch (error) {
+    logger.error("Error initializing Twilio client", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+    throw new HttpsError("internal", "Failed to initialize Twilio client");
+  }
 };
 
 // Helper function to convert Twilio content response to our Template type
-const convertTwilioToTemplate = (twilioContent: any): Template => {
+const convertTwilioToTemplate = (
+  twilioContent: ContentInstanceV1 | ContentInstanceV2
+): Template => {
   return {
     sid: twilioContent.sid,
     friendlyName: twilioContent.friendlyName || "",
     language: twilioContent.language || "",
-    variables: twilioContent.variables || {},
+    variables: (twilioContent.variables || {}) as unknown as Record<
+      string,
+      string
+    >,
     types: twilioContent.types || {},
     dateCreated:
       twilioContent.dateCreated?.toISOString() || new Date().toISOString(),
@@ -64,17 +90,8 @@ const convertTwilioApprovalResponse = (
 export const getMessageTemplates = onCall<GetMessageTemplatesRequest>(
   twilioFunctionConfig,
   async (request): Promise<GetMessageTemplatesResponse> => {
-    if (!request.auth) {
-      throw new HttpsError("unauthenticated", "User must be authenticated");
-    }
-
+    isAuthenticated(request);
     const twilioClient = initializeTwilioClient();
-    if (!twilioClient) {
-      throw new HttpsError(
-        "failed-precondition",
-        "Twilio client not configured"
-      );
-    }
 
     try {
       logger.info("Fetching message templates", {
@@ -82,8 +99,6 @@ export const getMessageTemplates = onCall<GetMessageTemplatesRequest>(
       });
 
       const contentList = await twilioClient.content.v2.contents.list();
-
-      // Convert Twilio response to our Template type
       const cleanTemplates = contentList.map(convertTwilioToTemplate);
 
       logger.info("Templates fetched successfully", {
@@ -97,12 +112,11 @@ export const getMessageTemplates = onCall<GetMessageTemplatesRequest>(
         count: cleanTemplates.length,
       } as GetMessageTemplatesResponse;
     } catch (error) {
-      logger.error("Failed to fetch templates", {
-        userId: request.auth.uid,
-        error: error instanceof Error ? error.message : "Unknown error",
-      });
-
-      throw new HttpsError("internal", "Failed to fetch message templates");
+      handleFunctionError(
+        error,
+        { userId: request.auth.uid },
+        "Failed to fetch message templates"
+      );
     }
   }
 );
@@ -113,34 +127,13 @@ export const getMessageTemplates = onCall<GetMessageTemplatesRequest>(
 export const createMessageTemplate = onCall<CreateMessageTemplateRequest>(
   twilioFunctionConfig,
   async (request): Promise<CreateMessageTemplateResponse> => {
-    if (!request.auth) {
-      throw new HttpsError("unauthenticated", "User must be authenticated");
-    }
-
-    const { friendly_name, language, variables, types } = request.data;
-
-    // Validate required fields
-    if (!friendly_name || !language) {
-      throw new HttpsError(
-        "invalid-argument",
-        "Missing required fields: friendly_name and language"
-      );
-    }
-
-    if (!types || Object.keys(types).length === 0) {
-      throw new HttpsError(
-        "invalid-argument",
-        "At least one content type must be provided"
-      );
-    }
+    isAuthenticated(request);
+    const { friendly_name, language, variables, types } = getValidatedData(
+      request.data,
+      ["friendly_name", "language", "variables", "types"]
+    );
 
     const twilioClient = initializeTwilioClient();
-    if (!twilioClient) {
-      throw new HttpsError(
-        "failed-precondition",
-        "Twilio client not configured"
-      );
-    }
 
     try {
       logger.info("Creating message template", {
@@ -155,6 +148,7 @@ export const createMessageTemplate = onCall<CreateMessageTemplateRequest>(
         variables: variables || {},
         types: types,
       });
+      const cleanTemplate = convertTwilioToTemplate(createdTemplate);
 
       logger.info("Template created successfully", {
         userId: request.auth.uid,
@@ -162,22 +156,16 @@ export const createMessageTemplate = onCall<CreateMessageTemplateRequest>(
         friendly_name,
       });
 
-      // Convert Twilio response to our Template type
-      const cleanTemplate = convertTwilioToTemplate(createdTemplate);
-
       return {
         success: true,
         template: cleanTemplate,
       };
     } catch (error) {
-      logger.error("Failed to create template", {
-        userId: request.auth.uid,
-        error: error instanceof Error ? error.message : "Unknown error",
-        friendly_name,
-        language,
-      });
-
-      throw new HttpsError("internal", "Failed to create message template");
+      handleFunctionError(
+        error,
+        { userId: request.auth.uid, templateData: request.data },
+        "Failed to create message template"
+      );
     }
   }
 );
@@ -188,23 +176,10 @@ export const createMessageTemplate = onCall<CreateMessageTemplateRequest>(
 export const deleteMessageTemplate = onCall<DeleteMessageTemplateRequest>(
   twilioFunctionConfig,
   async (request): Promise<DeleteMessageTemplateResponse> => {
-    if (!request.auth) {
-      throw new HttpsError("unauthenticated", "User must be authenticated");
-    }
-
-    const { templateSid } = request.data;
-
-    if (!templateSid) {
-      throw new HttpsError("invalid-argument", "Template SID is required");
-    }
+    isAuthenticated(request);
+    const { templateSid } = getValidatedData(request.data, ["templateSid"]);
 
     const twilioClient = initializeTwilioClient();
-    if (!twilioClient) {
-      throw new HttpsError(
-        "failed-precondition",
-        "Twilio client not configured"
-      );
-    }
 
     try {
       logger.info("Deleting message template", {
@@ -225,17 +200,11 @@ export const deleteMessageTemplate = onCall<DeleteMessageTemplateRequest>(
         templateSid: templateSid,
       };
     } catch (error) {
-      logger.error("Failed to delete template", {
-        userId: request.auth.uid,
-        error: error instanceof Error ? error.message : "Unknown error",
-        templateSid,
-      });
-
-      if (error instanceof Error && error.message.includes("not found")) {
-        throw new HttpsError("not-found", "Template not found");
-      }
-
-      throw new HttpsError("internal", "Failed to delete message template");
+      handleFunctionError(
+        error,
+        { userId: request.auth.uid, templateSid },
+        "Failed to delete message template"
+      );
     }
   }
 );
@@ -246,54 +215,34 @@ export const deleteMessageTemplate = onCall<DeleteMessageTemplateRequest>(
 export const submitTemplateApproval = onCall<SubmitTemplateApprovalRequest>(
   twilioFunctionConfig,
   async (request): Promise<SubmitTemplateApprovalResponse> => {
-    if (!request.auth) {
-      throw new HttpsError("unauthenticated", "User must be authenticated");
-    }
-
-    const { templateSid, name, category } = request.data;
-
-    if (!templateSid) {
-      throw new HttpsError("invalid-argument", "Template SID is required");
-    }
-
-    if (!name || !category) {
-      throw new HttpsError(
-        "invalid-argument",
-        "Both 'name' and 'category' are required for WhatsApp approval"
-      );
-    }
+    isAuthenticated(request);
+    const { templateSid, name, category } = getValidatedData(request.data, [
+      "templateSid",
+      "name",
+      "category",
+    ]);
+    const twilioClient = initializeTwilioClient();
 
     try {
       logger.info("Submitting template for approval", {
         userId: request.auth.uid,
-        templateSid,
-        name,
-        category,
+        ...request.data,
       });
 
-      const accountSid = twilioAccountSid.value();
-      const authToken = twilioAuthToken.value();
-      const url = `https://content.twilio.com/v1/Content/${templateSid}/ApprovalRequests/whatsapp`;
-
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization:
-            "Basic " +
-            Buffer.from(`${accountSid}:${authToken}`).toString("base64"),
-        },
-        body: JSON.stringify({ name: name, category: category }),
+      const response = await twilioClient.content.request({
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        uri: `v1/Content/${templateSid}/ApprovalRequests/whatsapp`,
+        data: { name: name, category: category },
       });
 
-      if (!response.ok) {
-        const errorData = await response.text();
+      if (response.statusCode !== 201) {
+        const errorData = response.body;
         throw new Error(`HTTP ${response.status}: ${errorData}`);
       }
 
-      const twilioApprovalResponse = await response.json();
+      const twilioApprovalResponse = response.body;
 
-      // Convert Twilio response to our type
       const approvalRequest = convertTwilioApprovalResponse(
         twilioApprovalResponse
       );
@@ -309,20 +258,9 @@ export const submitTemplateApproval = onCall<SubmitTemplateApprovalRequest>(
         approvalRequest: approvalRequest,
       };
     } catch (error) {
-      logger.error("Failed to submit template for approval", {
-        userId: request.auth.uid,
-        error: error instanceof Error ? error.message : "Unknown error",
-        templateSid,
-        name,
-        category,
-      });
-
-      if (error instanceof Error && error.message.includes("not found")) {
-        throw new HttpsError("not-found", "Template not found");
-      }
-
-      throw new HttpsError(
-        "internal",
+      handleFunctionError(
+        error,
+        { userId: request.auth.uid, ...request.data },
         "Failed to submit template for approval"
       );
     }
@@ -336,42 +274,25 @@ export const getTemplateApprovalStatus =
   onCall<GetTemplateApprovalStatusRequest>(
     twilioFunctionConfig,
     async (request): Promise<GetTemplateApprovalStatusResponse> => {
-      if (!request.auth) {
-        throw new HttpsError("unauthenticated", "User must be authenticated");
-      }
-
-      const { templateSid } = request.data;
-
-      if (!templateSid) {
-        throw new HttpsError("invalid-argument", "Template SID is required");
-      }
-
+      isAuthenticated(request);
+      const { templateSid } = getValidatedData(request.data, ["templateSid"]);
+      const twilioClient = initializeTwilioClient();
       try {
         logger.info("Fetching approval status", {
           userId: request.auth.uid,
           templateSid,
         });
 
-        const accountSid = twilioAccountSid.value();
-        const authToken = twilioAuthToken.value();
-        const url = `https://content.twilio.com/v1/Content/${templateSid}/ApprovalRequests`;
-
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization:
-              "Basic " +
-              Buffer.from(`${accountSid}:${authToken}`).toString("base64"),
-          },
+        const response = await twilioClient.content.request({
+          method: "get",
+          uri: `v1/Content/${templateSid}/ApprovalRequests`,
         });
-
-        if (!response.ok) {
-          const errorData = await response.text();
-          throw new Error(`HTTP ${response.status}: ${errorData}`);
+        if (response.statusCode !== 200) {
+          const errorData = response.body;
+          throw new Error(`HTTP ${response.statusCode}: ${errorData}`);
         }
 
-        const twilioApprovalData = await response.json();
+        const twilioApprovalData = await response.body;
 
         // Convert to our type structure
         const approvalData: TemplateApprovalStatusData = {
@@ -394,17 +315,11 @@ export const getTemplateApprovalStatus =
           approvalData: approvalData,
         };
       } catch (error) {
-        logger.error("Failed to fetch approval status", {
-          userId: request.auth.uid,
-          error: error instanceof Error ? error.message : "Unknown error",
-          templateSid,
-        });
-
-        if (error instanceof Error && error.message.includes("not found")) {
-          throw new HttpsError("not-found", "Template not found");
-        }
-
-        throw new HttpsError("internal", "Failed to fetch approval status");
+        handleFunctionError(
+          error,
+          { userId: request.auth.uid, templateSid },
+          "Failed to fetch template approval status"
+        );
       }
     }
   );

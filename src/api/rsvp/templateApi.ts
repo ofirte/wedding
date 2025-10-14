@@ -14,9 +14,7 @@ import {
   TemplateApprovalResponse,
   TemplateApprovalStatusData,
   CreateMessageTemplateRequest,
-  CreateMessageTemplateResponse,
   SubmitTemplateApprovalRequest,
-  SubmitTemplateApprovalResponse,
 } from "../../../shared/templateTypes";
 
 // Re-export shared types for convenience
