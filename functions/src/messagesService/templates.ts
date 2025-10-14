@@ -1,9 +1,6 @@
-import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { onCall } from "firebase-functions/v2/https";
 import { logger } from "firebase-functions/v2";
-import twilio from "twilio";
 import {
-  twilioAccountSid,
-  twilioAuthToken,
   twilioFunctionConfig,
 } from "../common/config";
 import {
@@ -28,27 +25,7 @@ import {
 } from "../common/utils";
 import { ContentInstance as ContentInstanceV2 } from "twilio/lib/rest/content/v2/content";
 import { ContentInstance as ContentInstanceV1 } from "twilio/lib/rest/content/v1/content";
-
-// Helper function to initialize Twilio client
-const initializeTwilioClient = () => {
-  try {
-    const accountSid = twilioAccountSid.value();
-    const authToken = twilioAuthToken.value();
-    if (!accountSid || !authToken) {
-      logger.error("Twilio credentials are not set");
-      throw new HttpsError(
-        "failed-precondition",
-        "Twilio credentials are not configured"
-      );
-    }
-    return twilio(accountSid, authToken);
-  } catch (error) {
-    logger.error("Error initializing Twilio client", {
-      error: error instanceof Error ? error.message : "Unknown error",
-    });
-    throw new HttpsError("internal", "Failed to initialize Twilio client");
-  }
-};
+import { initializeTwilioClient } from "../common/twilioUtils";
 
 // Helper function to convert Twilio content response to our Template type
 const convertTwilioToTemplate = (
