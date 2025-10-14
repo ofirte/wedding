@@ -1,13 +1,10 @@
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  createTemplate,
-  CreateTemplateRequest,
-  CreateTemplateResponse,
-} from "../../api/rsvp/templateApi";
+import { createTemplate } from "../../api/rsvp/templateApi";
 import { useWeddingMutation } from "../common";
+import { CreateMessageTemplateRequest, Template } from "../../../shared";
 
 interface CreateTemplateVariables {
-  templateData: CreateTemplateRequest;
+  templateData: CreateMessageTemplateRequest;
   userId?: string;
 }
 
@@ -18,13 +15,12 @@ interface CreateTemplateVariables {
 export const useCreateTemplate = () => {
   const queryClient = useQueryClient();
 
-  return useWeddingMutation<CreateTemplateResponse, CreateTemplateVariables>({
+  return useWeddingMutation<Template, CreateTemplateVariables>({
     mutationFn: ({ templateData, userId }, weddingId) =>
       createTemplate(templateData, weddingId, userId),
     options: {
-      onSuccess: (data) => {
+      onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["templates"] });
-        console.log(`Template created successfully: ${data.sid}`);
       },
     },
   });

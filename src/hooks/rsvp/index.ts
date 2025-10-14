@@ -26,10 +26,6 @@ export type {
 
 // Export types from templateApi
 export type {
-  CreateTemplateRequest,
-  CreateTemplateResponse,
   TemplateDocument,
-  ApprovalRequest,
-  ApprovalResponse,
   ApprovalStatusResponse,
 } from "../../api/rsvp/templateApi";

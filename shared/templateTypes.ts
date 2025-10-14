@@ -4,16 +4,69 @@
 
 import { BaseResponse, ErrorResponse } from "./types";
 
-// Common template types
-export interface TwilioTemplate {
+// Core template content types
+export interface TemplateContentTypes {
+  "twilio/text"?: {
+    body: string;
+  };
+  "twilio/media"?: {
+    body: string;
+    media: string[];
+  };
+}
+
+// Core template data structure (our canonical template representation)
+export interface Template {
   sid: string;
-  friendlyName?: string;
-  language?: string;
-  variables?: Record<string, any>;
-  types?: Record<string, any>;
-  dateCreated?: string;
-  dateUpdated?: string;
-  accountSid?: string;
+  friendlyName: string;
+  language: string;
+  variables?: Record<string, string>;
+  types: TemplateContentTypes;
+  dateCreated: string;
+  dateUpdated: string;
+  accountSid: string;
+}
+
+// Template document as stored in Firebase (extends Template with metadata)
+export interface TemplateDocument extends Template {
+  id: string;
+  createdBy?: string; // Firebase user ID who created the template
+  approvalStatus?: TemplateApprovalStatus;
+}
+
+// Template approval status enum
+export type TemplateApprovalStatus =
+  | "pending"
+  | "approved"
+  | "rejected"
+  | "submitted"
+  | "received";
+
+// Template approval request/response data
+export interface TemplateApprovalRequest {
+  name: string;
+  category: string;
+}
+
+export interface TemplateApprovalResponse {
+  category: string;
+  status: TemplateApprovalStatus;
+  rejection_reason?: string;
+  name: string;
+  content_type: string;
+}
+
+export interface TemplateApprovalStatusData {
+  url: string;
+  whatsapp?: TemplateApprovalResponse;
+  account_sid: string;
+  sid: string;
+}
+
+// Wedding template data (combination of templates with metadata)
+export interface WeddingTemplateData {
+  templates: Array<TemplateDocument>;
+  length: number;
 }
 
 // Get Message Templates - No request body needed
@@ -21,7 +74,7 @@ export interface GetMessageTemplatesRequest {}
 
 export interface GetMessageTemplatesResponse extends BaseResponse {
   success: true;
-  templates: TwilioTemplate[];
+  templates: Template[];
   count: number;
 }
 
@@ -29,13 +82,13 @@ export interface GetMessageTemplatesResponse extends BaseResponse {
 export interface CreateMessageTemplateRequest {
   friendly_name: string;
   language: string;
-  variables?: Record<string, any>;
-  types: Record<string, any>;
+  variables?: Record<string, string>;
+  types: TemplateContentTypes;
 }
 
 export interface CreateMessageTemplateResponse extends BaseResponse {
   success: true;
-  template: TwilioTemplate;
+  template: Template;
 }
 
 // Delete Message Template
@@ -58,7 +111,7 @@ export interface SubmitTemplateApprovalRequest {
 
 export interface SubmitTemplateApprovalResponse extends BaseResponse {
   success: true;
-  approvalRequest: any; // Twilio's approval request object
+  approvalRequest: TemplateApprovalResponse;
 }
 
 // Get Template Approval Status
@@ -69,7 +122,7 @@ export interface GetTemplateApprovalStatusRequest {
 export interface GetTemplateApprovalStatusResponse extends BaseResponse {
   success: true;
   templateSid: string;
-  approvalData: any; // Twilio's approval data object
+  approvalData: TemplateApprovalStatusData;
 }
 
 // Union types for all template functions

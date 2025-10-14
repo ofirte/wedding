@@ -18,7 +18,6 @@ import {
 } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { CreateTemplateRequest } from "../../api/rsvp/templateApi";
 import { formatTemplateName } from "../../utils/templatesUtils";
 import {
   getPredefinedVariables,
@@ -29,11 +28,12 @@ import {
 } from "../../utils/messageVariables";
 import { useInvitees } from "../../hooks/invitees";
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
+import { CreateMessageTemplateRequest } from "../../../shared";
 
 interface CreateTemplateFormProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (templateData: CreateTemplateRequest) => void;
+  onSubmit: (templateData: CreateMessageTemplateRequest) => void;
   isSubmitting: boolean;
   weddingId?: string;
 }
@@ -110,7 +110,7 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
     // Create the friendly name with wedding ID suffix
     const friendlyName = formatTemplateName(templateName);
 
-    const templateData: CreateTemplateRequest = {
+    const templateData: CreateMessageTemplateRequest = {
       friendly_name: friendlyName,
       language,
       variables,
