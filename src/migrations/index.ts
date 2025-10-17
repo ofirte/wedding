@@ -1,5 +1,4 @@
 import { migrationRegistry } from "./framework/MigrationRegistry";
-import { DenormalizeRSVPStatusMigration } from "./definitions/DenormalizeRSVPStatusMigration";
 
 /**
  * Register all available migrations
@@ -7,7 +6,7 @@ import { DenormalizeRSVPStatusMigration } from "./definitions/DenormalizeRSVPSta
  */
 
 // Register the RSVP denormalization migration
-migrationRegistry.register(new DenormalizeRSVPStatusMigration());
+// migrationRegistry.register(new DenormalizeRSVPStatusMigration());
 
 // Export the configured registry
 export { migrationRegistry };
@@ -17,6 +16,3 @@ export * from "./framework/types";
 export * from "./framework/BaseMigration";
 export * from "./framework/MigrationRegistry";
 export * from "./framework/MigrationRunner";
-
-// Export all migration definitions
-export * from "./definitions/DenormalizeRSVPStatusMigration";

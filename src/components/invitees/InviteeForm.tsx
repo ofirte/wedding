@@ -8,7 +8,7 @@ import {
   Autocomplete,
   Button,
 } from "@mui/material";
-import { Invitee } from "./InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { createColumns } from "./InviteListColumns";
 import { useTranslation } from "../../localization/LocalizationContext";
 

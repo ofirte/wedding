@@ -8,7 +8,6 @@ import {
 } from "../firebaseFunctions";
 import {
   TemplateApprovalResponse,
-  TemplateApprovalStatusData,
   CreateMessageTemplateRequest,
   SubmitTemplateApprovalRequest,
   GetTemplateApprovalStatusResponse,

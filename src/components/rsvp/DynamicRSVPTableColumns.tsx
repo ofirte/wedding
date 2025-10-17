@@ -12,7 +12,7 @@ import {
 } from "@mui/icons-material";
 import { Column } from "../common/DSTable";
 import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
-import { Invitee } from "../invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { isNil } from "lodash";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";

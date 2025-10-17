@@ -5,7 +5,7 @@ import {
   Group as GroupIcon,
   PhoneDisabled as PhoneDisabledIcon,
 } from "@mui/icons-material";
-import { Invitee } from "./InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface SummaryInfoProps {
@@ -26,7 +26,6 @@ const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
     const missingPhoneNumbers = invitees.filter(
       (invitee) => !invitee.cellphone || invitee.cellphone.trim() === ""
     ).length;
-
 
     return {
       totalInviteeRecords,

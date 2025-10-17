@@ -18,7 +18,7 @@ import { useTranslation } from "../../localization/LocalizationContext";
 import { useSendMessage } from "../../hooks/rsvp/useSendMessage";
 import { useSendSMSMessage } from "../../hooks/rsvp/useSendSMSMessage";
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
-import { Invitee } from "../invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { populateVariables } from "../../utils/messageVariables";
 import MessageTypeToggle from "./MessageTypeToggle";
 import MessagePreview from "./MessagePreview";

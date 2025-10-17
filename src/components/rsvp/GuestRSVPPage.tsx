@@ -32,8 +32,7 @@ const GuestRSVPPage: React.FC = () => {
   const { data: guestInfo } = useInvitee(guestId as string);
 
   // Fetch enabled RSVP form questions dynamically based on config
-  const { questions, isLoading: isLoadingQuestions } =
-    useRSVPFormQuestions();
+  const { questions, isLoading: isLoadingQuestions } = useRSVPFormQuestions();
 
   // Fetch existing RSVP status
   const { data: rsvpStatus } = useInviteeRSVP(guestId as string);

@@ -8,7 +8,7 @@ import {
   Box,
 } from "@mui/material";
 import { createColumns } from "./InviteListColumns";
-import { Invitee } from "./InviteList";
+import { Invitee } from "@wedding-plan/types";
 import InviteeForm from "./InviteeForm";
 import InviteeTable from "./InviteeTable";
 import { useTranslation } from "../../localization/LocalizationContext";

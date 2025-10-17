@@ -2,7 +2,7 @@ import React from "react";
 import { IconButton, Stack } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Invitee } from "./InviteList";
+import { Invitee } from "@wedding-plan/types";
 
 interface InviteeListActionCellProps {
   invitee: Invitee;
@@ -15,8 +15,6 @@ const InviteeListActionCell: React.FC<InviteeListActionCellProps> = ({
   onEditInvitee,
   onDeleteInvitee,
 }) => {
-
-
   return (
     <Stack direction="row" spacing={1} justifyContent="center">
       <IconButton

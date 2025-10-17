@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { Invitee } from "../../components/invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { savePersonalWhatsAppMessage } from "../../api/rsvp/rsvpApi";
 import { MessageWedding } from "../../utils/messageVariables";
 

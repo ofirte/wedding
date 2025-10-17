@@ -15,7 +15,7 @@ import {
   Person as PersonIcon,
   Phone as PhoneIcon,
 } from "@mui/icons-material";
-import { Invitee } from "../invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";

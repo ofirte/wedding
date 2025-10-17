@@ -19,7 +19,6 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import { getCurrentUserWeddingId } from "./auth/authApi";
-import { create } from "lodash";
 
 /**
  * A utility class to handle all Firebase operations with wedding ID context

@@ -14,7 +14,7 @@ import {
   AccessTime as TimeIcon,
 } from "@mui/icons-material";
 import { Wedding } from "@wedding-plan/types";
-import { Invitee } from "../invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface WeddingInfoCardProps {

@@ -10,7 +10,6 @@ import { FC } from "react";
 import { useTranslation } from "../../localization/LocalizationContext";
 import {
   useUpdateUser,
-  useUpdateWedding,
   useUsersByIds,
 } from "../../hooks/auth";
 import { UserInfo } from "../../hooks/auth/useUsersInfo";

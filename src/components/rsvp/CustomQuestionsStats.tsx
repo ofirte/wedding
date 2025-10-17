@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { Box } from "@mui/material";
 import { People as PeopleIcon } from "@mui/icons-material";
 import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
-import { Invitee } from "../invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { RSVPQuestion } from "../../api/rsvp/rsvpQuestionsTypes";
 import YesNoStatsCard from "./YesNoStatsCard";
 import SelectStatsCard from "./SelectStatsCard";

@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Button, Chip, Stack } from "@mui/material";
-import { Invitee } from "./InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface InviteeBulkActionsProps {

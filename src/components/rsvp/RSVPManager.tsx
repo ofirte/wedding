@@ -6,7 +6,7 @@ import {
   Assessment as AssessmentIcon,
   Settings as SettingsIcon,
 } from "@mui/icons-material";
-import { useParams, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import { useTranslation } from "../../localization/LocalizationContext";
 import TemplatesManager from "./TemplatesManager";
 import MessagesLogTab from "./MessagesLogTab";

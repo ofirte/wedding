@@ -4,7 +4,6 @@ import {
   updateInvitee,
 } from "../../api/invitees/inviteesApi";
 import { RSVPStatus } from "../../api/rsvp/rsvpStatusTypes";
-import { useParams } from "react-router";
 
 /**
  * Hook to fetch RSVP status for an invitee using denormalized data

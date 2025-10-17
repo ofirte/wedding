@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { updateInvitee } from "../../api/invitees/inviteesApi";
-import { Invitee } from "../../components/invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { useWeddingMutation } from "../common";
 
 /**

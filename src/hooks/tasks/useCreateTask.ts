@@ -1,6 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createTask } from "../../api/tasks/tasksApi";
-import { Task } from "./useTasks";
 
 import { useWeddingMutation } from "../common";
 

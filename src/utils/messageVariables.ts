@@ -4,7 +4,7 @@
  */
 
 import { Wedding } from "@wedding-plan/types";
-import { Invitee } from "../components/invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { Language } from "../localization/types";
 
 export interface TemplateVariable {

@@ -5,10 +5,11 @@
 
 // RSVP Status types
 export interface RSVPStatus {
-  attendance?: boolean; // true = confirmed, false = declined, undefined = pending
-  amount?: number; // Number of guests
-  submittedAt?: string; // ISO string date
-  note?: string; // Additional notes from the guest
+  attendance: boolean;
+  amount: string;
+  isSubmitted?: boolean;
+  submittedAt?: Date;
+  [key: string]: any; // Allow any additional dynamic properties
 }
 
 // Main Invitee model
