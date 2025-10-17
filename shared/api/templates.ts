@@ -1,8 +1,8 @@
 /**
- * Template Firebase Functions Types
+ * Template Firebase Functions API Types
  */
 
-import { BaseResponse, ErrorResponse } from "./types";
+import { BaseResponse, ErrorResponse } from "./base";
 
 // Core template content types
 export interface TemplateContentTypes {
@@ -13,25 +13,6 @@ export interface TemplateContentTypes {
     body: string;
     media: string[];
   };
-}
-
-// Core template data structure (our canonical template representation)
-export interface Template {
-  sid: string;
-  friendlyName: string;
-  language: string;
-  variables?: Record<string, string>;
-  types: TemplateContentTypes;
-  dateCreated: string;
-  dateUpdated: string;
-  accountSid: string;
-}
-
-// Template document as stored in Firebase (extends Template with metadata)
-export interface TemplateDocument extends Template {
-  id: string;
-  createdBy?: string; // Firebase user ID who created the template
-  approvalStatus?: TemplateApprovalStatus;
 }
 
 // Template approval status enum
@@ -63,18 +44,12 @@ export interface TemplateApprovalStatusData {
   sid: string;
 }
 
-// Wedding template data (combination of templates with metadata)
-export interface WeddingTemplateData {
-  templates: Array<TemplateDocument>;
-  length: number;
-}
-
 // Get Message Templates - No request body needed
 export interface GetMessageTemplatesRequest {}
 
 export interface GetMessageTemplatesResponse extends BaseResponse {
   success: true;
-  templates: Template[];
+  templates: any[]; // Import Template from models when needed
   count: number;
 }
 
@@ -88,7 +63,7 @@ export interface CreateMessageTemplateRequest {
 
 export interface CreateMessageTemplateResponse extends BaseResponse {
   success: true;
-  template: Template;
+  template: any; // Import Template from models when needed
 }
 
 // Delete Message Template
@@ -120,10 +95,11 @@ export interface GetTemplateApprovalStatusRequest {
 }
 
 export interface GetTemplateApprovalStatusResponse extends BaseResponse {
-  success: true;
   templateSid: string;
   approvalData: TemplateApprovalStatusData;
 }
+
+
 
 // Union types for all template functions
 export type TemplateFunctionRequest =

@@ -1,8 +1,8 @@
 /**
- * Messaging Firebase Functions Types
+ * Messaging Firebase Functions API Types
  */
 
-import { BaseResponse, ErrorResponse } from "./types";
+import { BaseResponse, ErrorResponse } from "./base";
 
 export interface SendMessageRequest {
   to: string;
@@ -20,6 +20,16 @@ export interface SendMessageResponse extends BaseResponse {
   dateCreated: string;
 }
 
+// Get Message Status
+export interface GetMessageStatusRequest {
+  messageSid: string;
+}
+
+export interface GetMessageStatusResponse extends BaseResponse {
+  success: true;
+  messageInfo: MessageInfo;
+}
+
 export interface MessageInfo {
   sid: string;
   status: string;
@@ -32,6 +42,11 @@ export interface MessageInfo {
 }
 
 // Union types for all messaging functions
-export type MessagingFunctionRequest = SendMessageRequest;
+export type MessagingFunctionRequest =
+  | SendMessageRequest
+  | GetMessageStatusRequest;
 
-export type MessagingFunctionResponse = SendMessageResponse | ErrorResponse;
+export type MessagingFunctionResponse =
+  | SendMessageResponse
+  | GetMessageStatusResponse
+  | ErrorResponse;

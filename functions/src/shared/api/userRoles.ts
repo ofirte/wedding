@@ -1,8 +1,8 @@
 /**
- * User Roles Firebase Functions Types
+ * User Roles Firebase Functions API Types
  */
 
-import { BaseResponse, ErrorResponse } from "./types";
+import { BaseResponse, ErrorResponse } from "./base";
 
 // Initialize New User - No request body needed (uses auth.uid)
 export interface InitializeNewUserRequest {}

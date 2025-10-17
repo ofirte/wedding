@@ -1,8 +1,8 @@
 /**
- * Users Firebase Functions Types
+ * Users Firebase Functions API Types
  */
 
-import { BaseResponse, ErrorResponse } from "./types";
+import { BaseResponse, ErrorResponse } from "./base";
 
 // Delete User Auth
 export interface DeleteUserAuthRequest {

@@ -3,7 +3,7 @@ import { getAuth } from "firebase-admin/auth";
 import { logger } from "firebase-functions/v2";
 import { standardFunctionConfig } from "../common/config";
 import { isAuthenticated, isSufficientWeddingRole } from "../common/utils";
-import { WeddingRoles } from "../shared/types";
+import { WeddingRoles } from "../shared/models";
 import { DeleteUserAuthRequest, DeleteUserAuthResponse } from "../shared";
 
 export const deleteUserAuth = onCall<DeleteUserAuthRequest>(
