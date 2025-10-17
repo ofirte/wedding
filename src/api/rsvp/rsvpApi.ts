@@ -1,72 +1,30 @@
-import { ContentInstance } from "twilio/lib/rest/content/v2/content";
 import { createCollectionAPI } from "../weddingFirebaseHelpers";
 import {
   sendWhatsAppMessage,
   sendSmsMessage,
   getMessageStatus,
 } from "../firebaseFunctions";
-import { GetMessageStatusResponse } from "../../../shared";
-
-export interface SendMessageRequest {
-  to: string;
-  contentSid: string;
-  contentVariables: Record<string, string>;
-  templateId?: string;
-  userId?: string; // Optional user ID for tracking
-}
+import {
+  GetMessageStatusResponse,
+  MessageInfo,
+  SendMessageRequest,
+} from "../../../shared";
 
 // SMS-specific request interface (same as WhatsApp)
-export interface SendSMSRequest {
-  to: string;
-  contentSid: string; // Template SID to extract text from
-  contentVariables: Record<string, string>;
+export interface SendMessageApiRequest extends SendMessageRequest {
   userId?: string;
 }
-
-export interface SendMessageResponse {
-  sid: string;
-  status: string;
-  to: string;
-  from: string;
-  dateCreated: string;
-  dateSent?: string;
-  errorMessage?: string;
-  messageType?: "whatsapp" | "sms" | "personal-whatsapp"; // Track message type
-}
-
-// SMS-specific response interface
-export interface SendSMSResponse extends SendMessageResponse {
-  messageType: "sms";
-  smsSegments?: number;
-  processedText?: string;
-}
-
-// Types for Twilio Content Templates
-export type ContentInsight = ContentInstance;
-
-export interface MessageTemplatesResponse {
-  templates: ContentInsight[];
-  length: number;
-}
-
 
 // Types for Firebase sent messages collection
-export interface SentMessage {
+export interface SentMessage extends MessageInfo {
   id: string;
-  sid: string; // Twilio message SID
-  to: string;
-  from: string;
-  status: string;
   contentSid: string;
   contentVariables: Record<string, string>;
-  templateId?: string;
+  templateId: string;
+  userId: string; // Firebase user ID who sent the message
+  messageType: "whatsapp" | "sms" | "personal-whatsapp"; // Track message type
   dateCreated: string;
-  dateSent?: string;
-  dateUpdated?: string;
-  errorMessage?: string;
-  userId?: string;
-  messageType?: "whatsapp" | "sms" | "personal-whatsapp"; // Track message type
-  smsSegments?: number; // For SMS only
+  dateUpdated: string;
 }
 
 // Create collection API for sent messages
@@ -83,9 +41,9 @@ export const bulkDeleteSentMessages = sentMessagesAPI.bulkDelete;
 export const fetchSentMessagesByFilter = sentMessagesAPI.fetchByFilter;
 
 export const sendMessage = async (
-  messageData: SendMessageRequest,
+  messageData: SendMessageApiRequest,
   weddingId?: string
-): Promise<SendMessageResponse> => {
+): Promise<SentMessage> => {
   try {
     // Call Firebase callable function
     const result = await sendWhatsAppMessage({
@@ -96,17 +54,23 @@ export const sendMessage = async (
 
     // Transform the response to match expected format
     const responseData = result.data;
-    const response: SendMessageResponse = {
+    const sentMessage: Omit<SentMessage, "id"> = {
       sid: responseData.messageSid,
       status: responseData.status,
       to: responseData.to,
       from: responseData.from,
       dateCreated: responseData.dateCreated,
+      dateUpdated: responseData.dateCreated,
+      contentSid: messageData.contentSid,
+      contentVariables: messageData.contentVariables || {},
+      templateId: messageData.contentSid || "",
+      userId: messageData.userId || "",
+      messageType: "whatsapp",
     };
 
-    await saveSentMessage(messageData, response, "whatsapp", weddingId);
+    const sentMessageId = await saveSentMessage(sentMessage, weddingId);
 
-    return response;
+    return { ...sentMessage, id: sentMessageId };
   } catch (error) {
     console.error("Error sending message:", error);
     throw error;
@@ -117,9 +81,9 @@ export const sendMessage = async (
  * Send SMS message using WhatsApp template content
  */
 export const sendSMSMessage = async (
-  messageData: SendSMSRequest,
+  messageData: SendMessageApiRequest,
   weddingId?: string
-): Promise<SendSMSResponse> => {
+): Promise<SentMessage> => {
   try {
     // Call Firebase callable function
     const result = await sendSmsMessage({
@@ -128,72 +92,29 @@ export const sendSMSMessage = async (
       contentVariables: messageData.contentVariables,
     });
 
-    // Transform the response to match expected format
     const responseData = result.data as any;
 
-    // Also save SMS message to Firebase for tracking
-    const messageRequest: SendMessageRequest = {
-      to: messageData.to,
-      contentSid: messageData.contentSid,
-      contentVariables: messageData.contentVariables,
-      userId: messageData.userId,
-    };
-
-    // Transform SMS response to standard message response format for saving
-    const messageResponse: SendMessageResponse = {
-      sid: responseData.sid,
+    const sentMessage: Omit<SentMessage, "id"> = {
+      sid: responseData.messageSid,
       status: responseData.status,
       to: responseData.to,
       from: responseData.from,
       dateCreated: responseData.dateCreated,
-      dateSent: responseData.dateSent,
-      errorMessage: responseData.errorMessage,
+      dateUpdated: responseData.dateCreated,
+      contentSid: messageData.contentSid,
+      contentVariables: messageData.contentVariables || {},
+      templateId: messageData.contentSid || "",
+      userId: messageData.userId || "",
+      messageType: "sms",
     };
 
-    await saveSentMessage(messageRequest, messageResponse, "sms", weddingId);
+    const sentMessageId = await saveSentMessage(sentMessage, weddingId);
 
-    return messageResponse as SendSMSResponse;
+    return { ...sentMessage, id: sentMessageId };
   } catch (error) {
     console.error("Error sending SMS message:", error);
     throw error;
   }
-};
-
-export const sendBulkMessages = async (
-  messages: SendMessageRequest[],
-  weddingId?: string
-): Promise<SendMessageResponse[]> => {
-  const results: SendMessageResponse[] = [];
-
-  for (const message of messages) {
-    try {
-      const result = await sendMessage(message, weddingId);
-      results.push(result);
-    } catch (error) {
-      console.error(`Error sending message to ${message.to}:`, error);
-      const failedResult: SendMessageResponse = {
-        sid: "",
-        status: "failed",
-        to: message.to,
-        from: "",
-        dateCreated: new Date().toISOString(),
-        errorMessage: error instanceof Error ? error.message : "Unknown error",
-      };
-      results.push(failedResult);
-
-      // Save failed message to Firebase for tracking
-      try {
-        await saveSentMessage(message, failedResult, "whatsapp", weddingId);
-      } catch (saveError) {
-        console.error(
-          "Error saving failed bulk message to Firebase:",
-          saveError
-        );
-      }
-    }
-  }
-
-  return results;
 };
 
 /**
@@ -222,28 +143,10 @@ export const checkMessageStatus = async (
  * Save a sent message to Firebase
  */
 export const saveSentMessage = async (
-  messageRequest: SendMessageRequest,
-  messageResponse: SendMessageResponse,
-  messageType: "whatsapp" | "sms" | "personal-whatsapp",
+  sentMessage: Omit<SentMessage, "id">,
   weddingId?: string
 ): Promise<string> => {
   try {
-    const sentMessage: Omit<SentMessage, "id"> = {
-      sid: messageResponse.sid || "",
-      to: messageResponse.to || "",
-      from: messageResponse.from || "",
-      status: messageResponse.status || "unknown",
-      contentSid: messageRequest.contentSid || "",
-      contentVariables: messageRequest.contentVariables || {},
-      templateId: messageRequest.templateId || "",
-      dateCreated: messageResponse.dateCreated || new Date().toISOString(),
-      dateSent: messageResponse.dateSent || new Date().toISOString(),
-      dateUpdated: new Date().toISOString(),
-      errorMessage: messageResponse.errorMessage ?? "",
-      userId: messageRequest.userId || "", // Optional user ID for tracking
-      messageType,
-    };
-
     const docRef = await sentMessagesAPI.create(sentMessage, weddingId);
     return docRef.id;
   } catch (error) {
@@ -275,7 +178,6 @@ export const savePersonalWhatsAppMessage = async (
       contentVariables,
       templateId: contentSid, // Use contentSid as templateId for consistency
       dateCreated: now,
-      dateSent: now,
       dateUpdated: now,
       errorMessage: "",
       userId,

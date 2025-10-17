@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { sendMessage, SendMessageRequest } from "../../api/rsvp/rsvpApi";
+import { sendMessage, SendMessageApiRequest } from "../../api/rsvp/rsvpApi";
 import { useWeddingMutation } from "../common";
+
 
 /**
  * Hook to send a message using Twilio via Firebase Functions
@@ -10,7 +11,7 @@ export const useSendMessage = () => {
   const queryClient = useQueryClient();
 
   return useWeddingMutation({
-    mutationFn: (messageData: SendMessageRequest, weddingId?: string) =>
+    mutationFn: (messageData: SendMessageApiRequest, weddingId?: string) =>
       sendMessage(messageData, weddingId),
     options: {
       onSuccess: () => {

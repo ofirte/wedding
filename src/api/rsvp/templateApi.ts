@@ -6,80 +6,37 @@ import {
   submitTemplateApproval,
   getTemplateApprovalStatus,
 } from "../firebaseFunctions";
+import {
+  Template,
+  TemplateDocument,
+  TemplateContentTypes,
+  TemplateApprovalRequest,
+  TemplateApprovalResponse,
+  TemplateApprovalStatusData,
+  CreateMessageTemplateRequest,
+  SubmitTemplateApprovalRequest,
+} from "../../../shared/templateTypes";
 
-export interface CreateTemplateRequest {
-  friendly_name: string;
-  language: string;
-  variables?: Record<string, string>;
-  types: {
-    "twilio/text"?: {
-      body: string;
-    };
-    "twilio/media"?: {
-      body: string;
-      media?: string[];
-    };
-  };
-}
-
-export interface CreateTemplateResponse {
-  sid: string;
-  friendlyName: string;
-  language: string;
-  variables?: Record<string, string>;
-  types: Record<string, any>;
-  accountSid: string;
-  dateCreated: string;
-  dateUpdated: string;
-  url: string;
-}
-
-export interface TemplateDocument {
-  id: string;
-  sid: string; // Twilio template SID
-  friendlyName: string;
-  language: string;
-  variables?: Record<string, string>;
-  types: Record<string, any>;
-  dateCreated: string;
-  dateUpdated: string;
-  createdBy?: string; // Optional user ID who created the template
-  approvalStatus?:
-    | "pending"
-    | "approved"
-    | "rejected"
-    | "submitted"
-    | "received"; // Template approval status
-}
-
-export interface ApprovalRequest {
-  name: string;
-  category: string;
-}
-
-export interface ApprovalResponse {
-  category: string;
-  status: "received" | "pending" | "approved" | "rejected";
-  rejection_reason?: string;
-  name: string;
-  content_type: string;
-}
+// Re-export shared types for convenience
+export type {
+  Template,
+  TemplateDocument,
+  TemplateContentTypes,
+  TemplateApprovalRequest,
+  TemplateApprovalResponse,
+  TemplateApprovalStatusData,
+};
 
 export interface ApprovalStatusResponse {
   templateSid: string;
-  approvalData: {
-    url: string;
-    whatsapp?: ApprovalResponse;
-    account_sid: string;
-    sid: string;
-  };
+  approvalData: TemplateApprovalStatusData;
 }
 
 export const createTemplate = async (
-  templateData: CreateTemplateRequest,
+  templateData: CreateMessageTemplateRequest,
   weddingId?: string,
   userId?: string
-): Promise<CreateTemplateResponse> => {
+): Promise<Template> => {
   try {
     // Call Firebase callable function
     const result = await createMessageTemplate({
@@ -89,8 +46,7 @@ export const createTemplate = async (
       types: templateData.types,
     });
 
-    const createdTemplate = (result.data as any)
-      .template as CreateTemplateResponse;
+    const createdTemplate = result.data.template;
 
     // Save the template information to Firebase
     await saveTemplateToFirebase(createdTemplate, weddingId, userId);
@@ -110,7 +66,7 @@ export const createTemplate = async (
  * @returns Promise resolving to the Firebase document ID
  */
 export const saveTemplateToFirebase = async (
-  template: CreateTemplateResponse,
+  template: Template,
   weddingId?: string,
   userId?: string
 ): Promise<string> => {
@@ -123,6 +79,7 @@ export const saveTemplateToFirebase = async (
       types: template.types,
       dateCreated: template.dateCreated,
       dateUpdated: template.dateUpdated,
+      accountSid: template.accountSid,
       createdBy: userId,
       approvalStatus: "pending", // Default approval status when created
     };
@@ -157,7 +114,7 @@ export const getTemplatesFromFirebase = async (
  * @returns Promise resolving to combined template data with Firebase metadata
  */
 export interface WeddingTemplateData {
-  templates: Array<TemplateDocument & CreateTemplateResponse>;
+  templates: Array<TemplateDocument>;
   length: number;
 }
 
@@ -250,8 +207,8 @@ export const deleteTemplate = async (
  */
 export const submitTemplateForApproval = async (
   templateSid: string,
-  approvalRequest: ApprovalRequest
-): Promise<ApprovalResponse> => {
+  approvalRequest: SubmitTemplateApprovalRequest
+): Promise<TemplateApprovalResponse> => {
   try {
     const result = await submitTemplateApproval({
       templateSid: templateSid,
@@ -259,8 +216,7 @@ export const submitTemplateForApproval = async (
       category: approvalRequest.category,
     });
 
-    const approvalResponse = (result.data as any)
-      .approvalRequest as ApprovalResponse;
+    const approvalResponse = result.data.approvalRequest;
 
     // Update the approval status in Firebase
     await updateTemplateApprovalStatus(templateSid, approvalResponse.status);

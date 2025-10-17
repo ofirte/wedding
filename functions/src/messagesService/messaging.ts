@@ -1,55 +1,34 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { logger } from "firebase-functions/v2";
-import twilio from "twilio";
 import {
-  twilioAccountSid,
-  twilioAuthToken,
   twilioWhatsAppFrom,
   twilioFunctionConfig,
 } from "../common/config";
 import {
-  SendWhatsAppMessageRequest,
-  SendWhatsAppMessageResponse,
-  SendSmsMessageRequest,
-  SendSmsMessageResponse,
+  SendMessageRequest,
+  SendMessageResponse,
   GetMessageStatusRequest,
   GetMessageStatusResponse,
 } from "../shared";
-
-// Helper function to initialize Twilio client
-const initializeTwilioClient = () => {
-  const accountSid = twilioAccountSid.value();
-  const authToken = twilioAuthToken.value();
-  return accountSid && authToken ? twilio(accountSid, authToken) : null;
-};
+import {
+  getValidatedData,
+  handleFunctionError,
+  isAuthenticated,
+} from "../common/utils";
+import { initializeTwilioClient } from "../common/twilioUtils";
 
 /**
  * Send WhatsApp message using Twilio Content API
  */
-export const sendWhatsAppMessage = onCall<SendWhatsAppMessageRequest>(
+export const sendWhatsAppMessage = onCall<SendMessageRequest>(
   twilioFunctionConfig,
-  async (request): Promise<SendWhatsAppMessageResponse> => {
-    if (!request.auth) {
-      throw new HttpsError("unauthenticated", "User must be authenticated");
-    }
-
-    const { to, contentSid, contentVariables } = request.data;
-
-    if (!to || !contentSid) {
-      throw new HttpsError(
-        "invalid-argument",
-        "Missing required fields: to, contentSid"
-      );
-    }
-
+  async (request): Promise<SendMessageResponse> => {
+    isAuthenticated(request);
+    const { to, contentSid, contentVariables } = getValidatedData(
+      request.data,
+      ["to", "contentSid", "contentVariables"]
+    );
     const twilioClient = initializeTwilioClient();
-    if (!twilioClient) {
-      throw new HttpsError(
-        "failed-precondition",
-        "Twilio client not configured"
-      );
-    }
-
     const twilioPhone = twilioWhatsAppFrom.value();
 
     try {
@@ -82,28 +61,13 @@ export const sendWhatsAppMessage = onCall<SendWhatsAppMessageRequest>(
         to: message.to,
         dateCreated:
           message.dateCreated?.toISOString() || new Date().toISOString(),
-      } as SendWhatsAppMessageResponse;
+      } as SendMessageResponse;
     } catch (error) {
-      logger.error("Failed to send WhatsApp message", {
-        userId: request.auth.uid,
-        error: error instanceof Error ? error.message : "Unknown error",
-        to: to,
-        contentSid: contentSid,
-      });
-
-      if (error instanceof Error) {
-        if (error.message.includes("not found")) {
-          throw new HttpsError("not-found", "Template not found");
-        }
-        if (error.message.includes("invalid")) {
-          throw new HttpsError(
-            "invalid-argument",
-            `Invalid request: ${error.message}`
-          );
-        }
-      }
-
-      throw new HttpsError("internal", "Failed to send message");
+      handleFunctionError(
+        error,
+        { userId: request.auth.uid, to, contentSid, contentVariables },
+        "Failed to send WhatsApp message"
+      );
     }
   }
 );
@@ -111,29 +75,15 @@ export const sendWhatsAppMessage = onCall<SendWhatsAppMessageRequest>(
 /**
  * Send SMS message (converts template to plain text)
  */
-export const sendSmsMessage = onCall<SendSmsMessageRequest>(
+export const sendSmsMessage = onCall<SendMessageRequest>(
   twilioFunctionConfig,
-  async (request): Promise<SendSmsMessageResponse> => {
-    if (!request.auth) {
-      throw new HttpsError("unauthenticated", "User must be authenticated");
-    }
-
-    const { to, contentSid, contentVariables } = request.data;
-
-    if (!to || !contentSid) {
-      throw new HttpsError(
-        "invalid-argument",
-        "Missing required fields: to, contentSid"
-      );
-    }
-
+  async (request): Promise<SendMessageResponse> => {
+    isAuthenticated(request);
+    const { to, contentSid, contentVariables } = getValidatedData(
+      request.data,
+      ["to", "contentSid", "contentVariables"]
+    );
     const twilioClient = initializeTwilioClient();
-    if (!twilioClient) {
-      throw new HttpsError(
-        "failed-precondition",
-        "Twilio client not configured"
-      );
-    }
 
     try {
       logger.info("Converting template and sending SMS", {
@@ -194,21 +144,13 @@ export const sendSmsMessage = onCall<SendSmsMessageRequest>(
         to: message.to,
         dateCreated:
           message.dateCreated?.toISOString() || new Date().toISOString(),
-        messageType: "sms",
       };
     } catch (error) {
-      logger.error("Failed to send SMS", {
-        userId: request.auth.uid,
-        error: error instanceof Error ? error.message : "Unknown error",
-        to: to,
-        contentSid: contentSid,
-      });
-
-      if (error instanceof HttpsError) {
-        throw error;
-      }
-
-      throw new HttpsError("internal", "Failed to send SMS");
+      handleFunctionError(
+        error,
+        { userId: request.auth.uid, to, contentSid, contentVariables },
+        "Failed to send SMS message"
+      );
     }
   }
 );
@@ -219,24 +161,9 @@ export const sendSmsMessage = onCall<SendSmsMessageRequest>(
 export const getMessageStatus = onCall<GetMessageStatusRequest>(
   twilioFunctionConfig,
   async (request): Promise<GetMessageStatusResponse> => {
-    if (!request.auth) {
-      throw new HttpsError("unauthenticated", "User must be authenticated");
-    }
-
-    const { messageSid } = request.data;
-
-    if (!messageSid) {
-      throw new HttpsError("invalid-argument", "Message SID is required");
-    }
-
+    isAuthenticated(request);
+    const { messageSid } = getValidatedData(request.data, ["messageSid"]);
     const twilioClient = initializeTwilioClient();
-    if (!twilioClient) {
-      throw new HttpsError(
-        "failed-precondition",
-        "Twilio client not configured"
-      );
-    }
-
     try {
       logger.info("Fetching message status", {
         userId: request.auth.uid,
@@ -265,17 +192,11 @@ export const getMessageStatus = onCall<GetMessageStatusRequest>(
         },
       };
     } catch (error) {
-      logger.error("Failed to fetch message status", {
-        userId: request.auth.uid,
-        error: error instanceof Error ? error.message : "Unknown error",
-        messageSid,
-      });
-
-      if (error instanceof Error && error.message.includes("not found")) {
-        throw new HttpsError("not-found", "Message not found");
-      }
-
-      throw new HttpsError("internal", "Failed to fetch message status");
+      handleFunctionError(
+        error,
+        { userId: request.auth.uid, messageSid },
+        "Failed to fetch message status"
+      );
     }
   }
 );

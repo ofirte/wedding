@@ -1,17 +1,17 @@
 import { useWeddingMutation } from "../common";
+import { submitTemplateForApproval } from "../../api/rsvp/templateApi";
 import {
-  submitTemplateForApproval,
-  ApprovalRequest,
-  ApprovalResponse,
-} from "../../api/rsvp/templateApi";
+  SubmitTemplateApprovalRequest,
+  TemplateApprovalResponse,
+} from "../../../shared";
 
 interface SubmitApprovalVariables {
   templateSid: string;
-  approvalRequest: ApprovalRequest;
+  approvalRequest: SubmitTemplateApprovalRequest;
 }
 
 export const useSubmitTemplateApproval = () => {
-  return useWeddingMutation<ApprovalResponse, SubmitApprovalVariables>({
+  return useWeddingMutation<TemplateApprovalResponse, SubmitApprovalVariables>({
     mutationFn: async (variables: SubmitApprovalVariables) => {
       return submitTemplateForApproval(
         variables.templateSid,
@@ -19,12 +19,6 @@ export const useSubmitTemplateApproval = () => {
       );
     },
     options: {
-      onSuccess: (data, variables) => {
-        console.log(
-          `Template ${variables.templateSid} submitted for approval successfully:`,
-          data
-        );
-      },
       onError: (error, variables) => {
         console.error(
           `Failed to submit template ${variables.templateSid} for approval:`,

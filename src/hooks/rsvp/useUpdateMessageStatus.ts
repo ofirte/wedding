@@ -5,9 +5,6 @@ import { useWeddingMutation } from "../common";
 interface UpdateMessageStatusParams {
   messageId: string;
   status: string;
-  additionalData?: Partial<
-    Pick<SentMessage, "dateSent" | "errorMessage" | "dateUpdated">
-  >;
 }
 
 /**

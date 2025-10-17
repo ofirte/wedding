@@ -36,13 +36,21 @@ const TemplateApprovalWorkflow: React.FC<TemplateApprovalWorkflowProps> = ({
 }) => {
   const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState<string>("UTILITY");
-  const submitApprovalMutation = useSubmitTemplateApproval();
+  const {
+    mutate: submitTemplateApproval,
+    isPending: isPendingApprovalResponse,
+    isSuccess: isSubmittedForApprovalSuccess,
+    isError: isSubmitApprovalError,
+    error: submitApprovalError,
+    reset: resetSubmitApprovalState,
+  } = useSubmitTemplateApproval();
 
   const handleSubmitApproval = () => {
-    submitApprovalMutation.mutate(
+    submitTemplateApproval(
       {
         templateSid,
         approvalRequest: {
+          templateSid,
           name: formatTemplateName(templateName),
           category: selectedCategory,
         },
@@ -88,7 +96,7 @@ const TemplateApprovalWorkflow: React.FC<TemplateApprovalWorkflowProps> = ({
       </Box>
 
       {/* Approval Form - cleaner layout */}
-      {!submitApprovalMutation.isSuccess && (
+      {!isSubmittedForApprovalSuccess && (
         <Stack spacing={4}>
           <Box>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -134,17 +142,17 @@ const TemplateApprovalWorkflow: React.FC<TemplateApprovalWorkflowProps> = ({
             color="primary"
             size="large"
             startIcon={
-              submitApprovalMutation.isPending ? (
+              isPendingApprovalResponse ? (
                 <CircularProgress size={16} />
               ) : (
                 <ApprovalIcon />
               )
             }
-            disabled={submitApprovalMutation.isPending}
+            disabled={isPendingApprovalResponse}
             fullWidth
             sx={{ py: 2 }}
           >
-            {submitApprovalMutation.isPending
+            {isPendingApprovalResponse
               ? t("templates.submitting")
               : t("templates.requestWhatsappApproval")}
           </Button>
@@ -152,7 +160,7 @@ const TemplateApprovalWorkflow: React.FC<TemplateApprovalWorkflowProps> = ({
       )}
 
       {/* Success State */}
-      {submitApprovalMutation.isSuccess && (
+      {isSubmittedForApprovalSuccess && (
         <Paper elevation={1} sx={{ p: 3, mb: 3, textAlign: "center" }}>
           <CheckCircleIcon color="success" sx={{ fontSize: 48, mb: 2 }} />
           <Typography variant="h6" gutterBottom color="success.main">
@@ -168,18 +176,18 @@ const TemplateApprovalWorkflow: React.FC<TemplateApprovalWorkflowProps> = ({
       )}
 
       {/* Error State */}
-      {submitApprovalMutation.isError && (
+      {isSubmitApprovalError && (
         <Alert severity="error" sx={{ mb: 3 }}>
           <Typography variant="body2" fontWeight="bold">
             {t("templates.approvalError")}
           </Typography>
           <Typography variant="body2">
-            {submitApprovalMutation.error instanceof Error
-              ? submitApprovalMutation.error.message
+            {submitApprovalError instanceof Error
+              ? submitApprovalError.message
               : t("templates.unknownError")}
           </Typography>
           <Button
-            onClick={() => submitApprovalMutation.reset()}
+            onClick={() => resetSubmitApprovalState()}
             size="small"
             sx={{ mt: 1 }}
           >

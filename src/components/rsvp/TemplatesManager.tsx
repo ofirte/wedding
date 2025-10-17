@@ -15,7 +15,6 @@ import {
   useDeleteTemplate,
 } from "../../hooks/rsvp";
 import CreateTemplateForm from "./CreateTemplateForm";
-import { CreateTemplateRequest } from "../../api/rsvp/templateApi";
 import DSTable from "../common/DSTable";
 import {
   createTemplateColumns,
@@ -23,6 +22,8 @@ import {
   TemplateTableRow,
 } from "./TemplateColumns";
 import TemplateDetailView from "./TemplateDetailView";
+import { CreateMessageTemplateRequest } from "../../../shared";
+import { useAuth } from "../../hooks/auth/AuthContext";
 
 const TemplatesManager: React.FC = () => {
   const { t } = useTranslation();
@@ -31,7 +32,7 @@ const TemplatesManager: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] =
     useState<TemplateTableRow | null>(null);
   const [isDetailViewOpen, setIsDetailViewOpen] = useState(false);
-
+  const { currentUser } = useAuth();
   const createTemplateMutation = useCreateTemplate();
   const deleteTemplateMutation = useDeleteTemplate();
   const {
@@ -42,9 +43,9 @@ const TemplatesManager: React.FC = () => {
     syncApprovalStatus: true, // Enable background sync of approval statuses
   });
 
-  const handleCreateTemplate = (templateData: CreateTemplateRequest) => {
+  const handleCreateTemplate = (templateData: CreateMessageTemplateRequest) => {
     createTemplateMutation.mutate(
-      { templateData, userId: "current-user" }, // TODO: Replace with actual user ID
+      { templateData, userId: currentUser?.uid },
       {
         onSuccess: () => {
           setIsFormOpen(false);

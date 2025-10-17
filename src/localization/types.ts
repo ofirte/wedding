@@ -1,5 +1,3 @@
-import { deleteUser } from "firebase/auth";
-
 // Types for localization system
 export type Language = "en" | "he";
 
@@ -506,6 +504,26 @@ export interface Translations {
     stayContinue: string;
     leaveWithoutSaving: string;
     markAllAsSentAndClose: string;
+    // Send progress translations
+    sendingMessages: string;
+    messageSummary: string;
+    recipients: string;
+    sendingTo: string;
+    messageResults: string;
+    messageSent: string;
+    messageFailed: string;
+    messagesSent: string;
+    messagesFailed: string;
+    detailedResults: string;
+    messageSentSuccessfully: string;
+    messagesWillAppear: string;
+    retryFailedMessages: string;
+    pleaseWait: string;
+    sendingSummary: string;
+    messagesQueued: string;
+    failedToSend: string;
+    messageQueuedSingular: string;
+    messagesQueuedPlural: string;
   };
   rsvpEmptyState: {
     title: string;
