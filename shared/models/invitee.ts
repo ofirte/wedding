@@ -26,7 +26,3 @@ export interface Invitee {
   rsvpStatus?: RSVPStatus;
 }
 
-// Message variable types for templates (subset of Invitee data)
-export type MessageGuest = Pick<Invitee, "id" | "name"> & {
-  cellphone?: string;
-};

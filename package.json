@@ -38,6 +38,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:dev": "concurrently \"cd shared && npm run dev\" \"react-scripts start\"",
     "enulate": "firebase emulators:start --only functions --inspect-functions",
     "watch": "cd ./functions && tsc --watch",
     "update-types": "cd shared && npm run build && npm pack --pack-destination ../functions && cd ../functions && npm install ./wedding-plan-types-1.0.0.tgz",
@@ -76,6 +77,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.20",
     "@types/stylis": "^4.2.7",
+    "concurrently": "^9.2.1",
     "env-cmd": "^10.1.0",
     "ts-node": "^10.9.2"
   }

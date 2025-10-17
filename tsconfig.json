@@ -18,8 +18,11 @@
     "jsx": "react-jsx",
     "paths": {
       "@/": ["./src/"],
-      "@shared/*": ["./shared/*"]
+      "@shared/*": ["./shared/*"],
+      "@wedding-plan/types": ["./shared"],
+      "@wedding-plan/types/*": ["./shared/*"]
     }
   },
-  "include": ["src", "shared"]
+  "include": ["src"],
+  "references": [{ "path": "./shared" }]
 }

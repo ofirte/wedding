@@ -18,21 +18,6 @@ export interface PopulatedVariables {
   [key: string]: string;
 }
 
-// Type for message variable population - using Partial to allow missing fields
-export type MessageWedding = Partial<
-  Pick<Wedding, "id" | "brideName" | "groomName" | "startTime">
-> & {
-  id: string; // id is required
-  name?: string;
-  eventDate?: string; // Computed from Wedding.date if needed
-  date?: Date;
-  coupleName?: string; // Computed from brideName & groomName
-};
-
-export type MessageGuest = Pick<Invitee, "id" | "name"> & {
-  cellphone?: string;
-};
-
 /**
  * Get localized predefined variables based on current language
  * @param locale The current language ('en' or 'he')
@@ -161,16 +146,15 @@ export const formatLocalizedDate = (
  * @returns Object with all variables populated with real values
  */
 export const populateVariables = (
-  guest: MessageGuest,
-  wedding: MessageWedding,
+  guest: Invitee,
+  wedding: Wedding,
   locale: Language = "en"
 ): PopulatedVariables => {
   // Generate couple name from individual names or use provided coupleName
   const coupleName =
-    wedding.coupleName ||
-    (wedding.brideName && wedding.groomName
+    wedding.brideName && wedding.groomName
       ? `${wedding.brideName} & ${wedding.groomName}`
-      : wedding.name || "The Happy Couple");
+      : wedding.name || "The Happy Couple";
 
   // Format event date from wedding date with proper localization
   const eventDate = wedding.date

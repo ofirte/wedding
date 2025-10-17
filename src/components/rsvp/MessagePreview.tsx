@@ -4,9 +4,8 @@ import { useTranslation } from "../../localization/LocalizationContext";
 import {
   populateVariables,
   replaceVariables,
-  MessageGuest,
-  MessageWedding,
 } from "../../utils/messageVariables";
+import { Invitee, Wedding } from "@wedding-plan/types";
 
 interface Template {
   sid: string;
@@ -17,8 +16,8 @@ interface Template {
 interface MessagePreviewProps {
   template: Template | null;
   messageType: "whatsapp" | "sms" | "personal-whatsapp";
-  guests: MessageGuest[];
-  wedding?: MessageWedding | null;
+  guests: Invitee[];
+  wedding?: Wedding | null;
 }
 
 /**
