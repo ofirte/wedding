@@ -8,6 +8,7 @@ export interface SendMessageRequest {
   to: string;
   contentSid: string;
   contentVariables?: Record<string, any>;
+  weddingId?: string;
 }
 
 export interface SendMessageResponse extends BaseResponse {
@@ -17,11 +18,6 @@ export interface SendMessageResponse extends BaseResponse {
   from: string;
   to: string;
   dateCreated: string;
-}
-
-// Get Message Status
-export interface GetMessageStatusRequest {
-  messageSid: string;
 }
 
 export interface MessageInfo {
@@ -34,17 +30,8 @@ export interface MessageInfo {
   errorCode?: number;
   errorMessage?: string;
 }
-export interface GetMessageStatusResponse extends BaseResponse {
-  success: true;
-  messageInfo: MessageInfo;
-}
 
 // Union types for all messaging functions
-export type MessagingFunctionRequest =
-  | SendMessageRequest
-  | GetMessageStatusRequest;
+export type MessagingFunctionRequest = SendMessageRequest;
 
-export type MessagingFunctionResponse =
-  | SendMessageResponse
-  | GetMessageStatusResponse
-  | ErrorResponse;
+export type MessagingFunctionResponse = SendMessageResponse | ErrorResponse;

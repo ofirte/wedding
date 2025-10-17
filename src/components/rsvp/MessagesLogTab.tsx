@@ -6,7 +6,6 @@ import { createSentMessagesColumns } from "./SentMessagesColumns";
 import { useTranslation } from "../../localization/LocalizationContext";
 import DSLoading from "../common/DSLoading";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
-import MessageStatusUpdate from "./MessageStatusUpdate";
 
 const MessagesLogTab: FC = () => {
   const { t } = useTranslation();
@@ -47,14 +46,6 @@ const MessagesLogTab: FC = () => {
       >
         <Typography variant="h6">{t("rsvp.messagesLog")}</Typography>
       </Box>
-      {sentMessages.map((message) => (
-        <MessageStatusUpdate
-          key={message.id}
-          messageSid={message.sid}
-          messageId={message.id}
-          originalStatus={message.status}
-        />
-      ))}
       <DSTable
         columns={columns}
         data={sentMessages}

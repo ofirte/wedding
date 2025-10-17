@@ -2,6 +2,7 @@ import { CallableRequest, HttpsError } from "firebase-functions/https";
 import { WeddingRole } from "../shared";
 import { AuthData } from "firebase-functions/tasks";
 import { logger } from "firebase-functions";
+import { defineString } from "firebase-functions/params";
 
 export const isAuthenticated: (
   request: CallableRequest<any>
@@ -29,10 +30,15 @@ export const isSufficientWeddingRole = ({
  * Validates that all required fields exist on request.data
  * and returns a typed subset.
  */
-export function getValidatedData<T extends object, K extends keyof T>(
+export function getValidatedData<
+  T extends object,
+  K extends keyof T,
+  O extends keyof T = never
+>(
   data: T,
-  requiredKeys: K[]
-): Pick<T, K> {
+  requiredKeys: K[],
+  optionalKeys?: O[]
+): Pick<T, K> & Partial<Pick<T, O>> {
   const missingKeys = requiredKeys.filter((key) => data[key] === undefined);
 
   if (missingKeys.length > 0) {
@@ -43,7 +49,7 @@ export function getValidatedData<T extends object, K extends keyof T>(
   }
 
   // TypeScript guarantee: all requiredKeys exist, return subset
-  return data as Pick<T, K>;
+  return data as Pick<T, K> & Partial<Pick<T, O>>;
 }
 
 export function handleFunctionError(
@@ -117,3 +123,16 @@ export function handleFunctionError(
   // 7️⃣ Generic internal error fallback
   throw new HttpsError("internal", "Internal server error");
 }
+
+// Define project ID using Firebase params
+const projectId = defineString("PROJECT_ID");
+const region = defineString("FUNCTIONS_REGION");
+
+/**
+ * Get the function base URL from environment configuration
+ */
+export const getFunctionBaseUrl = (): string => {
+  const projId = projectId.value();
+  const funcRegion = region.value();
+  return `https://${funcRegion}-${projId}.cloudfunctions.net`;
+};

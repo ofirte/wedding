@@ -2,10 +2,8 @@ import { createCollectionAPI } from "../weddingFirebaseHelpers";
 import {
   sendWhatsAppMessage,
   sendSmsMessage,
-  getMessageStatus,
 } from "../firebaseFunctions";
 import {
-  GetMessageStatusResponse,
   MessageInfo,
   SendMessageRequest,
 } from "../../../shared";
@@ -44,12 +42,16 @@ export const sendMessage = async (
   messageData: SendMessageApiRequest,
   weddingId?: string
 ): Promise<SentMessage> => {
+  if (!weddingId) {
+    throw new Error("Wedding ID is required to send message");
+  }
   try {
     // Call Firebase callable function
     const result = await sendWhatsAppMessage({
       to: messageData.to,
       contentSid: messageData.contentSid,
       contentVariables: messageData.contentVariables,
+      weddingId: weddingId,
     });
 
     // Transform the response to match expected format
@@ -86,10 +88,14 @@ export const sendSMSMessage = async (
 ): Promise<SentMessage> => {
   try {
     // Call Firebase callable function
+    if (!weddingId) {
+      throw new Error("Wedding ID is required to send SMS message");
+    }
     const result = await sendSmsMessage({
       to: messageData.to,
       contentSid: messageData.contentSid,
       contentVariables: messageData.contentVariables,
+      weddingId,
     });
 
     const responseData = result.data as any;
@@ -117,25 +123,6 @@ export const sendSMSMessage = async (
   }
 };
 
-/**
- * Check message status from Twilio API
- * @param messageSid The Twilio message SID to check
- * @returns Promise resolving to Twilio message status
- */
-export const checkMessageStatus = async (
-  messageSid: string
-): Promise<GetMessageStatusResponse> => {
-  try {
-    const result = await getMessageStatus({
-      messageSid: messageSid,
-    });
-
-    return result.data;
-  } catch (error) {
-    console.error("Error fetching message status from Twilio:", error);
-    throw error;
-  }
-};
 
 // Firebase Firestore functions for sent messages
 
