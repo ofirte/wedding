@@ -10,12 +10,13 @@ import {
   AccordionDetails,
   Button,
 } from "@mui/material";
-import { WeddingPlans } from "../../api/wedding/types";
+
 import { useTranslation } from "../../localization/LocalizationContext";
 import { UserSelect } from "../common/UserSelect";
 import { WeddingMembersTable } from "./WeddingMembersTable";
 import { ExpandMore, PersonAdd } from "@mui/icons-material";
 import { useWeddingDetails } from "../../hooks/auth";
+import { WeddingPlans } from "@wedding-plan/types";
 
 interface WeddingDetailsDialogProps {
   open: boolean;

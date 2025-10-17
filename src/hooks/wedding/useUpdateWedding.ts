@@ -4,7 +4,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { updateWeddingDetails } from "../../api/wedding/weddingApi";
-import { Wedding } from "../../api/wedding/types";
+import { Wedding } from "@wedding-plan/types";
 
 interface UpdateWeddingParams {
   weddingId: string;

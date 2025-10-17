@@ -5,6 +5,14 @@
 /.pnp
 .pnp.js
 
+# shared package dependencies and build output
+/shared/node_modules
+/shared/dist
+/shared/package-lock.json
+
+# functions copied shared folder (no longer needed with npm package)
+/functions/src/shared
+
 # testing
 /coverage
 

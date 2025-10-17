@@ -11,7 +11,7 @@ import { useAllWeddings } from "../../hooks/wedding/useAllWeddings";
 import { useAddUserToWedding } from "../../hooks/wedding/useAddUserToWedding";
 import { WeddingTable } from "./WeddingTable";
 import { WeddingDetailsDialog } from "./WeddingDetailsDialog";
-import { Wedding } from "../../api/wedding/types";
+import { Wedding } from "@wedding-plan/types";
 import { useUpdateUser } from "../../hooks/auth";
 import { arrayUnion } from "firebase/firestore";
 

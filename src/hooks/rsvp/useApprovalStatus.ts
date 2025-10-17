@@ -1,7 +1,6 @@
-import { GetTemplateApprovalStatusResponse } from "../../../shared/api";
+import { GetTemplateApprovalStatusResponse } from "@wedding-plan/types";
 import { getApprovalStatus } from "../../api/rsvp/templateApi";
 import { useWeddingQuery } from "../common";
-
 
 export const useApprovalStatus = (templateSid?: string) => {
   return useWeddingQuery<GetTemplateApprovalStatusResponse>({

@@ -22,7 +22,7 @@ import {
   TemplateTableRow,
 } from "./TemplateColumns";
 import TemplateDetailView from "./TemplateDetailView";
-import { CreateMessageTemplateRequest } from "../../../shared";
+import { CreateMessageTemplateRequest } from "@wedding-plan/types";
 import { useAuth } from "../../hooks/auth/AuthContext";
 
 const TemplatesManager: React.FC = () => {

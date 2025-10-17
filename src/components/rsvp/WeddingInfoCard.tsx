@@ -13,7 +13,7 @@ import {
   LocationOn as LocationIcon,
   AccessTime as TimeIcon,
 } from "@mui/icons-material";
-import { Wedding } from "../../api/wedding/types";
+import { Wedding } from "@wedding-plan/types";
 import { Invitee } from "../invitees/InviteList";
 import { useTranslation } from "../../localization/LocalizationContext";
 

@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createTemplate } from "../../api/rsvp/templateApi";
 import { useWeddingMutation } from "../common";
-import { CreateMessageTemplateRequest, Template } from "../../../shared";
+import { CreateMessageTemplateRequest, Template } from "@wedding-plan/types";
 
 interface CreateTemplateVariables {
   templateData: CreateMessageTemplateRequest;

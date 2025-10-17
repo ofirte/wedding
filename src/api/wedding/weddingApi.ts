@@ -1,10 +1,10 @@
-import { createGeneralCollectionAPI } from "../generalFirebaseHelpers";
 import {
   Wedding,
   WeddingMemberInput,
   WeddingPlans,
   WeddingPlan,
-} from "./types";
+} from "@wedding-plan/types";
+import { createGeneralCollectionAPI } from "../generalFirebaseHelpers";
 
 const WeddingApi = createGeneralCollectionAPI<Wedding>("weddings");
 // Find wedding by invitation code
@@ -180,7 +180,7 @@ export const removeUserFromWedding = async (
     console.error("Error removing user from wedding:", error);
     throw error;
   }
-}
+};
 
 // Get all weddings
 export const getAllWeddings = async (): Promise<Wedding[]> => {

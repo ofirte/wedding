@@ -12,10 +12,8 @@ import {
   CreateMessageTemplateRequest,
   SubmitTemplateApprovalRequest,
   GetTemplateApprovalStatusResponse,
-} from "../../../shared/api";
-import { Template, TemplateDocument } from "../../../shared/models";
-
-
+} from "@wedding-plan/types";
+import { Template, TemplateDocument } from "@wedding-plan/types";
 
 export const createTemplate = async (
   templateData: CreateMessageTemplateRequest,
@@ -226,7 +224,8 @@ export const getApprovalStatus = async (
       templateSid: templateSid,
     });
 
-    const approvalStatusResponse = result.data as GetTemplateApprovalStatusResponse;
+    const approvalStatusResponse =
+      result.data as GetTemplateApprovalStatusResponse;
 
     // Update the approval status in Firebase if WhatsApp data exists
     if (approvalStatusResponse.approvalData.whatsapp) {

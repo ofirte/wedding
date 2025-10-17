@@ -3,7 +3,7 @@ import { submitTemplateForApproval } from "../../api/rsvp/templateApi";
 import {
   SubmitTemplateApprovalRequest,
   TemplateApprovalResponse,
-} from "../../../shared";
+} from "@wedding-plan/types";
 
 interface SubmitApprovalVariables {
   templateSid: string;

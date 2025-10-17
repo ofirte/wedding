@@ -11,9 +11,10 @@ import {
 import { useNavigate } from "react-router";
 import { useCurrentUser } from "../../hooks/auth/useCurrentUser";
 import { useWeddingsDetails } from "../../hooks/wedding/useWeddingsDetails";
-import { Wedding } from "../../api/wedding/types";
+
 import { useTranslation } from "../../localization/LocalizationContext";
 import WeddingCard from "./WeddingCard";
+import { Wedding } from "@wedding-plan/types";
 
 const WeddingsPage: React.FC = () => {
   const navigate = useNavigate();

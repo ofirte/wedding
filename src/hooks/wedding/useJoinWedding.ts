@@ -1,9 +1,6 @@
-import {
-  useMutation,
-  UseMutationOptions,
-} from "@tanstack/react-query";
-import { Wedding } from "../../api/wedding/types";
+import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 import { joinWedding } from "../../api/wedding/weddingApi";
+import { Wedding } from "@wedding-plan/types";
 
 export const useJoinWedding = (
   options?: UseMutationOptions<Wedding, unknown, unknown, unknown>
@@ -13,7 +10,12 @@ export const useJoinWedding = (
       userId: string;
       weddingIdentifier: string;
       isInvitationCode?: boolean;
-    }) => joinWedding(params.userId, params.weddingIdentifier, params.isInvitationCode),
+    }) =>
+      joinWedding(
+        params.userId,
+        params.weddingIdentifier,
+        params.isInvitationCode
+      ),
     ...options,
   });
 };

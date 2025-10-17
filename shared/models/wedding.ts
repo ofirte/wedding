@@ -55,14 +55,3 @@ export interface Wedding {
   invitationPhoto?: string;
   invitationCode?: string;
 }
-
-// Message variable types for templates (subset of Wedding data)
-export type MessageWedding = Partial<
-  Pick<Wedding, "id" | "brideName" | "groomName" | "startTime">
-> & {
-  id: string; // id is required
-  name?: string;
-  eventDate?: string; // Computed from Wedding.date if needed
-  date?: Date;
-  coupleName?: string; // Computed from brideName & groomName
-};

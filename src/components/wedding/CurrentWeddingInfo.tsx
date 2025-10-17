@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography, Stack } from "@mui/material";
-import { Wedding } from "../../api/wedding/types";
+import { Wedding } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface CurrentWeddingInfoProps {

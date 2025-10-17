@@ -1,0 +1,30 @@
+{
+  "name": "@wedding-plan/types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript types for Wedding Plan application",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "prepare": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "typescript",
+    "types",
+    "wedding",
+    "shared"
+  ],
+  "author": "Wedding Plan Team",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "typescript": ">=4.0.0"
+  }
+}

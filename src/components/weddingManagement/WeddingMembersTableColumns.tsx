@@ -4,8 +4,9 @@ import { UserInfo } from "../../hooks/auth/useUsersInfo";
 
 import { Avatar, Button, Chip, Typography } from "@mui/material";
 import { format } from "date-fns";
-import { WeddingMemberInput, WeddingPlans } from "../../api/wedding/types";
+
 import { RemoveCircle } from "@mui/icons-material";
+import { WeddingMemberInput, WeddingPlans } from "@wedding-plan/types";
 
 export interface MemberTableRow {
   id: string;

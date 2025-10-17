@@ -2,14 +2,13 @@ import React from "react";
 import { Chip, Box, Typography, Avatar, Stack } from "@mui/material";
 import { DSTable } from "../common";
 import { useUsersByIds } from "../../hooks/auth/useUsersByIds";
-
-import { WeddingMembers, WeddingPlans } from "../../api/wedding/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 import {
   getWeddingMembersTableColumns,
   MemberTableRow,
 } from "./WeddingMembersTableColumns";
 import { WeddingMembersDeleteDialog } from "./WeddingMembersDeleteDialog";
+import { WeddingMembers, WeddingPlans } from "@wedding-plan/types";
 
 interface WeddingMembersTableProps {
   weddingId: string;

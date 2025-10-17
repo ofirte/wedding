@@ -1,7 +1,10 @@
 import { httpsCallable } from "firebase/functions";
 import { UsersFunctions } from "./types";
 import { functions } from "../firebaseConfig";
-import { DeleteUserAuthRequest, DeleteUserAuthResponse } from "../../../shared";
+import {
+  DeleteUserAuthRequest,
+  DeleteUserAuthResponse,
+} from "@wedding-plan/types";
 
 export const USERS_FUNCTIONS = {
   [UsersFunctions.DELETE_USER_AUTH]: httpsCallable<
