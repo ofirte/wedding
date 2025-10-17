@@ -3,7 +3,6 @@ export { useSendMessage } from "./useSendMessage";
 export { useSendSMSMessage } from "./useSendSMSMessage";
 export { usePersonalWhatsApp } from "./usePersonalWhatsApp";
 export { useSentMessages } from "./useSentMessages";
-export { useCheckMessageStatus } from "./useCheckMessageStatus";
 export { useUpdateMessageStatus } from "./useUpdateMessageStatus";
 export { useCreateTemplate } from "./useCreateTemplate";
 export { useTemplates } from "./useTemplates";
