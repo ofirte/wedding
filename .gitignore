@@ -9,9 +9,11 @@
 /shared/node_modules
 /shared/dist
 /shared/package-lock.json
+/shared/*.tgz
 
 # functions copied shared folder (no longer needed with npm package)
 /functions/src/shared
+/functions/*.tgz
 
 # testing
 /coverage

@@ -14,7 +14,7 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-    "@wedding-plan/types": "file:../shared",
+    "@wedding-plan/types": "file:wedding-plan-types-1.0.0.tgz",
     "firebase-admin": "^12.6.0",
     "firebase-functions": "^6.0.1",
     "twilio": "^5.3.4"

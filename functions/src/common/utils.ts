@@ -1,5 +1,5 @@
 import { CallableRequest, HttpsError } from "firebase-functions/https";
-import { WeddingRole } from "../shared";
+import { WeddingRole } from "@wedding-plan/types";
 import { AuthData } from "firebase-functions/tasks";
 import { logger } from "firebase-functions";
 import { defineString } from "firebase-functions/params";
