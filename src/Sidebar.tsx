@@ -20,17 +20,11 @@ import {
   Money as MoneyIcon,
   Assignment as TaskIcon,
   WhatsApp as RSVPIcon,
-  AdminPanelSettings as AdminIcon,
   Logout as LogoutIcon,
   Settings as SettingsIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router";
-import {
-  useCurrentUser,
-  useSignOut,
-  useWeddingDetails,
-  useIsAdmin,
-} from "./hooks/auth";
+import { useCurrentUser, useSignOut, useWeddingDetails } from "./hooks/auth";
 import { useTranslation } from "./localization/LocalizationContext";
 import { LanguageSwitcher } from "./components/common/LanguageSwitcher";
 import { useResponsive } from "./utils/ResponsiveUtils";
@@ -53,17 +47,12 @@ const Sidebar: React.FC<SidebarProps> = ({
   const { data: weddingDetails } = useWeddingDetails();
   const { mutate: signOut } = useSignOut();
   const { t } = useTranslation();
-  const { isAdmin } = useIsAdmin();
   const menuItems = [
     { text: t("nav.home"), icon: <HomeIcon />, path: "/home" },
     { text: t("nav.guests"), icon: <ListIcon />, path: "/invite" },
     { text: t("nav.budget"), icon: <MoneyIcon />, path: "/budget" },
     { text: t("nav.tasks"), icon: <TaskIcon />, path: "/tasks" },
     { text: t("nav.rsvp"), icon: <RSVPIcon />, path: "/rsvp" },
-  ];
-
-  const adminMenuItems = [
-    { text: t("nav.admin"), icon: <AdminIcon />, path: "/admin" },
   ];
 
   // Function to check if a menu item is currently active
@@ -124,7 +113,14 @@ const Sidebar: React.FC<SidebarProps> = ({
   }
 
   const drawerContent = (
-    <Box sx={{ height: "100%", display: "flex", flexDirection: "column", mt: isMobile ? 6 : 0 }}>
+    <Box
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        mt: isMobile ? 6 : 0,
+      }}
+    >
       <Box
         sx={{
           padding: 2,

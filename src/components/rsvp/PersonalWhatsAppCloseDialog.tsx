@@ -17,7 +17,7 @@ import {
   Person as PersonIcon,
   Close as CloseIcon,
 } from "@mui/icons-material";
-import { Invitee } from "../invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface PersonalWhatsAppCloseDialogProps {

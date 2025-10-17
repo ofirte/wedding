@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Card, Box, CircularProgress } from "@mui/material";
-import { Wedding } from "../../api/wedding/types";
+import { Wedding } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface WeddingInvitePhotoCardProps {

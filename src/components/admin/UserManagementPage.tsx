@@ -16,7 +16,7 @@ import { UserInfo } from "../../hooks/auth/useUsersInfo";
 import { useQueryClient } from "@tanstack/react-query";
 import { DeleteUserDialog } from "./deleteUserDialog";
 import { useDeleteUser } from "../../hooks/auth/useDeleteUser";
-import { on } from "events";
+
 
 const UserManagementPage: React.FC = () => {
   const { t } = useTranslation();

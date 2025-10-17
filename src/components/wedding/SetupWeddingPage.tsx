@@ -18,7 +18,7 @@ import { useCreateWedding, useJoinWedding } from "../../hooks/wedding";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { Wedding } from "../../api/wedding/types";
+import { Wedding } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface TabPanelProps {

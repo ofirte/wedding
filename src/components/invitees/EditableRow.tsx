@@ -7,7 +7,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { Invitee } from "./InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 const EditableRow = ({

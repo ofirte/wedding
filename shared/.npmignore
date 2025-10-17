@@ -1,0 +1,26 @@
+# Shared Types Package
+
+## Development
+```bash
+cd shared
+npm install
+npm run build    # Build the package
+npm run dev      # Watch mode for development
+```
+
+## Usage
+
+### In React App (src/)
+```typescript
+import { Wedding, SendMessageRequest } from '@wedding-plan/types';
+```
+
+### In Firebase Functions
+```typescript
+import { Wedding, SendMessageRequest } from '@wedding-plan/types';
+```
+
+## Build Output
+- `dist/` - Compiled JavaScript and type definitions
+- `dist/index.d.ts` - Main type definitions entry point
+- `dist/index.js` - Main JavaScript entry point

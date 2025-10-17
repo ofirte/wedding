@@ -2,8 +2,7 @@ import {
   createCollectionAPI,
   weddingFirebase,
 } from "../weddingFirebaseHelpers";
-import { Invitee } from "../../components/invitees/InviteList";
-import { RSVPStatus } from "../rsvp/rsvpStatusTypes";
+import { Invitee, RSVPStatus } from "@wedding-plan/types";
 
 // Create all CRUD operations for invitees (DRY approach)
 const inviteesAPI = createCollectionAPI<Invitee>("invitee");

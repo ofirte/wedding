@@ -4,8 +4,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { addUserToWedding } from "../../api/wedding/weddingApi";
-import { WeddingPlan } from "../../api/wedding/types";
-import { on } from "events";
+import { WeddingPlan } from "@wedding-plan/types";
 
 interface AddUserToWeddingVariables {
   weddingId: string;

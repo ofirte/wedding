@@ -17,7 +17,7 @@ import {
   Template,
   TemplateApprovalResponse,
   TemplateApprovalStatusData,
-} from "../shared";
+} from "@wedding-plan/types";
 import {
   getValidatedData,
   handleFunctionError,

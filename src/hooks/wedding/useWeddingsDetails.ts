@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getWeddingDetails } from "../../api/wedding/weddingApi";
-import { Wedding } from "../../api/wedding/types";
+import { Wedding } from "@wedding-plan/types";
 
 /**
  * Hook to fetch multiple wedding details by their IDs

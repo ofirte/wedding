@@ -1,12 +1,6 @@
 import { createCollectionAPI } from "../weddingFirebaseHelpers";
-import {
-  sendWhatsAppMessage,
-  sendSmsMessage,
-} from "../firebaseFunctions";
-import {
-  MessageInfo,
-  SendMessageRequest,
-} from "../../../shared";
+import { sendWhatsAppMessage, sendSmsMessage } from "../firebaseFunctions";
+import { MessageInfo, SendMessageRequest } from "@wedding-plan/types";
 
 // SMS-specific request interface (same as WhatsApp)
 export interface SendMessageApiRequest extends SendMessageRequest {
@@ -122,7 +116,6 @@ export const sendSMSMessage = async (
     throw error;
   }
 };
-
 
 // Firebase Firestore functions for sent messages
 

@@ -1,10 +1,7 @@
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../firebaseConfig";
 import { MessagingFunctions } from "./types";
-import {
-  SendMessageRequest,
-  SendMessageResponse,
-} from "../../../shared";
+import { SendMessageRequest, SendMessageResponse } from "@wedding-plan/types";
 
 /**
  * Messaging-related Firebase Functions

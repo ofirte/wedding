@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { format } from "date-fns";
-import { Wedding } from "../../api/wedding/types";
+import { Wedding } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface WeddingCardProps {

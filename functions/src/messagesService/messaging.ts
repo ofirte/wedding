@@ -1,10 +1,7 @@
 import { onCall, HttpsError, onRequest } from "firebase-functions/v2/https";
 import { logger } from "firebase-functions/v2";
 import { twilioWhatsAppFrom, twilioFunctionConfig } from "../common/config";
-import {
-  SendMessageRequest,
-  SendMessageResponse,
-} from "../shared";
+import { SendMessageRequest, SendMessageResponse } from "@wedding-plan/types";
 import {
   getFunctionBaseUrl,
   getValidatedData,
@@ -171,14 +168,15 @@ export const messageStatusWebhook = onRequest(async (req, res) => {
     });
     initializeFirebaseAdmin();
 
-    const { weddingId, MessageSid, MessageStatus, ErrorCode, ErrorMessage } = getValidatedData(
-      {
-        weddingId: req.query.weddingId,
-        ...req.body,
-      },
-      ["weddingId", "MessageSid", "MessageStatus"],
-      ["ErrorCode", "ErrorMessage"]
-    );
+    const { weddingId, MessageSid, MessageStatus, ErrorCode, ErrorMessage } =
+      getValidatedData(
+        {
+          weddingId: req.query.weddingId,
+          ...req.body,
+        },
+        ["weddingId", "MessageSid", "MessageStatus"],
+        ["ErrorCode", "ErrorMessage"]
+      );
 
     // Update message status in Firestore
     const db = admin.firestore();

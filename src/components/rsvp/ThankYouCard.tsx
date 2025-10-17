@@ -9,8 +9,7 @@ import {
   Button,
 } from "@mui/material";
 import { CheckCircle as CheckIcon } from "@mui/icons-material";
-import { Wedding } from "../../api/wedding/types";
-import { Invitee } from "../invitees/InviteList";
+import { Wedding, Invitee } from "@wedding-plan/types";
 import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
 import { useTranslation } from "../../localization/LocalizationContext";
 

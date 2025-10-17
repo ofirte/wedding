@@ -10,7 +10,7 @@ import {
   Button,
   Stack,
 } from "@mui/material";
-import { Invitee } from "./InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface InviteeBulkUpdateDialogProps {

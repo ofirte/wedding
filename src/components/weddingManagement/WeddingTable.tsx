@@ -1,12 +1,13 @@
 import React from "react";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { Wedding } from "../../api/wedding/types";
+
 import DSTable from "../common/DSTable";
 import {
   createWeddingTableColumns,
   WeddingTableData,
 } from "./WeddingTableColumns";
 import { WeddingTableEmptyState } from "./WeddingTableEmptyState";
+import { Wedding } from "@wedding-plan/types";
 
 interface WeddingTableProps {
   weddings: Wedding[];

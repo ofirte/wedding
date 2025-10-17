@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "module": "NodeNext",
     "esModuleInterop": true,
     "moduleResolution": "nodenext",
@@ -9,8 +10,13 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@wedding-plan/types": ["../shared"],
+      "@wedding-plan/types/*": ["../shared/*"]
+    }
   },
   "compileOnSave": true,
-  "include": ["src"]
+  "include": ["src"],
+  "references": [{ "path": "../shared" }]
 }

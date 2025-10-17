@@ -18,7 +18,7 @@ import { useTranslation } from "../../localization/LocalizationContext";
 import { useSendMessage } from "../../hooks/rsvp/useSendMessage";
 import { useSendSMSMessage } from "../../hooks/rsvp/useSendSMSMessage";
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
-import { Invitee } from "../invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { populateVariables } from "../../utils/messageVariables";
 import MessageTypeToggle from "./MessageTypeToggle";
 import MessagePreview from "./MessagePreview";
@@ -48,7 +48,7 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
   const { t, language } = useTranslation();
   const { mutateAsync: sendMessage } = useSendMessage();
   const { mutateAsync: sendSMSMessage } = useSendSMSMessage();
-  const { data: wedding } = useWeddingDetails();
+  const { data: wedding, isLoading: isLoadingWedding } = useWeddingDetails();
   const [messageType, setMessageType] = useState<
     "whatsapp" | "sms" | "personal-whatsapp"
   >("whatsapp");
@@ -171,11 +171,7 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
             ? guest.cellphone
             : `+972${guest.cellphone}`;
 
-          const contentVariables = populateVariables(
-            guest,
-            wedding || { id: "" },
-            language
-          );
+          const contentVariables = populateVariables(guest, wedding!, language);
 
           // Import the savePersonalWhatsAppMessage function
           const { savePersonalWhatsAppMessage } = await import(
@@ -219,6 +215,9 @@ const SendMessageDialog: FC<SendMessageDialogProps> = ({
       return newSet;
     });
   };
+  if (isLoadingWedding) {
+    return null;
+  }
 
   return (
     <>

@@ -8,16 +8,13 @@ import {
   ListItemIcon,
   ListItemText,
   Alert,
-  Card,
-  CardContent,
-  Chip,
 } from "@mui/material";
 import {
   CheckCircle as CheckCircleIcon,
   Error as ErrorIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { Invitee } from "../invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 
 export interface SendResult {
   guest: Invitee;

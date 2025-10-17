@@ -7,30 +7,12 @@ import {
   getTemplateApprovalStatus,
 } from "../firebaseFunctions";
 import {
-  Template,
-  TemplateDocument,
-  TemplateContentTypes,
-  TemplateApprovalRequest,
   TemplateApprovalResponse,
-  TemplateApprovalStatusData,
   CreateMessageTemplateRequest,
   SubmitTemplateApprovalRequest,
-} from "../../../shared/templateTypes";
-
-// Re-export shared types for convenience
-export type {
-  Template,
-  TemplateDocument,
-  TemplateContentTypes,
-  TemplateApprovalRequest,
-  TemplateApprovalResponse,
-  TemplateApprovalStatusData,
-};
-
-export interface ApprovalStatusResponse {
-  templateSid: string;
-  approvalData: TemplateApprovalStatusData;
-}
+  GetTemplateApprovalStatusResponse,
+} from "@wedding-plan/types";
+import { Template, TemplateDocument } from "@wedding-plan/types";
 
 export const createTemplate = async (
   templateData: CreateMessageTemplateRequest,
@@ -235,13 +217,14 @@ export const submitTemplateForApproval = async (
  */
 export const getApprovalStatus = async (
   templateSid: string
-): Promise<ApprovalStatusResponse> => {
+): Promise<GetTemplateApprovalStatusResponse> => {
   try {
     const result = await getTemplateApprovalStatus({
       templateSid: templateSid,
     });
 
-    const approvalStatusResponse = result.data as ApprovalStatusResponse;
+    const approvalStatusResponse =
+      result.data as GetTemplateApprovalStatusResponse;
 
     // Update the approval status in Firebase if WhatsApp data exists
     if (approvalStatusResponse.approvalData.whatsapp) {

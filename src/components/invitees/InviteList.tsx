@@ -18,20 +18,7 @@ import InviteeTable from "./InviteeTable";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { isGoogleContactsConfigured } from "../../api/contacts/googleContactsApi";
 import { isNil } from "lodash";
-import { RSVPStatus } from "../../api/rsvp/rsvpStatusTypes";
-
-export interface Invitee {
-  id: string;
-  name: string;
-  rsvp: string;
-  percentage: number;
-  side: string;
-  relation: string;
-  amount: number;
-  amountConfirm: number;
-  cellphone: string;
-  rsvpStatus?: RSVPStatus;
-}
+import { Invitee } from "@wedding-plan/types";
 
 const WeddingInviteTable = () => {
   const columns = createColumns(useTranslation().t);

@@ -1,7 +1,6 @@
 import { useCallback } from "react";
-import { Invitee } from "../../components/invitees/InviteList";
+import { Invitee, Wedding } from "@wedding-plan/types";
 import { savePersonalWhatsAppMessage } from "../../api/rsvp/rsvpApi";
-import { MessageWedding } from "../../utils/messageVariables";
 
 interface Template {
   sid: string;
@@ -43,11 +42,7 @@ export const usePersonalWhatsApp = () => {
 
   // Generate personalized message for a guest
   const generatePersonalizedMessage = useCallback(
-    (
-      template: Template,
-      guest: Invitee,
-      wedding?: MessageWedding | null
-    ): string => {
+    (template: Template, guest: Invitee, wedding?: Wedding | null): string => {
       let message = getTemplateBody(template);
 
       // Replace variables with guest's information
@@ -95,7 +90,7 @@ export const usePersonalWhatsApp = () => {
     async (
       guests: Invitee[],
       template: Template,
-      wedding?: MessageWedding | null,
+      wedding?: Wedding | null,
       onProgress?: (current: number, total: number, guestName: string) => void
     ): Promise<void> => {
       for (let i = 0; i < guests.length; i++) {
@@ -151,7 +146,7 @@ export const usePersonalWhatsApp = () => {
     async (
       guests: Invitee[],
       template: Template,
-      wedding?: MessageWedding | null
+      wedding?: Wedding | null
     ): Promise<void> => {
       const savePromises = guests.map(async (guest) => {
         try {

@@ -6,7 +6,7 @@ import {
   Group as GroupIcon,
   PersonAdd as PersonAddIcon,
 } from "@mui/icons-material";
-import { Invitee } from "./InviteList";
+import { Invitee } from "@wedding-plan/types";
 interface GuestManagementSummaryProps {
   invitees: Invitee[];
 }

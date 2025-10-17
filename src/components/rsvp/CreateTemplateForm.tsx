@@ -28,7 +28,7 @@ import {
 } from "../../utils/messageVariables";
 import { useInvitees } from "../../hooks/invitees";
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
-import { CreateMessageTemplateRequest } from "../../../shared";
+import { CreateMessageTemplateRequest } from "@wedding-plan/types";
 
 interface CreateTemplateFormProps {
   open: boolean;

@@ -7,7 +7,7 @@ import {
 import { useTranslation } from "../../localization/LocalizationContext";
 import { useResponsive } from "../../utils/ResponsiveUtils";
 import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
-import { Invitee } from "../invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { useRSVPFormQuestions } from "../../hooks/rsvp/useRSVPFormQuestions";
 import ResponseRateRatio from "./ResponseRateRatio";
 import CustomQuestionsStats from "./CustomQuestionsStats";

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Invitee } from "./InviteList";
+import { Invitee } from "@wedding-plan/types";
 import DSTable from "../common/DSTable";
 import { Column } from "../common/DSTable";
 import InviteeListActionCell from "./InviteeListActionCell";

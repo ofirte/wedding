@@ -29,7 +29,7 @@ import {
   ContactPhone,
   Close,
 } from "@mui/icons-material";
-import { Invitee } from "../invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { useGoogleContacts } from "../../hooks/contacts/useGoogleContacts";
 import { useContactMatcher } from "../../hooks/contacts/useContactMatcher";
 import {

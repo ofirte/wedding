@@ -1,5 +1,5 @@
 import React from "react";
-import { Invitee } from "./InviteList";
+import { Invitee } from "@wedding-plan/types";
 import Typography from "@mui/material/Typography";
 import { Column } from "../common/DSTable";
 import InviteeListActionCell from "./InviteeListActionCell";

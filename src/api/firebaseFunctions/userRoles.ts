@@ -8,7 +8,7 @@ import {
   SetUserRoleResponse,
   ListUsersRequest,
   ListUsersResponse,
-} from "../../../shared";
+} from "@wedding-plan/types";
 
 /**
  * User Roles-related Firebase Functions

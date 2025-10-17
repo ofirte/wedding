@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { useSentMessages } from "../../hooks/rsvp/useSentMessages";
 
-import { Invitee } from "../invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
 import DynamicRSVPStatusSummary from "./DynamicRSVPStatusSummary";

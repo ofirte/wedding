@@ -9,7 +9,7 @@ import {
 } from "@mui/icons-material";
 import { SentMessage } from "../../api/rsvp/rsvpApi";
 import { format } from "date-fns";
-import { Invitee } from "../invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 
 const getStatusIcon = (status: string) => {
   switch (status) {

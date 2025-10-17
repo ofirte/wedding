@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { GoogleContact } from "../../api/contacts/googleContactsApi";
-import { Invitee } from "../../components/invitees/InviteList";
+import { Invitee } from "@wedding-plan/types";
 import { useUpdateInvitee } from "../invitees/useUpdateInvitee";
 import { formatPhoneNumber } from "../../utils/PhoneUtils";
 import { getContactPhoneNumber } from "../../api/contacts/googleContactUtils";

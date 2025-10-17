@@ -12,7 +12,7 @@ import {
   SubmitTemplateApprovalResponse,
   GetTemplateApprovalStatusRequest,
   GetTemplateApprovalStatusResponse,
-} from "../../../shared";
+} from "@wedding-plan/types";
 
 /**
  * Template-related Firebase Functions

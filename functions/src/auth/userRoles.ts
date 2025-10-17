@@ -11,7 +11,7 @@ import {
   SetUserRoleResponse,
   ListUsersRequest,
   ListUsersResponse,
-} from "../shared";
+} from "@wedding-plan/types";
 import {
   handleFunctionError,
   isAuthenticated,
