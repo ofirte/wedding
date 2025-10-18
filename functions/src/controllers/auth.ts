@@ -110,11 +110,7 @@ export const initializeNewUser = onCall<InitializeNewUserRequest>(
         role: "user",
       };
     } catch (error) {
-      handleFunctionError(
-        error,
-        { userId },
-        "Failed to initialize new user"
-      );
+      handleFunctionError(error, { userId }, "Failed to initialize new user");
     }
   }
 );

@@ -1,9 +1,8 @@
 import { onCall, HttpsError, onRequest } from "firebase-functions/v2/https";
 import { logger } from "firebase-functions/v2";
-import { twilioWhatsAppFrom, twilioFunctionConfig } from "../common/config";
+import { twilioFunctionConfig } from "../common/config";
 import { SendMessageRequest, SendMessageResponse } from "@wedding-plan/types";
 import {
-  getFunctionBaseUrl,
   getValidatedData,
   handleFunctionError,
   isAuthenticated,
@@ -11,14 +10,8 @@ import {
 import { initializeTwilioClient } from "../common/twilioUtils";
 import { initializeFirebaseAdmin } from "../common/firebaseAdmin";
 import * as admin from "firebase-admin";
+import { sendWhatsAppMessageLogic } from "../services/messageService";
 
-/**
- * Send WhatsApp message using Twilio Content API
- */
-
-const getWebhookUrl = (weddingId: string) => {
-  return `${getFunctionBaseUrl()}/messageStatusWebhook?weddingId=${weddingId}`;
-};
 export const sendWhatsAppMessage = onCall<SendMessageRequest>(
   twilioFunctionConfig,
   async (request): Promise<SendMessageResponse> => {
@@ -27,8 +20,6 @@ export const sendWhatsAppMessage = onCall<SendMessageRequest>(
       request.data,
       ["to", "contentSid", "contentVariables", "weddingId"]
     );
-    const twilioClient = initializeTwilioClient();
-    const twilioPhone = twilioWhatsAppFrom.value();
 
     try {
       logger.info("Sending WhatsApp message", {
@@ -37,31 +28,12 @@ export const sendWhatsAppMessage = onCall<SendMessageRequest>(
         contentSid: contentSid,
       });
 
-      const message = await twilioClient.messages.create({
-        from: twilioPhone,
-        contentSid,
-        contentVariables: contentVariables
-          ? JSON.stringify(contentVariables)
-          : undefined,
+      return sendWhatsAppMessageLogic({
         to,
-        statusCallback: getWebhookUrl(weddingId),
+        contentSid,
+        contentVariables,
+        weddingId,
       });
-
-      logger.info("WhatsApp message sent successfully", {
-        userId: request.auth.uid,
-        messageSid: message.sid,
-        status: message.status,
-      });
-
-      return {
-        success: true,
-        messageSid: message.sid,
-        status: message.status,
-        from: message.from,
-        to: message.to,
-        dateCreated:
-          message.dateCreated?.toISOString() || new Date().toISOString(),
-      } as SendMessageResponse;
     } catch (error) {
       handleFunctionError(
         error,

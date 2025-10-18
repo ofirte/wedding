@@ -11,3 +11,4 @@ export * from "./budget";
 export * from "./task";
 export * from "./sentMessages";
 export * from "./template";
+export * from "./sendMessagesAutomation";

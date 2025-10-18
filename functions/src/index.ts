@@ -12,10 +12,7 @@ setGlobalOptions({
   concurrency: 50,
 });
 
-// Export NEW auth functions (clean system)
-export * from "./auth/userRoles";
-export * from "./auth/users";
-
-// Export all messaging functions
-export * from "./messagesService/messaging";
-export * from "./messagesService/templates";
+export * from "./controllers/auth";
+export * from "./controllers/users";
+export * from "./controllers/messages";
+export * from "./controllers/templates";
