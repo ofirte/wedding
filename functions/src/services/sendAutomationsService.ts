@@ -5,38 +5,62 @@ import {
   InviteeModel,
   FilterOptions,
 } from "../models";
-import { SendMessagesAutomation, Wedding, Invitee } from "@wedding-plan/types";
+import {
+  SendMessagesAutomation,
+  Wedding,
+  Invitee,
+  SendMessageResponse,
+} from "@wedding-plan/types";
+import { MessageService } from "./messageService";
+import { populateContentVariables } from "./variablesService";
 
 /**
  * Automation Service Class
  * Example of Option 1: Class-based service with model properties
  */
-export class AutomationService {
+export class SendAutomationsService {
   // Initialize models once as class properties (RECOMMENDED APPROACH)
-  private automationModel = new SendMessagesAutomationModel();
-  private weddingModel = new WeddingModel();
-  private inviteeModel = new InviteeModel();
-
+  private sendMessagesAutomationModel: SendMessagesAutomationModel;
+  private messageService: MessageService;
+  private weddingModel: WeddingModel;
+  private inviteeModel: InviteeModel;
+  constructor() {
+    this.sendMessagesAutomationModel = new SendMessagesAutomationModel();
+    this.messageService = new MessageService();
+    this.weddingModel = new WeddingModel();
+    this.inviteeModel = new InviteeModel();
+  }
   /**
-   * Get all active automations for a wedding
+   * Get all automations for a wedding
    */
-  async getActiveAutomations(
+  async getAutomationsToRun(
     weddingId: string
   ): Promise<SendMessagesAutomation[]> {
     try {
-      logger.info("Getting active automations", { weddingId });
-
+      logger.info("Getting automations to run", { weddingId });
+      const halfAnHourAgo = new Date(Date.now() - 30 * 60 * 1000);
+      const halfAnHourFromNow = new Date(Date.now() + 30 * 60 * 1000);
       const filters: FilterOptions[] = [
         { field: "isActive", operator: "==", value: true },
         { field: "status", operator: "==", value: "pending" },
+        {
+          field: "scheduledTime",
+          operator: ">=",
+          value: halfAnHourAgo,
+        },
+        {
+          field: "scheduledTime",
+          operator: "<=",
+          value: halfAnHourFromNow,
+        },
       ];
 
-      const automations = await this.automationModel.getByFilter(
+      const automations = await this.sendMessagesAutomationModel.getByFilter(
         filters,
         weddingId
       );
 
-      logger.info("Found active automations", {
+      logger.info("Found automations to run", {
         weddingId,
         count: automations.length,
       });
@@ -61,7 +85,7 @@ export class AutomationService {
         name: automationData.name,
       });
 
-      const automation = await this.automationModel.create(
+      const automation = await this.sendMessagesAutomationModel.create(
         automationData,
         weddingId
       );
@@ -84,7 +108,8 @@ export class AutomationService {
   async updateAutomationStatus(
     automationId: string,
     status: string,
-    weddingId: string
+    weddingId: string,
+    messages: SendMessageResponse[] = []
   ): Promise<SendMessagesAutomation> {
     try {
       logger.info("Updating automation status", {
@@ -93,9 +118,12 @@ export class AutomationService {
         weddingId,
       });
 
-      const updatedAutomation = await this.automationModel.update(
+      const updatedAutomation = await this.sendMessagesAutomationModel.update(
         automationId,
-        { status: status as any },
+        {
+          status: status as any,
+          sentMessagesIds: messages.map((m) => m.messageSid),
+        },
         weddingId
       );
 
@@ -188,22 +216,38 @@ export class AutomationService {
 
       for (const wedding of weddings) {
         try {
-          // Get active automations for this wedding
-          const activeAutomations = await this.getActiveAutomations(wedding.id);
+          // Get automations to run for this wedding
+          const automationsToRun = await this.getAutomationsToRun(wedding.id);
 
-          for (const automation of activeAutomations) {
+          for (const automation of automationsToRun) {
             try {
               // Get target audience
               const targetAudience = await this.getTargetAudience(
                 wedding.id,
                 automation.targetAudienceFilter
               );
+              const messages = await Promise.all(
+                targetAudience.map((invitee) => {
+                  const populatedVariables = populateContentVariables(
+                    invitee,
+                    wedding
+                  );
+                  return this.messageService.sendWhatsAppMessage({
+                    contentSid: automation.messageTemplateId,
+                    to: invitee.cellphone,
+                    contentVariables: populatedVariables,
+                    weddingId: wedding.id,
+                  });
+                })
+              );
 
+              // Send messages
               // Mark as in progress
               await this.updateAutomationStatus(
                 automation.id,
                 "inProgress",
-                wedding.id
+                wedding.id,
+                messages
               );
 
               logger.info("Processing automation", {
@@ -211,16 +255,6 @@ export class AutomationService {
                 weddingId: wedding.id,
                 targetCount: targetAudience.length,
               });
-
-              // TODO: Add actual message sending logic here
-              // This would call other services like messageService, variablesService
-
-              // Mark as completed
-              await this.updateAutomationStatus(
-                automation.id,
-                "completed",
-                wedding.id
-              );
             } catch (automationError) {
               logger.error("Error processing automation", {
                 automationId: automation.id,
