@@ -3,7 +3,7 @@
  */
 
 import { BaseResponse, ErrorResponse } from "./base";
-
+import { MessageInfo } from "../models/sentMessages";
 export interface SendMessageRequest {
   to: string;
   contentSid: string;
@@ -28,17 +28,6 @@ export interface GetMessageStatusRequest {
 export interface GetMessageStatusResponse extends BaseResponse {
   success: true;
   messageInfo: MessageInfo;
-}
-
-export interface MessageInfo {
-  sid: string;
-  status: string;
-  from: string;
-  to: string;
-  dateCreated?: string;
-  dateUpdated?: string;
-  errorCode?: number;
-  errorMessage?: string;
 }
 
 // Union types for all messaging functions

@@ -1,6 +1,6 @@
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../api/firebaseConfig";
-import { Task } from "../hooks/tasks/useTasks";
+import { Task } from "@wedding-plan/types";
 
 export const migrateTasks = async (): Promise<boolean> => {
   const STORAGE_KEY = "weddingTasks";

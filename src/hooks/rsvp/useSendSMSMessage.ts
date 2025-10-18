@@ -1,10 +1,9 @@
 import { useQueryClient } from "@tanstack/react-query";
 import {
   sendSMSMessage,
-  SendMessageApiRequest,
-  SentMessage
 } from "../../api/rsvp/rsvpApi";
 import { useWeddingMutation } from "../common";
+import { SentMessage, SendMessageApiRequest } from "@wedding-plan/types";
 
 /**
  * Hook to send SMS messages using Twilio

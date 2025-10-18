@@ -1,7 +1,7 @@
 // BudgetTable.tsx
 import React from "react";
 import { Box } from "@mui/material";
-import { BudgetItem } from "./BudgetPlanner";
+import { BudgetItem } from "@wedding-plan/types";
 import DSTable from "../common/DSTable";
 import { createBudgetColumns } from "./BudgetListColumns";
 import { useTranslation } from "../../localization/LocalizationContext";

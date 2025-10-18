@@ -18,7 +18,7 @@ import {
   Flag as PriorityIcon,
   CalendarToday as DateIcon,
 } from "@mui/icons-material";
-import { Task } from "../../hooks/tasks/useTasks";
+import { Task } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface TaskFormProps {

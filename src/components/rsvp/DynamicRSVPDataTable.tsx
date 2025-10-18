@@ -4,7 +4,7 @@ import DSTable, { Column } from "../common/DSTable";
 import { InviteeWithDynamicRSVP } from "./DynamicRSVPTableColumns";
 import RSVPTableHeader from "./RSVPTableHeader";
 import { responsivePatterns } from "../../utils/ResponsiveUtils";
-import { SentMessage } from "../../hooks/rsvp";
+import { SentMessage } from "@wedding-plan/types";
 
 interface MessageTemplate {
   sid: string;

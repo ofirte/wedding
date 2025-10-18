@@ -7,7 +7,7 @@ import {
   Schedule as ScheduleIcon,
   Send as SendIcon,
 } from "@mui/icons-material";
-import { SentMessage } from "../../api/rsvp/rsvpApi";
+import { SentMessage } from "@wedding-plan/types";
 import { format } from "date-fns";
 import { Invitee } from "@wedding-plan/types";
 

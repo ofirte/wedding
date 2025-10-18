@@ -5,7 +5,7 @@ import {
   Assignment as TaskIcon,
   Flag as PriorityIcon,
 } from "@mui/icons-material";
-import { Task } from "../../hooks/tasks/useTasks";
+import { Task } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface TaskSummaryProps {

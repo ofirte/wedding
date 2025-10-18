@@ -20,16 +20,7 @@ import TotalBudgetEditor from "./TotalBudgetEditor";
 import { useUpdateTotalBudget } from "../../hooks/budget/useUpdateTotalBudget";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { responsivePatterns } from "../../utils/ResponsiveUtils";
-
-export type BudgetItem = {
-  id: string;
-  name: string;
-  group: string;
-  expectedPrice: number;
-  actualPrice: number;
-  downPayment: number;
-  contractsUrls?: string[];
-};
+import { BudgetItem } from "@wedding-plan/types";
 
 const BudgetPlanner = () => {
   const theme = useTheme();
