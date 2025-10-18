@@ -1,4 +1,4 @@
-import { onCall, HttpsError, onRequest } from "firebase-functions/v2/https";
+import { onCall, onRequest } from "firebase-functions/v2/https";
 import { logger } from "firebase-functions/v2";
 import { twilioFunctionConfig } from "../common/config";
 import { SendMessageRequest, SendMessageResponse } from "@wedding-plan/types";
@@ -7,10 +7,7 @@ import {
   handleFunctionError,
   isAuthenticated,
 } from "../common/utils";
-import { initializeTwilioClient } from "../common/twilioUtils";
-import { initializeFirebaseAdmin } from "../common/firebaseAdmin";
-import * as admin from "firebase-admin";
-import { sendWhatsAppMessageLogic } from "../services/messageService";
+import { MessageService } from "../services/messageService";
 
 export const sendWhatsAppMessage = onCall<SendMessageRequest>(
   twilioFunctionConfig,
@@ -28,7 +25,8 @@ export const sendWhatsAppMessage = onCall<SendMessageRequest>(
         contentSid: contentSid,
       });
 
-      return sendWhatsAppMessageLogic({
+      const messageService = new MessageService();
+      return messageService.sendWhatsAppMessage({
         to,
         contentSid,
         contentVariables,
@@ -55,7 +53,6 @@ export const sendSmsMessage = onCall<SendMessageRequest>(
       request.data,
       ["to", "contentSid", "contentVariables"]
     );
-    const twilioClient = initializeTwilioClient();
 
     try {
       logger.info("Converting template and sending SMS", {
@@ -64,59 +61,20 @@ export const sendSmsMessage = onCall<SendMessageRequest>(
         contentSid: contentSid,
       });
 
-      // Get template and convert to SMS text
-      const contentList = await twilioClient.content.v2.contents.list();
-      const template = contentList.find(
-        (content) => content.sid === contentSid
-      );
-
-      if (!template) {
-        throw new HttpsError("not-found", "Template not found");
-      }
-
-      // Extract template body and replace variables
-      const textType =
-        template.types?.["twilio/text"] || template.types?.["whatsapp"];
-      const templateBody = (textType as any)?.body;
-
-      if (!templateBody || typeof templateBody !== "string") {
-        throw new HttpsError("failed-precondition", "No template body found");
-      }
-
-      let smsText = templateBody;
-      if (contentVariables) {
-        Object.entries(contentVariables).forEach(([key, value]) => {
-          smsText = smsText.replace(
-            new RegExp(`\\{\\{${key}\\}\\}`, "g"),
-            value as string
-          );
-        });
-      }
-
-      // Clean phone number and send SMS
-      const cleanPhoneNumber = to.replace(/^whatsapp:/, "");
-
-      const message = await twilioClient.messages.create({
-        from: "weddingPlan",
-        to: cleanPhoneNumber,
-        body: smsText,
+      const messageService = new MessageService();
+      const result = await messageService.sendSmsMessage({
+        to,
+        contentSid,
+        contentVariables,
       });
 
       logger.info("SMS sent successfully", {
         userId: request.auth.uid,
-        messageSid: message.sid,
-        status: message.status,
+        messageSid: result.messageSid,
+        status: result.status,
       });
 
-      return {
-        success: true,
-        messageSid: message.sid,
-        status: message.status,
-        from: message.from,
-        to: message.to,
-        dateCreated:
-          message.dateCreated?.toISOString() || new Date().toISOString(),
-      };
+      return result;
     } catch (error) {
       handleFunctionError(
         error,
@@ -129,7 +87,6 @@ export const sendSmsMessage = onCall<SendMessageRequest>(
 
 export const messageStatusWebhook = onRequest(async (req, res) => {
   try {
-    // Initialize Firebase Admin if not already initialized
     // Log the incoming webhook data
     logger.info("Received message status webhook", {
       params: req.params,
@@ -138,7 +95,6 @@ export const messageStatusWebhook = onRequest(async (req, res) => {
       method: req.method,
       headers: req.headers,
     });
-    initializeFirebaseAdmin();
 
     const { weddingId, MessageSid, MessageStatus, ErrorCode, ErrorMessage } =
       getValidatedData(
@@ -150,51 +106,13 @@ export const messageStatusWebhook = onRequest(async (req, res) => {
         ["ErrorCode", "ErrorMessage"]
       );
 
-    // Update message status in Firestore
-    const db = admin.firestore();
-    const sentMessagesRef = db
-      .collection("weddings")
-      .doc(weddingId)
-      .collection("sentMessages");
-
-    // Find the message by Twilio SID
-    const querySnapshot = await sentMessagesRef
-      .where("sid", "==", MessageSid)
-      .limit(1)
-      .get();
-
-    if (querySnapshot.empty) {
-      logger.warn("Message not found in sentMessages collection", {
-        messageSid: MessageSid,
-        weddingId,
-      });
-      res.status(404).send("Message not found");
-      return;
-    }
-
-    // Update the message status
-    const messageDoc = querySnapshot.docs[0];
-    const updateData: any = {
-      status: MessageStatus,
-      dateUpdated: new Date().toISOString(),
-    };
-
-    // Add error information if status indicates failure
-    if (ErrorCode) {
-      updateData.errorCode = parseInt(ErrorCode);
-    }
-    if (ErrorMessage) {
-      updateData.errorMessage = ErrorMessage;
-    }
-
-    await messageDoc.ref.update(updateData);
-
-    logger.info("Successfully updated message status", {
-      messageId: messageDoc.id,
-      messageSid: MessageSid,
-      newStatus: MessageStatus,
+    const messageService = new MessageService();
+    await messageService.processMessageStatusWebhook({
       weddingId,
-      errorCode: ErrorCode || null,
+      MessageSid,
+      MessageStatus,
+      ErrorCode,
+      ErrorMessage,
     });
 
     res.status(200).send("Webhook processed successfully");
@@ -205,6 +123,10 @@ export const messageStatusWebhook = onRequest(async (req, res) => {
       query: req.query,
     });
 
-    res.status(500).send("Internal server error");
+    if (error instanceof Error && error.message === "Message not found") {
+      res.status(404).send("Message not found");
+    } else {
+      res.status(500).send("Internal server error");
+    }
   }
 });

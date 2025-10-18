@@ -1,8 +1,7 @@
 import { onSchedule } from "firebase-functions/scheduler";
 import { initializeFirebaseAdmin } from "src/common/firebaseAdmin";
-import * as admin from "firebase-admin";
 import { logger } from "firebase-functions/v2";
-import { processMessageAutomations } from "../services/automationService";
+// import { processMessageAutomations } from "../services/automationService";
 
 export const runMessagesAutomation = onSchedule(
   "every 1 hours",
@@ -12,10 +11,10 @@ export const runMessagesAutomation = onSchedule(
 
       // Initialize Firebase Admin
       initializeFirebaseAdmin();
-      const db = admin.firestore();
+      // const db = admin.firestore();
 
       // Delegate all business logic to the service
-      await processMessageAutomations(db);
+      // await processMessageAutomations(db);
 
       logger.info("Message automation scheduled task completed successfully");
     } catch (error) {

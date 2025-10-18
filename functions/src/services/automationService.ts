@@ -11,7 +11,7 @@ import { SendMessagesAutomation, Wedding, Invitee } from "@wedding-plan/types";
  * Automation Service Class
  * Example of Option 1: Class-based service with model properties
  */
-class AutomationService {
+export class AutomationService {
   // Initialize models once as class properties (RECOMMENDED APPROACH)
   private automationModel = new SendMessagesAutomationModel();
   private weddingModel = new WeddingModel();
