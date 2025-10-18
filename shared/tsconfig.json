@@ -13,15 +13,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": false,
-    "composite": true,
-    "baseUrl": ".",
-    "paths": {
-      "@wedding-plan/types": ["../shared"],
-      "@wedding-plan/types/*": ["../shared/*"]
-    }
+    "noEmit": false
   },
-
   "include": ["api/**/*", "models/**/*", "index.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

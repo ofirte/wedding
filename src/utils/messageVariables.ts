@@ -3,8 +3,7 @@
  * Handles variable definitions, population, and replacement across the RSVP system
  */
 
-import { Wedding } from "@wedding-plan/types";
-import { Invitee } from "@wedding-plan/types";
+import { Wedding, Invitee } from "@wedding-plan/types";
 import { Language } from "../localization/types";
 
 export interface TemplateVariable {

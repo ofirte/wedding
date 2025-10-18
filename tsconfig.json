@@ -23,6 +23,5 @@
       "@wedding-plan/types/*": ["./shared/*"]
     }
   },
-  "include": ["src"],
-  "references": [{ "path": "./shared" }]
+  "include": ["src", "shared"]
 }
