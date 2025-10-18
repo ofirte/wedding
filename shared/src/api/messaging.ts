@@ -3,7 +3,7 @@
  */
 
 import { BaseResponse, ErrorResponse } from "./base";
-import { MessageInfo } from "@wedding-plan/types";
+import { MessageInfo } from "../models/sentMessages";
 export interface SendMessageRequest {
   to: string;
   contentSid: string;
