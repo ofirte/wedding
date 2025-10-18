@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { updateBudgetItem } from "../../api/budget/budgetApi";
-import { BudgetItem } from "../../components/budget/BudgetPlanner";
+import { BudgetItem } from "@wedding-plan/types";
 import { useWeddingMutation } from "../common";
 
 /**

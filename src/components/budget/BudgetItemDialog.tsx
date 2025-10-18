@@ -15,7 +15,7 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { BudgetItem } from "./BudgetPlanner";
+import { BudgetItem } from "@wedding-plan/types";
 import { UploadFile } from "../common/UploadFile";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { useTranslation } from "../../localization/LocalizationContext";

@@ -1,23 +1,8 @@
 import { createCollectionAPI } from "../weddingFirebaseHelpers";
 import { sendWhatsAppMessage, sendSmsMessage } from "../firebaseFunctions";
-import { MessageInfo, SendMessageRequest } from "@wedding-plan/types";
+import {  SendMessageApiRequest, SentMessage } from "@wedding-plan/types";
 
-// SMS-specific request interface (same as WhatsApp)
-export interface SendMessageApiRequest extends SendMessageRequest {
-  userId?: string;
-}
-
-// Types for Firebase sent messages collection
-export interface SentMessage extends MessageInfo {
-  id: string;
-  contentSid: string;
-  contentVariables: Record<string, string>;
-  templateId: string;
-  userId: string; // Firebase user ID who sent the message
-  messageType: "whatsapp" | "sms" | "personal-whatsapp"; // Track message type
-  dateCreated: string;
-  dateUpdated: string;
-}
+// SMS-specific request interface (same as WhatsApp
 
 // Create collection API for sent messages
 const sentMessagesAPI = createCollectionAPI<SentMessage>("sentMessages");

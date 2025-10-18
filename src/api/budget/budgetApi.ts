@@ -2,7 +2,7 @@ import {
   weddingFirebase,
   createCollectionAPI,
 } from "../weddingFirebaseHelpers";
-import { BudgetItem } from "../../components/budget/BudgetPlanner";
+import { BudgetItem } from "@wedding-plan/types";
 
 // Define the type for total budget document
 export interface TotalBudgetDoc {

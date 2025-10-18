@@ -1,5 +1,5 @@
 import { createCollectionAPI } from "../weddingFirebaseHelpers";
-import { Task } from "../../hooks/tasks/useTasks";
+import { Task } from "@wedding-plan/types";
 
 // Create all CRUD operations for tasks (DRY approach)
 const tasksAPI = createCollectionAPI<Task>("tasks");

@@ -1,5 +1,5 @@
 import React from "react";
-import { BudgetItem } from "./BudgetPlanner";
+import { BudgetItem } from "@wedding-plan/types";
 import { Column } from "../common/DSTable";
 import { Chip, IconButton, Box } from "@mui/material";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";

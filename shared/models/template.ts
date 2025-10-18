@@ -23,9 +23,3 @@ export interface TemplateDocument extends Template {
   createdBy?: string; // Firebase user ID who created the template
   approvalStatus?: TemplateApprovalStatus;
 }
-
-// Wedding template data (combination of templates with metadata)
-export interface WeddingTemplateData {
-  templates: Array<TemplateDocument>;
-  length: number;
-}

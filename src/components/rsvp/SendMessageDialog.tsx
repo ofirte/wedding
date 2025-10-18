@@ -18,7 +18,7 @@ import { useTranslation } from "../../localization/LocalizationContext";
 import { useSendMessage } from "../../hooks/rsvp/useSendMessage";
 import { useSendSMSMessage } from "../../hooks/rsvp/useSendSMSMessage";
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
-import { Invitee } from "@wedding-plan/types";
+import { Invitee, Template } from "@wedding-plan/types";
 import { populateVariables } from "../../utils/messageVariables";
 import MessageTypeToggle from "./MessageTypeToggle";
 import MessagePreview from "./MessagePreview";
@@ -26,11 +26,6 @@ import PersonalWhatsAppList from "./PersonalWhatsAppList";
 import PersonalWhatsAppCloseDialog from "./PersonalWhatsAppCloseDialog";
 import SendProgressContent, { SendResult } from "./SendProgressContent";
 
-interface Template {
-  sid: string;
-  friendlyName?: string;
-  types?: Record<string, any>;
-}
 
 interface SendMessageDialogProps {
   open: boolean;

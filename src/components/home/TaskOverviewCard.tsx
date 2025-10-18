@@ -18,7 +18,8 @@ import {
   RadioButtonUnchecked as UncheckIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
-import useTasks, { Task } from "../../hooks/tasks/useTasks";
+import useTasks from "../../hooks/tasks/useTasks";
+import { Task } from "@wedding-plan/types";
 import { useCompleteTask } from "../../hooks/tasks/useCompleteTask";
 import { useTranslation } from "../../localization/LocalizationContext";
 

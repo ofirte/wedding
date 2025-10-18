@@ -3,8 +3,16 @@
  * Message logging-related entity models shared between frontend and backend
  */
 
-import { MessageInfo } from "../api/messaging";
-
+export interface MessageInfo {
+  sid: string;
+  status: string;
+  from: string;
+  to: string;
+  dateCreated?: string;
+  dateUpdated?: string;
+  errorCode?: number;
+  errorMessage?: string;
+}
 // Sent message model (extends MessageInfo from API)
 export interface SentMessage extends MessageInfo {
   id: string;

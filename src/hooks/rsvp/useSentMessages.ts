@@ -1,5 +1,6 @@
-import { getSentMessages, SentMessage } from "../../api/rsvp/rsvpApi";
+import { getSentMessages } from "../../api/rsvp/rsvpApi";
 import { useWeddingQuery } from "../common";
+import { SentMessage } from "@wedding-plan/types";
 
 export const useSentMessages = () => {
   return useWeddingQuery<SentMessage[]>({

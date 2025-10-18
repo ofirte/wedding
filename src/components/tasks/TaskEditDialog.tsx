@@ -14,7 +14,7 @@ import {
   RadioGroup,
   Radio,
 } from "@mui/material";
-import { Task } from "../../hooks/tasks/useTasks";
+import { Task } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 interface TaskEditDialogProps {
