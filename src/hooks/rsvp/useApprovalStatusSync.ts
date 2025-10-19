@@ -5,6 +5,7 @@ import {
   updateTemplateApprovalStatus,
   shouldSyncApprovalStatus,
 } from "../../api/rsvp/templateApi";
+import { useParams } from "react-router";
 
 interface TemplateWithSid {
   sid: string;
@@ -18,6 +19,7 @@ interface TemplateWithSid {
  */
 export const useApprovalStatusSync = () => {
   const queryClient = useQueryClient();
+  const { weddingId } = useParams<{ weddingId: string }>();
 
   const syncApprovalStatuses = useCallback(
     async (templates: TemplateWithSid[]) => {
@@ -29,7 +31,9 @@ export const useApprovalStatusSync = () => {
       if (templatesToSync.length === 0) {
         return;
       }
-
+      console.log(
+        `Syncing approval statuses for ${templatesToSync} templates...`
+      );
       // Batch process with delay to avoid rate limiting
       const syncResults = await Promise.allSettled(
         templatesToSync.map(async (template, index) => {
@@ -40,15 +44,21 @@ export const useApprovalStatusSync = () => {
 
           try {
             const approvalData = await getApprovalStatus(template.sid);
+            console.log(approvalData);
             const twilioStatus = approvalData.approvalData.whatsapp?.status;
-
+            console.log(twilioStatus);
+            console.log(template.approvalStatus);
             // If Twilio status differs from Firebase, update Firebase
             if (twilioStatus && twilioStatus !== template.approvalStatus) {
               console.log(
                 `Syncing approval status for template ${template.sid}: ${template.approvalStatus} → ${twilioStatus}`
               );
 
-              await updateTemplateApprovalStatus(template.sid, twilioStatus);
+              await updateTemplateApprovalStatus(
+                template.sid,
+                twilioStatus,
+                weddingId
+              );
 
               // Invalidate queries to refresh UI
               queryClient.invalidateQueries({ queryKey: ["templates"] });

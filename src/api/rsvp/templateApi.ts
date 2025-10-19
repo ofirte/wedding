@@ -257,7 +257,12 @@ export const updateTemplateApprovalStatus = async (
     // Find the template document in Firebase
     const firebaseTemplates = await getTemplatesFromFirebase(weddingId);
     const template = firebaseTemplates.find((t) => t.sid === templateSid);
-
+    console.log(firebaseTemplates.map((t) => {
+      return {sid: t.sid, approvalStatus: t.approvalStatus, name: t.friendlyName};
+    }));
+    console.log(
+      `Updating template ${firebaseTemplates} approval status to ${status}`
+    );
     if (template) {
       await templatesAPI.update(
         template.id,
