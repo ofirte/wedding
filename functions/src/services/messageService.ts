@@ -3,9 +3,8 @@ import { logger } from "firebase-functions/v2";
 import { SendMessageRequest, SendMessageResponse } from "@wedding-plan/types";
 import { twilioWhatsAppFrom } from "../common/config";
 import { initializeTwilioClient } from "../common/twilioUtils";
-import { initializeFirebaseAdmin } from "../common/firebaseAdmin";
 import { getFunctionBaseUrl } from "../common/utils";
-import { SentMessageModel } from "src/models";
+import { SentMessageModel } from "../models";
 
 export class MessageService {
   private twilioClient: any;
@@ -131,9 +130,6 @@ export class MessageService {
   }): Promise<void> {
     const { weddingId, MessageSid, MessageStatus, ErrorCode, ErrorMessage } =
       webhookData;
-
-    // Initialize Firebase Admin if not already initialized
-    initializeFirebaseAdmin();
 
     const sentMessages = await this.sentMessagesModel.getByFilter(
       [{ field: "sid", operator: "==", value: MessageSid }],
