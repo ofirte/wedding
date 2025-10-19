@@ -4,6 +4,7 @@ import {
   WeddingModel,
   InviteeModel,
   FilterOptions,
+  TemplateModel,
 } from "../models";
 import {
   SendMessagesAutomation,
@@ -24,11 +25,13 @@ export class SendAutomationsService {
   private messageService: MessageService;
   private weddingModel: WeddingModel;
   private inviteeModel: InviteeModel;
+  private templateModel: TemplateModel;
   constructor() {
     this.sendMessagesAutomationModel = new SendMessagesAutomationModel();
     this.messageService = new MessageService();
     this.weddingModel = new WeddingModel();
     this.inviteeModel = new InviteeModel();
+    this.templateModel = new TemplateModel();
   }
 
   async getAutomationsToRun(
@@ -201,6 +204,44 @@ export class SendAutomationsService {
       throw error;
     }
   }
+  async getTemplateLanguage(
+    templateSid: string,
+    weddingId: string
+  ): Promise<"en" | "he"> {
+    try {
+      logger.info("Getting template language", { templateSid, weddingId });
+
+      const template = await this.templateModel.getByFilter(
+        [
+          {
+            field: "sid",
+            operator: "==",
+            value: templateSid,
+          },
+        ],
+        weddingId
+      );
+
+      if (template.length > 0) {
+        logger.info("Found template", {
+          templateSid,
+          weddingId,
+          language: template[0].language,
+        });
+        return template[0].language as "en" | "he";
+      } else {
+        logger.error("Template not found", { templateSid, weddingId });
+        throw new Error("Template not found");
+      }
+    } catch (error) {
+      logger.error("Error getting template language", {
+        templateSid,
+        weddingId,
+        error,
+      });
+      throw error;
+    }
+  }
 
   /**
    * Main processing function - simplified example
@@ -219,7 +260,10 @@ export class SendAutomationsService {
 
           for (const automation of automationsToRun) {
             try {
-              // Get target audience
+              const templateLanguage = await this.getTemplateLanguage(
+                automation.messageTemplateId,
+                wedding.id
+              );
               const targetAudience = await this.getTargetAudience(
                 wedding.id,
                 automation.targetAudienceFilter
@@ -228,11 +272,14 @@ export class SendAutomationsService {
                 targetAudience.map((invitee) => {
                   const populatedVariables = populateContentVariables(
                     invitee,
-                    wedding
+                    wedding,
+                    templateLanguage
                   );
                   return this.messageService.sendWhatsAppMessage({
                     contentSid: automation.messageTemplateId,
-                    to: this.messageService.normalizeWhatsappPhoneNumber(invitee.cellphone),
+                    to: this.messageService.normalizeWhatsappPhoneNumber(
+                      invitee.cellphone
+                    ),
                     contentVariables: populatedVariables,
                     weddingId: wedding.id,
                   });

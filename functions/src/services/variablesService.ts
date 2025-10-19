@@ -49,7 +49,8 @@ const formatDate = (date: Date | string | undefined): string => {
  */
 export const populateContentVariables = (
   invitee: Invitee,
-  wedding: Wedding
+  wedding: Wedding,
+  locale: "he" | "en"
 ): Record<string, string> => {
   try {
     logger.info("Populating content variables", {
@@ -64,7 +65,12 @@ export const populateContentVariables = (
         : wedding.name || "The Happy Couple";
 
     // Format event date
-    const eventDate = formatDate(wedding.date);
+
+    // Hebrew: use Hebrew locale with Hebrew calendar if available
+    const eventDate =
+      locale === "he"
+        ? wedding.date.toLocaleDateString("he-IL").replace(/\./g, "/")
+        : wedding.date.toLocaleDateString("en-US").replace(/\./g, "/");
 
     const variables = {
       guestName: invitee.name || "Dear Guest",
