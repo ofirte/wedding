@@ -533,7 +533,8 @@ export const englishTranslations: Translations = {
     attendingGuests: "Attending Guests",
     notAttendingGuests: "Not Attending Guests",
     noAutomationsTitle: "No Send Automations",
-    noAutomationsDescription: "Create automated message campaigns to send RSVP requests and reminders to your guests.",
+    noAutomationsDescription:
+      "Create automated message campaigns to send RSVP requests and reminders to your guests.",
     createFirstAutomation: "Create First Automation",
   },
   rsvpEmptyState: {

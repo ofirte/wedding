@@ -63,8 +63,8 @@ const SendAutomationsTable: React.FC<SendAutomationsTableProps> = ({
       id: "automationType",
       label: t("rsvp.automationType"),
       render: (automation) => (
-        <Chip 
-          label={getAutomationTypeLabel(automation.automationType)} 
+        <Chip
+          label={getAutomationTypeLabel(automation.automationType)}
           size="small"
           variant="outlined"
         />
@@ -75,8 +75,8 @@ const SendAutomationsTable: React.FC<SendAutomationsTableProps> = ({
       id: "status",
       label: t("rsvp.status"),
       render: (automation) => (
-        <Chip 
-          label={automation.status} 
+        <Chip
+          label={automation.status}
           color={getStatusColor(automation.status)}
           size="small"
         />

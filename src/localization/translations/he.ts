@@ -509,7 +509,7 @@ export const hebrewTranslations: Translations = {
     failedToSend: "נכשל לשלוח",
     messageQueuedSingular: "ההודעה נוספה לתור למשלוח.",
     messagesQueuedPlural: "{{count}} הודעות נוספו לתור למשלוח.",
-    // Send Automation translations  
+    // Send Automation translations
     sendAutomations: "אוטומציות שליחה",
     createAutomation: "צור אוטומציה לשליחה",
     runNow: "הרץ עכשיו",
@@ -524,7 +524,8 @@ export const hebrewTranslations: Translations = {
     attendingGuests: "אורחים שמגיעים",
     notAttendingGuests: "אורחים שלא מגיעים",
     noAutomationsTitle: "אין אוטומציות שליחה",
-    noAutomationsDescription: "צור קמפיינים אוטומטיים של הודעות לשליחת בקשות אישור הגעה ותזכורות לאורחים שלך.",
+    noAutomationsDescription:
+      "צור קמפיינים אוטומטיים של הודעות לשליחת בקשות אישור הגעה ותזכורות לאורחים שלך.",
     createFirstAutomation: "צור אוטומציה ראשונה",
   },
   rsvpEmptyState: {

@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Box, Typography, Button, Paper } from "@mui/material";
-import { Add as AddIcon, PlayArrow as PlayArrowIcon } from "@mui/icons-material";
+import {
+  Add as AddIcon,
+  PlayArrow as PlayArrowIcon,
+} from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { 
-  useSendAutomations, 
-  useDeleteSendAutomation, 
-  useManualRunAutomations 
+import {
+  useSendAutomations,
+  useDeleteSendAutomation,
+  useManualRunAutomations,
 } from "../../hooks/rsvp";
 import SendAutomationsEmptyState from "./SendAutomationsEmptyState";
 import CreateAutomationDialog from "./CreateAutomationDialog";
@@ -22,7 +25,7 @@ const SendAutomationsManager: React.FC = () => {
   const { data: automations = [], isLoading, refetch } = useSendAutomations();
   const deleteAutomation = useDeleteSendAutomation();
   const manualRunAutomations = useManualRunAutomations();
-  
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleCreateSuccess = () => {
@@ -62,7 +65,12 @@ const SendAutomationsManager: React.FC = () => {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={3}
+      >
         <Typography variant="h4">{t("rsvp.sendAutomations")}</Typography>
         {hasAutomations && (
           <Box display="flex" gap={2}>
@@ -72,7 +80,9 @@ const SendAutomationsManager: React.FC = () => {
               onClick={handleManualRun}
               disabled={manualRunAutomations.isPending}
             >
-              {manualRunAutomations.isPending ? t("common.loading") : t("rsvp.runNow")}
+              {manualRunAutomations.isPending
+                ? t("common.loading")
+                : t("rsvp.runNow")}
             </Button>
             <Button
               variant="contained"
@@ -95,10 +105,14 @@ const SendAutomationsManager: React.FC = () => {
               disabled={manualRunAutomations.isPending}
               size="small"
             >
-              {manualRunAutomations.isPending ? t("common.loading") : t("rsvp.runNow")}
+              {manualRunAutomations.isPending
+                ? t("common.loading")
+                : t("rsvp.runNow")}
             </Button>
           </Box>
-          <SendAutomationsEmptyState onCreateClick={() => setIsDialogOpen(true)} />
+          <SendAutomationsEmptyState
+            onCreateClick={() => setIsDialogOpen(true)}
+          />
         </Box>
       ) : (
         <Paper>

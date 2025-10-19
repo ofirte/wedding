@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-} from "@mui/material";
+import { Box, Typography, Button, Card, CardContent } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
 
@@ -53,15 +47,19 @@ const SendAutomationsEmptyState: React.FC<SendAutomationsEmptyStateProps> = ({
           >
             <AddIcon sx={{ fontSize: 40, color: "white" }} />
           </Box>
-          
+
           <Typography variant="h5" gutterBottom>
             {t("rsvp.noAutomationsTitle")}
           </Typography>
-          
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 3, maxWidth: 400 }}>
+
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{ mb: 3, maxWidth: 400 }}
+          >
             {t("rsvp.noAutomationsDescription")}
           </Typography>
-          
+
           <Button
             variant="contained"
             startIcon={<AddIcon />}

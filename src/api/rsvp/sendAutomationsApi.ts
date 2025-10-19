@@ -2,7 +2,8 @@ import { createCollectionAPI } from "../weddingFirebaseHelpers";
 import { SendMessagesAutomation } from "@wedding-plan/types";
 
 // Create collection API for send automations
-const sendAutomationsAPI = createCollectionAPI<SendMessagesAutomation>("sendAutomations");
+const sendAutomationsAPI =
+  createCollectionAPI<SendMessagesAutomation>("sendAutomations");
 
 // Export the standard CRUD operations for send automations
 export const createSendAutomation = sendAutomationsAPI.create;

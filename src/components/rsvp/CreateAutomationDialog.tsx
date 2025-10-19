@@ -22,7 +22,11 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { useTemplates, useCreateSendAutomation } from "../../hooks/rsvp";
 import TemplateSelector from "./TemplateSelector";
-import { SendMessagesAutomation, TargetAudienceFilter, AutomationType } from "@wedding-plan/types";
+import {
+  SendMessagesAutomation,
+  TargetAudienceFilter,
+  AutomationType,
+} from "@wedding-plan/types";
 
 interface CreateAutomationDialogProps {
   open: boolean;
@@ -54,7 +58,7 @@ const CreateAutomationDialog: React.FC<CreateAutomationDialogProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.messageTemplateId) {
       return;
     }
@@ -94,7 +98,7 @@ const CreateAutomationDialog: React.FC<CreateAutomationDialogProps> = ({
   };
 
   const handleAttendanceFilterChange = (value: boolean | undefined) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       targetAudienceFilter: {
         ...prev.targetAudienceFilter,
@@ -110,7 +114,7 @@ const CreateAutomationDialog: React.FC<CreateAutomationDialogProps> = ({
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle>{t("rsvp.createAutomation")}</DialogTitle>
-        
+
         <DialogContent>
           <Box component="form" sx={{ mt: 1 }}>
             <Box sx={{ mb: 3 }}>
@@ -118,21 +122,27 @@ const CreateAutomationDialog: React.FC<CreateAutomationDialogProps> = ({
                 fullWidth
                 label={t("rsvp.automationName")}
                 value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                }
                 required
               />
             </Box>
 
             <Box sx={{ mb: 3 }}>
               <FormControl component="fieldset">
-                <FormLabel component="legend">{t("rsvp.automationType")}</FormLabel>
+                <FormLabel component="legend">
+                  {t("rsvp.automationType")}
+                </FormLabel>
                 <RadioGroup
                   value={formData.automationType}
-                  onChange={(e) => setFormData(prev => ({ 
-                    ...prev, 
-                    automationType: e.target.value as AutomationType,
-                    targetAudienceFilter: {} // Reset filter when type changes
-                  }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      automationType: e.target.value as AutomationType,
+                      targetAudienceFilter: {}, // Reset filter when type changes
+                    }))
+                  }
                 >
                   <FormControlLabel
                     value="rsvp"
@@ -170,8 +180,11 @@ const CreateAutomationDialog: React.FC<CreateAutomationDialogProps> = ({
               <TemplateSelector
                 templates={templates}
                 selectedTemplateId={formData.messageTemplateId}
-                onChange={(templateId) => 
-                  setFormData(prev => ({ ...prev, messageTemplateId: templateId }))
+                onChange={(templateId) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    messageTemplateId: templateId,
+                  }))
                 }
                 label={t("rsvp.selectTemplate")}
                 disabled={isLoadingTemplates}
@@ -182,8 +195,9 @@ const CreateAutomationDialog: React.FC<CreateAutomationDialogProps> = ({
               <DateTimePicker
                 label={t("rsvp.scheduledTime")}
                 value={formData.scheduledTime}
-                onChange={(newValue) => 
-                  newValue && setFormData(prev => ({ ...prev, scheduledTime: newValue }))
+                onChange={(newValue) =>
+                  newValue &&
+                  setFormData((prev) => ({ ...prev, scheduledTime: newValue }))
                 }
                 slotProps={{
                   textField: {
@@ -196,14 +210,20 @@ const CreateAutomationDialog: React.FC<CreateAutomationDialogProps> = ({
             {showTargetAudience && (
               <Box sx={{ mb: 3 }}>
                 <FormControl component="fieldset">
-                  <FormLabel component="legend">{t("rsvp.targetAudience")}</FormLabel>
+                  <FormLabel component="legend">
+                    {t("rsvp.targetAudience")}
+                  </FormLabel>
                   <FormGroup>
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formData.targetAudienceFilter.attendance === true}
-                          onChange={(e) => 
-                            handleAttendanceFilterChange(e.target.checked ? true : undefined)
+                          checked={
+                            formData.targetAudienceFilter.attendance === true
+                          }
+                          onChange={(e) =>
+                            handleAttendanceFilterChange(
+                              e.target.checked ? true : undefined
+                            )
                           }
                         />
                       }
@@ -212,9 +232,13 @@ const CreateAutomationDialog: React.FC<CreateAutomationDialogProps> = ({
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={formData.targetAudienceFilter.attendance === false}
-                          onChange={(e) => 
-                            handleAttendanceFilterChange(e.target.checked ? false : undefined)
+                          checked={
+                            formData.targetAudienceFilter.attendance === false
+                          }
+                          onChange={(e) =>
+                            handleAttendanceFilterChange(
+                              e.target.checked ? false : undefined
+                            )
                           }
                         />
                       }
@@ -228,15 +252,19 @@ const CreateAutomationDialog: React.FC<CreateAutomationDialogProps> = ({
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleClose}>
-            {t("common.cancel")}
-          </Button>
+          <Button onClick={handleClose}>{t("common.cancel")}</Button>
           <Button
             onClick={handleSubmit}
             variant="contained"
-            disabled={createSendAutomation.isPending || !formData.name || !formData.messageTemplateId}
+            disabled={
+              createSendAutomation.isPending ||
+              !formData.name ||
+              !formData.messageTemplateId
+            }
           >
-            {createSendAutomation.isPending ? t("common.creating") : t("rsvp.createAutomation")}
+            {createSendAutomation.isPending
+              ? t("common.creating")
+              : t("rsvp.createAutomation")}
           </Button>
         </DialogActions>
       </Dialog>
