@@ -183,6 +183,7 @@ export interface Translations {
     noVariables: string;
     unnamedTemplate: string;
     unknown: string;
+    confirmDelete: string;
     accessDenied: string;
     insufficientPermissions: string;
     goToWeddings: string;
@@ -524,6 +525,23 @@ export interface Translations {
     failedToSend: string;
     messageQueuedSingular: string;
     messagesQueuedPlural: string;
+    // Send Automation types
+    sendAutomations: string;
+    createAutomation: string;
+    runNow: string;
+    automationName: string;
+    scheduledTime: string;
+    automationType: string;
+    rsvpAutomation: string;
+    reminderAutomation: string;
+    rsvpAutomationDescription: string;
+    reminderAutomationDescription: string;
+    targetAudience: string;
+    attendingGuests: string;
+    notAttendingGuests: string;
+    noAutomationsTitle: string;
+    noAutomationsDescription: string;
+    createFirstAutomation: string;
   };
   rsvpEmptyState: {
     title: string;

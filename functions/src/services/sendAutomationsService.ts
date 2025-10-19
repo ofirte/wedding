@@ -38,16 +38,10 @@ export class SendAutomationsService {
   ): Promise<SendMessagesAutomation[]> {
     try {
       logger.info("Getting automations to run", { weddingId });
-      const halfAnHourAgo = new Date(Date.now() - 30 * 60 * 1000);
       const halfAnHourFromNow = new Date(Date.now() + 30 * 60 * 1000);
       const filters: FilterOptions[] = [
         { field: "isActive", operator: "==", value: true },
         { field: "status", operator: "==", value: "pending" },
-        {
-          field: "scheduledTime",
-          operator: ">=",
-          value: halfAnHourAgo,
-        },
         {
           field: "scheduledTime",
           operator: "<=",

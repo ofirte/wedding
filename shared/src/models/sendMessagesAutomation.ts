@@ -2,6 +2,8 @@ export type TargetAudienceFilter = {
   attendance?: boolean;
 };
 
+export type AutomationType = "rsvp" | "reminder";
+
 export type AutomationStatus =
   | "pending"
   | "inProgress"
@@ -18,5 +20,6 @@ export interface SendMessagesAutomation {
   updatedAt: Date;
   messageTemplateId: string;
   scheduledTime: Date;
+  automationType: AutomationType;
   targetAudienceFilter: TargetAudienceFilter;
 }

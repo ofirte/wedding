@@ -9,3 +9,10 @@ export { useDeleteTemplate } from "./useDeleteTemplate";
 export { useSubmitTemplateApproval } from "./useSubmitTemplateApproval";
 export { useApprovalStatus } from "./useApprovalStatus";
 export { useApprovalStatusSync } from "./useApprovalStatusSync";
+
+// Send Automations hooks
+export { useSendAutomations } from "./useSendAutomations";
+export { useCreateSendAutomation } from "./useCreateSendAutomation";
+export { useUpdateSendAutomation } from "./useUpdateSendAutomation";
+export { useDeleteSendAutomation } from "./useDeleteSendAutomation";
+export { useManualRunAutomations } from "./useManualRunAutomations";

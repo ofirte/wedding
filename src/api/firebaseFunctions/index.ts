@@ -14,6 +14,9 @@ export * from "./userRoles";
 // Export messaging functions
 export * from "./messaging";
 
+// Export send automations functions
+export * from "./sendAutomations";
+
 // Export template functions
 export * from "./templates";
 
@@ -21,6 +24,7 @@ export * from "./templates";
 export {
   UserRolesFunctions,
   MessagingFunctions,
+  SendAutomationsFunctions,
   TemplateFunctions,
   AllFunctions,
   type FunctionName,
@@ -29,4 +33,5 @@ export {
 // Export organized function collections
 export { userRolesFunctions } from "./userRoles";
 export { messagingFunctions } from "./messaging";
+export { sendAutomationsFunctions } from "./sendAutomations";
 export { templateFunctions } from "./templates";

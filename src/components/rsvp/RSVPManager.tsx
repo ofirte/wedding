@@ -5,6 +5,7 @@ import {
   History as HistoryIcon,
   Assessment as AssessmentIcon,
   Settings as SettingsIcon,
+  Schedule as ScheduleIcon,
 } from "@mui/icons-material";
 import { useSearchParams } from "react-router";
 import { useTranslation } from "../../localization/LocalizationContext";
@@ -12,11 +13,13 @@ import TemplatesManager from "./TemplatesManager";
 import MessagesLogTab from "./MessagesLogTab";
 import RSVPStatusTab from "./RSVPStatusTab";
 import RSVPQuestionsManager from "./RSVPQuestionsManager";
+import SendAutomationsManager from "./SendAutomationsManager";
 import { useRSVPConfig } from "../../hooks/rsvp/useRSVPConfig";
 
 const TabValue = {
   TEMPLATES: "templates",
   SEND: "send",
+  SEND_AUTOMATION: "sendAutomation",
   MESSAGES_LOG: "messagesLog",
   RSVP_STATUS: "rsvpStatus",
   QUESTIONS: "questions",
@@ -39,6 +42,11 @@ const RSVPTabs = [
     value: TabValue.TEMPLATES,
     icon: <DescriptionIcon />,
     labelKey: "rsvp.templates",
+  },
+  {
+    value: TabValue.SEND_AUTOMATION,
+    icon: <ScheduleIcon />,
+    labelKey: "rsvp.sendAutomations",
   },
   {
     value: TabValue.MESSAGES_LOG,
@@ -121,6 +129,7 @@ const RSVPManager: FC = () => {
 
         {activeTab === TabValue.QUESTIONS && <RSVPQuestionsManager />}
         {activeTab === TabValue.TEMPLATES && <TemplatesManager />}
+        {activeTab === TabValue.SEND_AUTOMATION && <SendAutomationsManager />}
         {activeTab === TabValue.MESSAGES_LOG && <MessagesLogTab />}
       </Box>
     </Box>
