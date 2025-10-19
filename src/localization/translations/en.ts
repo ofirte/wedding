@@ -549,9 +549,12 @@ export const englishTranslations: Translations = {
     messageSid: "Message ID",
     errorCode: "Error Code",
     errorMessage: "Error Message",
-    automationInProgressInfo: "This automation is currently running. Status will be updated automatically.",
-    automationCompletedSuccessfully: "This automation completed successfully with all messages sent.",
-    automationFailedInfo: "This automation failed during execution. Check the failure details below for more information.",
+    automationInProgressInfo:
+      "This automation is currently running. Status will be updated automatically.",
+    automationCompletedSuccessfully:
+      "This automation completed successfully with all messages sent.",
+    automationFailedInfo:
+      "This automation failed during execution. Check the failure details below for more information.",
   },
   rsvpEmptyState: {
     title: "Create Your RSVP Form",

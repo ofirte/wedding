@@ -541,8 +541,10 @@ export const hebrewTranslations: Translations = {
     errorCode: "קוד שגיאה",
     errorMessage: "הודעת שגיאה",
     automationInProgressInfo: "האוטומציה הזו רצה כרגע. הסטטוס יעודכן אוטומטית.",
-    automationCompletedSuccessfully: "האוטומציה הזו הושלמה בהצלחה עם כל ההודעות שנשלחו.",
-    automationFailedInfo: "האוטומציה הזו נכשלה במהלך הביצוע. בדוק את פרטי הכישלון למטה למידע נוסף.",
+    automationCompletedSuccessfully:
+      "האוטומציה הזו הושלמה בהצלחה עם כל ההודעות שנשלחו.",
+    automationFailedInfo:
+      "האוטומציה הזו נכשלה במהלך הביצוע. בדוק את פרטי הכישלון למטה למידע נוסף.",
   },
   rsvpEmptyState: {
     title: "צור טופס אישור הגעה",

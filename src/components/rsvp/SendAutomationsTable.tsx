@@ -104,7 +104,9 @@ const SendAutomationsTable: React.FC<SendAutomationsTableProps> = ({
       id: "templateName",
       label: t("templates.templateName"),
       render: (automation) => {
-        const templateName = templateNames[automation.messageTemplateId] || automation.messageTemplateId;
+        const templateName =
+          templateNames[automation.messageTemplateId] ||
+          automation.messageTemplateId;
         return (
           <Typography variant="body2" sx={{ maxWidth: 200 }}>
             {templateName}

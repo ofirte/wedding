@@ -52,9 +52,9 @@ const TableContent = <T extends { id: string | number }>({
       {data.map((rowData, index) => (
         <TableRow
           key={`${rowData.id}-${index}`}
-          sx={{ 
+          sx={{
             "&:hover": { bgcolor: "#f5f5f5" },
-            cursor: onRowClick ? "pointer" : "default"
+            cursor: onRowClick ? "pointer" : "default",
           }}
           onClick={onRowClick ? () => onRowClick(rowData) : undefined}
         >
