@@ -536,6 +536,22 @@ export const englishTranslations: Translations = {
     noAutomationsDescription:
       "Create automated message campaigns to send RSVP requests and reminders to your guests.",
     createFirstAutomation: "Create First Automation",
+    // Automation Info Dialog
+    automationDetails: "Automation Details",
+    basicInformation: "Basic Information",
+    executionStatistics: "Execution Statistics",
+    totalMessagesSent: "Total Messages Sent",
+    successfulMessages: "Successful Messages",
+    failedMessages: "Failed Messages",
+    completedAt: "Completed At",
+    failureDetails: "Failure Details",
+    failureDetailsDescription: "The following messages failed to send:",
+    messageSid: "Message ID",
+    errorCode: "Error Code",
+    errorMessage: "Error Message",
+    automationInProgressInfo: "This automation is currently running. Status will be updated automatically.",
+    automationCompletedSuccessfully: "This automation completed successfully with all messages sent.",
+    automationFailedInfo: "This automation failed during execution. Check the failure details below for more information.",
   },
   rsvpEmptyState: {
     title: "Create Your RSVP Form",

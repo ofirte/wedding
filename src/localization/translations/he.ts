@@ -527,6 +527,22 @@ export const hebrewTranslations: Translations = {
     noAutomationsDescription:
       "צור קמפיינים אוטומטיים של הודעות לשליחת בקשות אישור הגעה ותזכורות לאורחים שלך.",
     createFirstAutomation: "צור אוטומציה ראשונה",
+    // Automation Info Dialog
+    automationDetails: "פרטי האוטומציה",
+    basicInformation: "מידע בסיסי",
+    executionStatistics: "סטטיסטיקות ביצוע",
+    totalMessagesSent: "סה״כ הודעות שנשלחו",
+    successfulMessages: "הודעות מוצלחות",
+    failedMessages: "הודעות שנכשלו",
+    completedAt: "הושלם ב",
+    failureDetails: "פרטי הכישלונות",
+    failureDetailsDescription: "ההודעות הבאות נכשלו בשליחה:",
+    messageSid: "מזהה הודעה",
+    errorCode: "קוד שגיאה",
+    errorMessage: "הודעת שגיאה",
+    automationInProgressInfo: "האוטומציה הזו רצה כרגע. הסטטוס יעודכן אוטומטית.",
+    automationCompletedSuccessfully: "האוטומציה הזו הושלמה בהצלחה עם כל ההודעות שנשלחו.",
+    automationFailedInfo: "האוטומציה הזו נכשלה במהלך הביצוע. בדוק את פרטי הכישלון למטה למידע נוסף.",
   },
   rsvpEmptyState: {
     title: "צור טופס אישור הגעה",

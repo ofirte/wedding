@@ -10,10 +10,12 @@ import {
   useDeleteSendAutomation,
   useManualRunAutomations,
   useManualUpdateAutomationStatuses,
+  useTemplates,
 } from "../../hooks/rsvp";
 import SendAutomationsEmptyState from "./SendAutomationsEmptyState";
 import CreateAutomationDialog from "./CreateAutomationDialog";
 import SendAutomationsTable from "./SendAutomationsTable";
+import AutomationInfoDialog from "./AutomationInfoDialog";
 import { SendMessagesAutomation } from "@wedding-plan/types";
 
 /**
@@ -24,11 +26,14 @@ import { SendMessagesAutomation } from "@wedding-plan/types";
 const SendAutomationsManager: React.FC = () => {
   const { t } = useTranslation();
   const { data: automations = [], isLoading, refetch } = useSendAutomations();
+  const { data: templatesData } = useTemplates();
   const deleteAutomation = useDeleteSendAutomation();
   const manualRunAutomations = useManualRunAutomations();
   const manualUpdateAutomationStatuses = useManualUpdateAutomationStatuses();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedAutomation, setSelectedAutomation] = useState<SendMessagesAutomation | null>(null);
+  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
   const hasRunInitialCheck = useRef(false);
   const isCheckingStatuses = useRef(false);
 
@@ -84,6 +89,32 @@ const SendAutomationsManager: React.FC = () => {
     // TODO: Implement edit functionality
     console.log("Edit automation:", automation);
   };
+
+  const handleRowClick = (automation: SendMessagesAutomation) => {
+    setSelectedAutomation(automation);
+    setIsInfoDialogOpen(true);
+  };
+
+  const handleCloseInfoDialog = () => {
+    setIsInfoDialogOpen(false);
+    setSelectedAutomation(null);
+  };
+
+  // Create template names mapping
+  const templateNames = React.useMemo(() => {
+    if (!templatesData?.templates) return {};
+    
+    const mapping: Record<string, string> = {};
+    templatesData.templates.forEach(template => {
+      mapping[template.sid] = template.friendlyName;
+    });
+    return mapping;
+  }, [templatesData?.templates]);
+
+  // Get template name for selected automation
+  const selectedTemplateName = selectedAutomation 
+    ? templateNames[selectedAutomation.messageTemplateId] 
+    : undefined;
 
   const hasAutomations = automations.length > 0;
 
@@ -148,6 +179,8 @@ const SendAutomationsManager: React.FC = () => {
             automations={automations}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onRowClick={handleRowClick}
+            templateNames={templateNames}
           />
         </Paper>
       )}
@@ -156,6 +189,13 @@ const SendAutomationsManager: React.FC = () => {
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         onSuccess={handleCreateSuccess}
+      />
+
+      <AutomationInfoDialog
+        open={isInfoDialogOpen}
+        onClose={handleCloseInfoDialog}
+        automation={selectedAutomation}
+        templateName={selectedTemplateName}
       />
     </Box>
   );

@@ -542,6 +542,22 @@ export interface Translations {
     noAutomationsTitle: string;
     noAutomationsDescription: string;
     createFirstAutomation: string;
+    // Automation Info Dialog
+    automationDetails: string;
+    basicInformation: string;
+    executionStatistics: string;
+    totalMessagesSent: string;
+    successfulMessages: string;
+    failedMessages: string;
+    completedAt: string;
+    failureDetails: string;
+    failureDetailsDescription: string;
+    messageSid: string;
+    errorCode: string;
+    errorMessage: string;
+    automationInProgressInfo: string;
+    automationCompletedSuccessfully: string;
+    automationFailedInfo: string;
   };
   rsvpEmptyState: {
     title: string;

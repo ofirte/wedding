@@ -16,6 +16,7 @@ interface TableContentProps<T extends { id: string | number }> {
   showSelectColumn?: boolean;
   selectedRows?: T[];
   onRowSelect?: (row: T, isSelected: boolean) => void;
+  onRowClick?: (row: T) => void;
 }
 
 const TableContent = <T extends { id: string | number }>({
@@ -24,6 +25,7 @@ const TableContent = <T extends { id: string | number }>({
   showSelectColumn = false,
   selectedRows = [],
   onRowSelect,
+  onRowClick,
 }: TableContentProps<T>) => {
   if (data.length === 0) {
     const colSpan = columns.length + (showSelectColumn ? 1 : 0);
@@ -50,7 +52,11 @@ const TableContent = <T extends { id: string | number }>({
       {data.map((rowData, index) => (
         <TableRow
           key={`${rowData.id}-${index}`}
-          sx={{ "&:hover": { bgcolor: "#f5f5f5" } }}
+          sx={{ 
+            "&:hover": { bgcolor: "#f5f5f5" },
+            cursor: onRowClick ? "pointer" : "default"
+          }}
+          onClick={onRowClick ? () => onRowClick(rowData) : undefined}
         >
           {showSelectColumn && (
             <TableCell align="center" sx={{ width: "48px", minWidth: "48px" }}>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Chip, IconButton, Tooltip } from "@mui/material";
+import { Box, Chip, IconButton, Tooltip, Typography } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import DSTable, { Column } from "../common/DSTable";
 import { useTranslation } from "../../localization/LocalizationContext";
@@ -10,6 +10,8 @@ interface SendAutomationsTableProps {
   automations: SendMessagesAutomation[];
   onEdit?: (automation: SendMessagesAutomation) => void;
   onDelete?: (automation: SendMessagesAutomation) => void;
+  onRowClick?: (automation: SendMessagesAutomation) => void;
+  templateNames?: Record<string, string>; // Map of templateId to friendly name
   isLoading?: boolean;
 }
 
@@ -22,6 +24,8 @@ const SendAutomationsTable: React.FC<SendAutomationsTableProps> = ({
   automations,
   onEdit,
   onDelete,
+  onRowClick,
+  templateNames = {},
   isLoading = false,
 }) => {
   const { t } = useTranslation();
@@ -97,12 +101,15 @@ const SendAutomationsTable: React.FC<SendAutomationsTableProps> = ({
       sortable: true,
     },
     {
-      id: "createdAt",
-      label: t("rsvp.dateCreated"),
+      id: "templateName",
+      label: t("templates.templateName"),
       render: (automation) => {
-        // Convert UTC created date to local time for display
-        const createdDate = new Date(automation.createdAt);
-        return format(createdDate, "PP");
+        const templateName = templateNames[automation.messageTemplateId] || automation.messageTemplateId;
+        return (
+          <Typography variant="body2" sx={{ maxWidth: 200 }}>
+            {templateName}
+          </Typography>
+        );
       },
       sortable: true,
     },
@@ -146,6 +153,8 @@ const SendAutomationsTable: React.FC<SendAutomationsTableProps> = ({
       columns={columns}
       showExport={false}
       showSelectColumn={false}
+      onRowClick={onRowClick}
+      mobileCardTitle={(automation) => automation.name}
     />
   );
 };
