@@ -6,7 +6,12 @@
  * Request to manually trigger message automations
  */
 export interface ManualRunAutomationsRequest {
-  // No parameters needed - will process all pending automations
+  // Optional wedding ID - if provided, will process only this wedding's automations
+  weddingId: string;
+}
+
+export interface ManualUpdateAutomationStatusesRequest {
+  weddingId: string;
 }
 
 /**
@@ -15,5 +20,11 @@ export interface ManualRunAutomationsRequest {
 export interface ManualRunAutomationsResponse {
   success: boolean;
   processedCount?: number;
+  message?: string;
+}
+
+export interface ManualUpdateAutomationStatusesResponse {
+  success: boolean;
+  updatedCount?: number;
   message?: string;
 }

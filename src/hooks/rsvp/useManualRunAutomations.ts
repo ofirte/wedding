@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { useParams } from "react-router";
 import { manualRunMessagesAutomation } from "../../api/firebaseFunctions/sendAutomations";
 
 /**
@@ -6,9 +7,13 @@ import { manualRunMessagesAutomation } from "../../api/firebaseFunctions/sendAut
  * @returns Mutation object for manually running automations
  */
 export const useManualRunAutomations = () => {
+  const { weddingId } = useParams<{ weddingId: string }>();
+
   return useMutation({
     mutationFn: async () => {
-      const result = await manualRunMessagesAutomation({});
+      const result = await manualRunMessagesAutomation({
+        weddingId: weddingId!,
+      });
       return result.data;
     },
     onSuccess: (data) => {

@@ -1,7 +1,10 @@
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../firebaseConfig";
 import { SendAutomationsFunctions } from "./types";
-import { ManualRunAutomationsRequest } from "@wedding-plan/types";
+import {
+  ManualRunAutomationsRequest,
+  ManualUpdateAutomationStatusesRequest,
+} from "@wedding-plan/types";
 import { ManualRunAutomationsResponse } from "@wedding-plan/types";
 
 /**
@@ -13,8 +16,8 @@ export const sendAutomationsFunctions = {
     ManualRunAutomationsResponse
   >(functions, SendAutomationsFunctions.MANUAL_RUN_MESSAGES_AUTOMATION),
   [SendAutomationsFunctions.MANUAL_UPDATE_AUTOMATION_STATUSES]: httpsCallable<
-    {},
-    { success: boolean }
+    ManualUpdateAutomationStatusesRequest,
+    ManualRunAutomationsResponse
   >(functions, SendAutomationsFunctions.MANUAL_UPDATE_AUTOMATION_STATUSES),
 } as const;
 
