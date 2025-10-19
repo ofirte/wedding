@@ -4,6 +4,7 @@ import { SendAutomationsService } from "../services/sendAutomationsService";
 import { AutomationStatusService } from "../services/automationStatusService";
 import { twilioFunctionConfig } from "../common/config";
 import { onCall } from "firebase-functions/https";
+import { getValidatedData, isAuthenticated } from "../common/utils";
 
 export const runMessagesAutomation = onSchedule(
   {
@@ -29,9 +30,13 @@ export const manualRunMessagesAutomation = onCall(
   },
   async (request) => {
     try {
-      logger.info("Manual trigger for message automations started");
+      isAuthenticated(request);
+      const { weddingId } = getValidatedData(request.data, ["weddingId"]);
+      logger.info("Manual trigger for message automations started", {
+        weddingId,
+      });
       const sendAutomationsService = new SendAutomationsService();
-      await sendAutomationsService.processMessageAutomations();
+      await sendAutomationsService.processMessageAutomations(weddingId);
       logger.info(
         "Manual trigger for message automations completed successfully"
       );
@@ -73,9 +78,13 @@ export const manualUpdateAutomationStatuses = onCall(
   },
   async (request) => {
     try {
-      logger.info("Manual trigger for automation status updates started");
+      isAuthenticated(request);
+      const { weddingId } = getValidatedData(request.data, ["weddingId"]);
+      logger.info("Manual trigger for automation status updates started", {
+        weddingId,
+      });
       const automationStatusService = new AutomationStatusService();
-      await automationStatusService.processAutomationStatusUpdates();
+      await automationStatusService.processAutomationStatusUpdates(weddingId);
       logger.info(
         "Manual trigger for automation status updates completed successfully"
       );

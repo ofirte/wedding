@@ -19,16 +19,23 @@ export class AutomationStatusService {
   }
 
   /**
-   * Get all inProgress automations across all weddings
+   * Get all inProgress automations across all weddings or for a specific wedding
    */
-  async getInProgressAutomations(): Promise<
-    Array<{ automation: SendMessagesAutomation; weddingId: string }>
-  > {
+  async getInProgressAutomations(
+    weddingId?: string
+  ): Promise<Array<{ automation: SendMessagesAutomation; weddingId: string }>> {
     try {
-      logger.info("Getting all inProgress automations");
+      logger.info("Getting inProgress automations", { weddingId });
 
-      // Get all weddings (for now using the hardcoded wedding ID like the main service)
-      const weddings = await this.weddingModel.getAll();
+      let weddings;
+      if (weddingId) {
+        // Get specific wedding
+        const wedding = await this.weddingModel.getById(weddingId);
+        weddings = wedding ? [wedding] : [];
+      } else {
+        // Get all weddings
+        weddings = await this.weddingModel.getAll();
+      }
 
       const allInProgressAutomations: Array<{
         automation: SendMessagesAutomation;
@@ -55,6 +62,7 @@ export class AutomationStatusService {
 
       logger.info("Found inProgress automations", {
         count: allInProgressAutomations.length,
+        weddingId,
       });
 
       return allInProgressAutomations;
@@ -292,11 +300,15 @@ export class AutomationStatusService {
   /**
    * Main processing function to check and update all inProgress automations
    */
-  async processAutomationStatusUpdates(): Promise<void> {
+  async processAutomationStatusUpdates(weddingId?: string): Promise<void> {
     try {
-      logger.info("Starting automation status updates processing");
+      logger.info("Starting automation status updates processing", {
+        weddingId,
+      });
 
-      const inProgressAutomations = await this.getInProgressAutomations();
+      const inProgressAutomations = await this.getInProgressAutomations(
+        weddingId
+      );
 
       if (inProgressAutomations.length === 0) {
         logger.info("No inProgress automations found");

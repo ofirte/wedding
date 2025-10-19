@@ -224,12 +224,18 @@ export class SendAutomationsService {
   /**
    * Main processing function - simplified example
    */
-  async processMessageAutomations(): Promise<void> {
+  async processMessageAutomations(weddingId?: string): Promise<void> {
     try {
-      logger.info("Starting message automations processing");
+      logger.info("Starting message automations processing", { weddingId });
 
-      // Get all weddings
-      const weddings = await this.weddingModel.getAll();
+      // Get weddings - either specific one or all
+      let weddings;
+      if (weddingId) {
+        const wedding = await this.weddingModel.getById(weddingId);
+        weddings = wedding ? [wedding] : [];
+      } else {
+        weddings = await this.weddingModel.getAll();
+      }
       for (const wedding of weddings) {
         try {
           // Get automations to run for this wedding
