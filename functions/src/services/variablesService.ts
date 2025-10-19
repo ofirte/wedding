@@ -5,7 +5,7 @@ import { logger } from "firebase-functions/v2";
  * Generate a personalized RSVP link for a specific guest and wedding
  */
 const generateRSVPLink = (weddingId: string, guestId: string): string => {
-  const baseUrl = "https://weddingplanerstudioapp.com";
+  const baseUrl = "https://weddingplannerstudioapp.com";
   return `${baseUrl}/guest-rsvp/${weddingId}/${guestId}`;
 };
 
@@ -13,7 +13,7 @@ const generateRSVPLink = (weddingId: string, guestId: string): string => {
  * Generate payment link for wedding-related transactions
  */
 const generatePaymentLink = (weddingId: string, guestId?: string): string => {
-  const baseUrl = "https://weddingplanerstudioapp.com";
+  const baseUrl = "https://weddingplannerstudioapp.com";
   let link = `${baseUrl}/payment/${weddingId}`;
 
   if (guestId) {

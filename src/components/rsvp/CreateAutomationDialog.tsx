@@ -63,7 +63,15 @@ const CreateAutomationDialog: React.FC<CreateAutomationDialogProps> = ({
       return;
     }
 
-    const automationData: Omit<SendMessagesAutomation, "id"> = {
+    // Get user's timezone
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    // Convert scheduled time to UTC for consistent server processing
+    const scheduledTimeUTC = new Date(formData.scheduledTime.toISOString());
+
+    const automationData: Omit<SendMessagesAutomation, "id"> & {
+      scheduledTimeZone: string;
+    } = {
       name: formData.name,
       isActive: true,
       status: "pending",
@@ -71,7 +79,8 @@ const CreateAutomationDialog: React.FC<CreateAutomationDialogProps> = ({
       createdAt: new Date(),
       updatedAt: new Date(),
       messageTemplateId: formData.messageTemplateId,
-      scheduledTime: formData.scheduledTime,
+      scheduledTime: scheduledTimeUTC,
+      scheduledTimeZone: userTimeZone,
       automationType: formData.automationType,
       targetAudienceFilter: formData.targetAudienceFilter,
     };

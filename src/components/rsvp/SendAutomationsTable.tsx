@@ -86,13 +86,24 @@ const SendAutomationsTable: React.FC<SendAutomationsTableProps> = ({
     {
       id: "scheduledTime",
       label: t("rsvp.scheduledTime"),
-      render: (automation) => format(new Date(automation.scheduledTime), "PPp"),
+      render: (automation) => {
+        // Convert UTC scheduled time to local time for display
+        const scheduledDate = new Date(automation.scheduledTime);
+        const timeZoneInfo = (automation as any).scheduledTimeZone
+          ? ` (${(automation as any).scheduledTimeZone})`
+          : "";
+        return format(scheduledDate, "PPp") + timeZoneInfo;
+      },
       sortable: true,
     },
     {
       id: "createdAt",
       label: t("rsvp.dateCreated"),
-      render: (automation) => format(new Date(automation.createdAt), "PP"),
+      render: (automation) => {
+        // Convert UTC created date to local time for display
+        const createdDate = new Date(automation.createdAt);
+        return format(createdDate, "PP");
+      },
       sortable: true,
     },
     {

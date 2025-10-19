@@ -20,8 +20,30 @@ export class MessageService {
   }
 
   /**
-   * Send WhatsApp message using Twilio Content API
+   * Get all automations for a wedding
    */
+  normalizeWhatsappPhoneNumber(cellphone: string): string {
+    const whatsappPrefix = "whatsapp:";
+    // If already in international format, return as is
+    if (cellphone.startsWith("+")) {
+      return `${whatsappPrefix}${cellphone}`;
+    }
+
+    // Remove all non-digit characters
+    const digits = cellphone.replace(/\D/g, "");
+
+    // Handle Israeli numbers
+    if (digits.startsWith("05") && digits.length === 10) {
+      return `${whatsappPrefix}+972${digits.slice(1)}`;
+    }
+
+    if (digits.length > 10 && digits.startsWith("972")) {
+      return `${whatsappPrefix}+${digits}`;
+    }
+
+    return `${whatsappPrefix}+${digits}`;
+  }
+  
   async sendWhatsAppMessage({
     contentSid,
     contentVariables,

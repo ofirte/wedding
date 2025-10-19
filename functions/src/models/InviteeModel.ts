@@ -8,6 +8,6 @@ import { BaseModel } from "./baseModel/BaseModel";
 
 export class InviteeModel extends BaseModel<Invitee> {
   constructor() {
-    super("invitees", true); // Wedding-scoped collection
+    super("invitee", true); // Wedding-scoped collection
   }
 }

@@ -19,7 +19,8 @@ export interface SendMessagesAutomation {
   createdAt: Date;
   updatedAt: Date;
   messageTemplateId: string;
-  scheduledTime: Date;
+  scheduledTime: Date; // Always stored in UTC
+  scheduledTimeZone: string; // IANA timezone (e.g., 'America/New_York', 'Europe/London')
   automationType: AutomationType;
   targetAudienceFilter: TargetAudienceFilter;
 }

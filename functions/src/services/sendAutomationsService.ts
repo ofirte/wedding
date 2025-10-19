@@ -30,15 +30,22 @@ export class SendAutomationsService {
     this.weddingModel = new WeddingModel();
     this.inviteeModel = new InviteeModel();
   }
-  /**
-   * Get all automations for a wedding
-   */
+
   async getAutomationsToRun(
     weddingId: string
   ): Promise<SendMessagesAutomation[]> {
     try {
       logger.info("Getting automations to run", { weddingId });
-      const halfAnHourFromNow = new Date(Date.now() + 30 * 60 * 1000);
+      // Use UTC time for comparison since scheduledTime is stored in UTC
+      const now = new Date();
+      const halfAnHourFromNow = new Date(now.getTime() + 30 * 60 * 1000);
+
+      logger.info("Checking automations", {
+        weddingId,
+        currentUTC: now.toISOString(),
+        cutoffUTC: halfAnHourFromNow.toISOString(),
+      });
+
       const filters: FilterOptions[] = [
         { field: "isActive", operator: "==", value: true },
         { field: "status", operator: "==", value: "pending" },
@@ -48,7 +55,13 @@ export class SendAutomationsService {
           value: halfAnHourFromNow,
         },
       ];
-
+      const allWeddingAutomations =
+        await this.sendMessagesAutomationModel.getAll(weddingId);
+      ``;
+      logger.info("All wedding automations", {
+        weddingId,
+        count: allWeddingAutomations.length,
+      });
       const automations = await this.sendMessagesAutomationModel.getByFilter(
         filters,
         weddingId
@@ -70,13 +83,17 @@ export class SendAutomationsService {
    * Create a new automation
    */
   async createAutomation(
-    automationData: Omit<SendMessagesAutomation, "id">,
+    automationData: Omit<SendMessagesAutomation, "id"> & {
+      scheduledTimeZone?: string;
+    },
     weddingId: string
   ): Promise<SendMessagesAutomation> {
     try {
       logger.info("Creating automation", {
         weddingId,
         name: automationData.name,
+        scheduledTimeUTC: automationData.scheduledTime.toISOString(),
+        scheduledTimeZone: automationData.scheduledTimeZone,
       });
 
       const automation = await this.sendMessagesAutomationModel.create(
@@ -147,29 +164,16 @@ export class SendAutomationsService {
   ): Promise<Invitee[]> {
     try {
       logger.info("Getting target audience", { weddingId, filters });
-
-      const inviteeFilters: FilterOptions[] = [];
-
-      // Add attendance filter if specified
-      if (filters.attendance !== undefined) {
-        inviteeFilters.push({
-          field: "rsvpStatus.attendance",
-          operator: "==",
-          value: filters.attendance,
-        });
-      }
-
-      const invitees = await this.inviteeModel.getByFilter(
-        inviteeFilters,
-        weddingId
+      const invitees = await this.inviteeModel.getAll(weddingId);
+      const targetInvitees = invitees.filter(
+        (invitee) => invitee?.rsvpStatus?.attendance === filters.attendance
       );
-
       logger.info("Found target audience", {
         weddingId,
-        count: invitees.length,
+        count: targetInvitees.length,
       });
 
-      return invitees;
+      return targetInvitees;
     } catch (error) {
       logger.error("Error getting target audience", { weddingId, error });
       throw error;
@@ -206,8 +210,8 @@ export class SendAutomationsService {
       logger.info("Starting message automations processing");
 
       // Get all weddings
-      const weddings = await this.weddingModel.getAll();
-
+      const wedding = await this.weddingModel.getById("8xmC1XkZSzGbjS9WBBU5");
+      const weddings = wedding ? [wedding] : [];
       for (const wedding of weddings) {
         try {
           // Get automations to run for this wedding
@@ -228,7 +232,7 @@ export class SendAutomationsService {
                   );
                   return this.messageService.sendWhatsAppMessage({
                     contentSid: automation.messageTemplateId,
-                    to: invitee.cellphone,
+                    to: this.messageService.normalizeWhatsappPhoneNumber(invitee.cellphone),
                     contentVariables: populatedVariables,
                     weddingId: wedding.id,
                   });
