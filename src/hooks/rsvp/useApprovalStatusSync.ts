@@ -27,7 +27,7 @@ export const useApprovalStatusSync = () => {
       const templatesToSync = templates.filter((template) =>
         shouldSyncApprovalStatus(template.approvalStatus)
       );
-
+      console.log(templatesToSync);
       if (templatesToSync.length === 0) {
         return;
       }
@@ -53,7 +53,9 @@ export const useApprovalStatusSync = () => {
               console.log(
                 `Syncing approval status for template ${template.sid}: ${template.approvalStatus} → ${twilioStatus}`
               );
-
+              console.log(weddingId);
+              console.log(template.sid);
+              console.log(twilioStatus);
               await updateTemplateApprovalStatus(
                 template.sid,
                 twilioStatus,

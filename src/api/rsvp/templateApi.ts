@@ -257,9 +257,15 @@ export const updateTemplateApprovalStatus = async (
     // Find the template document in Firebase
     const firebaseTemplates = await getTemplatesFromFirebase(weddingId);
     const template = firebaseTemplates.find((t) => t.sid === templateSid);
-    console.log(firebaseTemplates.map((t) => {
-      return {sid: t.sid, approvalStatus: t.approvalStatus, name: t.friendlyName};
-    }));
+    console.log(
+      firebaseTemplates.map((t) => {
+        return {
+          sid: t.sid,
+          approvalStatus: t.approvalStatus,
+          name: t.friendlyName,
+        };
+      })
+    );
     console.log(
       `Updating template ${firebaseTemplates} approval status to ${status}`
     );
@@ -290,7 +296,7 @@ export const shouldSyncApprovalStatus = (approvalStatus?: string): boolean => {
   // Only sync templates that might have status updates from WhatsApp
   return !!(
     approvalStatus &&
-    ["submitted", "received", "pending"].includes(approvalStatus)
+    ["submitted", "received", "pending", "unsubmitted"].includes(approvalStatus)
   );
 };
 
