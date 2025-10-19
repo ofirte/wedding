@@ -23,4 +23,14 @@ export interface SendMessagesAutomation {
   scheduledTimeZone: string; // IANA timezone (e.g., 'America/New_York', 'Europe/London')
   automationType: AutomationType;
   targetAudienceFilter: TargetAudienceFilter;
+  completionStats?: {
+    successfulMessages: number;
+    failedMessages: number;
+    completedAt: Date;
+  };
+  failureDetails?: Array<{
+    messageSid: string;
+    errorCode?: string;
+    errorMessage?: string;
+  }>;
 }

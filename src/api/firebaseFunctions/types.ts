@@ -33,6 +33,7 @@ export enum UsersFunctions {
 
 export enum SendAutomationsFunctions {
   MANUAL_RUN_MESSAGES_AUTOMATION = "manualRunMessagesAutomation",
+  MANUAL_UPDATE_AUTOMATION_STATUSES = "manualUpdateAutomationStatuses",
 }
 
 /**

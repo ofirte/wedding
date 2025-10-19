@@ -8,7 +8,6 @@ import {
 } from "../models";
 import {
   SendMessagesAutomation,
-  Wedding,
   Invitee,
   SendMessageResponse,
 } from "@wedding-plan/types";
@@ -183,27 +182,6 @@ export class SendAutomationsService {
     }
   }
 
-  /**
-   * Get wedding details
-   */
-  async getWeddingDetails(weddingId: string): Promise<Wedding | null> {
-    try {
-      logger.info("Getting wedding details", { weddingId });
-
-      const wedding = await this.weddingModel.getById(weddingId);
-
-      if (wedding) {
-        logger.info("Found wedding details", { weddingId, name: wedding.name });
-      } else {
-        logger.warn("Wedding not found", { weddingId });
-      }
-
-      return wedding;
-    } catch (error) {
-      logger.error("Error getting wedding details", { weddingId, error });
-      throw error;
-    }
-  }
   async getTemplateLanguage(
     templateSid: string,
     weddingId: string
@@ -251,8 +229,7 @@ export class SendAutomationsService {
       logger.info("Starting message automations processing");
 
       // Get all weddings
-      const wedding = await this.weddingModel.getById("8xmC1XkZSzGbjS9WBBU5");
-      const weddings = wedding ? [wedding] : [];
+      const weddings = await this.weddingModel.getAll();
       for (const wedding of weddings) {
         try {
           // Get automations to run for this wedding

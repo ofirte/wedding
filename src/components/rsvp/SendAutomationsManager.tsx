@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Box, Typography, Button, Paper } from "@mui/material";
 import {
   Add as AddIcon,
@@ -9,6 +9,7 @@ import {
   useSendAutomations,
   useDeleteSendAutomation,
   useManualRunAutomations,
+  useManualUpdateAutomationStatuses,
 } from "../../hooks/rsvp";
 import SendAutomationsEmptyState from "./SendAutomationsEmptyState";
 import CreateAutomationDialog from "./CreateAutomationDialog";
@@ -25,8 +26,35 @@ const SendAutomationsManager: React.FC = () => {
   const { data: automations = [], isLoading, refetch } = useSendAutomations();
   const deleteAutomation = useDeleteSendAutomation();
   const manualRunAutomations = useManualRunAutomations();
+  const manualUpdateAutomationStatuses = useManualUpdateAutomationStatuses();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const hasRunInitialCheck = useRef(false);
+  const isCheckingStatuses = useRef(false);
+
+  // Run automation status check only once when component mounts
+  useEffect(() => {
+    if (!hasRunInitialCheck.current && !isCheckingStatuses.current) {
+      const checkAutomationStatuses = async () => {
+        try {
+          console.log("Starting automation status check on mount...");
+          isCheckingStatuses.current = true;
+          await manualUpdateAutomationStatuses.mutateAsync();
+          console.log("Automation status check completed, refreshing list...");
+          // Refresh the automations list after status update
+          refetch();
+        } catch (error) {
+          console.error("Error checking automation statuses on mount:", error);
+        } finally {
+          isCheckingStatuses.current = false;
+        }
+      };
+
+      hasRunInitialCheck.current = true;
+      checkAutomationStatuses();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array - truly run only once on mount
 
   const handleCreateSuccess = () => {
     refetch(); // Refresh the list after creating

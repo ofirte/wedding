@@ -1,6 +1,7 @@
 import { onSchedule } from "firebase-functions/scheduler";
 import { logger } from "firebase-functions/v2";
 import { SendAutomationsService } from "../services/sendAutomationsService";
+import { AutomationStatusService } from "../services/automationStatusService";
 import { twilioFunctionConfig } from "../common/config";
 import { onCall } from "firebase-functions/https";
 
@@ -37,6 +38,50 @@ export const manualRunMessagesAutomation = onCall(
       return { success: true };
     } catch (error) {
       logger.error("Error in manual trigger for message automations", {
+        error,
+      });
+      throw error;
+    }
+  }
+);
+
+export const updateAutomationStatuses = onSchedule(
+  {
+    schedule: "5 * * * *", // Run at 5 minutes past every hour (XX:05)
+    ...twilioFunctionConfig,
+  },
+  async (context) => {
+    try {
+      logger.info("Automation status update scheduled task started");
+      const automationStatusService = new AutomationStatusService();
+      await automationStatusService.processAutomationStatusUpdates();
+      logger.info(
+        "Automation status update scheduled task completed successfully"
+      );
+    } catch (error) {
+      logger.error("Error in automation status update scheduled task", {
+        error,
+      });
+      throw error; // Re-throw to mark the function as failed
+    }
+  }
+);
+
+export const manualUpdateAutomationStatuses = onCall(
+  {
+    ...twilioFunctionConfig,
+  },
+  async (request) => {
+    try {
+      logger.info("Manual trigger for automation status updates started");
+      const automationStatusService = new AutomationStatusService();
+      await automationStatusService.processAutomationStatusUpdates();
+      logger.info(
+        "Manual trigger for automation status updates completed successfully"
+      );
+      return { success: true };
+    } catch (error) {
+      logger.error("Error in manual trigger for automation status updates", {
         error,
       });
       throw error;

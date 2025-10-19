@@ -16,3 +16,4 @@ export { useCreateSendAutomation } from "./useCreateSendAutomation";
 export { useUpdateSendAutomation } from "./useUpdateSendAutomation";
 export { useDeleteSendAutomation } from "./useDeleteSendAutomation";
 export { useManualRunAutomations } from "./useManualRunAutomations";
+export { useManualUpdateAutomationStatuses } from "./useManualUpdateAutomationStatuses";
