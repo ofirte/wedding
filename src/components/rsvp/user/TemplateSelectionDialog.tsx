@@ -7,28 +7,22 @@ import {
   Button,
   Typography,
   Box,
-  Card,
-  CardContent,
+
   IconButton,
   Stack,
-  Chip,
-  Alert,
-  Paper,
-  Divider,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
 } from "@mui/material";
 import {
   Close as CloseIcon,
   ArrowBack as ArrowBackIcon,
   ArrowForward as ArrowForwardIcon,
   CheckCircle as CheckCircleIcon,
-  ExpandMore as ExpandMoreIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
-import { TemplateDocument } from "@wedding-plan/types";
-import { useTemplates as useWeddingTemplates } from "../../../hooks/rsvp";
+import { TemplateDocument, TemplatesCategories } from "@wedding-plan/types";
+import {
+  useTemplates as useWeddingTemplates,
+  useUpdateRsvpConfigSelectedTemplates,
+} from "../../../hooks/rsvp";
 import { useGlobalTemplates } from "../../../hooks/globalTemplates";
 import { usePreviewText } from "../../../hooks/common";
 import { extractUsedVariables } from "../../../utils/messageVariables";
@@ -53,6 +47,10 @@ const TemplateSelectionDialog: React.FC<TemplateSelectionDialogProps> = ({
 
   const [selectedTemplate, setSelectedTemplate] =
     useState<TemplateDocument | null>(null);
+
+  // Hook to update RSVP config with selected template
+  const { mutate: updateSelectedTemplate, isPending: isUpdating } =
+    useUpdateRsvpConfigSelectedTemplates();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Fetch both wedding and global templates
@@ -97,16 +95,11 @@ const TemplateSelectionDialog: React.FC<TemplateSelectionDialogProps> = ({
   const isLoading = isWeddingLoading || isGlobalLoading;
 
   const currentTemplate = allTemplates[currentIndex];
-
+  console.log(allTemplates)
   // Generate preview text with populated variables
   const templateBody = currentTemplate?.types["twilio/text"]?.body || "";
   const previewText = usePreviewText({ messageText: templateBody, language });
 
-  // Extract variables used in the template
-  const usedVariables = useMemo(() => {
-    if (!currentTemplate) return [];
-    return extractUsedVariables(templateBody);
-  }, [currentTemplate, templateBody]);
 
   const handlePrevious = () => {
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : allTemplates.length - 1));
@@ -117,7 +110,17 @@ const TemplateSelectionDialog: React.FC<TemplateSelectionDialogProps> = ({
   };
 
   const handleSelect = () => {
-    if (currentTemplate) {
+    if (currentTemplate && templateCategory) {
+      console.log("Selected template:", currentTemplate);
+      // Update RSVP config with selected template
+      updateSelectedTemplate({
+        category: templateCategory as TemplatesCategories,
+        templateFireBaseId: currentTemplate.id,
+        templateSid: currentTemplate.sid,
+        isGlobal: currentTemplate.isGlobal,
+      });
+
+      // Call the external onSelect callback
       onSelect(currentTemplate);
     }
   };
@@ -206,10 +209,12 @@ const TemplateSelectionDialog: React.FC<TemplateSelectionDialogProps> = ({
         <Button
           onClick={handleSelect}
           variant="contained"
-          disabled={!currentTemplate}
+          disabled={!currentTemplate || isUpdating}
           startIcon={<CheckCircleIcon />}
         >
-          {t("userRsvp.messagesPlan.selectTemplate")}
+          {isUpdating
+            ? t("common.saving")
+            : t("userRsvp.messagesPlan.selectTemplate")}
         </Button>
       </DialogActions>
     </Dialog>

@@ -11,8 +11,11 @@ import {
 } from "@mui/material";
 import { CheckCircle as CheckCircleIcon } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
-import { TemplateDocument } from "@wedding-plan/types";
+import { TemplateDocument, SelectedTemplate } from "@wedding-plan/types";
 import TemplateSelectionDialog from "./TemplateSelectionDialog";
+import { useRSVPConfig } from "../../../hooks/rsvp/useRSVPConfig";
+import { useTemplates as useWeddingTemplates } from "../../../hooks/rsvp";
+import { useGlobalTemplates } from "../../../hooks/globalTemplates";
 import { MessageType, getMessageTypes } from "./messageTypes";
 
 export interface SelectedTemplates {
@@ -36,12 +39,66 @@ const MessagesPlanManager: React.FC<MessagesPlanManagerProps> = ({
   const [selectedTemplates, setSelectedTemplates] = useState<SelectedTemplates>(
     {}
   );
+
   const [activeMessageType, setActiveMessageType] = useState<string | null>(
     null
   );
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
 
+  // Fetch RSVP config to get existing selected templates
+  const { data: rsvpConfig } = useRSVPConfig();
+  const { data: weddingTemplatesData } = useWeddingTemplates({
+    syncApprovalStatus: false,
+  });
+  const { data: globalTemplatesData } = useGlobalTemplates({
+    syncApprovalStatus: false,
+  });
+
   const messageTypes: MessageType[] = useMemo(() => getMessageTypes(t), [t]);
+
+  // Function to find template details from the loaded templates
+  const findTemplateById = useMemo(() => {
+    return (templateId: string, isGlobal: boolean): TemplateDocument | null => {
+      const templates = isGlobal
+        ? globalTemplatesData?.templates || []
+        : weddingTemplatesData?.templates || [];
+
+      return templates.find((t) => t.id === templateId) || null;
+    };
+  }, [weddingTemplatesData, globalTemplatesData]);
+
+  // Get templates from RSVP config
+  const configuredTemplates = useMemo(() => {
+    if (!rsvpConfig?.selectedTemplates) return {};
+
+    const templates: SelectedTemplates = {};
+
+    Object.entries(rsvpConfig.selectedTemplates).forEach(
+      ([category, selectedTemplate]) => {
+        const template = selectedTemplate as SelectedTemplate;
+        const templateDetails = findTemplateById(
+          template.templateFireBaseId,
+          template.isGlobal
+        );
+
+        if (templateDetails) {
+          templates[category as keyof SelectedTemplates] = {
+            ...templateDetails,
+            isGlobal: template.isGlobal,
+          };
+        }
+      }
+    );
+
+    return templates;
+  }, [rsvpConfig?.selectedTemplates, findTemplateById]);
+
+  // Update local state when configured templates are loaded
+  React.useEffect(() => {
+    if (configuredTemplates && Object.keys(configuredTemplates).length > 0) {
+      setSelectedTemplates((prev) => ({ ...configuredTemplates, ...prev }));
+    }
+  }, [configuredTemplates]);
 
   const handleTemplateSelect = (
     messageTypeId: string,
@@ -121,12 +178,22 @@ const MessagesPlanManager: React.FC<MessagesPlanManagerProps> = ({
 
                     {selectedTemplate && (
                       <Box sx={{ mt: 1 }}>
-                        <Chip
-                          size="small"
-                          icon={<CheckCircleIcon />}
-                          label={selectedTemplate.friendlyName}
-                          color={messageType.color}
-                        />
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <Chip
+                            size="small"
+                            icon={<CheckCircleIcon />}
+                            label={selectedTemplate.friendlyName}
+                            color={messageType.color}
+                          />
+                          {selectedTemplate.isGlobal && (
+                            <Chip
+                              size="small"
+                              label={t("templates.global")}
+                              variant="outlined"
+                              sx={{ fontSize: "0.65rem" }}
+                            />
+                          )}
+                        </Stack>
                       </Box>
                     )}
                   </Box>

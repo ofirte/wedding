@@ -23,7 +23,7 @@ import {
   TemplateVariable,
   extractUsedVariables,
 } from "../../utils/messageVariables";
-import { CreateMessageTemplateRequest } from "@wedding-plan/types";
+import { CreateMessageTemplateRequest, TemplatesCategories } from "@wedding-plan/types";
 import VariablesSelector from "../common/VariablesSelector";
 import { usePreviewText } from "../../hooks/common";
 
@@ -45,7 +45,7 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
   const { t, language: environmentLanguage } = useTranslation();
   const [templateName, setTemplateName] = useState("");
   const [language, setLanguage] = useState<"en" | "he">(environmentLanguage);
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState<TemplatesCategories | "">("");
   const predefinedVariables = getPredefinedVariables(language);
 
   const categoryOptions = [

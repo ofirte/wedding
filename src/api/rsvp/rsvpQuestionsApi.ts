@@ -1,14 +1,17 @@
 import { createCollectionAPI } from "../weddingFirebaseHelpers";
 import {
-  WeddingRSVPConfig,
   RSVPQuestion,
   CreateCustomQuestionRequest,
   PREDEFINED_QUESTIONS,
   generateCustomQuestionId,
 } from "./rsvpQuestionsTypes";
+import {
+  TemplatesCategories,
+  WeddingRSVPConfig,
+  SelectedTemplate,
+} from "@wedding-plan/types";
 
 const RSVP_CONFIG_COLLECTION = "rsvpConfigs";
-
 // Extended type for RSVP config with Firestore document ID
 interface RSVPConfigDocument extends WeddingRSVPConfig {
   id?: string;
@@ -39,6 +42,7 @@ export const getRSVPConfig = async (
     return {
       enabledQuestionIds: config.enabledQuestionIds || [],
       customQuestions: config.customQuestions || [],
+      selectedTemplates: config.selectedTemplates || {},
       createdAt: config.createdAt || new Date(),
       updatedAt: config.updatedAt || new Date(),
     };
@@ -64,6 +68,7 @@ export const createDefaultRSVPConfig = async (
   const defaultConfig: WeddingRSVPConfig = {
     enabledQuestionIds: ["attendance", "amount"],
     customQuestions: [],
+    selectedTemplates: {},
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -86,6 +91,7 @@ export const saveRSVPConfig = async (
     const configData: RSVPConfigDocument = {
       enabledQuestionIds: config.enabledQuestionIds,
       customQuestions: config.customQuestions,
+      selectedTemplates: config.selectedTemplates,
       createdAt: config.createdAt,
       updatedAt: new Date(), // Use Date instead of serverTimestamp for consistency
     };
@@ -226,6 +232,33 @@ export const deleteCustomQuestion = async (
     await saveRSVPConfig(config, weddingId);
   } catch (error) {
     console.error("Error deleting custom question:", error);
+    throw error;
+  }
+};
+
+/**
+ * Update selected template for a specific message category
+ * This function uses partial updates to efficiently update only the selectedTemplates field
+ */
+export const updateSelectedTemplates = async (
+  category: TemplatesCategories,
+  template: SelectedTemplate,
+  weddingId?: string
+): Promise<void> => {
+  if (!weddingId) {
+    throw new Error("Wedding ID is required to update selected templates");
+  }
+  try {
+    // Use partial update to only update the specific template category
+    // This will merge with existing selectedTemplates or create if it doesn't exist
+    const updateData = {
+      [`selectedTemplates.${category}`]: template,
+      updatedAt: new Date(),
+    };
+
+    await rsvpConfigAPI.update(weddingId, updateData, weddingId);
+  } catch (error) {
+    console.error("Error updating selected templates:", error);
     throw error;
   }
 };

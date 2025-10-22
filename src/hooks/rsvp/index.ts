@@ -17,3 +17,6 @@ export { useUpdateSendAutomation } from "./useUpdateSendAutomation";
 export { useDeleteSendAutomation } from "./useDeleteSendAutomation";
 export { useManualRunAutomations } from "./useManualRunAutomations";
 export { useManualUpdateAutomationStatuses } from "./useManualUpdateAutomationStatuses";
+
+// RSVP Configuration hooks
+export { useUpdateRsvpConfigSelectedTemplates } from "./useUpdateRsvpConfigSelectedTemplates";

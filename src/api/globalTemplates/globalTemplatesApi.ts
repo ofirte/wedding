@@ -125,6 +125,7 @@ export const getGlobalTemplates = async (): Promise<GlobalTemplateData> => {
           createdBy: firebaseTemplate.createdBy,
           firebaseId: firebaseTemplate.id,
           category: firebaseTemplate.category,
+          id: firebaseTemplate.id,
           // But add Firebase-specific fields
         };
       });

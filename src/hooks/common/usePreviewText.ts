@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useInvitees } from "../invitees";
+import { useInvitees } from "../invitees/useInvitees";
 import { useWeddingDetails } from "../wedding/useWeddingDetails";
 import {
   populateVariables,
