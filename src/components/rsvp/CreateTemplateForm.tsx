@@ -12,7 +12,6 @@ import {
   MenuItem,
   Typography,
   Box,
-  Chip,
   Stack,
   Alert,
 } from "@mui/material";
@@ -29,6 +28,7 @@ import {
 import { useInvitees } from "../../hooks/invitees";
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
 import { CreateMessageTemplateRequest } from "@wedding-plan/types";
+import VariablesSelector from "../common/VariablesSelector";
 
 interface CreateTemplateFormProps {
   open: boolean;
@@ -180,33 +180,19 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
             />
           </Box>
 
-          <Box>
-            <Typography variant="subtitle2" gutterBottom>
-              {t("templates.availableVariables")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              {t("templates.clickToInsert")}
-            </Typography>
-            <Stack direction="row" flexWrap="wrap" gap={1}>
-              {predefinedVariables.map((variable) => (
-                <Chip
-                  key={variable.key}
-                  label={variable.label}
-                  onClick={() => insertVariable(variable)}
-                  color={
-                    usedVariables.includes(variable.key) ? "primary" : "default"
-                  }
-                  variant={
-                    usedVariables.includes(variable.key) ? "filled" : "outlined"
-                  }
-                  clickable={!usedVariables.includes(variable.key)}
-                  disabled={
-                    isSubmitting || usedVariables.includes(variable.key)
-                  }
-                />
-              ))}
-            </Stack>
-          </Box>
+          <VariablesSelector
+            language={language}
+            usedVariables={usedVariables}
+            onVariableSelect={(variableKey) => {
+              const variable = predefinedVariables.find(
+                (v) => v.key === variableKey
+              );
+              if (variable) {
+                insertVariable(variable);
+              }
+            }}
+            disabled={isSubmitting}
+          />
 
           {previewText && (
             <Box>

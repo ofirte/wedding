@@ -6,6 +6,7 @@ import BudgetPlanner from "./components/budget/BudgetPlanner";
 import Home from "./components/home/Home";
 import TaskManager from "./components/tasks/TaskManager";
 import RSVPManager from "./components/rsvp/RSVPManager";
+
 import LoginPage from "./components/auth/LoginPage";
 import RegisterPage from "./components/auth/RegisterPage";
 import SetupWeddingPage from "./components/wedding/SetupWeddingPage";
@@ -19,6 +20,7 @@ import GuestRSVPPage from "./components/rsvp/GuestRSVPPage";
 import WeddingsPage from "./components/wedding/WeddingsPage";
 import { AdminPage } from "./components/admin";
 import ManageApp from "./components/common/ManageApp";
+import UserRSVPManager from "./components/rsvp/user/UserRSVPManager";
 
 const AppRoutes: FC = () => {
   return (
@@ -39,7 +41,8 @@ const AppRoutes: FC = () => {
               <Route path="invite" element={<WeddingInviteTable />} />
               <Route path="budget" element={<BudgetPlanner />} />
               <Route path="tasks" element={<TaskManager />} />
-              <Route path="rsvp" element={<RSVPManager />} />
+              <Route path="rsvp" element={<UserRSVPManager />} />
+              <Route path="rsvp/admin" element={<RSVPManager />} />
               <Route path="settings" element={<WeddingSettings />} />
             </Route>
           </Route>

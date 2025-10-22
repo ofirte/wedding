@@ -32,8 +32,13 @@ export interface Translations {
   common: {
     close: string;
     back: string;
+    next: string;
     save: string;
     cancel: string;
+    yesNo: string;
+    select: string;
+    required: string;
+    options: string;
     delete: string;
     edit: string;
     add: string;
@@ -158,6 +163,7 @@ export interface Translations {
     more: string;
     update: string;
     clearAll: string;
+    all: string;
     item: string;
     noDataAvailable: string;
     noDataDescription: string;
@@ -292,6 +298,7 @@ export interface Translations {
     tabs: {
       users: string;
       weddings: string;
+      templates: string;
       migrations: string;
     };
   };
@@ -773,5 +780,171 @@ export interface Translations {
     requestApproval: string;
     requestWhatsappApproval: string;
     checkingApprovalStatus: string;
+  };
+  globalTemplates: GlobalTemplatesTranslations;
+  userRsvp: UserRSVPTranslations;
+}
+
+interface GlobalTemplatesTranslations {
+  title: string;
+  description: string;
+  createNew: string;
+  createTemplate: string;
+  templateName: string;
+  category: string;
+  language: string;
+  messageText: string;
+  messagePreview: string;
+  messageTextPlaceholder: string;
+  variablesInfo: string;
+  global: string;
+  totalTemplates: string;
+  noTemplates: string;
+  noTemplatesInCategory: string;
+  createSuccess: string;
+  createError: string;
+  loadError: string;
+  created: string;
+  categories: {
+    rsvp: string;
+    rsvpDescription: string;
+    notifications: string;
+    notificationsDescription: string;
+  };
+}
+
+interface UserRSVPTranslations {
+  title: string;
+  subtitle: string;
+  launchRsvp: string;
+  completeStepToContinue: string;
+  steps: {
+    createForm: string;
+    createFormDesc: string;
+    chooseMessages: string;
+    chooseMessagesDesc: string;
+    scheduleTimeline: string;
+    scheduleTimelineDesc: string;
+    reviewLaunch: string;
+    reviewLaunchDesc: string;
+  };
+  form: {
+    title: string;
+    description: string;
+    startWithDefaults: string;
+    customizeQuestions: string;
+    customizeDesc: string;
+    availableQuestions: string;
+    selectedCount: string;
+    confirmQuestions: string;
+    updateError: string;
+    preview: string;
+    addCustom: string;
+    createCustomQuestion: string;
+    questionText: string;
+    displayName: string;
+    displayNameHelp: string;
+    questionType: string;
+    selectOptions: string;
+    option: string;
+    addOption: string;
+    quickStart: string;
+    quickStartDesc: string;
+    customize: string;
+    createDefault: string;
+    buildCustom: string;
+    completed: string;
+    completedDesc: string;
+    customizeForm: string;
+    createError: string;
+    tip: string;
+  };
+  templates: {
+    title: string;
+    description: string;
+    rsvpInitial: string;
+    rsvpInitialDesc: string;
+    dayBefore: string;
+    dayBeforeDesc: string;
+    thankYou: string;
+    thankYouDesc: string;
+    selectTemplate: string;
+    template: string;
+    preview: string;
+    selected: string;
+    selectionComplete: string;
+    selectAllRequired: string;
+    noTemplatesAvailable: string;
+    previewTitle: string;
+    previewPlaceholder: string;
+  };
+  scheduler: {
+    title: string;
+    description: string;
+    rsvpMessage: string;
+    rsvpMessageDesc: string;
+    dayBeforeReminder: string;
+    dayBeforeDesc: string;
+    thankYouMessage: string;
+    thankYouDesc: string;
+    automationName: string;
+    scheduledTime: string;
+    rsvpType: string;
+    reminderType: string;
+    messageNumber: string;
+    scheduled: string;
+    creating: string;
+    createAutomations: string;
+    readyToCreate: string;
+    automationsCreated: string;
+    completeAllSchedules: string;
+    noTemplatesSelected: string;
+  };
+  review: {
+    title: string;
+    description: string;
+    setupSummary: string;
+    rsvpForm: string;
+    rsvpFormDesc: string;
+    messageTemplates: string;
+    messageTemplatesDesc: string;
+    automationSchedule: string;
+    automationScheduleDesc: string;
+    whatHappensNext: string;
+    step1Title: string;
+    step1Desc: string;
+    step2Title: string;
+    step2Desc: string;
+    step3Title: string;
+    step3Desc: string;
+    launchRsvpSystem: string;
+    completeAllSteps: string;
+    launchSuccess: string;
+  };
+  dashboard: {
+    title: string;
+    subtitle: string;
+    backToSetup: string;
+    totalInvitees: string;
+    guestsInvited: string;
+    responseRate: string;
+    responded: string;
+    attending: string;
+    confirmedAttending: string;
+    automations: string;
+    automationsComplete: string;
+    responseProgress: string;
+    responseProgressDesc: string;
+    automationStatus: string;
+    completed: string;
+    inProgress: string;
+    pending: string;
+    automationStatusDesc: string;
+    noAutomationsDesc: string;
+    quickActions: string;
+    viewInvitees: string;
+    manageAutomations: string;
+    editForm: string;
+    helpText: string;
   };
 }
