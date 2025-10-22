@@ -745,6 +745,7 @@ export const englishTranslations: Translations = {
     variables: "Variables",
     name: "Name",
     type: "Type",
+    category: "Message Type",
     eligibility: "Eligibility",
     textType: "Text",
     mediaType: "Media",
@@ -818,12 +819,20 @@ export const englishTranslations: Translations = {
     loadError: "Failed to load global templates",
     created: "Created",
     categories: {
-      rsvp: "RSVP Messages",
-      rsvpDescription:
-        "Templates for RSVP invitations, reminders, and follow-ups",
-      notifications: "Event Notifications",
-      notificationsDescription:
-        "Templates for day-before reminders, thank you messages, and general notifications",
+      initialRsvp: "Initial RSVP Invitation",
+      initialRsvpDescription:
+        "First message sent to guests requesting their RSVP response",
+      secondRsvp: "Second RSVP Reminder",
+      secondRsvpDescription:
+        "Follow-up reminder for guests who haven't responded yet",
+      finalRsvp: "Final RSVP Notice",
+      finalRsvpDescription: "Last chance reminder before RSVP deadline closes",
+      dayBefore: "Day Before Reminder",
+      dayBeforeDescription:
+        "Event details reminder sent one day before the wedding",
+      dayAfterThankyou: "Thank You Message",
+      dayAfterThankyouDescription:
+        "Gratitude message sent after the wedding to thank guests",
     },
   },
   userRsvp: {
@@ -966,6 +975,43 @@ export const englishTranslations: Translations = {
       editForm: "Edit Form",
       helpText:
         "Need help? Contact support or check our documentation for assistance.",
+    },
+    messagesPlan: {
+      title: "Messages Plan",
+      description:
+        "Select templates for your 5 automated messages to create a complete communication flow",
+      initialRsvp: {
+        title: "Initial RSVP Invitation",
+        description:
+          "First message sent to guests requesting their RSVP response",
+      },
+      secondRsvp: {
+        title: "Second RSVP Reminder",
+        description: "Follow-up reminder for guests who haven't responded yet",
+      },
+      finalRsvp: {
+        title: "Final RSVP Notice",
+        description: "Last chance reminder before RSVP deadline closes",
+      },
+      dayBefore: {
+        title: "Day Before Reminder",
+        description: "Event details reminder sent one day before the wedding",
+      },
+      dayAfterThankyou: {
+        title: "Thank You Message",
+        description: "Gratitude message sent after the wedding to thank guests",
+      },
+      selectTemplate: "Select Template",
+      changeTemplate: "Change Template",
+      templatesSelected: "templates selected",
+      continue: "Continue to Scheduling",
+      loadingTemplates: "Loading available templates...",
+      noTemplatesAvailable:
+        "No approved templates available. Please create templates first.",
+      weddingTemplates: "Wedding Templates",
+      globalTemplates: "Global Templates",
+      weddingTemplate: "Wedding",
+      globalTemplate: "Global",
     },
   },
 };

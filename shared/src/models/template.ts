@@ -6,10 +6,15 @@
 import { TemplateContentTypes, TemplateApprovalStatus } from "../api/templates";
 
 /**
- * Global Template Categories
- * Semantic categories for global templates that are available to all weddings
+ * Template Categories
+ * Semantic categories matching the 5 message types in MessagesPlanManager
  */
-export type TemplatesCategories = "rsvp" | "notifications";
+export type TemplatesCategories =
+  | "initialRsvp"
+  | "secondRsvp"
+  | "finalRsvp"
+  | "dayBefore"
+  | "dayAfterThankyou";
 
 // Core template data structure (our canonical template representation)
 export interface Template {

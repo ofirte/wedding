@@ -732,6 +732,7 @@ export const hebrewTranslations: Translations = {
     variables: "משתנים",
     name: "שם",
     type: "סוג",
+    category: "סוג הודעה",
     eligibility: "זכאות",
     textType: "טקסט",
     mediaType: "מדיה",
@@ -804,11 +805,17 @@ export const hebrewTranslations: Translations = {
     loadError: "נכשל בטעינת תבניות גלובליות",
     created: "נוצר",
     categories: {
-      rsvp: "הודעות RSVP",
-      rsvpDescription: "תבניות להזמנות RSVP, תזכורות ומעקבים",
-      notifications: "התראות אירוע",
-      notificationsDescription:
-        "תבניות לתזכורות יום לפני, הודעות תודה והתראות כלליות",
+      initialRsvp: "הזמנת RSVP ראשונית",
+      initialRsvpDescription: "הודעה ראשונה הנשלחת לאורחים בבקשה לתגובת RSVP",
+      secondRsvp: "תזכורת RSVP שנייה",
+      secondRsvpDescription: "תזכורת המשך לאורחים שעדיין לא הגיבו",
+      finalRsvp: "הודעת RSVP אחרונה",
+      finalRsvpDescription: "תזכורת אחרונה לפני סגירת מועד תגובת RSVP",
+      dayBefore: "תזכורת יום לפני",
+      dayBeforeDescription: "תזכורת פרטי האירוע הנשלחת יום לפני החתונה",
+      dayAfterThankyou: "הודעת תודה",
+      dayAfterThankyouDescription:
+        "הודעת הכרת תודה הנשלחת אחרי החתונה לתודה לאורחים",
     },
   },
   userRsvp: {
@@ -945,6 +952,41 @@ export const hebrewTranslations: Translations = {
       manageAutomations: "נהל אוטומציות",
       editForm: "ערוך טופס",
       helpText: "צריך עזרה? פנה לתמיכה או בדוק את התיעוד שלנו לסיוע.",
+    },
+    messagesPlan: {
+      title: "תכנית הודעות",
+      description:
+        "בחר תבניות עבור 5 ההודעות האוטומטיות שלך כדי ליצור זרימת תקשורת מלאה",
+      initialRsvp: {
+        title: "הזמנת RSVP ראשונית",
+        description: "הודעה ראשונה הנשלחת לאורחים בבקשה לתגובת RSVP",
+      },
+      secondRsvp: {
+        title: "תזכורת RSVP שנייה",
+        description: "תזכורת המשך לאורחים שעדיין לא הגיבו",
+      },
+      finalRsvp: {
+        title: "הודעת RSVP אחרונה",
+        description: "תזכורת אחרונה לפני סגירת מועד תגובת RSVP",
+      },
+      dayBefore: {
+        title: "תזכורת יום לפני",
+        description: "תזכורת פרטי האירוע הנשלחת יום לפני החתונה",
+      },
+      dayAfterThankyou: {
+        title: "הודעת תודה",
+        description: "הודעת הכרת תודה הנשלחת אחרי החתונה לתודה לאורחים",
+      },
+      selectTemplate: "בחר תבנית",
+      changeTemplate: "שנה תבנית",
+      templatesSelected: "תבניות נבחרו",
+      continue: "המשך לתזמון",
+      loadingTemplates: "טוען תבניות זמינות...",
+      noTemplatesAvailable: "אין תבניות מאושרות זמינות. אנא צור תבניות קודם.",
+      weddingTemplates: "תבניות חתונה",
+      globalTemplates: "תבניות כלליות",
+      weddingTemplate: "חתונה",
+      globalTemplate: "כללית",
     },
   },
 };

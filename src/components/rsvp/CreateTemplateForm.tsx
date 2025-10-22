@@ -48,7 +48,22 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
   const { t, language: environmentLanguage } = useTranslation();
   const [templateName, setTemplateName] = useState("");
   const [language, setLanguage] = useState<"en" | "he">(environmentLanguage);
+  const [category, setCategory] = useState<string>("");
   const predefinedVariables = getPredefinedVariables(language);
+
+  const categoryOptions = [
+    {
+      value: "initialRsvp",
+      label: t("userRsvp.messagesPlan.initialRsvp.title"),
+    },
+    { value: "secondRsvp", label: t("userRsvp.messagesPlan.secondRsvp.title") },
+    { value: "finalRsvp", label: t("userRsvp.messagesPlan.finalRsvp.title") },
+    { value: "dayBefore", label: t("userRsvp.messagesPlan.dayBefore.title") },
+    {
+      value: "dayAfterThankyou",
+      label: t("userRsvp.messagesPlan.dayAfterThankyou.title"),
+    },
+  ];
   const [messageText, setMessageText] = useState("");
   const usedVariables = useMemo(() => {
     return extractUsedVariables(messageText);
@@ -119,6 +134,7 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
           body: messageText.trim(),
         },
       },
+      category: category || undefined,
     };
 
     onSubmit(templateData);
@@ -130,6 +146,7 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
       setTemplateName("");
       setLanguage("en");
       setMessageText("");
+      setCategory("");
       onClose();
     }
   };
@@ -160,6 +177,24 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
             >
               <MenuItem value="en">English</MenuItem>
               <MenuItem value="he">עברית</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth disabled={isSubmitting}>
+            <InputLabel>{t("templates.category")}</InputLabel>
+            <Select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              label={t("templates.category")}
+            >
+              <MenuItem value="">
+                <em>{t("common.select")}</em>
+              </MenuItem>
+              {categoryOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
 

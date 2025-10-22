@@ -16,6 +16,8 @@ import AutomationScheduler from "./AutomationScheduler";
 import RSVPSummaryReview from "./RSVPSummaryReview";
 import SimpleRSVPDashboard from "./SimpleRSVPDashboard";
 import LocalizedNavigationButtons from "../../common/LocalizedNavigationButtons";
+import MessagesPlanManager, { SelectedTemplates } from "./MessagesPlanManager";
+import { TemplateDocument } from "@shared/dist";
 
 /**
  * UserRSVPManager - Main user workflow for RSVP automation setup
@@ -117,13 +119,14 @@ const UserRSVPManager: React.FC = () => {
         );
       case 1:
         return (
-          // <MessageTemplateSelector
-          //   onSelectionComplete={(templates) =>
-          //     handleStepComplete(1, templates)
-          //   }
-          //   selectedTemplates={selectedTemplates}
-          // />
-          <></>
+          <MessagesPlanManager
+            onComplete={function (selectedTemplates: SelectedTemplates): void {
+              throw new Error("Function not implemented.");
+            }}
+            onBack={function (): void {
+              throw new Error("Function not implemented.");
+            }}
+          />
         );
       case 2:
         return (

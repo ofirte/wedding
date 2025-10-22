@@ -25,12 +25,17 @@ export const createGlobalTemplate = async (
       language: templateData.language,
       variables: templateData.variables,
       types: templateData.types,
+      category: templateData.category,
     });
 
     const createdTemplate = result.data.template;
 
     // Save the template information to Firebase
-    await saveGlobalTemplateToFirebase(createdTemplate, userId);
+    await saveGlobalTemplateToFirebase(
+      createdTemplate,
+      userId,
+      templateData.category
+    );
 
     return createdTemplate;
   } catch (error) {
@@ -47,13 +52,15 @@ export const createGlobalTemplate = async (
  */
 export const saveGlobalTemplateToFirebase = async (
   template: Template,
-  userId?: string
+  userId?: string,
+  category?: string
 ): Promise<string> => {
   try {
     const templateDocument: Omit<TemplateDocument, "id"> = {
       ...template,
       createdBy: userId,
       approvalStatus: "pending", // Default approval status when created
+      category: category as any, // Add category to the document
     };
 
     const docRef = await globalTemplatesAPI.create(templateDocument);

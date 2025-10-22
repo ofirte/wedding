@@ -735,6 +735,7 @@ export interface Translations {
     variables: string;
     name: string;
     type: string;
+    category: string;
     eligibility: string;
     textType: string;
     mediaType: string;
@@ -806,10 +807,16 @@ interface GlobalTemplatesTranslations {
   loadError: string;
   created: string;
   categories: {
-    rsvp: string;
-    rsvpDescription: string;
-    notifications: string;
-    notificationsDescription: string;
+    initialRsvp: string;
+    initialRsvpDescription: string;
+    secondRsvp: string;
+    secondRsvpDescription: string;
+    finalRsvp: string;
+    finalRsvpDescription: string;
+    dayBefore: string;
+    dayBeforeDescription: string;
+    dayAfterThankyou: string;
+    dayAfterThankyouDescription: string;
   };
 }
 
@@ -946,5 +953,39 @@ interface UserRSVPTranslations {
     manageAutomations: string;
     editForm: string;
     helpText: string;
+  };
+  messagesPlan: {
+    title: string;
+    description: string;
+    initialRsvp: {
+      title: string;
+      description: string;
+    };
+    secondRsvp: {
+      title: string;
+      description: string;
+    };
+    finalRsvp: {
+      title: string;
+      description: string;
+    };
+    dayBefore: {
+      title: string;
+      description: string;
+    };
+    dayAfterThankyou: {
+      title: string;
+      description: string;
+    };
+    selectTemplate: string;
+    changeTemplate: string;
+    templatesSelected: string;
+    continue: string;
+    loadingTemplates: string;
+    noTemplatesAvailable: string;
+    weddingTemplates: string;
+    globalTemplates: string;
+    weddingTemplate: string;
+    globalTemplate: string;
   };
 }

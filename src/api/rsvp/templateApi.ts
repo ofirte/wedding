@@ -26,12 +26,18 @@ export const createTemplate = async (
       language: templateData.language,
       variables: templateData.variables,
       types: templateData.types,
+      category: templateData.category,
     });
 
     const createdTemplate = result.data.template;
 
     // Save the template information to Firebase
-    await saveTemplateToFirebase(createdTemplate, weddingId, userId);
+    await saveTemplateToFirebase(
+      createdTemplate,
+      weddingId,
+      userId,
+      templateData.category
+    );
 
     return createdTemplate;
   } catch (error) {
@@ -50,13 +56,15 @@ export const createTemplate = async (
 export const saveTemplateToFirebase = async (
   template: Template,
   weddingId?: string,
-  userId?: string
+  userId?: string,
+  category?: string
 ): Promise<string> => {
   try {
     const templateDocument: Omit<TemplateDocument, "id"> = {
       ...template,
       createdBy: userId,
       approvalStatus: "pending", // Default approval status when created
+      category: category as any, // Add category to the document
     };
 
     const docRef = await templatesAPI.create(templateDocument, weddingId);
