@@ -28,31 +28,30 @@ export interface SelectedTemplates {
 
 interface MessagesPlanManagerProps {
   onComplete: (selectedTemplates: SelectedTemplates) => void;
-  onBack: () => void;
 }
 
 const MessagesPlanManager: React.FC<MessagesPlanManagerProps> = ({
   onComplete,
-  onBack,
 }) => {
   const { t } = useTranslation();
   const [selectedTemplates, setSelectedTemplates] = useState<SelectedTemplates>(
     {}
   );
-
   const [activeMessageType, setActiveMessageType] = useState<string | null>(
     null
   );
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
 
   // Fetch RSVP config to get existing selected templates
-  const { data: rsvpConfig } = useRSVPConfig();
-  const { data: weddingTemplatesData } = useWeddingTemplates({
-    syncApprovalStatus: false,
-  });
-  const { data: globalTemplatesData } = useGlobalTemplates({
-    syncApprovalStatus: false,
-  });
+  const { data: rsvpConfig, isLoading: isLoadingRsvpConfig } = useRSVPConfig();
+  const { data: weddingTemplatesData, isLoading: isLoadingWeddingTemplates } =
+    useWeddingTemplates({
+      syncApprovalStatus: false,
+    });
+  const { data: globalTemplatesData, isLoading: isLoadingGlobalTemplates } =
+    useGlobalTemplates({
+      syncApprovalStatus: false,
+    });
 
   const messageTypes: MessageType[] = useMemo(() => getMessageTypes(t), [t]);
 
@@ -98,6 +97,12 @@ const MessagesPlanManager: React.FC<MessagesPlanManagerProps> = ({
     if (configuredTemplates && Object.keys(configuredTemplates).length > 0) {
       setSelectedTemplates((prev) => ({ ...configuredTemplates, ...prev }));
     }
+    if (
+      configuredTemplates &&
+      Object.keys(configuredTemplates).length === messageTypes.length
+    ) {
+      onComplete(configuredTemplates);
+    }
   }, [configuredTemplates]);
 
   const handleTemplateSelect = (
@@ -128,14 +133,22 @@ const MessagesPlanManager: React.FC<MessagesPlanManagerProps> = ({
     setActiveMessageType(messageTypeId);
     setIsTemplateDialogOpen(true);
   };
-  const canComplete =
-    Object.keys(selectedTemplates).length === messageTypes.length;
 
   // Get current message type details for dialog
   const activeMessageTypeDetails = useMemo(() => {
     return messageTypes.find((mt) => mt.id === activeMessageType);
   }, [messageTypes, activeMessageType]);
-
+  if (
+    isLoadingRsvpConfig ||
+    isLoadingWeddingTemplates ||
+    isLoadingGlobalTemplates
+  ) {
+    return (
+      <Box sx={{ p: 3, textAlign: "center" }}>
+        <Typography variant="body1">{t("common.loading")}...</Typography>
+      </Box>
+    );
+  }
   return (
     <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
       <Typography variant="h4" gutterBottom>
@@ -212,29 +225,6 @@ const MessagesPlanManager: React.FC<MessagesPlanManagerProps> = ({
             </Card>
           );
         })}
-      </Stack>
-
-      <Divider sx={{ my: 4 }} />
-
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Button onClick={onBack} variant="outlined">
-          {t("common.back")}
-        </Button>
-
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <Typography variant="body2" color="text.secondary">
-            {Object.keys(selectedTemplates).length} / {messageTypes.length}{" "}
-            {t("userRsvp.messagesPlan.templatesSelected")}
-          </Typography>
-
-          <Button
-            onClick={() => onComplete(selectedTemplates)}
-            variant="contained"
-            disabled={!canComplete}
-          >
-            {t("userRsvp.messagesPlan.continue")}
-          </Button>
-        </Stack>
       </Stack>
 
       {/* Template Selection Dialog */}

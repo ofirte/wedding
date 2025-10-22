@@ -50,6 +50,7 @@ export interface Translations {
     yes: string;
     no: string;
     changeLanguage: string;
+    clickForDetails: string;
     signOut: string;
     user: string;
     actions: string;
@@ -470,6 +471,8 @@ export interface Translations {
     searchPlaceholder: string;
   };
   rsvp: {
+    completed: string;
+    pending: string;
     confirmationTitle: string;
     stepsCompleted: string;
     updating: string;
@@ -565,6 +568,21 @@ export interface Translations {
     automationInProgressInfo: string;
     automationCompletedSuccessfully: string;
     automationFailedInfo: string;
+  };
+  automation: {
+    allMessagesSent: string;
+    successMessage: string;
+    mostMessagesSent: string;
+    partialSuccessMessage: string;
+    issuesExplanation: string;
+    sentOn: string;
+    messagesBeingSent: string;
+    inProgressMessage: string;
+    somethingWentWrong: string;
+    failedMessage: string;
+    contactSupport: string;
+    messageScheduled: string;
+    willBeSentOn: string;
   };
   rsvpEmptyState: {
     title: string;
@@ -888,24 +906,25 @@ interface UserRSVPTranslations {
   scheduler: {
     title: string;
     description: string;
-    rsvpMessage: string;
-    rsvpMessageDesc: string;
-    dayBeforeReminder: string;
-    dayBeforeDesc: string;
-    thankYouMessage: string;
-    thankYouDesc: string;
-    automationName: string;
     scheduledTime: string;
-    rsvpType: string;
-    reminderType: string;
-    messageNumber: string;
-    scheduled: string;
-    creating: string;
-    createAutomations: string;
-    readyToCreate: string;
     automationsCreated: string;
     completeAllSchedules: string;
     noTemplatesSelected: string;
+    noScheduleItems: string;
+    createAutomationsError: string;
+    weddingDateRequired: string;
+    templatesRequired: string;
+    approvePlan: string;
+    creatingAutomations: string;
+    scheduleOverview: string;
+    weddingDate: string;
+    messageTimeline: string;
+    onWeddingDay: string;
+    oneDayBefore: string;
+    oneDayAfter: string;
+    daysBefore: string;
+    daysAfter: string;
+    existingAutomations: string;
   };
   review: {
     title: string;

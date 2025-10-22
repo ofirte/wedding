@@ -19,4 +19,6 @@ export { useManualRunAutomations } from "./useManualRunAutomations";
 export { useManualUpdateAutomationStatuses } from "./useManualUpdateAutomationStatuses";
 
 // RSVP Configuration hooks
+export { useRSVPConfig } from "./useRSVPConfig";
 export { useUpdateRsvpConfigSelectedTemplates } from "./useUpdateRsvpConfigSelectedTemplates";
+export { useUpdateRSVPSetupComplete } from "./useUpdateRSVPSetupComplete";

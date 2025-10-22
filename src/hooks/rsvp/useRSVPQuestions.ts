@@ -7,3 +7,4 @@ export { useUpdateEnabledQuestions } from "./useUpdateEnabledQuestions";
 export { useAddCustomQuestion } from "./useAddCustomQuestion";
 export { useUpdateCustomQuestion } from "./useUpdateCustomQuestion";
 export { useDeleteCustomQuestion } from "./useDeleteCustomQuestion";
+export { useUpdateRSVPSetupComplete } from "./useUpdateRSVPSetupComplete";

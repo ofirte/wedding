@@ -10,14 +10,14 @@ import {
 } from "@mui/material";
 import { Launch as LaunchIcon } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
+import { useUpdateRSVPSetupComplete } from "../../../hooks/rsvp/useUpdateRSVPSetupComplete";
 import RSVPFormBuilder from "./RSVPFormBuilder";
 // import MessageTemplateSelector from "./MessageTemplateSelector";
 import AutomationScheduler from "./AutomationScheduler";
 import RSVPSummaryReview from "./RSVPSummaryReview";
 import SimpleRSVPDashboard from "./SimpleRSVPDashboard";
 import LocalizedNavigationButtons from "../../common/LocalizedNavigationButtons";
-import MessagesPlanManager, { SelectedTemplates } from "./MessagesPlanManager";
-import { TemplateDocument } from "@shared/dist";
+import MessagesPlanManager from "./MessagesPlanManager";
 
 /**
  * UserRSVPManager - Main user workflow for RSVP automation setup
@@ -27,6 +27,7 @@ import { TemplateDocument } from "@shared/dist";
  */
 const UserRSVPManager: React.FC = () => {
   const { t } = useTranslation();
+  const { mutate: updateSetupComplete } = useUpdateRSVPSetupComplete();
   const [activeStep, setActiveStep] = useState(0);
   const [isLaunched, setIsLaunched] = useState(false);
 
@@ -37,10 +38,6 @@ const UserRSVPManager: React.FC = () => {
     false,
     false,
   ]);
-
-  // Data state for each step
-  const [selectedTemplates, setSelectedTemplates] = useState<string[]>([]);
-  const [scheduledAutomations, setScheduledAutomations] = useState<any[]>([]);
 
   const steps = [
     {
@@ -77,21 +74,11 @@ const UserRSVPManager: React.FC = () => {
     const newCompletedSteps = [...completedSteps];
     newCompletedSteps[stepIndex] = true;
     setCompletedSteps(newCompletedSteps);
-
-    // Store step-specific data
-    if (stepIndex === 1 && data) {
-      setSelectedTemplates(data);
-    } else if (stepIndex === 2 && data) {
-      setScheduledAutomations(data);
-    }
-
-    // Auto-advance to next step
-    if (stepIndex < steps.length - 1) {
-      setActiveStep(stepIndex + 1);
-    }
   };
 
   const handleLaunch = () => {
+    // Mark setup as complete
+    updateSetupComplete(true);
     setIsLaunched(true);
   };
 
@@ -120,36 +107,20 @@ const UserRSVPManager: React.FC = () => {
       case 1:
         return (
           <MessagesPlanManager
-            onComplete={function (selectedTemplates: SelectedTemplates): void {
-              throw new Error("Function not implemented.");
-            }}
-            onBack={function (): void {
-              throw new Error("Function not implemented.");
-            }}
+            onComplete={(data) => handleStepComplete(1, data)}
           />
         );
       case 2:
         return (
           <AutomationScheduler
-            selectedTemplates={selectedTemplates}
             onSchedulingComplete={(automations) =>
               handleStepComplete(2, automations)
             }
-            scheduledAutomations={scheduledAutomations}
           />
         );
+
       case 3:
-        return (
-          <RSVPSummaryReview
-            setupState={{
-              formCompleted: isStepComplete(0),
-              templatesSelected: selectedTemplates,
-              automationsScheduled: scheduledAutomations,
-              setupCompleted: completedSteps.slice(0, 3).every(Boolean),
-            }}
-            onLaunch={handleLaunch}
-          />
-        );
+        return <RSVPSummaryReview />;
       default:
         return <div>Unknown step</div>;
     }

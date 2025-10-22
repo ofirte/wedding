@@ -32,6 +32,7 @@ export interface WeddingRSVPConfig {
   enabledQuestionIds: string[]; // IDs of enabled predefined questions
   customQuestions: RSVPQuestion[]; // User-created questions
   selectedTemplates: Partial<Record<TemplatesCategories, SelectedTemplate>>; // Selected templates by message type (initialRsvp, etc.)
+  isSetupComplete?: boolean; // Whether the RSVP setup has been completed
   createdAt: Date;
   updatedAt: Date;
 }

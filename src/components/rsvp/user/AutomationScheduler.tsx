@@ -1,306 +1,295 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Box,
-  Typography,
   Card,
   CardContent,
-  Button,
+  Typography,
   Alert,
-  TextField,
-  Chip,
+  CircularProgress,
 } from "@mui/material";
-import {
-  Schedule as ScheduleIcon,
-  CheckCircle as CheckCircleIcon,
-} from "@mui/icons-material";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { CheckCircle, Schedule } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
+import { useRSVPConfig, useSendAutomations } from "../../../hooks/rsvp";
+import { useWeddingDetails } from "../../../hooks/wedding/useWeddingDetails";
 import { useCreateSendAutomation } from "../../../hooks/rsvp";
+import {
+  AutomationType,
+  TargetAudienceFilter,
+  TemplatesCategories,
+} from "@wedding-plan/types";
+import { ScheduleOverview } from "./components/ScheduleOverview";
+import { ApprovalButton } from "./components/ApprovalButton";
+import { se } from "date-fns/locale";
 
 interface AutomationSchedulerProps {
-  selectedTemplates: string[];
-  onSchedulingComplete: (automations: string[]) => void;
-  scheduledAutomations: string[];
+  onSchedulingComplete?: (automations: any[]) => void;
 }
 
-interface ScheduleItem {
+export interface ScheduleItem {
+  messageType: string;
   templateId: string;
-  name: string;
-  type: "rsvp" | "reminder";
-  scheduledTime: Date | null;
+  scheduledDate: Date;
+  title: string;
   description: string;
+  automationType: AutomationType;
 }
 
-/**
- * AutomationScheduler - User-friendly automation scheduling interface
- *
- * Allows users to schedule their selected templates with specific dates and times.
- */
 const AutomationScheduler: React.FC<AutomationSchedulerProps> = ({
-  selectedTemplates,
   onSchedulingComplete,
-  scheduledAutomations,
 }) => {
   const { t } = useTranslation();
-  const createAutomation = useCreateSendAutomation();
+  const [editableScheduleItems, setEditableScheduleItems] = useState<
+    ScheduleItem[]
+  >([]);
+  const [isCreatingAutomations, setIsCreatingAutomations] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isApprovalComplete, setIsApprovalComplete] = useState(false);
 
-  const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]);
-  const [isCreating, setIsCreating] = useState(false);
+  // Hooks
+  const { data: rsvpConfig, isLoading: isLoadingConfig } = useRSVPConfig();
+  const { data: wedding, isLoading: isLoadingWedding } = useWeddingDetails();
+  const { mutateAsync: createAutomation } = useCreateSendAutomation();
+  const { data: sendMessagesAutomations, isLoading: isLoadingAutomations } =
+    useSendAutomations();
 
-  // Initialize schedule items based on selected templates
-  useEffect(() => {
-    if (selectedTemplates.length > 0 && scheduleItems.length === 0) {
-      const items: ScheduleItem[] = selectedTemplates.map(
-        (templateId, index) => {
-          // Determine automation type and default timing based on template order
-          let name = "";
-          let type: "rsvp" | "reminder" = "rsvp";
-          let description = "";
-          let defaultTime = new Date();
-
-          if (index < 3) {
-            // First 3 are RSVP messages
-            name = `${t("userRsvp.scheduler.rsvpMessage")} ${index + 1}`;
-            type = "rsvp";
-            description = t("userRsvp.scheduler.rsvpMessageDesc");
-            // Space them out by a few days
-            defaultTime.setDate(defaultTime.getDate() + index * 3);
-          } else if (index === 3) {
-            // 4th is day before reminder
-            name = t("userRsvp.scheduler.dayBeforeReminder");
-            type = "reminder";
-            description = t("userRsvp.scheduler.dayBeforeDesc");
-            // Set to 1 day before a default wedding date (30 days from now)
-            defaultTime.setDate(defaultTime.getDate() + 29);
-          } else {
-            // 5th is thank you message
-            name = t("userRsvp.scheduler.thankYouMessage");
-            type = "reminder";
-            description = t("userRsvp.scheduler.thankYouDesc");
-            // Set to 1 day after wedding
-            defaultTime.setDate(defaultTime.getDate() + 31);
-          }
-
-          return {
-            templateId,
-            name,
-            type,
-            scheduledTime: defaultTime,
-            description,
-          };
-        }
-      );
-
-      setScheduleItems(items);
+  // Calculate schedule items - use existing automations if available, otherwise use default calculation
+  const scheduleItems = useMemo(() => {
+    if (!wedding?.date || !rsvpConfig?.selectedTemplates) {
+      return [];
     }
-  }, [selectedTemplates, t]);
 
-  const handleTimeChange = (index: number, newTime: Date | null) => {
-    setScheduleItems((prev) =>
-      prev.map((item, i) =>
-        i === index ? { ...item, scheduledTime: newTime } : item
-      )
+    // If we have existing automations, convert them to schedule items
+    if (sendMessagesAutomations && sendMessagesAutomations.length > 0) {
+      return sendMessagesAutomations
+        .map((automation) => ({
+          messageType: automation.automationType, // Use automation type as message type
+          templateId: automation.messageTemplateId,
+          scheduledDate: new Date(automation.scheduledTime),
+          title: automation.name,
+          description: `${automation.automationType} automation`,
+          automationType: automation.automationType,
+        }))
+        .sort((a, b) => a.scheduledDate.getTime() - b.scheduledDate.getTime());
+    }
+
+    // Otherwise, calculate default schedule
+    const weddingDate = new Date(wedding.date);
+    const schedules: ScheduleItem[] = [];
+
+    // Helper function to calculate date
+    const calculateDate = (daysFromWedding: number, hour = 10) => {
+      const date = new Date(weddingDate);
+      date.setDate(date.getDate() + daysFromWedding);
+      date.setHours(hour, 0, 0, 0);
+      return date;
+    };
+
+    // Define message schedule based on templates selected
+    const messageConfig: Array<{
+      category: TemplatesCategories;
+      daysFromWedding: number;
+      titleKey: string;
+      descriptionKey: string;
+      automationType: AutomationType;
+    }> = [
+      {
+        category: "initialRsvp",
+        daysFromWedding: -21, // 3 weeks before
+        titleKey: t("userRsvp.messagesPlan.initialRsvp.title"),
+        descriptionKey: t("userRsvp.messagesPlan.initialRsvp.description"),
+        automationType: "rsvp" as AutomationType,
+      },
+      {
+        category: "secondRsvp",
+        daysFromWedding: -16, // 5 days after initial
+        titleKey: t("userRsvp.messagesPlan.secondRsvp.title"),
+        descriptionKey: t("userRsvp.messagesPlan.secondRsvp.description"),
+        automationType: "rsvp" as AutomationType,
+      },
+      {
+        category: "finalRsvp",
+        daysFromWedding: -13, // 3 days after second
+        titleKey: t("userRsvp.messagesPlan.finalRsvp.title"),
+        descriptionKey: t("userRsvp.messagesPlan.finalRsvp.description"),
+        automationType: "rsvp" as AutomationType,
+      },
+      {
+        category: "dayBefore",
+        daysFromWedding: -1, // 1 day before
+        titleKey: t("userRsvp.messagesPlan.dayBefore.title"),
+        descriptionKey: t("userRsvp.messagesPlan.dayBefore.description"),
+        automationType: "reminder" as AutomationType,
+      },
+      {
+        category: "dayAfterThankyou",
+        daysFromWedding: 1, // 1 day after
+        titleKey: t("userRsvp.messagesPlan.dayAfterThankyou.title"),
+        descriptionKey: t("userRsvp.messagesPlan.dayAfterThankyou.description"),
+        automationType: "reminder" as AutomationType,
+      },
+    ];
+
+    messageConfig.forEach((config) => {
+      const selectedTemplate = rsvpConfig.selectedTemplates?.[config.category];
+      if (selectedTemplate) {
+        schedules.push({
+          messageType: config.category,
+          templateId: selectedTemplate.templateFireBaseId,
+          scheduledDate: calculateDate(config.daysFromWedding),
+          title: t(config.titleKey),
+          description: t(config.descriptionKey),
+          automationType: config.automationType,
+        });
+      }
+    });
+
+    return schedules.sort(
+      (a, b) => a.scheduledDate.getTime() - b.scheduledDate.getTime()
     );
+  }, [
+    wedding?.date,
+    rsvpConfig?.selectedTemplates,
+    sendMessagesAutomations,
+    t,
+  ]);
+
+  // Initialize editable schedule items when schedule items are calculated
+  useEffect(() => {
+    if (scheduleItems.length > 0 && editableScheduleItems.length === 0) {
+      setEditableScheduleItems(scheduleItems);
+      if ((sendMessagesAutomations?.length || 0) >= 0) {
+        onSchedulingComplete?.(scheduleItems);
+      }
+    }
+  }, [scheduleItems, editableScheduleItems.length, sendMessagesAutomations]);
+
+  const handleDateChange = (index: number, newDate: Date) => {
+    const updatedItems = [...editableScheduleItems];
+    updatedItems[index].scheduledDate = newDate;
+    setEditableScheduleItems(updatedItems);
   };
 
-  const handleNameChange = (index: number, newName: string) => {
-    setScheduleItems((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, name: newName } : item))
-    );
-  };
+  const handleApproveSchedule = async () => {
+    if (!editableScheduleItems.length) {
+      setError(t("scheduler.noScheduleItems"));
+      return;
+    }
 
-  const isAllScheduled = () => {
-    return scheduleItems.every(
-      (item) => item.scheduledTime !== null && item.name.trim() !== ""
-    );
-  };
-
-  const handleCreateAutomations = async () => {
-    if (!isAllScheduled()) return;
-
-    setIsCreating(true);
-    const createdAutomations: string[] = [];
+    setIsCreatingAutomations(true);
+    setError(null);
 
     try {
-      for (const item of scheduleItems) {
+      const automationPromises = editableScheduleItems.map((item) => {
+        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const scheduledTimeUTC = new Date(item.scheduledDate.toISOString());
+
         const automationData = {
-          name: item.name,
+          name: `${item.title} - ${item.scheduledDate.toLocaleDateString()}`,
           isActive: true,
           status: "pending" as const,
           sentMessagesIds: [],
           createdAt: new Date(),
           updatedAt: new Date(),
           messageTemplateId: item.templateId,
-          scheduledTime: item.scheduledTime!,
-          scheduledTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          automationType: item.type,
-          targetAudienceFilter: {},
+          scheduledTime: scheduledTimeUTC,
+          scheduledTimeZone: userTimeZone,
+          automationType: item.automationType,
+          targetAudienceFilter: {} as TargetAudienceFilter,
         };
 
-        const result = await createAutomation.mutateAsync(automationData);
-        createdAutomations.push(result.id);
-      }
+        return createAutomation(automationData);
+      });
 
-      onSchedulingComplete(createdAutomations);
-    } catch (error) {
-      console.error("Error creating automations:", error);
+      await Promise.all(automationPromises);
+      setIsApprovalComplete(true);
+      onSchedulingComplete?.(editableScheduleItems);
+    } catch (err) {
+      console.error("Error creating automations:", err);
+      setError(t("scheduler.createAutomationsError"));
     } finally {
-      setIsCreating(false);
+      setIsCreatingAutomations(false);
     }
   };
 
-  if (selectedTemplates.length === 0) {
+  if (isLoadingConfig || isLoadingWedding || isLoadingAutomations) {
     return (
-      <Alert severity="warning">
-        {t("userRsvp.scheduler.noTemplatesSelected")}
-      </Alert>
+      <Box display="flex" justifyContent="center" p={4}>
+        <CircularProgress />
+      </Box>
     );
   }
 
+  if (!wedding?.date) {
+    return (
+      <Alert severity="warning">{t("scheduler.weddingDateRequired")}</Alert>
+    );
+  }
+
+  if (
+    !rsvpConfig?.selectedTemplates ||
+    Object.keys(rsvpConfig.selectedTemplates).length === 0
+  ) {
+    return <Alert severity="info">{t("scheduler.templatesRequired")}</Alert>;
+  }
+
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Box>
-        <Typography
-          variant="h4"
-          gutterBottom
-          textAlign="center"
-          sx={{ fontWeight: 600 }}
-        >
-          {t("userRsvp.scheduler.title")}
-        </Typography>
-        <Typography
-          variant="body1"
-          color="text.secondary"
-          textAlign="center"
-          paragraph
-        >
-          {t("userRsvp.scheduler.description")}
-        </Typography>
-
-        {/* Progress Indicator */}
-        <Box textAlign="center" mb={4}>
-          <Chip
-            label={`${
-              scheduleItems.filter((item) => item.scheduledTime).length
-            } / ${scheduleItems.length} ${t("userRsvp.scheduler.scheduled")}`}
-            color={isAllScheduled() ? "success" : "default"}
-            icon={isAllScheduled() ? <CheckCircleIcon /> : <ScheduleIcon />}
-            sx={{ px: 2, py: 0.5 }}
-          />
-        </Box>
-
-        {/* Schedule Items */}
-        <Box display="flex" flexDirection="column" gap={3}>
-          {scheduleItems.map((item, index) => (
-            <Card
-              key={index}
-              sx={{
-                border: item.scheduledTime
-                  ? "2px solid #4CAF50"
-                  : "1px solid #e0e0e0",
-                transition: "all 0.3s ease",
-              }}
-            >
-              <CardContent sx={{ p: 3 }}>
-                <Box display="flex" alignItems="center" mb={2}>
-                  <Chip
-                    label={
-                      item.type === "rsvp"
-                        ? t("userRsvp.scheduler.rsvpType")
-                        : t("userRsvp.scheduler.reminderType")
-                    }
-                    color={item.type === "rsvp" ? "primary" : "secondary"}
-                    size="small"
-                    sx={{ mr: 2 }}
-                  />
-                  <Typography variant="h6" sx={{ fontWeight: 600, flex: 1 }}>
-                    {t("userRsvp.scheduler.messageNumber")} {index + 1}
-                  </Typography>
-                  {item.scheduledTime && (
-                    <CheckCircleIcon sx={{ color: "success.main" }} />
-                  )}
-                </Box>
-
-                <Typography variant="body2" color="text.secondary" paragraph>
-                  {item.description}
-                </Typography>
-
-                <Box display="flex" gap={2} alignItems="center" flexWrap="wrap">
-                  <TextField
-                    label={t("userRsvp.scheduler.automationName")}
-                    value={item.name}
-                    onChange={(e) => handleNameChange(index, e.target.value)}
-                    sx={{ minWidth: 250, flex: 1 }}
-                    size="small"
-                  />
-
-                  <DateTimePicker
-                    label={t("userRsvp.scheduler.scheduledTime")}
-                    value={item.scheduledTime}
-                    onChange={(newTime) => handleTimeChange(index, newTime)}
-                    slotProps={{
-                      textField: {
-                        size: "small",
-                        sx: { minWidth: 200 },
-                      },
-                    }}
-                  />
-                </Box>
-              </CardContent>
-            </Card>
-          ))}
-        </Box>
-
-        {/* Create Automations Button */}
-        <Box textAlign="center" mt={4}>
-          <Button
-            variant="contained"
-            size="large"
-            onClick={handleCreateAutomations}
-            disabled={!isAllScheduled() || isCreating}
-            sx={{
-              px: 4,
-              py: 1.5,
-              borderRadius: 2,
-            }}
-          >
-            {isCreating
-              ? t("userRsvp.scheduler.creating")
-              : t("userRsvp.scheduler.createAutomations")}
-          </Button>
-        </Box>
-
-        {/* Status Messages */}
-        {isAllScheduled() && !scheduledAutomations.length && (
-          <Alert severity="success" sx={{ mt: 3 }}>
-            <Typography variant="body2">
-              ✅ {t("userRsvp.scheduler.readyToCreate")}
+    <Box>
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Box display="flex" alignItems="center" gap={1} mb={2}>
+            <Schedule color="primary" />
+            <Typography variant="h5">
+              {t("userRsvp.scheduler.title")}
             </Typography>
-          </Alert>
-        )}
+          </Box>
+          <Typography variant="body2" color="text.secondary" mb={3}>
+            {t("userRsvp.scheduler.description")}
+          </Typography>
 
-        {scheduledAutomations.length > 0 && (
-          <Alert severity="success" sx={{ mt: 3 }}>
-            <Typography variant="body2">
-              🎉{" "}
-              {t("userRsvp.scheduler.automationsCreated", {
-                count: scheduledAutomations.length,
-              })}
-            </Typography>
-          </Alert>
-        )}
+          {error && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {error}
+            </Alert>
+          )}
 
-        {!isAllScheduled() && (
-          <Alert severity="info" sx={{ mt: 3 }}>
-            <Typography variant="body2">
-              📅 {t("userRsvp.scheduler.completeAllSchedules")}
-            </Typography>
-          </Alert>
-        )}
-      </Box>
-    </LocalizationProvider>
+          {isApprovalComplete ? (
+            <Alert severity="success" icon={<CheckCircle />} sx={{ mb: 3 }}>
+              {t("userRsvp.scheduler.automationsCreated")}
+            </Alert>
+          ) : (
+            <>
+              <ScheduleOverview
+                weddingDate={wedding.date}
+                scheduleItems={editableScheduleItems}
+                onDateChange={handleDateChange}
+                disabled={isCreatingAutomations}
+                automations={sendMessagesAutomations || []}
+              />
+
+              {/* Only show approval button if no existing automations */}
+              {(!sendMessagesAutomations ||
+                sendMessagesAutomations.length === 0) && (
+                <ApprovalButton
+                  onApprove={handleApproveSchedule}
+                  isLoading={isCreatingAutomations}
+                  disabled={editableScheduleItems.length === 0}
+                />
+              )}
+
+              {/* Show status for existing automations */}
+              {sendMessagesAutomations &&
+                sendMessagesAutomations.length > 0 && (
+                  <Alert severity="info" sx={{ mt: 2 }}>
+                    {t("scheduler.existingAutomations", {
+                      count: sendMessagesAutomations.length,
+                    })}
+                  </Alert>
+                )}
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </Box>
   );
 };
 

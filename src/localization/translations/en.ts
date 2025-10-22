@@ -22,6 +22,7 @@ export const englishTranslations: Translations = {
     yes: "Yes",
     no: "No",
     changeLanguage: "Change Language",
+    clickForDetails: "Click for details",
     signOut: "Sign Out",
     user: "User",
     actions: "Actions",
@@ -458,6 +459,8 @@ export const englishTranslations: Translations = {
     searchPlaceholder: "Edit name or type to search contacts...",
   },
   rsvp: {
+    completed: "Completed",
+    pending: "Pending",
     confirmationTitle: "{{guestName}}, You're Invited to Our Wedding",
     stepsCompleted: "{{completed}}/{{total}} steps completed",
     updating: "Updating...",
@@ -835,6 +838,27 @@ export const englishTranslations: Translations = {
         "Gratitude message sent after the wedding to thank guests",
     },
   },
+  automation: {
+    allMessagesSent: "Great! All messages were sent successfully! 🎉",
+    successMessage:
+      "Your message was delivered to {{count}} guests. Everyone should have received it!",
+    mostMessagesSent: "Almost there! Most messages were sent 📱",
+    partialSuccessMessage:
+      "{{successful}} messages were sent successfully, but {{failed}} had delivery issues.",
+    issuesExplanation:
+      "Don't worry - this is usually due to invalid phone numbers or network issues. Most guests received your message!",
+    sentOn: "Sent on",
+    messagesBeingSent: "Your messages are being sent now 📤",
+    inProgressMessage:
+      "Please wait while we deliver your messages to all guests. This usually takes just a few minutes.",
+    somethingWentWrong: "Oops! Something went wrong 😔",
+    failedMessage:
+      "We weren't able to send your messages this time. This is rare and usually temporary.",
+    contactSupport:
+      "Please try again, or contact support if the issue persists.",
+    messageScheduled: "Message is scheduled ⏰",
+    willBeSentOn: "Your message will be automatically sent on",
+  },
   userRsvp: {
     title: "Wedding RSVP Setup",
     subtitle: "Set up your automated RSVP system in just a few easy steps",
@@ -880,7 +904,7 @@ export const englishTranslations: Translations = {
       completedDesc: "Your RSVP form is ready. You can customize it anytime.",
       customizeForm: "Customize Form",
       createError: "Failed to create RSVP form. Please try again.",
-      tip: "You can always modify your form questions later in the setup process.",
+      tip: "You can always change your form questions later in the setup process.",
     },
     templates: {
       title: "Choose Your Message Templates",
@@ -904,25 +928,64 @@ export const englishTranslations: Translations = {
     scheduler: {
       title: "Schedule Your Messages",
       description: "Set when each message should be sent to your guests",
-      rsvpMessage: "RSVP Message",
-      rsvpMessageDesc: "Send RSVP request to guests",
-      dayBeforeReminder: "Day Before Reminder",
-      dayBeforeDesc: "Remind guests about the wedding details",
-      thankYouMessage: "Thank You Message",
-      thankYouDesc: "Thank guests after the wedding",
-      automationName: "Automation Name",
       scheduledTime: "Scheduled Time",
-      rsvpType: "RSVP",
-      reminderType: "Reminder",
-      messageNumber: "Message",
-      scheduled: "scheduled",
-      creating: "Creating automations...",
-      createAutomations: "Create Automations",
-      readyToCreate: "All messages scheduled! Ready to create automations.",
-      automationsCreated: "{{count}} automations created successfully!",
+      automationsCreated: "Automations created successfully!",
       completeAllSchedules: "Please complete all message schedules to continue",
       noTemplatesSelected:
         "No templates selected. Please go back and select templates first.",
+      noScheduleItems: "No schedule items to create automations",
+      createAutomationsError: "Failed to create automations. Please try again.",
+      weddingDateRequired: "Wedding date is required for scheduling",
+      templatesRequired: "Please select templates before scheduling",
+      approvePlan: "Approve & Create Plan",
+      creatingAutomations: "Creating Automations...",
+      scheduleOverview: "Schedule Overview",
+      weddingDate: "Wedding Date",
+      messageTimeline: "Message Timeline",
+      onWeddingDay: "On wedding day",
+      oneDayBefore: "1 day before",
+      oneDayAfter: "1 day after",
+      daysBefore: "{{days}} days before",
+      daysAfter: "{{days}} days after",
+      existingAutomations:
+        "{{count}} automations are already configured and active",
+    },
+    messagesPlan: {
+      title: "Messages Plan",
+      description:
+        "Select templates for your 5 automated messages to create a complete communication flow",
+      initialRsvp: {
+        title: "Initial RSVP Invitation",
+        description:
+          "First message sent to guests requesting their RSVP response",
+      },
+      secondRsvp: {
+        title: "Second RSVP Reminder",
+        description: "Follow-up reminder for guests who haven't responded yet",
+      },
+      finalRsvp: {
+        title: "Final RSVP Notice",
+        description: "Last chance reminder before RSVP deadline closes",
+      },
+      dayBefore: {
+        title: "Day Before Reminder",
+        description: "Event details reminder sent one day before the wedding",
+      },
+      dayAfterThankyou: {
+        title: "Thank You Message",
+        description: "Gratitude message sent after the wedding to thank guests",
+      },
+      selectTemplate: "Select Template",
+      changeTemplate: "Change Template",
+      templatesSelected: "Templates Selected",
+      continue: "Continue to Scheduling",
+      loadingTemplates: "Loading available templates...",
+      noTemplatesAvailable:
+        "No approved templates available. Please create templates first.",
+      weddingTemplates: "Wedding Templates",
+      globalTemplates: "Global Templates",
+      weddingTemplate: "Wedding",
+      globalTemplate: "Global",
     },
     review: {
       title: "Review & Launch",
@@ -975,43 +1038,6 @@ export const englishTranslations: Translations = {
       editForm: "Edit Form",
       helpText:
         "Need help? Contact support or check our documentation for assistance.",
-    },
-    messagesPlan: {
-      title: "Messages Plan",
-      description:
-        "Select templates for your 5 automated messages to create a complete communication flow",
-      initialRsvp: {
-        title: "Initial RSVP Invitation",
-        description:
-          "First message sent to guests requesting their RSVP response",
-      },
-      secondRsvp: {
-        title: "Second RSVP Reminder",
-        description: "Follow-up reminder for guests who haven't responded yet",
-      },
-      finalRsvp: {
-        title: "Final RSVP Notice",
-        description: "Last chance reminder before RSVP deadline closes",
-      },
-      dayBefore: {
-        title: "Day Before Reminder",
-        description: "Event details reminder sent one day before the wedding",
-      },
-      dayAfterThankyou: {
-        title: "Thank You Message",
-        description: "Gratitude message sent after the wedding to thank guests",
-      },
-      selectTemplate: "Select Template",
-      changeTemplate: "Change Template",
-      templatesSelected: "templates selected",
-      continue: "Continue to Scheduling",
-      loadingTemplates: "Loading available templates...",
-      noTemplatesAvailable:
-        "No approved templates available. Please create templates first.",
-      weddingTemplates: "Wedding Templates",
-      globalTemplates: "Global Templates",
-      weddingTemplate: "Wedding",
-      globalTemplate: "Global",
     },
   },
 };

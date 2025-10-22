@@ -5,11 +5,8 @@ import {
   PREDEFINED_QUESTIONS,
   generateCustomQuestionId,
 } from "./rsvpQuestionsTypes";
-import {
-  TemplatesCategories,
-  WeddingRSVPConfig,
-  SelectedTemplate,
-} from "@wedding-plan/types";
+import { TemplatesCategories, SelectedTemplate } from "@wedding-plan/types";
+import { WeddingRSVPConfig } from "@wedding-plan/types";
 
 const RSVP_CONFIG_COLLECTION = "rsvpConfigs";
 // Extended type for RSVP config with Firestore document ID
@@ -43,6 +40,7 @@ export const getRSVPConfig = async (
       enabledQuestionIds: config.enabledQuestionIds || [],
       customQuestions: config.customQuestions || [],
       selectedTemplates: config.selectedTemplates || {},
+      isSetupComplete: config.isSetupComplete || false,
       createdAt: config.createdAt || new Date(),
       updatedAt: config.updatedAt || new Date(),
     };
@@ -69,6 +67,7 @@ export const createDefaultRSVPConfig = async (
     enabledQuestionIds: ["attendance", "amount"],
     customQuestions: [],
     selectedTemplates: {},
+    isSetupComplete: false,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -92,6 +91,7 @@ export const saveRSVPConfig = async (
       enabledQuestionIds: config.enabledQuestionIds,
       customQuestions: config.customQuestions,
       selectedTemplates: config.selectedTemplates,
+      isSetupComplete: config.isSetupComplete,
       createdAt: config.createdAt,
       updatedAt: new Date(), // Use Date instead of serverTimestamp for consistency
     };
@@ -259,6 +259,30 @@ export const updateSelectedTemplates = async (
     await rsvpConfigAPI.update(weddingId, updateData, weddingId);
   } catch (error) {
     console.error("Error updating selected templates:", error);
+    throw error;
+  }
+};
+
+/**
+ * Update RSVP setup completion status
+ */
+export const updateRSVPSetupComplete = async (
+  isSetupComplete: boolean,
+  weddingId?: string
+): Promise<void> => {
+  if (!weddingId) {
+    throw new Error("Wedding ID is required to update RSVP setup status");
+  }
+  try {
+    // Use partial update to only update the setup completion status
+    const updateData = {
+      isSetupComplete,
+      updatedAt: new Date(),
+    };
+
+    await rsvpConfigAPI.update(weddingId, updateData, weddingId);
+  } catch (error) {
+    console.error("Error updating RSVP setup completion status:", error);
     throw error;
   }
 };
