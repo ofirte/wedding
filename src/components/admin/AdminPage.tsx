@@ -6,6 +6,7 @@ import { useTranslation } from "../../localization/LocalizationContext";
 import UserManagementPage from "./UserManagementPage";
 import WeddingManagementPage from "../weddingManagement/WeddingManagementPage";
 import MigrationManager from "../../migrations/components/MigrationManager";
+import TemplatesManager from "../rsvp/TemplatesManager";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -138,9 +139,9 @@ export const AdminPage: React.FC = () => {
           <WeddingManagementPage />
         </TabPanel>
 
-        {/* <TabPanel value={activeTabIndex} index={2}>
-          <GlobalTemplatesManager />
-        </TabPanel> */}
+        <TabPanel value={activeTabIndex} index={2}>
+          <TemplatesManager />
+        </TabPanel>
 
         <TabPanel value={activeTabIndex} index={3}>
           <MigrationManager />

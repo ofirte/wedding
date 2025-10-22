@@ -18,7 +18,7 @@ import {
   CheckCircle as CheckCircleIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { useSubmitTemplateApproval } from "../../hooks/rsvp";
+import { useSubmitTemplateApproval } from "../../hooks/templates";
 import { formatTemplateName } from "../../utils/templatesUtils";
 
 interface TemplateApprovalWorkflowProps {

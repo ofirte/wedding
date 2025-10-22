@@ -14,7 +14,7 @@ import {
   HowToReg as ApprovalIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { useApprovalStatus } from "../../hooks/rsvp";
+import { useApprovalStatus } from "../../hooks/templates";
 
 interface TemplateApprovalStatusProps {
   templateSid: string;

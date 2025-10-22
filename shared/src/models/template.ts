@@ -5,6 +5,12 @@
 
 import { TemplateContentTypes, TemplateApprovalStatus } from "../api/templates";
 
+/**
+ * Global Template Categories
+ * Semantic categories for global templates that are available to all weddings
+ */
+export type TemplatesCategories = "rsvp" | "notifications";
+
 // Core template data structure (our canonical template representation)
 export interface Template {
   sid: string;
@@ -15,6 +21,8 @@ export interface Template {
   dateCreated: string;
   dateUpdated: string;
   accountSid: string;
+  category?: TemplatesCategories;
+  isGlobal?: boolean;
 }
 
 // Template document as stored in Firebase (extends Template with metadata)
@@ -22,28 +30,4 @@ export interface TemplateDocument extends Template {
   id: string;
   createdBy?: string; // Firebase user ID who created the template
   approvalStatus?: TemplateApprovalStatus;
-}
-
-/**
- * Global Template Categories
- * Semantic categories for global templates that are available to all weddings
- */
-export type GlobalTemplateCategory = "rsvp" | "notifications";
-
-/**
- * Global Template Data Structure
- * These templates are available to all weddings in the system
- */
-export interface GlobalTemplate {
-  id: string;
-  name: string;
-  category: GlobalTemplateCategory;
-  language: "en" | "he";
-  messageText: string;
-  variables: Record<string, string>;
-  description?: string; // Optional description for the template
-  createdBy: string;
-  createdAt: Date;
-  updatedAt: Date;
-  isActive: boolean;
 }

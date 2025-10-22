@@ -13,7 +13,7 @@ import {
   useCreateTemplate,
   useTemplates,
   useDeleteTemplate,
-} from "../../hooks/rsvp";
+} from "../../hooks/templates";
 import CreateTemplateForm from "./CreateTemplateForm";
 import DSTable from "../common/DSTable";
 import {

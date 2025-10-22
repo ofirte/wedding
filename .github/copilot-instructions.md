@@ -47,6 +47,22 @@ const useUpdateInvitee = () =>
   });
 ```
 
+### Hook Usage Patterns
+
+**Always destructure mutations and queries for cleaner code:**
+
+```typescript
+// ✅ Correct - destructure for clarity
+const { mutate: createTemplate, isPending: isCreating } = useCreateTemplate();
+const { mutate: deleteTemplate, isPending: isDeleting } = useDeleteTemplate();
+const { data: templates, isLoading, error } = useTemplates();
+
+// ❌ Avoid - using full objects
+const createTemplateMutation = useCreateTemplate();
+const deleteTemplateMutation = useDeleteTemplate();
+const templatesQuery = useTemplates();
+```
+
 ### Hook Organization
 
 **Each custom hook should be in its own file:**

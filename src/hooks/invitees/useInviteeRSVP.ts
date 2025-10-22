@@ -3,7 +3,7 @@ import {
   fetchInviteeRSVP,
   updateInvitee,
 } from "../../api/invitees/inviteesApi";
-import { RSVPStatus } from "../../api/rsvp/rsvpStatusTypes";
+import { RSVPStatus } from "@shared/dist";
 
 /**
  * Hook to fetch RSVP status for an invitee using denormalized data

@@ -1,4 +1,4 @@
-import { createCollectionAPI } from "../weddingFirebaseHelpers";
+import { createGeneralCollectionAPI } from "../generalFirebaseHelpers";
 import {
   getMessageTemplates,
   createMessageTemplate,
@@ -14,9 +14,8 @@ import {
 } from "@wedding-plan/types";
 import { Template, TemplateDocument } from "@wedding-plan/types";
 
-export const createTemplate = async (
+export const createGlobalTemplate = async (
   templateData: CreateMessageTemplateRequest,
-  weddingId?: string,
   userId?: string
 ): Promise<Template> => {
   try {
@@ -31,25 +30,23 @@ export const createTemplate = async (
     const createdTemplate = result.data.template;
 
     // Save the template information to Firebase
-    await saveTemplateToFirebase(createdTemplate, weddingId, userId);
+    await saveGlobalTemplateToFirebase(createdTemplate, userId);
 
     return createdTemplate;
   } catch (error) {
-    console.error("Error creating template:", error);
+    console.error("Error creating global template:", error);
     throw error;
   }
 };
 
 /**
- * Save template information to Firebase for tracking and management
+ * Save global template information to Firebase for tracking and management
  * @param template The created template from Twilio
- * @param weddingId Optional wedding ID
  * @param userId Optional user ID of the creator
  * @returns Promise resolving to the Firebase document ID
  */
-export const saveTemplateToFirebase = async (
+export const saveGlobalTemplateToFirebase = async (
   template: Template,
-  weddingId?: string,
   userId?: string
 ): Promise<string> => {
   try {
@@ -59,48 +56,44 @@ export const saveTemplateToFirebase = async (
       approvalStatus: "pending", // Default approval status when created
     };
 
-    const docRef = await templatesAPI.create(templateDocument, weddingId);
+    const docRef = await globalTemplatesAPI.create(templateDocument);
     return docRef.id;
   } catch (error) {
-    console.error("Error saving template to Firebase:", error);
+    console.error("Error saving global template to Firebase:", error);
     throw error;
   }
 };
 
 /**
- * Get all template documents from Firebase for a specific wedding
- * @param weddingId Optional wedding ID
+ * Get all global template documents from Firebase
  * @returns Promise resolving to an array of template documents
  */
-export const getTemplatesFromFirebase = async (
-  weddingId?: string
-): Promise<TemplateDocument[]> => {
+export const getGlobalTemplatesFromFirebase = async (): Promise<
+  TemplateDocument[]
+> => {
   try {
-    return await templatesAPI.fetchAll(weddingId);
+    return await globalTemplatesAPI.fetchAll();
   } catch (error) {
-    console.error("Error getting templates from Firebase:", error);
+    console.error("Error getting global templates from Firebase:", error);
     throw error;
   }
 };
 
 /**
- * Get templates that exist in both Twilio and Firebase (intersection)
- * @param weddingId Optional wedding ID
+ * Get global templates that exist in both Twilio and Firebase (intersection)
  * @returns Promise resolving to combined template data with Firebase metadata
  */
-export interface WeddingTemplateData {
+export interface GlobalTemplateData {
   templates: Array<TemplateDocument>;
   length: number;
 }
 
-export const getWeddingTemplates = async (
-  weddingId?: string
-): Promise<WeddingTemplateData> => {
+export const getGlobalTemplates = async (): Promise<GlobalTemplateData> => {
   try {
     // Fetch from both sources in parallel
     const [twilioResult, firebaseTemplates] = await Promise.all([
       getMessageTemplates(),
-      getTemplatesFromFirebase(weddingId),
+      getGlobalTemplatesFromFirebase(),
     ]);
     const twilioResponse = twilioResult.data as any;
     const twilioTemplates = twilioResponse.templates || [];
@@ -134,23 +127,21 @@ export const getWeddingTemplates = async (
       length: combinedTemplates.length,
     };
   } catch (error) {
-    console.error("Error getting combined templates:", error);
+    console.error("Error getting combined global templates:", error);
     throw error;
   }
 };
 
 /**
- * Delete a template from both Twilio and Firebase
+ * Delete a global template from both Twilio and Firebase
  * First calls Firebase Functions to delete from Twilio, then removes from Firebase
  * @param templateSid The Twilio template SID to delete
- * @param firebaseId Optional Firebase document ID (will be looked up if not provided)
- * @param weddingId Optional wedding ID
+ * @param firebaseId The Firebase document ID
  * @returns Promise that resolves when deletion is complete
  */
-export const deleteTemplate = async (
+export const deleteGlobalTemplate = async (
   templateSid: string,
-  firebaseId: string,
-  weddingId?: string
+  firebaseId: string
 ): Promise<void> => {
   try {
     // Step 1: Delete from Twilio via Firebase Functions
@@ -162,25 +153,25 @@ export const deleteTemplate = async (
     const deleteResult = result.data as any;
     if (!deleteResult || deleteResult.error) {
       throw new Error(
-        `Failed to delete template from Twilio: ${
+        `Failed to delete global template from Twilio: ${
           deleteResult?.error || "Unknown error"
         }`
       );
     }
-    await templatesAPI.delete(firebaseId, weddingId);
+    await globalTemplatesAPI.delete(firebaseId);
   } catch (error) {
-    console.error("Error deleting template:", error);
+    console.error("Error deleting global template:", error);
     throw error;
   }
 };
 
 /**
- * Submit a template for WhatsApp approval
+ * Submit a global template for WhatsApp approval
  * @param templateSid The Twilio template SID
  * @param approvalRequest The approval request data (name and category)
  * @returns Promise resolving to the approval response
  */
-export const submitTemplateForApproval = async (
+export const submitGlobalTemplateForApproval = async (
   templateSid: string,
   approvalRequest: SubmitTemplateApprovalRequest
 ): Promise<TemplateApprovalResponse> => {
@@ -194,21 +185,24 @@ export const submitTemplateForApproval = async (
     const approvalResponse = result.data.approvalRequest;
 
     // Update the approval status in Firebase
-    await updateTemplateApprovalStatus(templateSid, approvalResponse.status);
+    await updateGlobalTemplateApprovalStatus(
+      templateSid,
+      approvalResponse.status
+    );
 
     return approvalResponse;
   } catch (error) {
-    console.error("Error submitting template for approval:", error);
+    console.error("Error submitting global template for approval:", error);
     throw error;
   }
 };
 
 /**
- * Get the approval status of a template
+ * Get the approval status of a global template
  * @param templateSid The Twilio template SID
  * @returns Promise resolving to the approval status response
  */
-export const getApprovalStatus = async (
+export const getGlobalApprovalStatus = async (
   templateSid: string
 ): Promise<GetTemplateApprovalStatusResponse> => {
   try {
@@ -221,7 +215,7 @@ export const getApprovalStatus = async (
 
     // Update the approval status in Firebase if WhatsApp data exists
     if (approvalStatusResponse.approvalData.whatsapp) {
-      await updateTemplateApprovalStatus(
+      await updateGlobalTemplateApprovalStatus(
         templateSid,
         approvalStatusResponse.approvalData.whatsapp.status
       );
@@ -229,26 +223,24 @@ export const getApprovalStatus = async (
 
     return approvalStatusResponse;
   } catch (error) {
-    console.error("Error getting approval status:", error);
+    console.error("Error getting global approval status:", error);
     throw error;
   }
 };
 
 /**
- * Update the approval status of a template in Firebase
+ * Update the approval status of a global template in Firebase
  * @param templateSid The Twilio template SID
  * @param status The new approval status
- * @param weddingId Optional wedding ID
  * @returns Promise that resolves when the update is complete
  */
-export const updateTemplateApprovalStatus = async (
+export const updateGlobalTemplateApprovalStatus = async (
   templateSid: string,
-  status: "received" | "pending" | "approved" | "rejected" | "submitted",
-  weddingId?: string
+  status: "received" | "pending" | "approved" | "rejected" | "submitted"
 ): Promise<void> => {
   try {
     // Find the template document in Firebase
-    const firebaseTemplates = await getTemplatesFromFirebase(weddingId);
+    const firebaseTemplates = await getGlobalTemplatesFromFirebase();
     const template = firebaseTemplates.find((t) => t.sid === templateSid);
     console.log(
       firebaseTemplates.map((t) => {
@@ -260,32 +252,30 @@ export const updateTemplateApprovalStatus = async (
       })
     );
     console.log(
-      `Updating template ${firebaseTemplates} approval status to ${status}`
+      `Updating global template ${firebaseTemplates} approval status to ${status}`
     );
     if (template) {
-      await templatesAPI.update(
-        template.id,
-        { approvalStatus: status },
-        weddingId
-      );
+      await globalTemplatesAPI.update(template.id, { approvalStatus: status });
     } else {
       console.warn(
-        `Template ${templateSid} not found in Firebase, cannot update approval status`
+        `Global template ${templateSid} not found in Firebase, cannot update approval status`
       );
     }
   } catch (error) {
-    console.error("Error updating template approval status:", error);
+    console.error("Error updating global template approval status:", error);
     throw error;
   }
 };
 
 /**
- * Check if a template should have its approval status synced
+ * Check if a global template should have its approval status synced
  * Only templates that have been submitted need regular syncing
  * @param approvalStatus The current Firebase approval status
  * @returns Whether this template should be synced
  */
-export const shouldSyncApprovalStatus = (approvalStatus?: string): boolean => {
+export const shouldSyncGlobalApprovalStatus = (
+  approvalStatus?: string
+): boolean => {
   // Only sync templates that might have status updates from WhatsApp
   return !!(
     approvalStatus &&
@@ -293,5 +283,6 @@ export const shouldSyncApprovalStatus = (approvalStatus?: string): boolean => {
   );
 };
 
-// Create collection API for templates
-const templatesAPI = createCollectionAPI<TemplateDocument>("templates");
+// Create collection API for global templates
+const globalTemplatesAPI =
+  createGeneralCollectionAPI<TemplateDocument>("globalTemplates");
