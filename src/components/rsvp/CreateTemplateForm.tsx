@@ -22,13 +22,10 @@ import {
   getPredefinedVariables,
   TemplateVariable,
   extractUsedVariables,
-  populateVariables,
-  replaceVariables,
 } from "../../utils/messageVariables";
-import { useInvitees } from "../../hooks/invitees";
-import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
 import { CreateMessageTemplateRequest } from "@wedding-plan/types";
 import VariablesSelector from "../common/VariablesSelector";
+import { usePreviewText } from "../../hooks/common";
 
 interface CreateTemplateFormProps {
   open: boolean;
@@ -68,19 +65,8 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
   const usedVariables = useMemo(() => {
     return extractUsedVariables(messageText);
   }, [messageText]);
-  const { data: invitees } = useInvitees();
-  const { data: wedding } = useWeddingDetails();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const previewText = useMemo(() => {
-    let message = messageText;
-    const guest = invitees?.[0]; // Use first guest for preview context
-    if (guest && wedding) {
-      const variables = populateVariables(guest, wedding, language);
-      message = replaceVariables(message, variables);
-    }
-
-    return message;
-  }, [messageText, invitees, wedding, language]);
+  const previewText = usePreviewText({ messageText, language });
 
   const insertVariable = useCallback(
     (variable: TemplateVariable) => {

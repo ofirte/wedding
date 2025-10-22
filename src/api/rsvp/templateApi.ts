@@ -132,6 +132,7 @@ export const getWeddingTemplates = async (
           approvalStatus: firebaseTemplate.approvalStatus,
           createdBy: firebaseTemplate.createdBy,
           firebaseId: firebaseTemplate.id,
+          category: firebaseTemplate.category,
           // Keep Twilio as source of truth for template content and metadata
           // But add Firebase-specific fields
         };

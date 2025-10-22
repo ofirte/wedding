@@ -124,7 +124,7 @@ export const getGlobalTemplates = async (): Promise<GlobalTemplateData> => {
           approvalStatus: firebaseTemplate.approvalStatus,
           createdBy: firebaseTemplate.createdBy,
           firebaseId: firebaseTemplate.id,
-          // Keep Twilio as source of truth for template content and metadata
+          category: firebaseTemplate.category,
           // But add Firebase-specific fields
         };
       });
@@ -249,18 +249,6 @@ export const updateGlobalTemplateApprovalStatus = async (
     // Find the template document in Firebase
     const firebaseTemplates = await getGlobalTemplatesFromFirebase();
     const template = firebaseTemplates.find((t) => t.sid === templateSid);
-    console.log(
-      firebaseTemplates.map((t) => {
-        return {
-          sid: t.sid,
-          approvalStatus: t.approvalStatus,
-          name: t.friendlyName,
-        };
-      })
-    );
-    console.log(
-      `Updating global template ${firebaseTemplates} approval status to ${status}`
-    );
     if (template) {
       await globalTemplatesAPI.update(template.id, { approvalStatus: status });
     } else {

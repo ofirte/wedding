@@ -27,13 +27,9 @@ export const useApprovalStatusSync = () => {
       const templatesToSync = templates.filter((template) =>
         shouldSyncApprovalStatus(template.approvalStatus)
       );
-      console.log(templatesToSync);
       if (templatesToSync.length === 0) {
         return;
       }
-      console.log(
-        `Syncing approval statuses for ${templatesToSync} templates...`
-      );
       // Batch process with delay to avoid rate limiting
       const syncResults = await Promise.allSettled(
         templatesToSync.map(async (template, index) => {
@@ -44,18 +40,9 @@ export const useApprovalStatusSync = () => {
 
           try {
             const approvalData = await getApprovalStatus(template.sid);
-            console.log(approvalData);
             const twilioStatus = approvalData.approvalData.whatsapp?.status;
-            console.log(twilioStatus);
-            console.log(template.approvalStatus);
             // If Twilio status differs from Firebase, update Firebase
             if (twilioStatus && twilioStatus !== template.approvalStatus) {
-              console.log(
-                `Syncing approval status for template ${template.sid}: ${template.approvalStatus} → ${twilioStatus}`
-              );
-              console.log(weddingId);
-              console.log(template.sid);
-              console.log(twilioStatus);
               await updateTemplateApprovalStatus(
                 template.sid,
                 twilioStatus,

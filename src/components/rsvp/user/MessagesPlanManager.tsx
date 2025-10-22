@@ -1,33 +1,19 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Box,
   Typography,
   Card,
   CardContent,
   Button,
-  Alert,
   Chip,
   Stack,
-  Paper,
   Divider,
 } from "@mui/material";
-import {
-  Message as MessageIcon,
-  CheckCircle as CheckCircleIcon,
-  Schedule as ScheduleIcon,
-} from "@mui/icons-material";
+import { CheckCircle as CheckCircleIcon } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
-import { useTemplates as useWeddingTemplates } from "../../../hooks/rsvp";
-import { useGlobalTemplates } from "../../../hooks/globalTemplates";
 import { TemplateDocument } from "@wedding-plan/types";
-
-interface MessageType {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  color: "primary" | "secondary" | "success" | "warning" | "info";
-}
+import TemplateSelectionDialog from "./TemplateSelectionDialog";
+import { MessageType, getMessageTypes } from "./messageTypes";
 
 export interface SelectedTemplates {
   initialRsvp?: TemplateDocument;
@@ -53,85 +39,9 @@ const MessagesPlanManager: React.FC<MessagesPlanManagerProps> = ({
   const [activeMessageType, setActiveMessageType] = useState<string | null>(
     null
   );
+  const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
 
-  // Fetch both wedding and global templates
-  const { data: weddingTemplatesData, isLoading: isWeddingLoading } =
-    useWeddingTemplates({
-      syncApprovalStatus: false,
-    });
-  const { data: globalTemplatesData, isLoading: isGlobalLoading } =
-    useGlobalTemplates({
-      syncApprovalStatus: false,
-    });
-
-  const messageTypes: MessageType[] = useMemo(
-    () => [
-      {
-        id: "initialRsvp",
-        title: t("userRsvp.messagesPlan.initialRsvp.title"),
-        description: t("userRsvp.messagesPlan.initialRsvp.description"),
-        icon: <MessageIcon />,
-        color: "primary",
-      },
-      {
-        id: "secondRsvp",
-        title: t("userRsvp.messagesPlan.secondRsvp.title"),
-        description: t("userRsvp.messagesPlan.secondRsvp.description"),
-        icon: <MessageIcon />,
-        color: "secondary",
-      },
-      {
-        id: "finalRsvp",
-        title: t("userRsvp.messagesPlan.finalRsvp.title"),
-        description: t("userRsvp.messagesPlan.finalRsvp.description"),
-        icon: <MessageIcon />,
-        color: "warning",
-      },
-      {
-        id: "dayBefore",
-        title: t("userRsvp.messagesPlan.dayBefore.title"),
-        description: t("userRsvp.messagesPlan.dayBefore.description"),
-        icon: <ScheduleIcon />,
-        color: "info",
-      },
-      {
-        id: "dayAfterThankyou",
-        title: t("userRsvp.messagesPlan.dayAfterThankyou.title"),
-        description: t("userRsvp.messagesPlan.dayAfterThankyou.description"),
-        icon: <CheckCircleIcon />,
-        color: "success",
-      },
-    ],
-    [t]
-  );
-
-  // Combine and categorize templates
-  const allTemplates = useMemo(() => {
-    const wedding = weddingTemplatesData?.templates || [];
-    const global = globalTemplatesData?.templates || [];
-
-    return {
-      wedding: wedding.filter((t) => t.approvalStatus === "approved"),
-      global: global.filter((t) => t.approvalStatus === "approved"),
-    };
-  }, [weddingTemplatesData, globalTemplatesData]);
-
-  // Get templates filtered by the active message type category
-  const getTemplatesForMessageType = useCallback(
-    (messageTypeId: string) => {
-      return {
-        wedding: allTemplates.wedding.filter(
-          (t) => t?.category === messageTypeId
-        ),
-        global: allTemplates.global.filter(
-          (t) => t?.category === messageTypeId
-        ),
-      };
-    },
-    [allTemplates]
-  );
-
-  const isLoading = isWeddingLoading || isGlobalLoading;
+  const messageTypes: MessageType[] = useMemo(() => getMessageTypes(t), [t]);
 
   const handleTemplateSelect = (
     messageTypeId: string,
@@ -144,161 +54,30 @@ const MessagesPlanManager: React.FC<MessagesPlanManagerProps> = ({
     setActiveMessageType(null);
   };
 
-  const handleMessageTypeClick = (messageTypeId: string) => {
-    setActiveMessageType(
-      activeMessageType === messageTypeId ? null : messageTypeId
-    );
+  const handleDialogTemplateSelect = (template: TemplateDocument) => {
+    if (activeMessageType) {
+      handleTemplateSelect(activeMessageType, template);
+    }
+    setIsTemplateDialogOpen(false);
+    setActiveMessageType(null);
   };
 
+  const handleDialogClose = () => {
+    setIsTemplateDialogOpen(false);
+    setActiveMessageType(null);
+  };
+
+  const handleMessageTypeClick = (messageTypeId: string) => {
+    setActiveMessageType(messageTypeId);
+    setIsTemplateDialogOpen(true);
+  };
   const canComplete =
     Object.keys(selectedTemplates).length === messageTypes.length;
 
-  const renderTemplateCard = (
-    template: TemplateDocument,
-    isGlobal: boolean
-  ) => (
-    <Card
-      key={template.id}
-      sx={{
-        cursor: "pointer",
-        border: 1,
-        borderColor: "divider",
-        "&:hover": {
-          borderColor: "primary.main",
-          boxShadow: 2,
-        },
-      }}
-      onClick={() =>
-        activeMessageType && handleTemplateSelect(activeMessageType, template)
-      }
-    >
-      <CardContent sx={{ p: 2 }}>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          spacing={1}
-        >
-          <Box sx={{ flex: 1 }}>
-            <Typography variant="subtitle2" gutterBottom>
-              {template.friendlyName}
-            </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-                mb: 1,
-              }}
-            >
-              {template.types["twilio/text"]?.body ||
-                t("messagesPlan.noPreviewAvailable")}
-            </Typography>
-          </Box>
-          <Chip
-            size="small"
-            label={
-              isGlobal
-                ? t("userRsvp.messagesPlan.globalTemplate")
-                : t("userRsvp.messagesPlan.weddingTemplate")
-            }
-            color={isGlobal ? "secondary" : "primary"}
-            variant="outlined"
-          />
-        </Stack>
-      </CardContent>
-    </Card>
-  );
-
-  const renderTemplateSelection = () => {
-    if (!activeMessageType) return null;
-
-    const filteredTemplates = getTemplatesForMessageType(activeMessageType);
-    const hasTemplates =
-      filteredTemplates.wedding.length > 0 ||
-      filteredTemplates.global.length > 0;
-
-    return (
-      <Paper sx={{ p: 3, mt: 2 }}>
-        <Typography variant="h6" gutterBottom>
-          {t("userRsvp.messagesPlan.selectTemplate")}
-        </Typography>
-
-        {!hasTemplates ? (
-          <Alert severity="info">
-            {t("userRsvp.messagesPlan.noTemplatesAvailable")}
-          </Alert>
-        ) : (
-          <Stack spacing={3}>
-            {/* Wedding Templates */}
-            {filteredTemplates.wedding.length > 0 && (
-              <Box>
-                <Typography
-                  variant="subtitle1"
-                  gutterBottom
-                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                >
-                  <Chip
-                    size="small"
-                    label={t("userRsvp.messagesPlan.weddingTemplates")}
-                    color="primary"
-                  />
-                  ({filteredTemplates.wedding.length})
-                </Typography>
-                <Stack spacing={1}>
-                  {filteredTemplates.wedding.map((template) =>
-                    renderTemplateCard(template, false)
-                  )}
-                </Stack>
-              </Box>
-            )}
-
-            {/* Global Templates */}
-            {filteredTemplates.global.length > 0 && (
-              <Box>
-                <Typography
-                  variant="subtitle1"
-                  gutterBottom
-                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                >
-                  <Chip
-                    size="small"
-                    label={t("userRsvp.messagesPlan.globalTemplates")}
-                    color="secondary"
-                  />
-                  ({filteredTemplates.global.length})
-                </Typography>
-                <Stack spacing={1}>
-                  {filteredTemplates.global.map((template) =>
-                    renderTemplateCard(template, true)
-                  )}
-                </Stack>
-              </Box>
-            )}
-          </Stack>
-        )}
-
-        <Button
-          onClick={() => setActiveMessageType(null)}
-          sx={{ mt: 2 }}
-          variant="outlined"
-        >
-          {t("common.cancel")}
-        </Button>
-      </Paper>
-    );
-  };
-
-  if (isLoading) {
-    return (
-      <Box sx={{ p: 3, textAlign: "center" }}>
-        <Typography>{t("userRsvp.messagesPlan.loadingTemplates")}</Typography>
-      </Box>
-    );
-  }
+  // Get current message type details for dialog
+  const activeMessageTypeDetails = useMemo(() => {
+    return messageTypes.find((mt) => mt.id === activeMessageType);
+  }, [messageTypes, activeMessageType]);
 
   return (
     <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
@@ -315,7 +94,6 @@ const MessagesPlanManager: React.FC<MessagesPlanManagerProps> = ({
           const selectedTemplate =
             selectedTemplates[messageType.id as keyof SelectedTemplates];
           const isSelected = !!selectedTemplate;
-          const isActive = activeMessageType === messageType.id;
 
           return (
             <Card
@@ -325,7 +103,6 @@ const MessagesPlanManager: React.FC<MessagesPlanManagerProps> = ({
                 borderColor: isSelected
                   ? `${messageType.color}.main`
                   : "divider",
-                backgroundColor: isActive ? "action.hover" : "background.paper",
               }}
             >
               <CardContent>
@@ -358,7 +135,6 @@ const MessagesPlanManager: React.FC<MessagesPlanManagerProps> = ({
                     variant={isSelected ? "outlined" : "contained"}
                     color={messageType.color}
                     onClick={() => handleMessageTypeClick(messageType.id)}
-                    disabled={isActive}
                   >
                     {isSelected
                       ? t("userRsvp.messagesPlan.changeTemplate")
@@ -370,8 +146,6 @@ const MessagesPlanManager: React.FC<MessagesPlanManagerProps> = ({
           );
         })}
       </Stack>
-
-      {renderTemplateSelection()}
 
       <Divider sx={{ my: 4 }} />
 
@@ -395,6 +169,15 @@ const MessagesPlanManager: React.FC<MessagesPlanManagerProps> = ({
           </Button>
         </Stack>
       </Stack>
+
+      {/* Template Selection Dialog */}
+      <TemplateSelectionDialog
+        open={isTemplateDialogOpen}
+        onClose={handleDialogClose}
+        onSelect={handleDialogTemplateSelect}
+        messageTypeTitle={activeMessageTypeDetails?.title || ""}
+        templateCategory={activeMessageType}
+      />
     </Box>
   );
 };
