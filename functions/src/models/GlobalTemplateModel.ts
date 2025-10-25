@@ -8,6 +8,6 @@ import { BaseModel } from "./baseModel/BaseModel";
 
 export class GlobalTemplateModel extends BaseModel<TemplateDocument> {
   constructor() {
-    super("templates", false); // Wedding-scoped collection
+    super("templates", false);
   }
 }

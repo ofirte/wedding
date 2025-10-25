@@ -13,7 +13,7 @@ import {
 } from "@wedding-plan/types";
 import { MessageService } from "./messageService";
 import { populateContentVariables } from "./variablesService";
-import { GlobalTemplateModel } from "src/models/GlobalTemplateModel";
+import { GlobalTemplateModel } from "../models/GlobalTemplateModel";
 
 /**
  * Automation Service Class
