@@ -185,45 +185,30 @@ export class SendAutomationsService {
     }
   }
 
-  async getTemplateLanguage(
-    templateSid: string,
+  async getTemplateInfo(
+    templateId: string,
     weddingId: string
-  ): Promise<"en" | "he"> {
+  ): Promise<{ language: "en" | "he"; sid: string }> {
     try {
-      logger.info("Getting template language", { templateSid, weddingId });
+      logger.info("Getting template info", { templateId, weddingId });
 
-      const template = await this.templateModel.getByFilter(
-        [
-          {
-            field: "sid",
-            operator: "==",
-            value: templateSid,
-          },
-        ],
+      const weddingTemplate = await this.templateModel.getById(
+        templateId,
         weddingId
       );
-      const globalTemplate = await this.globalTemplateModel.getByFilter([
-        {
-          field: "sid",
-          operator: "==",
-          value: templateSid,
-        },
-      ]);
-      const combinedTemplates = [...template, ...globalTemplate];
-      if (combinedTemplates.length > 0) {
-        logger.info("Found template", {
-          templateSid,
-          weddingId,
-          language: combinedTemplates[0].language,
-        });
-        return combinedTemplates[0].language as "en" | "he";
-      } else {
-        logger.error("Template not found", { templateSid, weddingId });
+      const globalTemplate = await this.globalTemplateModel.getById(templateId);
+      const template = weddingTemplate || globalTemplate;
+      if (!template) {
+        logger.error("Template not found", { templateId, weddingId });
         throw new Error("Template not found");
       }
+      return {
+        language: template.language as "en" | "he",
+        sid: template.sid,
+      };
     } catch (error) {
       logger.error("Error getting template language", {
-        templateSid,
+        templateId,
         weddingId,
         error,
       });
@@ -253,7 +238,7 @@ export class SendAutomationsService {
 
           for (const automation of automationsToRun) {
             try {
-              const templateLanguage = await this.getTemplateLanguage(
+              const { language, sid } = await this.getTemplateInfo(
                 automation.messageTemplateId,
                 wedding.id
               );
@@ -266,10 +251,10 @@ export class SendAutomationsService {
                   const populatedVariables = populateContentVariables(
                     invitee,
                     wedding,
-                    templateLanguage
+                    language
                   );
                   return this.messageService.sendWhatsAppMessage({
-                    contentSid: automation.messageTemplateId,
+                    contentSid: sid,
                     to: this.messageService.normalizeWhatsappPhoneNumber(
                       invitee.cellphone
                     ),
