@@ -13,6 +13,7 @@ import {
 } from "@wedding-plan/types";
 import { MessageService } from "./messageService";
 import { populateContentVariables } from "./variablesService";
+import { GlobalTemplateModel } from "src/models/GlobalTemplateModel";
 
 /**
  * Automation Service Class
@@ -25,12 +26,14 @@ export class SendAutomationsService {
   private weddingModel: WeddingModel;
   private inviteeModel: InviteeModel;
   private templateModel: TemplateModel;
+  private globalTemplateModel: GlobalTemplateModel;
   constructor() {
     this.sendMessagesAutomationModel = new SendMessagesAutomationModel();
     this.messageService = new MessageService();
     this.weddingModel = new WeddingModel();
     this.inviteeModel = new InviteeModel();
     this.templateModel = new TemplateModel();
+    this.globalTemplateModel = new GlobalTemplateModel();
   }
 
   async getAutomationsToRun(
@@ -199,14 +202,21 @@ export class SendAutomationsService {
         ],
         weddingId
       );
-
-      if (template.length > 0) {
+      const globalTemplate = await this.globalTemplateModel.getByFilter([
+        {
+          field: "sid",
+          operator: "==",
+          value: templateSid,
+        },
+      ]);
+      const combinedTemplates = [...template, ...globalTemplate];
+      if (combinedTemplates.length > 0) {
         logger.info("Found template", {
           templateSid,
           weddingId,
-          language: template[0].language,
+          language: combinedTemplates[0].language,
         });
-        return template[0].language as "en" | "he";
+        return combinedTemplates[0].language as "en" | "he";
       } else {
         logger.error("Template not found", { templateSid, weddingId });
         throw new Error("Template not found");

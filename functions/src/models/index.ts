@@ -18,4 +18,5 @@ export { WeddingModel } from "./WeddingModel";
 export { InviteeModel } from "./InviteeModel";
 export { SentMessageModel } from "./SentMessageModel";
 export { TemplateModel } from "./TemplateModel";
+export { GlobalTemplateModel } from "./GlobalTemplateModel";
 export { SendMessagesAutomationModel } from "./SendMessagesAutomationModel";
