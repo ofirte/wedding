@@ -5,6 +5,8 @@ export const englishTranslations: Translations = {
     close: "Close",
     back: "Back",
     next: "Next",
+    previous: "Previous",
+    finish: "Finish",
     save: "Save",
     cancel: "Cancel",
     yesNo: "Yes/No",
@@ -565,6 +567,27 @@ export const englishTranslations: Translations = {
       "This automation completed successfully with all messages sent.",
     automationFailedInfo:
       "This automation failed during execution. Check the failure details below for more information.",
+    // Preview dummy data
+    preview: {
+      weddingName: "Sarah & John's Wedding",
+      brideName: "Sarah Johnson",
+      groomName: "John Smith",
+      venueName: "Garden Paradise Resort",
+      guestName: "Alex Wilson",
+      guestSide: "bride",
+      guestRelation: "friend",
+    },
+    changeInvitationPhoto: "Change Invitation Photo",
+    addInvitationPhoto: "Add Invitation Photo",
+    changePhoto: "Change Photo",
+    addPhoto: "Add Photo",
+    removePhoto: "Remove Photo",
+    presetQuestions: "Preset Questions",
+    custom: "Custom",
+    createQuestionFormPlaceholder:
+      "Create Question Form Component will go here",
+    addQuestionsFromSidebar:
+      "Add questions from the sidebar to see the form preview",
   },
   rsvpEmptyState: {
     title: "Create Your RSVP Form",
@@ -858,6 +881,29 @@ export const englishTranslations: Translations = {
       "Please try again, or contact support if the issue persists.",
     messageScheduled: "Message is scheduled ⏰",
     willBeSentOn: "Your message will be automatically sent on",
+  },
+  rsvpSetup: {
+    title: "RSVP Setup",
+    subtitle: "Configure your RSVP system step by step",
+    loading: "Loading RSVP configuration...",
+    setupComplete: "Setup Complete",
+    steps: {
+      welcome: {
+        title: "Welcome",
+        description:
+          "Introduction to RSVP setup process and overview of required configurations",
+      },
+      form: {
+        title: "Form Questions",
+        description:
+          "Configure the RSVP form questions that guests will see when responding",
+      },
+      automations: {
+        title: "Message Templates",
+        description:
+          "Set up RSVP messages, reminders, and thank you templates for automated messaging",
+      },
+    },
   },
   userRsvp: {
     title: "Wedding RSVP Setup",

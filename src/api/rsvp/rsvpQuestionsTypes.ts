@@ -149,7 +149,6 @@ export const getAllAvailableQuestions = (
     config.enabledQuestionIds.includes(q.id)
   );
   const custom = config.customQuestions;
-
   return [...predefined, ...custom].sort(
     (a, b) => (a.order || 0) - (b.order || 0)
   );

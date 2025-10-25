@@ -33,6 +33,8 @@ export interface Translations {
     close: string;
     back: string;
     next: string;
+    previous: string;
+    finish: string;
     save: string;
     cancel: string;
     yesNo: string;
@@ -568,6 +570,25 @@ export interface Translations {
     automationInProgressInfo: string;
     automationCompletedSuccessfully: string;
     automationFailedInfo: string;
+    // Preview dummy data
+    preview: {
+      weddingName: string;
+      brideName: string;
+      groomName: string;
+      venueName: string;
+      guestName: string;
+      guestSide: string;
+      guestRelation: string;
+    };
+    changeInvitationPhoto: string;
+    addInvitationPhoto: string;
+    changePhoto: string;
+    addPhoto: string;
+    removePhoto: string;
+    presetQuestions: string;
+    custom: string;
+    createQuestionFormPlaceholder: string;
+    addQuestionsFromSidebar: string;
   };
   automation: {
     allMessagesSent: string;
@@ -802,6 +823,7 @@ export interface Translations {
   };
   globalTemplates: GlobalTemplatesTranslations;
   userRsvp: UserRSVPTranslations;
+  rsvpSetup: RsvpSetupTranslations;
 }
 
 interface GlobalTemplatesTranslations {
@@ -835,6 +857,23 @@ interface GlobalTemplatesTranslations {
     dayBeforeDescription: string;
     dayAfterThankyou: string;
     dayAfterThankyouDescription: string;
+  };
+}
+
+interface RsvpSetupStepTranslations {
+  title: string;
+  description: string;
+}
+
+interface RsvpSetupTranslations {
+  title: string;
+  subtitle: string;
+  loading: string;
+  setupComplete: string;
+  steps: {
+    welcome: RsvpSetupStepTranslations;
+    form: RsvpSetupStepTranslations;
+    automations: RsvpSetupStepTranslations;
   };
 }
 

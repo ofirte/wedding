@@ -5,6 +5,8 @@ export const hebrewTranslations: Translations = {
     close: "סגור",
     back: "חזור",
     next: "הבא",
+    previous: "הקודם",
+    finish: "סיום",
     save: "שמור",
     cancel: "בטל",
     yesNo: "כן/לא",
@@ -555,6 +557,26 @@ export const hebrewTranslations: Translations = {
       "האוטומציה הזו הושלמה בהצלחה עם כל ההודעות שנשלחו.",
     automationFailedInfo:
       "האוטומציה הזו נכשלה במהלך הביצוע. בדוק את פרטי הכישלון למטה למידע נוסף.",
+    // Preview dummy data
+    preview: {
+      weddingName: "החתונה של שרה ויוחנן",
+      brideName: "שרה כהן",
+      groomName: "יוחנן לוי",
+      venueName: "גן פרדיס",
+      guestName: "אלכס וילסון",
+      guestSide: "כלה",
+      guestRelation: "חבר",
+    },
+    changeInvitationPhoto: "שנה תמונת הזמנה",
+    addInvitationPhoto: "הוסף תמונת הזמנה",
+    changePhoto: "שנה תמונה",
+    addPhoto: "הוסף תמונה",
+    removePhoto: "הסר תמונה",
+    presetQuestions: "שאלות מוכנות מראש",
+    custom: "מותאם אישית",
+    createQuestionFormPlaceholder: "רכיב טופס יצירת שאלה יוצב כאן",
+    addQuestionsFromSidebar:
+      "הוסף שאלות מסרגל הצד כדי לראות תצוגה מקדימה של הטופס",
   },
   rsvpEmptyState: {
     title: "צור טופס אישור הגעה",
@@ -1012,5 +1034,25 @@ export const hebrewTranslations: Translations = {
     contactSupport: "אנא נסה שוב, או צור קשר עם התמיכה אם הבעיה נמשכת.",
     messageScheduled: "הודעה מתוזמנת ⏰",
     willBeSentOn: "ההודעה שלך תישלח אוטומטית ב",
+  },
+  rsvpSetup: {
+    title: "הגדרת RSVP",
+    subtitle: "הגדר את מערכת ה-RSVP שלך צעד אחר צעד",
+    loading: "טוען הגדרות RSVP...",
+    setupComplete: "ההגדרה הושלמה",
+    steps: {
+      welcome: {
+        title: "ברוכים הבאים",
+        description: "מבוא לתהליך הגדרת RSVP וסקירה של הגדרות נדרשות",
+      },
+      form: {
+        title: "שאלות הטופס",
+        description: "הגדר את שאלות טופס ה-RSVP שהאורחים יראו בעת התגובה",
+      },
+      automations: {
+        title: "תבניות הודעות",
+        description: "הגדר הודעות RSVP, תזכורות ותבניות תודה להודעות אוטומטיות",
+      },
+    },
   },
 };
