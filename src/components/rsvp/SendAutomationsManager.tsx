@@ -10,13 +10,13 @@ import {
   useDeleteSendAutomation,
   useManualRunAutomations,
   useManualUpdateAutomationStatuses,
-  useTemplates,
 } from "../../hooks/rsvp";
 import SendAutomationsEmptyState from "./SendAutomationsEmptyState";
 import CreateAutomationDialog from "./CreateAutomationDialog";
 import SendAutomationsTable from "./SendAutomationsTable";
 import AutomationInfoDialog from "./AutomationInfoDialog";
 import { SendMessagesAutomation } from "@wedding-plan/types";
+import { useAllWeddingAvailableTemplates } from "src/hooks/templates/useAllWeddingAvailableTemplates";
 
 /**
  * SendAutomationsManager - Main component for managing automated message campaigns
@@ -26,7 +26,7 @@ import { SendMessagesAutomation } from "@wedding-plan/types";
 const SendAutomationsManager: React.FC = () => {
   const { t } = useTranslation();
   const { data: automations = [], isLoading, refetch } = useSendAutomations();
-  const { data: templatesData } = useTemplates();
+  const { data: templatesData } = useAllWeddingAvailableTemplates();
   const deleteAutomation = useDeleteSendAutomation();
   const manualRunAutomations = useManualRunAutomations();
   const manualUpdateAutomationStatuses = useManualUpdateAutomationStatuses();
@@ -103,14 +103,14 @@ const SendAutomationsManager: React.FC = () => {
 
   // Create template names mapping
   const templateNames = React.useMemo(() => {
-    if (!templatesData?.templates) return {};
+    if (!templatesData) return {};
 
     const mapping: Record<string, string> = {};
-    templatesData.templates.forEach((template) => {
-      mapping[template.sid] = template.friendlyName;
+    templatesData.forEach((template) => {
+      mapping[template.id] = template.friendlyName;
     });
     return mapping;
-  }, [templatesData?.templates]);
+  }, [templatesData]);
 
   // Get template name for selected automation
   const selectedTemplateName = selectedAutomation

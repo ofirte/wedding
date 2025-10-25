@@ -20,13 +20,12 @@ import {
 import { useTranslation } from "../../../localization/LocalizationContext";
 import { TemplateDocument, TemplatesCategories } from "@wedding-plan/types";
 import {
-  useTemplates as useWeddingTemplates,
   useUpdateRsvpConfigSelectedTemplates,
 } from "../../../hooks/rsvp";
 import { useGlobalTemplates } from "../../../hooks/globalTemplates";
 import { usePreviewText } from "../../../hooks/common";
-import { extractUsedVariables } from "../../../utils/messageVariables";
 import PreviewWhatsappMessage from "./PreviewWhatsappMessage";
+import { useWeddingTemplates } from "../../../hooks/templates/useWeddingTemplates";
 
 interface TemplateSelectionDialogProps {
   open: boolean;

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useWeddingQuery } from "../common";
 import { getWeddingTemplates } from "../../api/rsvp/templateApi";
-import { useApprovalStatusSync } from "./useApprovalStatusSync";
+import { useApprovalStatusSync } from "../rsvp/useApprovalStatusSync";
 
 interface UseTemplatesOptions {
   syncApprovalStatus?: boolean; // Whether to sync approval statuses after loading
@@ -13,7 +13,7 @@ interface UseTemplatesOptions {
  * @param options Configuration options
  * @returns Query result object for combined templates
  */
-export const useTemplates = (options: UseTemplatesOptions = {}) => {
+export const useWeddingTemplates = (options: UseTemplatesOptions = {}) => {
   const { syncApprovalStatus = false } = options;
   const { syncApprovalStatuses } = useApprovalStatusSync();
 

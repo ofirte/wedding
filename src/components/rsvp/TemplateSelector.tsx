@@ -1,14 +1,10 @@
 import React, { FC } from "react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useTranslation } from "../../localization/LocalizationContext";
-
-interface Template {
-  sid: string;
-  friendlyName?: string;
-}
+import { TemplateDocument } from "@shared/dist";
 
 interface TemplateSelectorProps {
-  templates: Template[];
+  templates: TemplateDocument[];
   selectedTemplateId: string;
   onChange: (templateId: string) => void;
   disabled?: boolean;
@@ -41,8 +37,8 @@ const TemplateSelector: FC<TemplateSelectorProps> = ({
         disabled={disabled}
       >
         {templates.map((template) => (
-          <MenuItem key={template.sid} value={template.sid}>
-            {template.friendlyName || template.sid}
+          <MenuItem key={template.id} value={template.id}>
+            {template.friendlyName || template.id}
           </MenuItem>
         ))}
       </Select>

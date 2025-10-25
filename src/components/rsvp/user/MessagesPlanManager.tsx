@@ -7,14 +7,14 @@ import {
   Button,
   Chip,
   Stack,
-  Divider,
+
 } from "@mui/material";
 import { CheckCircle as CheckCircleIcon } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import { TemplateDocument, SelectedTemplate } from "@wedding-plan/types";
 import TemplateSelectionDialog from "./TemplateSelectionDialog";
 import { useRSVPConfig } from "../../../hooks/rsvp/useRSVPConfig";
-import { useTemplates as useWeddingTemplates } from "../../../hooks/rsvp";
+import {  useWeddingTemplates } from "../../../hooks/templates/useWeddingTemplates";
 import { useGlobalTemplates } from "../../../hooks/globalTemplates";
 import { MessageType, getMessageTypes } from "./messageTypes";
 

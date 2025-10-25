@@ -20,13 +20,15 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { useTemplates, useCreateSendAutomation } from "../../hooks/rsvp";
+import {  useCreateSendAutomation } from "../../hooks/rsvp";
+
 import TemplateSelector from "./TemplateSelector";
 import {
   SendMessagesAutomation,
   TargetAudienceFilter,
   AutomationType,
 } from "@wedding-plan/types";
+import { useGlobalTemplates } from "src/hooks/globalTemplates/useGlobalTemplates";
 
 interface CreateAutomationDialogProps {
   open: boolean;
@@ -45,7 +47,7 @@ const CreateAutomationDialog: React.FC<CreateAutomationDialogProps> = ({
   onSuccess,
 }) => {
   const { t } = useTranslation();
-  const { data: templatesData, isLoading: isLoadingTemplates } = useTemplates();
+  const { data: templatesData, isLoading: isLoadingTemplates } = useGlobalTemplates();
   const createSendAutomation = useCreateSendAutomation();
 
   const [formData, setFormData] = useState({

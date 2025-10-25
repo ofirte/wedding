@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import { useTemplates as useWeddingTemplates } from "../rsvp";
+import { useWeddingTemplates } from "./useWeddingTemplates";
 import { useGlobalTemplates } from "../globalTemplates";
 
 /**

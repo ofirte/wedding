@@ -14,7 +14,7 @@ import {
   useDynamicRSVPTableColumns,
 } from "./DynamicRSVPTableColumns";
 import { responsivePatterns } from "../../utils/ResponsiveUtils";
-import { useTemplates } from "../../hooks/rsvp";
+import { useWeddingTemplates } from "src/hooks/templates/useWeddingTemplates";
 
 /**
  * RSVPStatusTab - Dynamic RSVP Management based on configured questions
@@ -33,7 +33,7 @@ const RSVPStatusTab: React.FC = () => {
   // Data Management
   const { data: invitees, isLoading: isLoadingInvitees } = useInvitees();
   const { data: sentMessages = [] } = useSentMessages();
-  const { data: weddingTemplates } = useTemplates();
+  const { data: weddingTemplates } = useWeddingTemplates();
 
   // Interactive State
   const [selectedGuests, setSelectedGuests] = useState<Invitee[]>([]);
