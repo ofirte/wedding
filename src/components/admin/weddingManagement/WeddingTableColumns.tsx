@@ -1,7 +1,7 @@
 import React from "react";
 import { IconButton } from "@mui/material";
 import { PersonAdd as PersonAddIcon } from "@mui/icons-material";
-import { Column } from "../common/DSTable";
+import { Column } from "src/components/common/DSTable";
 import { Wedding } from "@wedding-plan/types";
 
 // Extend Wedding to include id field required by DSTable

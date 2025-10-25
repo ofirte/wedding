@@ -1,7 +1,7 @@
 import React from "react";
-import { useTranslation } from "../../localization/LocalizationContext";
+import { useTranslation } from "src/localization/LocalizationContext";
 
-import DSTable from "../common/DSTable";
+import DSTable from "src/components/common/DSTable";
 import {
   createWeddingTableColumns,
   WeddingTableData,

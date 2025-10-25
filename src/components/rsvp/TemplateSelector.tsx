@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { TemplateDocument } from "@shared/dist";
+import { TemplateDocument } from "@wedding-plan/types";
 
 interface TemplateSelectorProps {
   templates: TemplateDocument[];

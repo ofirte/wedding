@@ -1,8 +1,8 @@
 import React from "react";
 import { Chip, Box, Typography, Avatar, Stack } from "@mui/material";
-import { DSTable } from "../common";
-import { useUsersByIds } from "../../hooks/auth/useUsersByIds";
-import { useTranslation } from "../../localization/LocalizationContext";
+import { DSTable } from "src/components/common";
+import { useUsersByIds } from "src/hooks/auth/useUsersByIds";
+import { useTranslation } from "src/localization/LocalizationContext";
 import {
   getWeddingMembersTableColumns,
   MemberTableRow,

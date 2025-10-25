@@ -6,13 +6,13 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
-import { useTranslation } from "../../localization/LocalizationContext";
-import { useAllWeddings } from "../../hooks/wedding/useAllWeddings";
-import { useAddUserToWedding } from "../../hooks/wedding/useAddUserToWedding";
+import { useTranslation } from "src/localization/LocalizationContext";
+import { useAllWeddings } from "src/hooks/wedding/useAllWeddings";
+import { useAddUserToWedding } from "src/hooks/wedding/useAddUserToWedding";
 import { WeddingTable } from "./WeddingTable";
 import { WeddingDetailsDialog } from "./WeddingDetailsDialog";
 import { Wedding } from "@wedding-plan/types";
-import { useUpdateUser } from "../../hooks/auth";
+import { useUpdateUser } from "src/hooks/auth";
 import { arrayUnion } from "firebase/firestore";
 
 const WeddingManagementPage: React.FC = () => {

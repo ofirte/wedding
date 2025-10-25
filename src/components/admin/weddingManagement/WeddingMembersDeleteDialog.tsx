@@ -7,14 +7,14 @@ import {
   Typography,
 } from "@mui/material";
 import { FC } from "react";
-import { useTranslation } from "../../localization/LocalizationContext";
+import { useTranslation } from "src/localization/LocalizationContext";
 import {
   useUpdateUser,
   useUsersByIds,
-} from "../../hooks/auth";
-import { UserInfo } from "../../hooks/auth/useUsersInfo";
+} from "src/hooks/auth";
+import { UserInfo } from "src/hooks/auth/useUsersInfo";
 import { arrayRemove } from "firebase/firestore";
-import { useRemoveUserFromWedding } from "../../hooks/wedding/userRemoveUserFromWedding";
+import { useRemoveUserFromWedding } from "src/hooks/wedding/userRemoveUserFromWedding";
 
 type WeddingMembersDeleteDialogProps = {
   open: boolean;

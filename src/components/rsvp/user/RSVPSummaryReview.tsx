@@ -26,7 +26,7 @@ import {
   useSendAutomations,
   useUpdateRSVPSetupComplete,
 } from "src/hooks/rsvp";
-import { SendMessagesAutomation } from "@shared/dist";
+import { SendMessagesAutomation } from "@wedding-plan/types";
 
 interface RSVPSetupState {
   formCompleted: boolean;

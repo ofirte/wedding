@@ -11,11 +11,11 @@ import {
   Button,
 } from "@mui/material";
 
-import { useTranslation } from "../../localization/LocalizationContext";
-import { UserSelect } from "../common/UserSelect";
+import { useTranslation } from "../../../localization/LocalizationContext";
+import { UserSelect } from "../../common/UserSelect";
 import { WeddingMembersTable } from "./WeddingMembersTable";
 import { ExpandMore, PersonAdd } from "@mui/icons-material";
-import { useWeddingDetails } from "../../hooks/auth";
+import { useWeddingDetails } from "../../../hooks/auth";
 import { WeddingPlans } from "@wedding-plan/types";
 
 interface WeddingDetailsDialogProps {

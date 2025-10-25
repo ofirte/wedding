@@ -4,9 +4,10 @@ import { Settings, People, Favorite, Description } from "@mui/icons-material";
 import { useSearchParams } from "react-router";
 import { useTranslation } from "../../localization/LocalizationContext";
 import UserManagementPage from "./UserManagementPage";
-import WeddingManagementPage from "../weddingManagement/WeddingManagementPage";
+
 import MigrationManager from "../../migrations/components/MigrationManager";
 import TemplatesManager from "../rsvp/TemplatesManager";
+import WeddingManagementPage from "./weddingManagement/WeddingManagementPage";
 
 interface TabPanelProps {
   children?: React.ReactNode;
