@@ -16,7 +16,7 @@ import RootRedirect from "./components/auth/RootRedirect";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import WeddingProtectedRoute from "./components/auth/WeddingProtectedRoute";
 import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
-import GuestRSVPPage from "./components/rsvp/GuestRSVPPage";
+import GuestRSVPPage from "./components/rsvpGuestForm/GuestRSVPPage";
 import WeddingsPage from "./components/wedding/WeddingsPage";
 import { AdminPage } from "./components/admin";
 import ManageApp from "./components/common/ManageApp";

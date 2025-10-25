@@ -6,7 +6,7 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import { RSVPQuestion } from "../../api/rsvp/rsvpQuestionsTypes";
+import { RSVPQuestion } from "src/api/rsvp/rsvpQuestionsTypes";
 
 interface SelectQuestionProps {
   question: RSVPQuestion;

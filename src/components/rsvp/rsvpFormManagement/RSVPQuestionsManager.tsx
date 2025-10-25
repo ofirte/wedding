@@ -15,12 +15,12 @@ import {
   useCreateDefaultRSVPConfig,
   useAddCustomQuestion,
   useUpdateEnabledQuestions,
-} from "../../hooks/rsvp/useRSVPQuestions";
+} from "src/hooks/rsvp/useRSVPQuestions";
 import {
   getPredefinedQuestions,
   RSVPQuestion,
-} from "../../api/rsvp/rsvpQuestionsTypes";
-import { useLocalization } from "../../localization/LocalizationContext";
+} from "src/api/rsvp/rsvpQuestionsTypes";
+import { useLocalization } from "src/localization/LocalizationContext";
 import CustomQuestionForm from "./CustomQuestionForm";
 import QuestionBankModal from "./QuestionBankModal";
 import RSVPFormEmptyState from "./RSVPFormEmptyState";

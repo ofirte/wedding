@@ -1,10 +1,10 @@
 import React, { useMemo, useCallback } from "react";
 import { Paper, Box } from "@mui/material";
-import DSTable, { Column } from "../common/DSTable";
-import { InviteeWithDynamicRSVP } from "./DynamicRSVPTableColumns";
+import DSTable, { Column } from "../../common/DSTable";
 import RSVPTableHeader from "./RSVPTableHeader";
-import { responsivePatterns } from "../../utils/ResponsiveUtils";
+import { responsivePatterns } from "../../../utils/ResponsiveUtils";
 import { SentMessage } from "@wedding-plan/types";
+import { InviteeWithDynamicRSVP } from "./DynamicRSVPTableColumns";
 
 interface MessageTemplate {
   sid: string;

@@ -10,13 +10,13 @@ import {
   ContentCopy as CopyIcon,
   Error as ErrorIcon,
 } from "@mui/icons-material";
-import { Column } from "../common/DSTable";
-import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
+import { Column } from "../../common/DSTable";
+import { InviteeRSVP } from "../../../api/rsvp/rsvpQuestionsTypes";
 import { Invitee } from "@wedding-plan/types";
 import { isNil } from "lodash";
-import { useTranslation } from "../../localization/LocalizationContext";
-import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
-import { useRSVPFormQuestions } from "../../hooks/rsvp/useRSVPFormQuestions";
+import { useTranslation } from "../../../localization/LocalizationContext";
+import { useWeddingDetails } from "../../../hooks/wedding/useWeddingDetails";
+import { useRSVPFormQuestions } from "../../../hooks/rsvp/useRSVPFormQuestions";
 
 export type InviteeWithDynamicRSVP = Invitee & {
   rsvpStatus?: InviteeRSVP;

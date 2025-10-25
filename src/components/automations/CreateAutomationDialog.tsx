@@ -22,7 +22,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useTranslation } from "../../localization/LocalizationContext";
 import {  useCreateSendAutomation } from "../../hooks/rsvp";
 
-import TemplateSelector from "./TemplateSelector";
+import TemplateSelector from "../templates/TemplateSelector";
 import {
   SendMessagesAutomation,
   TargetAudienceFilter,

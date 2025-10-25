@@ -1,8 +1,8 @@
-import { Column } from "../common/DSTable";
+import { Column } from "src/components/common/DSTable";
 import { UserAvatar } from "./UserAvatar";
 import { UserRoleChip } from "./UserRoleChip";
 import { UserActions } from "./UserActions";
-import { UserInfo } from "../../hooks/auth/useUsersInfo";
+import { UserInfo } from "src/hooks/auth/useUsersInfo";
 
 type TFunction = (
   key: string,

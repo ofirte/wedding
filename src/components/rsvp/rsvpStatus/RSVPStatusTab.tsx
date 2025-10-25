@@ -1,19 +1,19 @@
 import React, { useState, useMemo } from "react";
 import { Box, Typography } from "@mui/material";
-import { useInvitees } from "../../hooks/invitees/useInvitees";
-import { useSentMessages } from "../../hooks/rsvp/useSentMessages";
+import { useInvitees } from "../../../hooks/invitees/useInvitees";
+import { useSentMessages } from "../../../hooks/rsvp/useSentMessages";
 
 import { Invitee } from "@wedding-plan/types";
-import { useTranslation } from "../../localization/LocalizationContext";
-import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
+import { useTranslation } from "../../../localization/LocalizationContext";
+import { InviteeRSVP } from "../../../api/rsvp/rsvpQuestionsTypes";
 import DynamicRSVPStatusSummary from "./DynamicRSVPStatusSummary";
 import DynamicRSVPDataTable from "./DynamicRSVPDataTable";
-import SendMessageDialog from "./SendMessageDialog";
+import SendMessageDialog from "../../messages/SendMessageDialog";
 import {
   InviteeWithDynamicRSVP,
   useDynamicRSVPTableColumns,
 } from "./DynamicRSVPTableColumns";
-import { responsivePatterns } from "../../utils/ResponsiveUtils";
+import { responsivePatterns } from "../../../utils/ResponsiveUtils";
 import { useWeddingTemplates } from "src/hooks/templates/useWeddingTemplates";
 
 /**

@@ -1,7 +1,7 @@
 import React from "react";
 import { Avatar, Box, Typography } from "@mui/material";
-import { WeddingUser } from "../../api/auth/authApi";
-import { useTranslation } from "../../localization/LocalizationContext";
+import { WeddingUser } from "src/api/auth/authApi";
+import { useTranslation } from "src/localization/LocalizationContext";
 
 interface UserAvatarProps {
   user: Partial<WeddingUser>;

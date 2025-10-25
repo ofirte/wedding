@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
 import { Box } from "@mui/material";
 import { People as PeopleIcon } from "@mui/icons-material";
-import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
+import { InviteeRSVP } from "../../../api/rsvp/rsvpQuestionsTypes";
 import { Invitee } from "@wedding-plan/types";
-import { RSVPQuestion } from "../../api/rsvp/rsvpQuestionsTypes";
-import YesNoStatsCard from "./YesNoStatsCard";
+import { RSVPQuestion } from "../../../api/rsvp/rsvpQuestionsTypes";
+import YesNoStatsCard from "../../rsvpGuestForm/YesNoStatsCard";
 import SelectStatsCard from "./SelectStatsCard";
 
 type InviteeWithDynamicRSVP = Invitee & {

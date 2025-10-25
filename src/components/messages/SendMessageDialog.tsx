@@ -26,7 +26,6 @@ import PersonalWhatsAppList from "./PersonalWhatsAppList";
 import PersonalWhatsAppCloseDialog from "./PersonalWhatsAppCloseDialog";
 import SendProgressContent, { SendResult } from "./SendProgressContent";
 
-
 interface SendMessageDialogProps {
   open: boolean;
   onClose: () => void;

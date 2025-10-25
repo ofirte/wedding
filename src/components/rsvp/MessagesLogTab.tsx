@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { Box, Typography } from "@mui/material";
 import DSTable from "../common/DSTable";
 import { useSentMessages } from "../../hooks/rsvp";
-import { createSentMessagesColumns } from "./SentMessagesColumns";
+import { createSentMessagesColumns } from "../messages/SentMessagesColumns";
 import { useTranslation } from "../../localization/LocalizationContext";
 import DSLoading from "../common/DSLoading";
 import { useInvitees } from "../../hooks/invitees/useInvitees";

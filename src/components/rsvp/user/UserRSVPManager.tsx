@@ -12,10 +12,8 @@ import { Launch as LaunchIcon } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import { useUpdateRSVPSetupComplete } from "../../../hooks/rsvp/useUpdateRSVPSetupComplete";
 import RSVPFormBuilder from "./RSVPFormBuilder";
-// import MessageTemplateSelector from "./MessageTemplateSelector";
 import AutomationScheduler from "./AutomationScheduler";
 import RSVPSummaryReview from "./RSVPSummaryReview";
-import SimpleRSVPDashboard from "./SimpleRSVPDashboard";
 import LocalizedNavigationButtons from "../../common/LocalizedNavigationButtons";
 import MessagesPlanManager from "./MessagesPlanManager";
 
@@ -82,18 +80,8 @@ const UserRSVPManager: React.FC = () => {
     setIsLaunched(true);
   };
 
-  const handleBackToSetup = () => {
-    setIsLaunched(false);
-    setActiveStep(0);
-  };
-
   const isStepComplete = (stepIndex: number) => completedSteps[stepIndex];
   const canProceedToNext = isStepComplete(activeStep);
-
-  // If launched, show dashboard
-  if (isLaunched) {
-    return <SimpleRSVPDashboard onBackToSetup={handleBackToSetup} />;
-  }
 
   const renderStepContent = (step: number) => {
     switch (step) {

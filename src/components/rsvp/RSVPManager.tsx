@@ -9,11 +9,11 @@ import {
 } from "@mui/icons-material";
 import { useSearchParams } from "react-router";
 import { useTranslation } from "../../localization/LocalizationContext";
-import TemplatesManager from "./TemplatesManager";
+import TemplatesManager from "../templates/TemplatesManager";
 import MessagesLogTab from "./MessagesLogTab";
-import RSVPStatusTab from "./RSVPStatusTab";
-import RSVPQuestionsManager from "./RSVPQuestionsManager";
-import SendAutomationsManager from "./SendAutomationsManager";
+import RSVPStatusTab from "./rsvpStatus/RSVPStatusTab";
+import RSVPQuestionsManager from "./rsvpFormManagement/RSVPQuestionsManager";
+import SendAutomationsManager from "../automations/SendAutomationsManager";
 import { useRSVPConfig } from "../../hooks/rsvp/useRSVPConfig";
 
 const TabValue = {

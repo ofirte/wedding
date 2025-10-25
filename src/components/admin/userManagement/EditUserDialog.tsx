@@ -13,8 +13,8 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { useTranslation } from "../../localization/LocalizationContext";
-import { UserInfo } from "../../hooks/auth/useUsersInfo";
+import { useTranslation } from "src/localization/LocalizationContext";
+import { UserInfo } from "src/hooks/auth/useUsersInfo";
 
 interface EditUserDialogProps {
   open: boolean;

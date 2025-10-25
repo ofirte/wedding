@@ -1,7 +1,7 @@
 import React from "react";
-import { useTranslation } from "../../localization/LocalizationContext";
-import { UserInfo } from "../../hooks/auth/useUsersInfo";
-import DSTable from "../common/DSTable";
+import { useTranslation } from "src/localization/LocalizationContext";
+import { UserInfo } from "src/hooks/auth/useUsersInfo";
+import DSTable from "src/components/common/DSTable";
 import { createUserTableColumns, UserTableData } from "./UserTableColumns";
 import { UserTableEmptyState } from "./UserTableEmptyState";
 

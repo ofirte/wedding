@@ -6,7 +6,7 @@ import {
   Container,
   CircularProgress,
 } from "@mui/material";
-import { useTranslation } from "../../localization/LocalizationContext";
+import { useTranslation } from "../../../localization/LocalizationContext";
 
 interface RSVPFormEmptyStateProps {
   onCreateForm: () => void;

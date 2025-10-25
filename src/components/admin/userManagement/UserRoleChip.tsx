@@ -4,8 +4,8 @@ import {
   AdminPanelSettings as AdminIcon,
   Person as UserIcon,
 } from "@mui/icons-material";
-import { useTranslation } from "../../localization/LocalizationContext";
-import { UserInfo } from "../../hooks/auth/useUsersInfo";
+import { useTranslation } from "src/localization/LocalizationContext";
+import { UserInfo } from "src/hooks/auth/useUsersInfo";
 
 interface UserRoleChipProps {
   user: UserInfo;

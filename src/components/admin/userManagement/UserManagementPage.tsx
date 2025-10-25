@@ -7,15 +7,15 @@ import {
   Alert,
 } from "@mui/material";
 
-import { useTranslation } from "../../localization/LocalizationContext";
-import { useUpdateUserRole } from "../../hooks/auth/useUpdateUserRole";
+import { useTranslation } from "src/localization/LocalizationContext";
+import { useUpdateUserRole } from "src/hooks/auth/useUpdateUserRole";
 import { UserTable } from "./UserTable";
 import { EditUserDialog } from "./EditUserDialog";
-import { useUsersInfo } from "../../hooks/auth";
-import { UserInfo } from "../../hooks/auth/useUsersInfo";
+import { useUsersInfo } from "src/hooks/auth";
+import { UserInfo } from "src/hooks/auth/useUsersInfo";
 import { useQueryClient } from "@tanstack/react-query";
 import { DeleteUserDialog } from "./deleteUserDialog";
-import { useDeleteUser } from "../../hooks/auth/useDeleteUser";
+import { useDeleteUser } from "src/hooks/auth/useDeleteUser";
 
 
 const UserManagementPage: React.FC = () => {

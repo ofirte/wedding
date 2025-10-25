@@ -4,11 +4,11 @@ import {
   CheckCircle as CheckIcon,
   Cancel as CancelIcon,
 } from "@mui/icons-material";
-import { useTranslation } from "../../localization/LocalizationContext";
-import { useResponsive } from "../../utils/ResponsiveUtils";
-import { InviteeRSVP } from "../../api/rsvp/rsvpQuestionsTypes";
+import { useTranslation } from "../../../localization/LocalizationContext";
+import { useResponsive } from "../../../utils/ResponsiveUtils";
+import { InviteeRSVP } from "../../../api/rsvp/rsvpQuestionsTypes";
 import { Invitee } from "@wedding-plan/types";
-import { useRSVPFormQuestions } from "../../hooks/rsvp/useRSVPFormQuestions";
+import { useRSVPFormQuestions } from "../../../hooks/rsvp/useRSVPFormQuestions";
 import ResponseRateRatio from "./ResponseRateRatio";
 import CustomQuestionsStats from "./CustomQuestionsStats";
 

@@ -2,7 +2,6 @@ import React, { FC, useEffect } from "react";
 import { Box, Tabs, Tab, CircularProgress, Typography } from "@mui/material";
 import {
   Description as DescriptionIcon,
-  History as HistoryIcon,
   Assessment as AssessmentIcon,
   Settings as SettingsIcon,
   Schedule as ScheduleIcon,
@@ -11,11 +10,7 @@ import { useSearchParams } from "react-router";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import { useRSVPConfig } from "../../../hooks/rsvp/useRSVPConfig";
 import UserRSVPManager from "./UserRSVPManager";
-import RSVPStatusTab from "../RSVPStatusTab";
-import RSVPQuestionsManager from "../RSVPQuestionsManager";
-import TemplatesManager from "../TemplatesManager";
-import SendAutomationsManager from "../SendAutomationsManager";
-import MessagesLogTab from "../MessagesLogTab";
+import RSVPStatusTab from "../rsvpStatus/RSVPStatusTab";
 import RSVPFormBuilder from "./RSVPFormBuilder";
 import MessagesPlanManager from "./MessagesPlanManager";
 import AutomationScheduler from "./AutomationScheduler";

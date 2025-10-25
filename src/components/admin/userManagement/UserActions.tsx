@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, IconButton } from "@mui/material";
 import { DeleteOutline, Edit as EditIcon } from "@mui/icons-material";
-import { UserInfo } from "../../hooks/auth/useUsersInfo";
+import { UserInfo } from "src/hooks/auth/useUsersInfo";
 
 interface UserActionsProps {
   user: UserInfo;

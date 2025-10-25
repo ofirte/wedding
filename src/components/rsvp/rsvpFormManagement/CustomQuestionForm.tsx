@@ -24,7 +24,7 @@ import {
   Edit as EditIcon,
   Info as InfoIcon,
 } from "@mui/icons-material";
-import { useTranslation } from "../../localization/LocalizationContext";
+import { useTranslation } from "../../../localization/LocalizationContext";
 
 interface CustomQuestionFormProps {
   open: boolean;

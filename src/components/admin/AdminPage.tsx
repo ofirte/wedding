@@ -2,11 +2,10 @@ import React, { useEffect } from "react";
 import { Box, Container, Tab, Tabs, Paper } from "@mui/material";
 import { Settings, People, Favorite, Description } from "@mui/icons-material";
 import { useSearchParams } from "react-router";
-import { useTranslation } from "../../localization/LocalizationContext";
-import UserManagementPage from "./UserManagementPage";
-
-import MigrationManager from "../../migrations/components/MigrationManager";
-import TemplatesManager from "../rsvp/TemplatesManager";
+import { useTranslation } from "src/localization/LocalizationContext";
+import UserManagementPage from "./userManagement/UserManagementPage";
+import MigrationManager from "src/migrations/components/MigrationManager";
+import TemplatesManager from "../templates/TemplatesManager";
 import WeddingManagementPage from "./weddingManagement/WeddingManagementPage";
 
 interface TabPanelProps {

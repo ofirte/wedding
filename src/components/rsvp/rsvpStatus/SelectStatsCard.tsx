@@ -1,7 +1,10 @@
 import React from "react";
 import { Box, Typography, Card, CardContent } from "@mui/material";
 import { People as PeopleIcon } from "@mui/icons-material";
-import { useResponsive, responsivePatterns } from "../../utils/ResponsiveUtils";
+import {
+  useResponsive,
+  responsivePatterns,
+} from "../../../utils/ResponsiveUtils";
 
 interface SelectStatsCardProps {
   title: string;

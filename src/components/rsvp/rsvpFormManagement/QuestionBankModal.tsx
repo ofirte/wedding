@@ -19,8 +19,9 @@ import {
   RadioButtonChecked as BooleanIcon,
   List as SelectIcon,
 } from "@mui/icons-material";
-import { RSVPQuestion } from "../../api/rsvp/rsvpQuestionsTypes";
+import { RSVPQuestion } from "src/api/rsvp/rsvpQuestionsTypes";
 import CustomQuestionForm from "./CustomQuestionForm";
+
 
 interface QuestionBankModalProps {
   open: boolean;

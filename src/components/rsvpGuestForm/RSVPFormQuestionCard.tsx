@@ -1,9 +1,9 @@
 import React from "react";
 import { Card, CardContent, Box, Typography, Chip } from "@mui/material";
-import { RSVPQuestion } from "../../api/rsvp/rsvpQuestionsTypes";
-import { useTranslation } from "../../localization/LocalizationContext";
-import TrueFalseQuestion from "./TrueFalseQuestion";
-import SelectQuestion from "./SelectQuestion";
+import { RSVPQuestion } from "src/api/rsvp/rsvpQuestionsTypes";
+import { useTranslation } from "src/localization/LocalizationContext";
+import TrueFalseQuestion from "../rsvpGuestForm/TrueFalseQuestion";
+import SelectQuestion from "../rsvp/rsvpFormManagement/SelectQuestion";
 import isNil from "lodash/isNil";
 
 interface RSVPFormQuestionCardProps {

@@ -1,8 +1,8 @@
 import React from "react";
 import { Box, Typography, Button, Tooltip } from "@mui/material";
 import { Send as SendIcon } from "@mui/icons-material";
-import { useTranslation } from "../../localization/LocalizationContext";
-import MessageTemplateSelector from "./MessageTemplateSelector";
+import { useTranslation } from "../../../localization/LocalizationContext";
+import MessageTemplateSelector from "../../messages/MessageTemplateSelector";
 
 interface MessageTemplate {
   sid: string;

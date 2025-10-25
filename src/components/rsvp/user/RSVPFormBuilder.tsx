@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { Add as AddIcon, Visibility as PreviewIcon } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
-import CustomQuestionForm from "../CustomQuestionForm";
+import CustomQuestionForm from "../rsvpFormManagement/CustomQuestionForm";
 import {
   useRSVPConfig,
   useCreateDefaultRSVPConfig,

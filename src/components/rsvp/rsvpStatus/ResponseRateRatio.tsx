@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import { useTranslation } from "../../localization/LocalizationContext";
+import { useTranslation } from "../../../localization/LocalizationContext";
 
 interface ResponseRateRatioProps {
   responded: number;
