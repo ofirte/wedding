@@ -1,6 +1,8 @@
 import React from "react";
 import { WeddingRSVPConfig } from "@wedding-plan/types";
 import RsvpFormManagementContainer from "../RsvpFormManagementV2/rsvpFormManagementContainer";
+import AutomationMessagesSchedulerContainer from "../AutomationMessagesScheduler/AutomationMessagesSchedulerContainer";
+import { useAllAutomationsApproved } from "../../../hooks/rsvp";
 
 export interface StepConfig {
   id: string;
@@ -13,21 +15,7 @@ export interface StepConfig {
   }>;
 }
 
-// Placeholder components for each step
-const WelcomeStep: React.FC<{
-  rsvpConfig: WeddingRSVPConfig | null | undefined;
-}> = () => <div>Welcome step component - to be implemented</div>;
-
-const FormQuestionsStep: React.FC<{
-  rsvpConfig: WeddingRSVPConfig | null | undefined;
-}> = () => <div>Form questions step component - to be implemented</div>;
-
-const AutomationsStep: React.FC<{
-  rsvpConfig: WeddingRSVPConfig | null | undefined;
-}> = () => <div>Automations step component - to be implemented</div>;
-
 export const getRSVPSetupSteps = (t: (key: string) => string): StepConfig[] => [
-
   {
     id: "form",
     title: t("rsvpSetup.steps.form.title"),
@@ -48,11 +36,11 @@ export const getRSVPSetupSteps = (t: (key: string) => string): StepConfig[] => [
     description: t("rsvpSetup.steps.automations.description"),
     icon: "🤖",
     isComplete: (rsvpConfig) => {
-      if (!rsvpConfig) return false;
-      // Check if isAutomationsCreated exists and is true
-      return (rsvpConfig as any).isAutomationsCreated === true;
+      // This will be dynamically checked by the stepper component
+      // using useAllAutomationsApproved hook
+      return false; // Default to false, will be overridden by stepper
     },
-    component: AutomationsStep,
+    component: AutomationMessagesSchedulerContainer,
   },
 ];
 

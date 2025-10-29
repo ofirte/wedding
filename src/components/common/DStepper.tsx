@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Stepper,
-  Step,
-  StepLabel,
-  Typography,
-  useTheme,
-  useMediaQuery,
-} from "@mui/material";
+import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { CheckCircle as CompleteIcon } from "@mui/icons-material";
 
 export interface DStepConfig {
@@ -23,20 +15,16 @@ interface DStepperProps {
   activeStep: number;
   onStepClick?: (stepIndex: number) => void;
   compact?: boolean;
-  showTitle?: boolean;
-  title?: string;
 }
 
 /**
- * Beautiful, reusable stepper component with consistent styling
+ * Simple, clean stepper component
  */
 export default function DStepper({
   steps,
   activeStep,
   onStepClick,
   compact = false,
-  showTitle = false,
-  title,
 }: DStepperProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -45,181 +33,172 @@ export default function DStepper({
     <Box
       sx={{
         background: `linear-gradient(135deg, ${theme.palette.primary.main}08, ${theme.palette.secondary.main}05)`,
-        p: compact ? 2 : 3,
+        p: compact ? 0.75 : 3,
         borderBottom: `1px solid ${theme.palette.divider}`,
       }}
     >
-      {showTitle && title && (
-        <Typography
-          variant={compact ? "h5" : "h4"}
-          gutterBottom
-          sx={{
-            fontWeight: 600,
-            color: theme.palette.primary.main,
-            textAlign: "center",
-            mb: compact ? 2 : 3,
-          }}
-        >
-          {title}
-        </Typography>
-      )}
-
-      <Stepper
-        activeStep={activeStep}
-        orientation={isMobile ? "vertical" : "horizontal"}
+      <Box
         sx={{
-          "& .MuiStepConnector-root": {
-            top: compact ? 18 : 22,
-            left: "calc(-50% + 16px)",
-            right: "calc(50% + 16px)",
-          },
-          "& .MuiStepConnector-line": {
-            height: compact ? 2 : 3,
-            border: 0,
-            backgroundColor: theme.palette.grey[300],
-            borderRadius: 1,
-          },
-          "& .MuiStepConnector-root.Mui-completed .MuiStepConnector-line": {
-            backgroundColor: theme.palette.success.main,
-          },
-          "& .MuiStepConnector-root.Mui-active .MuiStepConnector-line": {
-            backgroundColor: theme.palette.primary.main,
-          },
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "relative",
+          flexDirection: isMobile ? "column" : "row",
+          gap: isMobile ? 2 : 0,
         }}
       >
         {steps.map((step, index) => {
           const isActive = index === activeStep;
-          const iconSize = compact ? 36 : 44;
+          const isCompleted = step.isComplete;
+          const circleSize = compact ? 32 : 48;
 
           return (
-            <Step key={step.id} completed={step.isComplete}>
-              <StepLabel
+            <React.Fragment key={step.id}>
+              {/* Step */}
+              <Box
                 onClick={() => onStepClick?.(index)}
                 sx={{
+                  display: "flex",
+                  gap: 1.5,
+                  alignItems: "center",
+                  justifyContent: "space-between",
                   cursor: onStepClick ? "pointer" : "default",
-                  "& .MuiStepLabel-root": {
-                    padding: 0,
-                  },
-                  "& .MuiStepLabel-iconContainer": {
-                    paddingRight: compact ? 1 : 2,
-                  },
-                  "& .MuiStepIcon-root": {
-                    width: iconSize,
-                    height: iconSize,
-                    border: `${compact ? 2 : 3}px solid ${
-                      step.isComplete
+                  transition: "transform 0.2s ease-in-out",
+                  "&:hover": onStepClick
+                    ? { transform: "translateY(-2px)" }
+                    : {},
+                  zIndex: 2,
+                  position: "relative",
+                }}
+              >
+                {/* Circle with number */}
+                <Box
+                  sx={{
+                    width: circleSize,
+                    height: circleSize,
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: isCompleted
+                      ? theme.palette.success.main
+                      : isActive
+                      ? theme.palette.primary.main
+                      : theme.palette.grey[300],
+                    color:
+                      isCompleted || isActive
+                        ? theme.palette.common.white
+                        : theme.palette.grey[600],
+                    fontWeight: 600,
+                    fontSize: compact ? "0.9rem" : "1.1rem",
+                    border: `2px solid ${
+                      isCompleted
                         ? theme.palette.success.main
                         : isActive
                         ? theme.palette.primary.main
                         : theme.palette.grey[300]
                     }`,
-                    borderRadius: "50%",
-                    backgroundColor: step.isComplete
-                      ? theme.palette.success.main
-                      : isActive
-                      ? theme.palette.primary.main
-                      : theme.palette.background.paper,
-                    color:
-                      step.isComplete || isActive
-                        ? theme.palette.common.white
-                        : theme.palette.grey[500],
-                    fontSize: compact ? "1rem" : "1.2rem",
-                    fontWeight: 600,
                     transition: "all 0.3s ease-in-out",
-                    "&:hover": onStepClick
-                      ? {
-                          transform: "scale(1.05)",
-                          boxShadow: theme.shadows[2],
-                        }
-                      : {},
-                  },
-                  "& .MuiStepIcon-text": {
-                    fill: "currentColor",
-                    fontSize: compact ? "0.8rem" : "0.9rem",
-                    fontWeight: 600,
-                  },
-                }}
-              >
-                <Box
-                  display="flex"
-                  flexDirection={isMobile ? "row" : "column"}
-                  alignItems="center"
-                  gap={isMobile ? 1.5 : compact ? 0.5 : 1}
-                  sx={{
-                    textAlign: "center",
-                    transition: "all 0.2s ease-in-out",
-                    "&:hover": onStepClick
-                      ? {
-                          transform: "translateY(-1px)",
-                        }
-                      : {},
                   }}
                 >
-                  <Box display="flex" alignItems="center" gap={0.5}>
-                    {step.icon && (
-                      <Typography
-                        component="span"
-                        sx={{
-                          fontSize: compact ? "1.2em" : "1.4em",
-                          filter: isActive
-                            ? "drop-shadow(0 1px 2px rgba(0,0,0,0.2))"
-                            : "none",
-                          transition: "filter 0.2s ease-in-out",
-                        }}
-                      >
-                        {step.icon}
-                      </Typography>
-                    )}
-                    {step.isComplete && (
-                      <CompleteIcon
-                        sx={{
-                          color: theme.palette.success.main,
-                          fontSize: compact ? "1rem" : "1.1rem",
-                          filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.2))",
-                        }}
-                      />
-                    )}
-                  </Box>
+                  {isCompleted ? (
+                    <CompleteIcon
+                      sx={{ fontSize: compact ? "1rem" : "1.2rem" }}
+                    />
+                  ) : (
+                    index + 1
+                  )}
+                </Box>
 
-                  <Box>
+                {/* Step title and icon */}
+                <Box
+                  sx={{
+                    mt: compact ? 0.5 : 1,
+                    textAlign: "center",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.5,
+                  }}
+                >
+                  {step.icon && (
                     <Typography
-                      variant={compact ? "body2" : "subtitle1"}
+                      component="span"
                       sx={{
-                        fontWeight: isActive ? 700 : 600,
-                        color: step.isComplete
-                          ? theme.palette.success.dark
-                          : isActive
-                          ? theme.palette.primary.main
-                          : theme.palette.text.primary,
-                        transition: "color 0.2s ease-in-out",
-                        mb: compact ? 0 : 0.5,
-                        fontSize: compact ? "0.85rem" : undefined,
+                        fontSize: compact ? "1.2em" : "1.4em",
                       }}
                     >
-                      {step.title}
+                      {step.icon}
                     </Typography>
+                  )}
 
-                    {!compact && !isMobile && step.description && (
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          color: theme.palette.text.secondary,
-                          fontSize: "0.7rem",
-                          lineHeight: 1.2,
-                          maxWidth: 100,
-                          display: "block",
-                        }}
-                      >
-                        {step.description}
-                      </Typography>
-                    )}
-                  </Box>
+                  <Typography
+                    variant={compact ? "caption" : "subtitle2"}
+                    sx={{
+                      fontWeight: isActive ? 700 : 600,
+                      color: isCompleted
+                        ? theme.palette.success.dark
+                        : isActive
+                        ? theme.palette.primary.main
+                        : theme.palette.text.primary,
+                      fontSize: compact ? "0.75rem" : "0.875rem",
+                    }}
+                  >
+                    {step.title}
+                  </Typography>
+
+                  {!compact && !isMobile && step.description && (
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: theme.palette.text.secondary,
+                        fontSize: "0.7rem",
+                        maxWidth: 80,
+                        textAlign: "center",
+                      }}
+                    >
+                      {step.description}
+                    </Typography>
+                  )}
                 </Box>
-              </StepLabel>
-            </Step>
+              </Box>
+
+              {/* Connector line */}
+              {!isMobile && index < steps.length - 1 && (
+                <Box
+                  sx={{
+                    flex: 1,
+                    height: compact ? 2 : 3,
+                    backgroundColor:
+                      steps[index + 1].isComplete || isCompleted
+                        ? theme.palette.success.main
+                        : theme.palette.grey[300],
+                    mx: 2,
+                    borderRadius: 1,
+                    transition: "background-color 0.3s ease-in-out",
+                    zIndex: 1,
+                  }}
+                />
+              )}
+
+              {/* Vertical connector for mobile */}
+              {isMobile && index < steps.length - 1 && (
+                <Box
+                  sx={{
+                    width: compact ? 2 : 3,
+                    height: 24,
+                    backgroundColor:
+                      steps[index + 1].isComplete || isCompleted
+                        ? theme.palette.success.main
+                        : theme.palette.grey[300],
+                    borderRadius: 1,
+                    transition: "background-color 0.3s ease-in-out",
+                  }}
+                />
+              )}
+            </React.Fragment>
           );
         })}
-      </Stepper>
+      </Box>
     </Box>
   );
 }

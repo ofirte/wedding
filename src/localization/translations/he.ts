@@ -2,6 +2,8 @@ import { Translations } from "../types";
 
 export const hebrewTranslations: Translations = {
   common: {
+    approve: "אשר",
+    approved: "אושר",
     close: "סגור",
     back: "חזור",
     next: "הבא",
@@ -23,6 +25,9 @@ export const hebrewTranslations: Translations = {
     confirm: "אשר",
     yes: "כן",
     no: "לא",
+    inactive: "לא פעיל",
+    active: "פעיל",
+    template: "תבנית",
     changeLanguage: "שנה שפה",
     clickForDetails: "לחץ לפרטים",
     signOut: "התנתק",
@@ -175,6 +180,8 @@ export const hebrewTranslations: Translations = {
   },
   nav: {
     home: "בית",
+    weddingDay: "יום החתונה",
+    days: "ימים",
     budget: "תקציב",
     guests: "אורחים",
     tasks: "משימות",
@@ -501,6 +508,21 @@ export const hebrewTranslations: Translations = {
     stayContinue: "השאר והמשך",
     leaveWithoutSaving: "צא מבלי לשמור",
     markAllAsSentAndClose: "סמן הכל כנשלח וסגור",
+    // Welcome page translations
+    welcome: {
+      title: "ברוכים הבאים להגדרת אישור הגעה",
+      subtitle:
+        "בואו נגדיר את מערכת אישור ההגעה לחתונה שלכם כדי לאסוף תגובות מהאורחים ולנהל את רשימת האורחים ביעילות.",
+      stepsTitle: "הנה מה שנעזור לכם להקים:",
+      step1Title: "צרו את טופס אישור ההגעה",
+      step1Description:
+        "עצבו שאלות מותאמות אישית כדי לאסוף את המידע שאתם צריכים מהאורחים, מהעדפות אוכל ועד מלווים.",
+      step2Title: "הגדירו שני סוגי הודעות",
+      step2Description:
+        "הזמנות RSVP עם קישור לטופס למענה, בנוסף לתזכורות והודעות תודה לאורחים המגיעים.",
+      getStarted: "בואו נתחיל",
+      creating: "מגדיר את אישור ההגעה...",
+    },
     // Send progress translations
     sendingMessages: "שולח הודעות",
     messageSummary: "סיכום הודעות",
@@ -523,6 +545,9 @@ export const hebrewTranslations: Translations = {
     messagesQueuedPlural: "{{count}} הודעות נוספו לתור למשלוח.",
     // Send Automation translations
     sendAutomations: "אוטומציות שליחה",
+    selectAutomationToEdit: "בחר אוטומציה לעריכה",
+    selectAutomationDescription:
+      "בחר אוטומציה מהסרגל הצדדי כדי לערוך את לוח הזמנים, התבנית וההגדרות שלה.",
     createAutomation: "צור אוטומציה לשליחה",
     runNow: "הרץ עכשיו",
     automationName: "שם האוטומציה",
@@ -547,6 +572,12 @@ export const hebrewTranslations: Translations = {
     successfulMessages: "הודעות מוצלחות",
     failedMessages: "הודעות שנכשלו",
     completedAt: "הושלם ב",
+    configureAutomationDescription:
+      "קבע הגדרות לוח זמנים ותבנית עבור אוטומציה זו",
+    currentScheduledTime: "נוכחי",
+    activateAutomation: "הפעל אוטומציה",
+    automationActive: "אוטומציה פעילה",
+    noTemplatesAvailable: "אין תבניות זמינות",
     failureDetails: "פרטי הכישלונות",
     failureDetailsDescription: "ההודעות הבאות נכשלו בשליחה:",
     messageSid: "מזהה הודעה",
@@ -557,6 +588,28 @@ export const hebrewTranslations: Translations = {
       "האוטומציה הזו הושלמה בהצלחה עם כל ההודעות שנשלחו.",
     automationFailedInfo:
       "האוטומציה הזו נכשלה במהלך הביצוע. בדוק את פרטי הכישלון למטה למידע נוסף.",
+    // Setup Automation translations
+    setupAutomation: "הגדרת אוטומציה",
+    configureAutomatedMessageSettings: "הגדר את הגדרות ההודעות האוטומטיות שלך",
+    selectMessageTemplate: "בחר תבנית הודעה",
+    chooseTemplateForAutomatedMessages: "בחר את התבנית להודעות האוטומטיות שלך",
+    scheduleDeliveryTime: "תזמן זמן משלוח",
+    setAutomatedMessageSendTime: "קבע מתי יש לשלוח את ההודעות האוטומטיות",
+    approveScheduleAutomation: "אשר ותזמן אוטומציה",
+    approveBothTemplateAndSchedule:
+      "אנא אשר גם את התבנית וגם את חלק התזמון למעלה",
+    updatingAutomation: "מעדכן אוטומציה...",
+    selectTemplateHint: "תבנית זו תשמש להודעות האוטומטיות שלך",
+    swipeToSeeMore: "החלק לראות עוד",
+    singleTemplate: "תבנית יחידה",
+    weddingDateRequired: "תאריך החתונה נדרש לתזמון הודעות",
+    selectScheduledTime: "בחר זמן מתוזמן",
+    selectScheduledTimeHint: "בחר מתי ההודעה הזו צריכה להישלח",
+    scheduledSendTime: "זמן שליחה מתוזמן",
+    selectDateTime: "בחר תאריך ושעה",
+    messageWillBeSent: "ההודעה תישלח",
+    confirmScheduledTime: "אשר זמן מתוזמן",
+    confirmScheduledTimeHint: "זה יקבע מתי ההודעה תישלח אוטומטית",
     // Preview dummy data
     preview: {
       weddingName: "החתונה של שרה ויוחנן",
@@ -754,6 +807,10 @@ export const hebrewTranslations: Translations = {
     loadError: "נכשל בטעינת התבניות",
     unnamed: "תבנית ללא שם",
     noContent: "אין תוכן זמין",
+    noTemplate: "לא הוקצתה תבנית",
+    selectThisTemplate: "בחר תבנית זו",
+    selectTemplate: "בחר תבנית",
+    messageTemplate: "תבנית הודעה",
     variables: "משתנים",
     name: "שם",
     type: "סוג",

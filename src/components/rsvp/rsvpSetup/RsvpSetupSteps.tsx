@@ -7,7 +7,7 @@ import {
   DStepper,
   DStepConfig,
 } from "../../common";
-import { useRSVPConfig } from "../../../hooks/rsvp";
+import { useRSVPConfig, useAllAutomationsApproved } from "../../../hooks/rsvp";
 import {
   getRSVPSetupSteps,
   getNextStep,
@@ -22,16 +22,24 @@ export const RSVPSetupSteps: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
 
   const { data: rsvpConfig, isLoading: isLoadingRsvpConfig } = useRSVPConfig();
+  const { allApproved: allAutomationsApproved } = useAllAutomationsApproved();
   const steps = getRSVPSetupSteps(t);
 
   if (isLoadingRsvpConfig) {
     return <LoadingState message={t("rsvpSetup.loading")} />;
   }
 
-  const completedSteps = getCompletedStepsCount(rsvpConfig, steps);
-  const setupComplete = isSetupComplete(rsvpConfig, steps);
+  // Custom completion check that includes automation approval
+  const isStepComplete = (step: any) => {
+    if (step.id === "automations") {
+      return allAutomationsApproved;
+    }
+    return step.isComplete(rsvpConfig);
+  };
+
+
   const currentStep = steps[activeStep];
-  const isCurrentStepComplete = currentStep?.isComplete(rsvpConfig) || false;
+  const isCurrentStepComplete = isStepComplete(currentStep);
 
   const handleNext = () => {
     const nextStep = getNextStep(currentStep.id, steps);
@@ -52,26 +60,18 @@ export const RSVPSetupSteps: React.FC = () => {
   const canGoNext = isCurrentStepComplete && activeStep < steps.length - 1;
   const canGoPrevious = activeStep > 0;
 
-  // Convert steps to DStepper format
+  // Convert steps to DStepper format with custom completion check
   const dSteps: DStepConfig[] = steps.map((step) => ({
     id: step.id,
     title: step.title,
     description: step.description,
     icon: step.icon,
-    isComplete: step.isComplete(rsvpConfig),
+    isComplete: isStepComplete(step),
   }));
 
   return (
     <Paper sx={{ height: "95vh", display: "flex", flexDirection: "column" }}>
       {/* Compact Header with DStepper */}
-      <DStepper
-        steps={dSteps}
-        activeStep={activeStep}
-        onStepClick={setActiveStep}
-        compact
-        showTitle
-        title={t("rsvpSetup.title")}
-      />
 
       {/* Step Content Container - Constrained Height */}
       <Box
@@ -90,7 +90,7 @@ export const RSVPSetupSteps: React.FC = () => {
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          p: 3,
+          p: 1.5,
           borderTop: 1,
           borderColor: "divider",
           backgroundColor: "grey.50",
@@ -101,15 +101,25 @@ export const RSVPSetupSteps: React.FC = () => {
           disabled={!canGoPrevious}
           startIcon={<LocalizedArrowIcon direction="previous" />}
           variant="outlined"
+          sx={{
+            height: 40,
+            alignSelf: "center",
+          }}
         >
           {t("common.previous")}
         </Button>
-
+        <DStepper
+          steps={dSteps}
+          activeStep={activeStep}
+          onStepClick={setActiveStep}
+          compact
+        />
         <Button
           onClick={handleNext}
           disabled={!canGoNext}
           endIcon={<LocalizedArrowIcon direction="next" />}
           variant="contained"
+          sx={{ height: 40, alignSelf: "center" }}
         >
           {activeStep === steps.length - 1
             ? t("common.finish")

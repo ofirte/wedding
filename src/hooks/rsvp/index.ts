@@ -11,11 +11,14 @@ export { useApprovalStatusSync } from "./useApprovalStatusSync";
 
 // Send Automations hooks
 export { useSendAutomations } from "./useSendAutomations";
+export { useAutomation } from "./useAutomation";
+export { useAllAutomationsApproved } from "./useAllAutomationsApproved";
 export { useCreateSendAutomation } from "./useCreateSendAutomation";
 export { useUpdateSendAutomation } from "./useUpdateSendAutomation";
 export { useDeleteSendAutomation } from "./useDeleteSendAutomation";
 export { useManualRunAutomations } from "./useManualRunAutomations";
 export { useManualUpdateAutomationStatuses } from "./useManualUpdateAutomationStatuses";
+export { useCreateInitialAutomations } from "./useCreateInitialAutomations";
 
 // RSVP Configuration hooks
 export { useRSVPConfig } from "./useRSVPConfig";

@@ -30,6 +30,11 @@ export const DEFAULT_LANGUAGE: Language = "he";
 // Translation key structure - expandable for different sections
 export interface Translations {
   common: {
+    approved: string;
+    approve: string;
+    inactive: string;
+    template: string;
+    active: string;
     close: string;
     back: string;
     next: string;
@@ -199,6 +204,8 @@ export interface Translations {
     goBack: string;
   };
   nav: {
+    weddingDay: string;
+    days: string;
     home: string;
     budget: string;
     guests: string;
@@ -473,6 +480,33 @@ export interface Translations {
     searchPlaceholder: string;
   };
   rsvp: {
+    setupAutomation: string;
+    selectTemplateHint: string;
+    swipeToSeeMore: string;
+    singleTemplate: string;
+    configureAutomatedMessageSettings: string;
+    selectMessageTemplate: string;
+    chooseTemplateForAutomatedMessages: string;
+    scheduleDeliveryTime: string;
+    setAutomatedMessageSendTime: string;
+    approveScheduleAutomation: string;
+    approveBothTemplateAndSchedule: string;
+    updatingAutomation: string;
+    weddingDateRequired: string;
+    selectScheduledTime: string;
+    selectScheduledTimeHint: string;
+    scheduledSendTime: string;
+    selectDateTime: string;
+    messageWillBeSent: string;
+    confirmScheduledTime: string;
+    confirmScheduledTimeHint: string;
+    selectAutomationToEdit: string;
+    selectAutomationDescription: string;
+    configureAutomationDescription: string;
+    currentScheduledTime: string;
+    activateAutomation: string;
+    automationActive: string;
+    noTemplatesAvailable: string;
     completed: string;
     pending: string;
     confirmationTitle: string;
@@ -589,6 +623,17 @@ export interface Translations {
     custom: string;
     createQuestionFormPlaceholder: string;
     addQuestionsFromSidebar: string;
+    welcome: {
+      title: string;
+      subtitle: string;
+      stepsTitle: string;
+      step1Title: string;
+      step1Description: string;
+      step2Title: string;
+      step2Description: string;
+      getStarted: string;
+      creating: string;
+    };
   };
   automation: {
     allMessagesSent: string;
@@ -749,6 +794,10 @@ export interface Translations {
     updateRsvp: string;
   };
   templates: {
+    noTemplate: string;
+    selectThisTemplate: string;
+    selectTemplate: string;
+    messageTemplate: string;
     title: string;
     description: string;
     createDummy: string;

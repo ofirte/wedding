@@ -2,6 +2,8 @@ import { Translations } from "../types";
 
 export const englishTranslations: Translations = {
   common: {
+    approve: "Approve",
+    approved: "Approved",
     close: "Close",
     back: "Back",
     next: "Next",
@@ -23,6 +25,9 @@ export const englishTranslations: Translations = {
     confirm: "Confirm",
     yes: "Yes",
     no: "No",
+    inactive: "Inactive",
+    active: "Active",
+    template: "Template",
     changeLanguage: "Change Language",
     clickForDetails: "Click for details",
     signOut: "Sign Out",
@@ -175,6 +180,8 @@ export const englishTranslations: Translations = {
   },
   nav: {
     home: "Home",
+    weddingDay: "Wedding Day",
+    days: "days",
     budget: "Budget",
     guests: "Guests",
     tasks: "Tasks",
@@ -510,6 +517,21 @@ export const englishTranslations: Translations = {
     stayContinue: "Stay & Continue",
     leaveWithoutSaving: "Leave Without Saving",
     markAllAsSentAndClose: "Mark All as Sent & Close",
+    // Welcome page translations
+    welcome: {
+      title: "Welcome to RSVP Setup",
+      subtitle:
+        "Let's set up your wedding RSVP system to collect guest responses and manage your guest list efficiently.",
+      stepsTitle: "Here's what we'll help you set up:",
+      step1Title: "Create Your RSVP Form",
+      step1Description:
+        "Design custom questions to collect the information you need from your guests, from meal preferences to plus-ones.",
+      step2Title: "Set Up Two Types of Messages",
+      step2Description:
+        "RSVP invitations with form links for collecting responses, plus reminders and thank you messages for attending guests.",
+      getStarted: "Get Started",
+      creating: "Setting up your RSVP...",
+    },
     // Send progress translations
     sendingMessages: "Sending Messages",
     messageSummary: "Message Summary",
@@ -532,6 +554,9 @@ export const englishTranslations: Translations = {
     messagesQueuedPlural: "{{count}} messages have been queued for delivery.",
     // Send Automation translations
     sendAutomations: "Send Automations",
+    selectAutomationToEdit: "Select an automation to configure",
+    selectAutomationDescription:
+      "Choose an automation from the sidebar to edit its schedule, template, and settings.",
     createAutomation: "Create Send Automation",
     runNow: "Run Now",
     automationName: "Automation Name",
@@ -556,6 +581,12 @@ export const englishTranslations: Translations = {
     successfulMessages: "Successful Messages",
     failedMessages: "Failed Messages",
     completedAt: "Completed At",
+    configureAutomationDescription:
+      "Configure scheduling and template settings for this automation",
+    currentScheduledTime: "Current",
+    activateAutomation: "Activate Automation",
+    automationActive: "Automation Active",
+    noTemplatesAvailable: "No templates available",
     failureDetails: "Failure Details",
     failureDetailsDescription: "The following messages failed to send:",
     messageSid: "Message ID",
@@ -567,6 +598,33 @@ export const englishTranslations: Translations = {
       "This automation completed successfully with all messages sent.",
     automationFailedInfo:
       "This automation failed during execution. Check the failure details below for more information.",
+    // Setup Automation translations
+    setupAutomation: "Setup Automation",
+    configureAutomatedMessageSettings:
+      "Configure your automated message settings",
+    selectMessageTemplate: "Select Message Template",
+    chooseTemplateForAutomatedMessages:
+      "Choose the template for your automated messages",
+    scheduleDeliveryTime: "Schedule Delivery Time",
+    setAutomatedMessageSendTime:
+      "Set when the automated messages should be sent",
+    approveScheduleAutomation: "Approve & Schedule Automation",
+    approveBothTemplateAndSchedule:
+      "Please approve both template and schedule sections above",
+    updatingAutomation: "Updating automation...",
+    selectTemplateHint:
+      "This template will be used for your automated messages",
+    swipeToSeeMore: "Swipe to see more",
+    singleTemplate: "Only template",
+    weddingDateRequired: "Wedding date is required to schedule messages",
+    selectScheduledTime: "Select Scheduled Time",
+    selectScheduledTimeHint: "Choose when this message should be sent",
+    scheduledSendTime: "Scheduled Send Time",
+    selectDateTime: "Select date and time",
+    messageWillBeSent: "Message will be sent",
+    confirmScheduledTime: "Confirm Scheduled Time",
+    confirmScheduledTimeHint:
+      "This will set when the message is automatically sent",
     // Preview dummy data
     preview: {
       weddingName: "Sarah & John's Wedding",
@@ -768,6 +826,10 @@ export const englishTranslations: Translations = {
     loadError: "Failed to load templates",
     unnamed: "Unnamed Template",
     noContent: "No content available",
+    noTemplate: "No template assigned",
+    selectThisTemplate: "Select This Template",
+    selectTemplate: "Select Template",
+    messageTemplate: "Message Template",
     variables: "Variables",
     name: "Name",
     type: "Type",
