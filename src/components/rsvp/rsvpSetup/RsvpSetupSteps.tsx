@@ -7,21 +7,19 @@ import {
   DStepper,
   DStepConfig,
 } from "../../common";
-import { useRSVPConfig, useAllAutomationsApproved } from "../../../hooks/rsvp";
 import {
-  getRSVPSetupSteps,
-  getNextStep,
-  getPreviousStep,
-  getCompletedStepsCount,
-  isSetupComplete,
-} from "./stepConfig";
+  useRSVPConfig,
+  useAllAutomationsApproved,
+  useUpdateRSVPSetupComplete,
+} from "../../../hooks/rsvp";
+import { getRSVPSetupSteps, getNextStep, getPreviousStep } from "./stepConfig";
 
 export const RSVPSetupSteps: React.FC = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
 
   const { data: rsvpConfig, isLoading: isLoadingRsvpConfig } = useRSVPConfig();
+  const { mutate: updateRsvpConfigCompleted } = useUpdateRSVPSetupComplete();
   const { allApproved: allAutomationsApproved } = useAllAutomationsApproved();
   const steps = getRSVPSetupSteps(t);
 
@@ -37,11 +35,14 @@ export const RSVPSetupSteps: React.FC = () => {
     return step.isComplete(rsvpConfig);
   };
 
-
   const currentStep = steps[activeStep];
   const isCurrentStepComplete = isStepComplete(currentStep);
-
   const handleNext = () => {
+    const isFinalStep = activeStep === steps.length - 1;
+    if (isFinalStep) {
+      // Optionally handle finish action here
+      updateRsvpConfigCompleted(true);
+    }
     const nextStep = getNextStep(currentStep.id, steps);
     if (nextStep) {
       const nextIndex = steps.findIndex((step) => step.id === nextStep.id);
@@ -57,7 +58,7 @@ export const RSVPSetupSteps: React.FC = () => {
     }
   };
 
-  const canGoNext = isCurrentStepComplete && activeStep < steps.length - 1;
+  const canGoNext = isCurrentStepComplete && activeStep <= steps.length - 1;
   const canGoPrevious = activeStep > 0;
 
   // Convert steps to DStepper format with custom completion check

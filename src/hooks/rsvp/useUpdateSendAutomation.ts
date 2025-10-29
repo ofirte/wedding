@@ -31,7 +31,8 @@ export const useUpdateSendAutomation = (
     ) => {
       if (updates.scheduledTime !== undefined) {
         const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const scheduledTimeUTC = new Date(updates.scheduledTime.toISOString());
+        // Keep the exact time - just ensure it's a proper Date object in UTC
+        const scheduledTimeUTC = new Date(updates.scheduledTime.getTime());
         updates.scheduledTimeZone = userTimeZone;
         updates.scheduledTime = scheduledTimeUTC;
       }

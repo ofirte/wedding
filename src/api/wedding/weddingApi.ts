@@ -5,6 +5,7 @@ import {
   WeddingPlan,
 } from "@wedding-plan/types";
 import { createGeneralCollectionAPI } from "../generalFirebaseHelpers";
+import { normalizeToUTCMidnight } from "../../utils/weddingDateUtils";
 
 const WeddingApi = createGeneralCollectionAPI<Wedding>("weddings");
 // Find wedding by invitation code
@@ -117,7 +118,14 @@ export const updateWeddingDetails = async (
   data: Partial<Wedding>
 ): Promise<void> => {
   try {
-    await WeddingApi.update(weddingId, data);
+    // Ensure wedding date is stored as UTC midnight for consistent timezone handling
+    const processedData = { ...data };
+    if (processedData.date && processedData.date instanceof Date) {
+      const utcDate = normalizeToUTCMidnight(processedData.date);
+      processedData.date = utcDate as any; // Will be converted to Timestamp in Firebase
+    }
+
+    await WeddingApi.update(weddingId, processedData);
   } catch (error) {
     console.error("Error updating wedding details:", error);
     throw error;
@@ -210,11 +218,12 @@ export const createWedding = async (
       addedAt: new Date().toISOString(),
       addedBy: "self",
     };
+    const processedWeddingDate = normalizeToUTCMidnight(weddingDate);
 
     // Create a wedding document
     const weddingRef = await WeddingApi.create({
       name: weddingName,
-      date: weddingDate || null,
+      date: processedWeddingDate,
       createdAt: new Date(),
       brideName: brideName || "",
       groomName: groomName || "",

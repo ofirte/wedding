@@ -237,7 +237,7 @@ const SetupAutomation: FC<SetupAutomationProps> = ({
               <AccordionDetails
                 sx={{
                   p: 3,
-                  maxHeight: 500,
+                  maxHeight: "30vh", // Use viewport height to adapt to available space
                   overflowY: "auto",
                   "&::-webkit-scrollbar": {
                     width: "6px",
