@@ -659,6 +659,113 @@ export interface Translations {
       getStarted: string;
       creating: string;
     };
+    premiumPricing: {
+      hero: {
+        title: string;
+        subtitle: string;
+        description: string;
+      };
+      howItWorks: {
+        title: string;
+        step1: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        step2: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        step3: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+      };
+      features: {
+        title: string;
+        rsvpMessages: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        eventReminder: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        giftLink: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        thankYou: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        phoneSupport: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+      };
+      pricing: {
+        title: string;
+        subtitle: string;
+        startingPrice: string;
+        perInvitee: string;
+        packages: {
+          small: {
+            title: string;
+            guestCount: string;
+            price: string;
+            features: string[];
+          };
+          medium: {
+            title: string;
+            guestCount: string;
+            price: string;
+            popular: boolean;
+            features: string[];
+          };
+          large: {
+            title: string;
+            guestCount: string;
+            price: string;
+            features: string[];
+          };
+        };
+        customPricing: string;
+      };
+      testimonials: {
+        title: string;
+        testimonial1: {
+          text: string;
+          author: string;
+          wedding: string;
+        };
+        testimonial2: {
+          text: string;
+          author: string;
+          wedding: string;
+        };
+      };
+      sampleMessage: {
+        title: string;
+        subtitle: string;
+        messageText: string;
+        variables: string;
+      };
+      cta: {
+        title: string;
+        description: string;
+        upgradeButton: string;
+        contactUs: string;
+        guarantee: string;
+      };
+    };
   };
   automation: {
     allMessagesSent: string;

@@ -1,0 +1,582 @@
+import React from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  Paper,
+  Container,
+  Stack,
+  Card,
+  CardContent,
+  Grid,
+  Chip,
+  Divider,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Avatar,
+} from "@mui/material";
+import {
+  Settings as SettingsIcon,
+  Message as MessageIcon,
+  AutoAwesome as AutomationIcon,
+  WhatsApp as WhatsAppIcon,
+  CalendarMonth as CalendarIcon,
+  CardGiftcard as GiftIcon,
+  Favorite as HeartIcon,
+  Phone as PhoneIcon,
+  Check as CheckIcon,
+  Star as StarIcon,
+  Upgrade as UpgradeIcon,
+} from "@mui/icons-material";
+import { useTranslation } from "../../localization/LocalizationContext";
+
+const RSVPPricingPage: React.FC = () => {
+  const { t } = useTranslation();
+
+  const getStepIcon = (iconName: string) => {
+    const icons = {
+      settings: <SettingsIcon sx={{ fontSize: 40, color: "primary.main" }} />,
+      message: <MessageIcon sx={{ fontSize: 40, color: "secondary.main" }} />,
+      automation: (
+        <AutomationIcon sx={{ fontSize: 40, color: "success.main" }} />
+      ),
+    };
+    return icons[iconName as keyof typeof icons] || icons.settings;
+  };
+
+  const getFeatureIcon = (iconName: string) => {
+    const icons = {
+      message: <WhatsAppIcon sx={{ fontSize: 32, color: "primary.main" }} />,
+      calendar: <CalendarIcon sx={{ fontSize: 32, color: "warning.main" }} />,
+      gift: <GiftIcon sx={{ fontSize: 32, color: "secondary.main" }} />,
+      heart: <HeartIcon sx={{ fontSize: 32, color: "error.main" }} />,
+      phone: <PhoneIcon sx={{ fontSize: 32, color: "info.main" }} />,
+    };
+    return icons[iconName as keyof typeof icons] || icons.message;
+  };
+
+  const packages = [
+    {
+      title: t("rsvp.premiumPricing.pricing.packages.small.title"),
+      guestCount: t("rsvp.premiumPricing.pricing.packages.small.guestCount"),
+      price: t("rsvp.premiumPricing.pricing.packages.small.price"),
+      features: t("rsvp.premiumPricing.pricing.packages.small.features"),
+      isPopular: false,
+    },
+    {
+      title: t("rsvp.premiumPricing.pricing.packages.medium.title"),
+      guestCount: t("rsvp.premiumPricing.pricing.packages.medium.guestCount"),
+      price: t("rsvp.premiumPricing.pricing.packages.medium.price"),
+      features: t("rsvp.premiumPricing.pricing.packages.medium.features"),
+      isPopular: true,
+    },
+    {
+      title: t("rsvp.premiumPricing.pricing.packages.large.title"),
+      guestCount: t("rsvp.premiumPricing.pricing.packages.large.guestCount"),
+      price: t("rsvp.premiumPricing.pricing.packages.large.price"),
+      features: t("rsvp.premiumPricing.pricing.packages.large.features"),
+      isPopular: false,
+    },
+  ];
+
+  return (
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Stack spacing={8}>
+        {/* Hero Section */}
+        <Box textAlign="center" sx={{ py: { xs: 4, md: 8 } }}>
+          <Typography
+            variant="h2"
+            component="h1"
+            fontWeight="bold"
+            color="primary.main"
+            gutterBottom
+            sx={{
+              fontSize: { xs: "2.5rem", md: "3.5rem" },
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            {t("rsvp.premiumPricing.hero.title")}
+          </Typography>
+          <Typography
+            variant="h4"
+            color="text.secondary"
+            gutterBottom
+            sx={{ fontSize: { xs: "1.5rem", md: "2rem" }, mb: 3 }}
+          >
+            {t("rsvp.premiumPricing.hero.subtitle")}
+          </Typography>
+          <Typography
+            variant="h6"
+            color="text.secondary"
+            sx={{ maxWidth: 800, mx: "auto", mb: 4 }}
+          >
+            {t("rsvp.premiumPricing.hero.description")}
+          </Typography>
+        </Box>
+
+        {/* How It Works Section */}
+        <Box>
+          <Typography
+            variant="h3"
+            component="h2"
+            fontWeight="bold"
+            textAlign="center"
+            gutterBottom
+            sx={{ mb: 6 }}
+          >
+            {t("rsvp.premiumPricing.howItWorks.title")}
+          </Typography>
+          <Grid container spacing={4}>
+            {["step1", "step2", "step3"].map((step, index) => (
+              <Grid size={{ xs: 12, md: 4 }} key={step}>
+                <Card
+                  elevation={0}
+                  sx={{
+                    height: "100%",
+                    border: "2px solid",
+                    borderColor: "divider",
+                    borderRadius: 4,
+                    textAlign: "center",
+                    p: 3,
+                    transition: "all 0.3s ease-in-out",
+                    "&:hover": {
+                      borderColor: "primary.main",
+                      transform: "translateY(-8px)",
+                      boxShadow: "0 12px 32px rgba(102, 126, 234, 0.2)",
+                    },
+                  }}
+                >
+                  <CardContent>
+                    <Box
+                      sx={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: "50%",
+                        background:
+                          "linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        mx: "auto",
+                        mb: 3,
+                        border: "3px solid",
+                        borderColor: "primary.light",
+                      }}
+                    >
+                      {getStepIcon(
+                        t(`rsvp.premiumPricing.howItWorks.${step}.icon`)
+                      )}
+                    </Box>
+                    <Typography
+                      variant="h5"
+                      fontWeight="600"
+                      color="text.primary"
+                      gutterBottom
+                    >
+                      {`${index + 1}. ${t(
+                        `rsvp.premiumPricing.howItWorks.${step}.title`
+                      )}`}
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary">
+                      {t(`rsvp.premiumPricing.howItWorks.${step}.description`)}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        {/* Features Section */}
+        <Box>
+          <Typography
+            variant="h3"
+            component="h2"
+            fontWeight="bold"
+            textAlign="center"
+            gutterBottom
+            sx={{ mb: 6 }}
+          >
+            {t("rsvp.premiumPricing.features.title")}
+          </Typography>
+          <Grid container spacing={4}>
+            {[
+              "rsvpMessages",
+              "eventReminder",
+              "giftLink",
+              "thankYou",
+              "phoneSupport",
+            ].map((feature) => (
+              <Grid size={{ xs: 12, md: 6, lg: 4 }} key={feature}>
+                <Card
+                  elevation={0}
+                  sx={{
+                    height: "100%",
+                    border: "1px solid",
+                    borderColor: "divider",
+                    borderRadius: 3,
+                    transition: "all 0.2s ease-in-out",
+                    "&:hover": {
+                      borderColor: "primary.main",
+                      boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+                    },
+                  }}
+                >
+                  <CardContent sx={{ p: 3 }}>
+                    <Stack direction="row" spacing={2} alignItems="flex-start">
+                      <Box
+                        sx={{
+                          minWidth: 56,
+                          height: 56,
+                          borderRadius: 2,
+                          background:
+                            "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {getFeatureIcon(
+                          t(`rsvp.premiumPricing.features.${feature}.icon`)
+                        )}
+                      </Box>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography
+                          variant="h6"
+                          fontWeight="600"
+                          color="text.primary"
+                          gutterBottom
+                        >
+                          {t(`rsvp.premiumPricing.features.${feature}.title`)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {t(
+                            `rsvp.premiumPricing.features.${feature}.description`
+                          )}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        {/* Pricing Section */}
+        <Box>
+          <Typography
+            variant="h3"
+            component="h2"
+            fontWeight="bold"
+            textAlign="center"
+            gutterBottom
+          >
+            {t("rsvp.premiumPricing.pricing.title")}
+          </Typography>
+          <Typography
+            variant="h6"
+            color="text.secondary"
+            textAlign="center"
+            sx={{ mb: 2 }}
+          >
+            {t("rsvp.premiumPricing.pricing.subtitle")}
+          </Typography>
+          <Box textAlign="center" sx={{ mb: 6 }}>
+            <Typography variant="h4" color="primary.main" fontWeight="bold">
+              {t("rsvp.premiumPricing.pricing.startingPrice")}
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              {t("rsvp.premiumPricing.pricing.perInvitee")}
+            </Typography>
+          </Box>
+
+          <Grid container spacing={4} sx={{ mb: 4 }}>
+            {packages.map((pkg, index) => (
+              <Grid size={{ xs: 12, md: 4 }} key={index}>
+                <Card
+                  elevation={pkg.isPopular ? 8 : 0}
+                  sx={{
+                    height: "100%",
+                    border: pkg.isPopular ? "3px solid" : "2px solid",
+                    borderColor: pkg.isPopular ? "primary.main" : "divider",
+                    borderRadius: 4,
+                    position: "relative",
+                    transition: "all 0.3s ease-in-out",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: pkg.isPopular
+                        ? "0 16px 40px rgba(102, 126, 234, 0.3)"
+                        : "0 12px 32px rgba(0,0,0,0.15)",
+                    },
+                  }}
+                >
+                  {pkg.isPopular && (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: -12,
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        zIndex: 1,
+                      }}
+                    >
+                      <Chip
+                        label="Popular"
+                        color="primary"
+                        size="medium"
+                        icon={<StarIcon />}
+                        sx={{
+                          fontWeight: "bold",
+                          px: 2,
+                        }}
+                      />
+                    </Box>
+                  )}
+                  <CardContent sx={{ p: 4, textAlign: "center" }}>
+                    <Typography
+                      variant="h5"
+                      fontWeight="bold"
+                      color="text.primary"
+                      gutterBottom
+                    >
+                      {pkg.title}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      color="text.secondary"
+                      sx={{ mb: 2 }}
+                    >
+                      {pkg.guestCount}
+                    </Typography>
+                    <Typography
+                      variant="h3"
+                      fontWeight="bold"
+                      color="primary.main"
+                      sx={{ mb: 3 }}
+                    >
+                      {pkg.price}
+                    </Typography>
+                    <Divider sx={{ my: 3 }} />
+                    <List dense sx={{ mb: 3 }}>
+                      {(Array.isArray(pkg.features) ? pkg.features : []).map(
+                        (feature: string, featureIndex: number) => (
+                          <ListItem key={featureIndex} sx={{ px: 0 }}>
+                            <ListItemIcon sx={{ minWidth: 32 }}>
+                              <CheckIcon color="success" fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={feature}
+                              primaryTypographyProps={{
+                                variant: "body2",
+                                color: "text.secondary",
+                              }}
+                            />
+                          </ListItem>
+                        )
+                      )}
+                    </List>
+                    <Button
+                      variant={pkg.isPopular ? "contained" : "outlined"}
+                      size="large"
+                      fullWidth
+                      startIcon={<UpgradeIcon />}
+                      sx={{
+                        py: 1.5,
+                        fontWeight: "600",
+                        textTransform: "none",
+                        borderRadius: 2,
+                        ...(pkg.isPopular && {
+                          background:
+                            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                          "&:hover": {
+                            background:
+                              "linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)",
+                          },
+                        }),
+                      }}
+                    >
+                      {t("rsvp.premiumPricing.cta.upgradeButton")}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            textAlign="center"
+            sx={{ fontStyle: "italic" }}
+          >
+            {t("rsvp.premiumPricing.pricing.customPricing")}
+          </Typography>
+        </Box>
+
+        {/* Testimonials Section */}
+        <Box>
+          <Typography
+            variant="h3"
+            component="h2"
+            fontWeight="bold"
+            textAlign="center"
+            gutterBottom
+            sx={{ mb: 6 }}
+          >
+            {t("rsvp.premiumPricing.testimonials.title")}
+          </Typography>
+          <Grid container spacing={4}>
+            {["testimonial1", "testimonial2"].map((testimonial) => (
+              <Grid size={{ xs: 12, md: 6 }} key={testimonial}>
+                <Card
+                  elevation={0}
+                  sx={{
+                    height: "100%",
+                    border: "2px solid",
+                    borderColor: "divider",
+                    borderRadius: 4,
+                    p: 3,
+                    background:
+                      "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+                  }}
+                >
+                  <CardContent>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontStyle: "italic",
+                        mb: 3,
+                        lineHeight: 1.7,
+                      }}
+                    >
+                      "
+                      {t(
+                        `rsvp.premiumPricing.testimonials.${testimonial}.text`
+                      )}
+                      "
+                    </Typography>
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                      <Avatar
+                        sx={{
+                          bgcolor: "primary.main",
+                          width: 40,
+                          height: 40,
+                        }}
+                      >
+                        <HeartIcon />
+                      </Avatar>
+                      <Box>
+                        <Typography variant="subtitle1" fontWeight="600">
+                          {t(
+                            `rsvp.premiumPricing.testimonials.${testimonial}.author`
+                          )}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {t(
+                            `rsvp.premiumPricing.testimonials.${testimonial}.wedding`
+                          )}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        {/* CTA Section */}
+        <Box
+          sx={{
+            textAlign: "center",
+            py: 8,
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            borderRadius: 4,
+            color: "white",
+          }}
+        >
+          <Typography
+            variant="h3"
+            component="h2"
+            fontWeight="bold"
+            gutterBottom
+            sx={{ color: "inherit" }}
+          >
+            {t("rsvp.premiumPricing.cta.title")}
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              mb: 4,
+              maxWidth: 600,
+              mx: "auto",
+              color: "inherit",
+              opacity: 0.9,
+            }}
+          >
+            {t("rsvp.premiumPricing.cta.description")}
+          </Typography>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={3}
+            justifyContent="center"
+            alignItems="center"
+            sx={{ mb: 3 }}
+          >
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<UpgradeIcon />}
+              sx={{
+                py: 2,
+                px: 4,
+                fontSize: "1.1rem",
+                fontWeight: "600",
+                borderRadius: 3,
+                textTransform: "none",
+                backgroundColor: "white",
+                color: "primary.main",
+                "&:hover": {
+                  backgroundColor: "rgba(255,255,255,0.9)",
+                },
+              }}
+            >
+              {t("rsvp.premiumPricing.cta.upgradeButton")}
+            </Button>
+            <Button
+              variant="outlined"
+              size="large"
+              sx={{
+                py: 2,
+                px: 4,
+                fontSize: "1rem",
+                fontWeight: "500",
+                borderRadius: 3,
+                textTransform: "none",
+                borderColor: "rgba(255,255,255,0.5)",
+                color: "inherit",
+                "&:hover": {
+                  borderColor: "white",
+                  backgroundColor: "rgba(255,255,255,0.1)",
+                },
+              }}
+            >
+              {t("rsvp.premiumPricing.cta.contactUs")}
+            </Button>
+          </Stack>
+          <Typography variant="body2" sx={{ opacity: 0.8 }}>
+            {t("rsvp.premiumPricing.cta.guarantee")}
+          </Typography>
+        </Box>
+      </Stack>
+    </Container>
+  );
+};
+
+export default RSVPPricingPage;

@@ -9,6 +9,10 @@ import {
   AccordionSummary,
   AccordionDetails,
   Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 import { useTranslation } from "../../../localization/LocalizationContext";
@@ -77,7 +81,7 @@ export const WeddingDetailsDialog: React.FC<WeddingDetailsDialogProps> = ({
               mx: 4,
             }}
           >
-            <Box sx={{ flex: 0.8 }}>
+            <Box sx={{ flex: 0.4 }}>
               <UserSelect
                 value={userId}
                 onChange={setUserId}
@@ -87,6 +91,25 @@ export const WeddingDetailsDialog: React.FC<WeddingDetailsDialogProps> = ({
               />
             </Box>
 
+            <Box sx={{ flex: 0.4 }}>
+              <FormControl fullWidth>
+                <InputLabel>{t("weddingManagement.membershipPlan")}</InputLabel>
+                <Select
+                  value={plan}
+                  onChange={(e) => setPlan(e.target.value)}
+                  disabled={isLoading}
+                  label={t("weddingManagement.membershipPlan")}
+                >
+                  <MenuItem value={WeddingPlans.FREE}>
+                    {t("weddingManagement.plans.free")}
+                  </MenuItem>
+                  <MenuItem value={WeddingPlans.PAID}>
+                    {t("weddingManagement.plans.paid")}
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
             <Box
               sx={{ flex: 0.2, display: "flex", justifyContent: "flex-end" }}
             >
@@ -94,7 +117,7 @@ export const WeddingDetailsDialog: React.FC<WeddingDetailsDialogProps> = ({
                 variant="contained"
                 onClick={handleSave}
                 disabled={isLoading || !userId}
-                sx={{ height: 50 }}
+                sx={{ height: 56 }}
                 startIcon={<PersonAdd />}
                 fullWidth
               >

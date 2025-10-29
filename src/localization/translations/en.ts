@@ -676,6 +676,145 @@ export const englishTranslations: Translations = {
       "Create Question Form Component will go here",
     addQuestionsFromSidebar:
       "Add questions from the sidebar to see the form preview",
+    // Premium pricing page
+    premiumPricing: {
+      hero: {
+        title: "Effortless Guest Updates",
+        subtitle: "5 Beautiful Messages. Zero Stress.",
+        description:
+          "Upgrade to our Premium RSVP Messaging Service and automate your entire guest communication journey with professional WhatsApp messages.",
+      },
+      howItWorks: {
+        title: "How It Works",
+        step1: {
+          title: "Set Up Your Form",
+          description:
+            "Create your custom RSVP form with the questions you need",
+          icon: "settings",
+        },
+        step2: {
+          title: "Guests Respond",
+          description:
+            "Guests receive beautiful WhatsApp messages with form links",
+          icon: "message",
+        },
+        step3: {
+          title: "Automated Reminders",
+          description:
+            "We handle reminders, event details, and thank you messages",
+          icon: "automation",
+        },
+      },
+      features: {
+        title: "What's Included",
+        rsvpMessages: {
+          title: "3 RSVP Messages",
+          description:
+            "Initial invitation, follow-up reminder, and final notice to collect all responses",
+          icon: "message",
+        },
+        eventReminder: {
+          title: "Day Before Reminder",
+          description:
+            "Event details and location sent 1 day before your wedding",
+          icon: "calendar",
+        },
+        giftLink: {
+          title: "Gift-by-Card Link",
+          description:
+            "Include your gift registry link in the day-before message",
+          icon: "gift",
+        },
+        thankYou: {
+          title: "Thank You Message",
+          description:
+            "Heartfelt thank you message sent after your special day",
+          icon: "heart",
+        },
+        phoneSupport: {
+          title: "Phone Call Service",
+          description:
+            "We'll call guests who haven't responded to ensure maximum attendance",
+          icon: "phone",
+        },
+      },
+      pricing: {
+        title: "Simple, Transparent Pricing",
+        subtitle: "Choose the package that fits your guest list",
+        startingPrice: "Starting at ₪1.5 per guest",
+        perInvitee: "per invitee phone number",
+        packages: {
+          small: {
+            title: "Intimate Wedding",
+            guestCount: "Up to 100 guests",
+            price: "₪150",
+            features: [
+              "All 5 message types",
+              "Phone call service",
+              "Gift registry link",
+              "24/7 support",
+            ],
+          },
+          medium: {
+            title: "Classic Wedding",
+            guestCount: "Up to 250 guests",
+            price: "₪375",
+            popular: true,
+            features: [
+              "All 5 message types",
+              "Phone call service",
+              "Gift registry link",
+              "Priority support",
+              "Custom message timing",
+            ],
+          },
+          large: {
+            title: "Grand Celebration",
+            guestCount: "Up to 500 guests",
+            price: "₪750",
+            features: [
+              "All 5 message types",
+              "Phone call service",
+              "Gift registry link",
+              "Dedicated support",
+              "Custom message timing",
+              "Advanced analytics",
+            ],
+          },
+        },
+        customPricing:
+          "Need more than 500 guests? Contact us for custom pricing.",
+      },
+      testimonials: {
+        title: "What Couples Say",
+        testimonial1: {
+          text: "The automated messages saved us so much stress! 98% of our guests responded, and the thank you message was such a nice touch.",
+          author: "Sarah & Michael",
+          wedding: "September 2024",
+        },
+        testimonial2: {
+          text: "Best investment we made for our wedding. The phone call service got responses from our elderly relatives who don't use WhatsApp much.",
+          author: "Rachel & David",
+          wedding: "October 2024",
+        },
+      },
+      sampleMessage: {
+        title: "Sample Message Preview",
+        subtitle: "See what your guests will receive",
+        messageText:
+          "Hi {{guestName}}! 🎉\n\nYou're invited to {{brideName}} & {{groomName}}'s wedding at {{venueName}} on {{weddingDate}}.\n\nPlease confirm your attendance: [RSVP Link]\n\nWe can't wait to celebrate with you! 💕",
+        variables:
+          "Messages are personalized with guest names and wedding details",
+      },
+      cta: {
+        title: "Ready to Upgrade?",
+        description:
+          "Join hundreds of couples who've made their RSVP process stress-free",
+        upgradeButton: "Upgrade to Premium RSVP",
+        contactUs: "Have questions? Contact us",
+        guarantee: "30-day money-back guarantee",
+      },
+    },
   },
   rsvpEmptyState: {
     title: "Create Your RSVP Form",
