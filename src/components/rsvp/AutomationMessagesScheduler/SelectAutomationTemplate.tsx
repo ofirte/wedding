@@ -54,7 +54,7 @@ const SelectAutomationTemplate: FC<SelectAutomationTemplateProps> = ({
 
   const handleSelectTemplate = () => {
     if (currentTemplate?.sid) {
-      onSelectTemplate(currentTemplate.sid);
+      onSelectTemplate(currentTemplate.id);
     }
   };
 

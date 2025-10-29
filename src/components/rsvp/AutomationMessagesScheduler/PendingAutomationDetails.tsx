@@ -49,12 +49,6 @@ const PendingAutomationDetails: React.FC<PendingAutomationDetailsProps> = ({
               variant="outlined"
             />
           </Stack>
-
-          <Alert severity="info" sx={{ mb: 2 }}>
-            <Typography variant="body2">
-              {t("rsvp.automationPendingDescription")}
-            </Typography>
-          </Alert>
         </Box>
 
         {/* Scheduled Time Card */}
@@ -82,6 +76,25 @@ const PendingAutomationDetails: React.FC<PendingAutomationDetailsProps> = ({
           </CardContent>
         </Card>
 
+        {/* Template Preview - Most Important */}
+        {currentTemplate && (
+          <Card>
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2, textAlign: "center" }}>
+                {t("templates.messageTemplate")}
+              </Typography>
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <WhatsAppTemplatePreview
+                  showHeader={false}
+                  template={currentTemplate}
+                  scheduledTime={new Date(automation.scheduledTime)}
+                  automationName={automation.name}
+                />
+              </Box>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Target Audience Card */}
         <Card>
           <CardContent>
@@ -106,23 +119,6 @@ const PendingAutomationDetails: React.FC<PendingAutomationDetailsProps> = ({
             </Stack>
           </CardContent>
         </Card>
-
-        {/* Template Preview */}
-        {currentTemplate && (
-          <Box>
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              {t("templates.messageTemplate")}
-            </Typography>
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <WhatsAppTemplatePreview
-                showHeader={false}
-                template={currentTemplate}
-                scheduledTime={new Date(automation.scheduledTime)}
-                automationName={automation.name}
-              />
-            </Box>
-          </Box>
-        )}
 
         {/* Action Button */}
         <Button
