@@ -15,6 +15,8 @@ import RSVPStatusTab from "./rsvpStatus/RSVPStatusTab";
 import RSVPQuestionsManager from "./rsvpFormManagement/RSVPQuestionsManager";
 import SendAutomationsManager from "../automations/SendAutomationsManager";
 import { useRSVPConfig } from "../../hooks/rsvp/useRSVPConfig";
+import RsvpFormManagementContainer from "./RsvpFormManagementV2/rsvpFormManagementContainer";
+import AutomationMessagesSchedulerContainer from "./AutomationMessagesScheduler/AutomationMessagesSchedulerContainer";
 
 const TabValue = {
   TEMPLATES: "templates",
@@ -127,9 +129,9 @@ const RSVPManager: FC = () => {
       <Box sx={{ minHeight: 400 }}>
         {activeTab === TabValue.RSVP_STATUS && <RSVPStatusTab />}
 
-        {activeTab === TabValue.QUESTIONS && <RSVPQuestionsManager />}
+        {activeTab === TabValue.QUESTIONS && <RsvpFormManagementContainer />}
         {activeTab === TabValue.TEMPLATES && <TemplatesManager />}
-        {activeTab === TabValue.SEND_AUTOMATION && <SendAutomationsManager />}
+        {activeTab === TabValue.SEND_AUTOMATION && <AutomationMessagesSchedulerContainer />}
         {activeTab === TabValue.MESSAGES_LOG && <MessagesLogTab />}
       </Box>
     </Box>

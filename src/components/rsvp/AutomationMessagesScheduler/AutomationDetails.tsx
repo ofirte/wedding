@@ -2,9 +2,11 @@ import React from "react";
 import { SendMessagesAutomation } from "@wedding-plan/types";
 import ActiveAutomationDetails from "./ActiveAutomationDetails";
 import SetupAutomation from "./SetupAutomation";
+import { useAutomation } from "src/hooks/rsvp";
+import { LoadingState } from "src/components/common";
 
 interface AutomationDetailsProps {
-  automation: SendMessagesAutomation;
+  automationId: string;
   onClose?: () => void;
   onApproveAutomation?: () => void;
 }
@@ -14,16 +16,22 @@ interface AutomationDetailsProps {
  * based on whether the automation is active or inactive
  */
 const AutomationDetails: React.FC<AutomationDetailsProps> = ({
-  automation,
+  automationId,
   onClose,
   onApproveAutomation,
 }) => {
   // Render different components based on automation status
-  console.log("Rendering AutomationDetails for automation:", automation);
+  const { data: automation, isLoading: isLoadingAutomation } =
+    useAutomation(automationId);
+  if (isLoadingAutomation) {
+    return <LoadingState />;
+  }
+  if (!automation) {
+    return <div>Automation not found</div>;
+  }
+
   if (automation.isActive) {
-    return (
-      <ActiveAutomationDetails automation={automation} onClose={onClose} />
-    );
+    return <ActiveAutomationDetails automation={automation} />;
   }
 
   return (

@@ -583,6 +583,17 @@ export interface Translations {
     rsvpAutomationDescription: string;
     reminderAutomationDescription: string;
     targetAudience: string;
+    // Status translations
+    statuses: {
+      pending: string;
+      inProgress: string;
+      completed: string;
+      failed: string;
+    };
+    guestsAttending: string;
+    guestsNotAttending: string;
+    allGuests: string;
+    messages: string;
     attendingGuests: string;
     notAttendingGuests: string;
     noAutomationsTitle: string;
@@ -604,6 +615,20 @@ export interface Translations {
     automationInProgressInfo: string;
     automationCompletedSuccessfully: string;
     automationFailedInfo: string;
+    // Automation details components
+    automationPending: string;
+    automationPendingDescription: string;
+    automationCompleted: string;
+    automationCompletedDescription: string;
+    automationFailed: string;
+    automationFailedDescription: string;
+    contactSupport: string;
+    contactSupportDescription: string;
+    contactSupportButton: string;
+    messageSentTo: string;
+    deactivateAutomation: string;
+    viewFailureDetails: string;
+    automationActiveMessage: string;
     // Preview dummy data
     preview: {
       weddingName: string;

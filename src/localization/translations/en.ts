@@ -550,6 +550,7 @@ export const englishTranslations: Translations = {
     sendingSummary: "Sending Summary",
     messagesQueued: "Messages Queued",
     failedToSend: "Failed to Send",
+    messages: "messages",
     messageQueuedSingular: "Message has been queued for delivery.",
     messagesQueuedPlural: "{{count}} messages have been queued for delivery.",
     // Send Automation translations
@@ -567,8 +568,18 @@ export const englishTranslations: Translations = {
     rsvpAutomationDescription: "Send to guests who haven't responded to RSVP",
     reminderAutomationDescription: "Send reminder or thank you messages",
     targetAudience: "Target Audience",
+    // Status translations
+    statuses: {
+      pending: "Pending",
+      inProgress: "In Progress",
+      completed: "Completed",
+      failed: "Failed",
+    },
     attendingGuests: "Attending Guests",
     notAttendingGuests: "Not Attending Guests",
+    guestsAttending: "Guests who are attending",
+    guestsNotAttending: "Guests who are not attending",
+    allGuests: "All guests",
     noAutomationsTitle: "No Send Automations",
     noAutomationsDescription:
       "Create automated message campaigns to send RSVP requests and reminders to your guests.",
@@ -592,6 +603,25 @@ export const englishTranslations: Translations = {
     messageSid: "Message ID",
     errorCode: "Error Code",
     errorMessage: "Error Message",
+    // Automation details components
+    automationPending: "Automation Scheduled",
+    automationPendingDescription:
+      "This automation is scheduled to run automatically",
+    automationCompleted: "Automation Completed",
+    automationCompletedDescription:
+      "This automation has completed successfully",
+    automationFailed: "Automation Failed",
+    automationFailedDescription:
+      "This automation encountered errors during execution",
+    contactSupport: "Contact Support",
+    contactSupportDescription:
+      "Need help resolving these issues? Our support team is here to help.",
+    contactSupportButton: "Get Help",
+    messageSentTo: "Messages sent to {{count}} guests",
+    deactivateAutomation: "Deactivate Automation",
+    viewFailureDetails: "View Failure Details",
+    automationActiveMessage:
+      "This automation is currently active and will run at the scheduled time.",
     automationInProgressInfo:
       "This automation is currently running. Status will be updated automatically.",
     automationCompletedSuccessfully:

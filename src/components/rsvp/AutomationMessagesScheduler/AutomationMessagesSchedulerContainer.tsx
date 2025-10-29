@@ -70,9 +70,9 @@ const AutomationMessagesSchedulerContainer: React.FC = () => {
           p: 3,
         }}
       >
-        {selectedAutomation ? (
+        {selectedAutomationId ? (
           <AutomationDetails
-            automation={selectedAutomation}
+            automationId={selectedAutomationId}
             onClose={() => setSelectedAutomationId(null)}
             onApproveAutomation={handleApproveAutomation}
           />

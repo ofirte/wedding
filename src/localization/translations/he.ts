@@ -541,6 +541,7 @@ export const hebrewTranslations: Translations = {
     sendingSummary: "סיכום שליחה",
     messagesQueued: "הודעות בתור",
     failedToSend: "נכשל לשלוח",
+    messages: "הודעות",
     messageQueuedSingular: "ההודעה נוספה לתור למשלוח.",
     messagesQueuedPlural: "{{count}} הודעות נוספו לתור למשלוח.",
     // Send Automation translations
@@ -558,8 +559,18 @@ export const hebrewTranslations: Translations = {
     rsvpAutomationDescription: "שלח לאורחים שלא השיבו לאישור הגעה",
     reminderAutomationDescription: "שלח הודעות תזכורת או תודה",
     targetAudience: "קהל יעד",
+    // תרגומים לסטטוס
+    statuses: {
+      pending: "ממתין",
+      inProgress: "בתהליך",
+      completed: "הושלם",
+      failed: "נכשל",
+    },
     attendingGuests: "אורחים שמגיעים",
     notAttendingGuests: "אורחים שלא מגיעים",
+    guestsAttending: "אורחים שמגיעים",
+    guestsNotAttending: "אורחים שלא מגיעים",
+    allGuests: "כל האורחים",
     noAutomationsTitle: "אין אוטומציות שליחה",
     noAutomationsDescription:
       "צור קמפיינים אוטומטיים של הודעות לשליחת בקשות אישור הגעה ותזכורות לאורחים שלך.",
@@ -583,6 +594,21 @@ export const hebrewTranslations: Translations = {
     messageSid: "מזהה הודעה",
     errorCode: "קוד שגיאה",
     errorMessage: "הודעת שגיאה",
+    // קומפוננטות פרטי אוטומציה
+    automationPending: "אוטומציה מתוזמנת",
+    automationPendingDescription: "אוטומציה זו מתוזמנת לרוץ אוטומטית",
+    automationCompleted: "אוטומציה הושלמה",
+    automationCompletedDescription: "אוטומציה זו הושלמה בהצלחה",
+    automationFailed: "אוטומציה נכשלה",
+    automationFailedDescription: "אוטומציה זו נתקלה בשגיאות במהלך הביצוע",
+    contactSupport: "צור קשר עם התמיכה",
+    contactSupportDescription:
+      "צריך עזרה בפתרון הבעיות? צוות התמיכה שלנו כאן לעזור.",
+    contactSupportButton: "קבל עזרה",
+    messageSentTo: "הודעות נשלחו ל־{{count}} אורחים",
+    deactivateAutomation: "בטל אוטומציה",
+    viewFailureDetails: "הצג פרטי כישלון",
+    automationActiveMessage: "אוטומציה זו פעילה כרגע ותרוץ בזמן המתוזמן.",
     automationInProgressInfo: "האוטומציה הזו רצה כרגע. הסטטוס יעודכן אוטומטית.",
     automationCompletedSuccessfully:
       "האוטומציה הזו הושלמה בהצלחה עם כל ההודעות שנשלחו.",
