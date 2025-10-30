@@ -46,6 +46,7 @@ const TemplateApprovalWorkflow: React.FC<TemplateApprovalWorkflowProps> = ({
   } = useSubmitTemplateApproval();
 
   const handleSubmitApproval = () => {
+    console.log('here')
     submitTemplateApproval(
       {
         templateSid,

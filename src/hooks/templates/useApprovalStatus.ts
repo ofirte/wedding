@@ -1,25 +1,22 @@
 import { useParams } from "react-router";
 import { useApprovalStatus as useWeddingApprovalStatus } from "../rsvp";
+import { useGlobalApprovalStatus } from "../globalTemplates";
 
 /**
- * Context-aware hook that returns wedding approval status or null for admin context
- * (Global templates don't have approval workflow yet)
+ * Context-aware admin approval status hook
+ * Uses global template API for admin context and wedding template API for wedding context
  */
-export const useApprovalStatus = (templateSid?: string) => {
+export const useAdminApprovalStatus = (templateSid?: string) => {
   const params = useParams();
   const isAdminContext = !params.weddingId; // If no weddingId param, we're in admin context
 
-  // Call wedding hook unconditionally (Rules of Hooks)
+  // Call both hooks unconditionally (Rules of Hooks)
   const weddingApprovalResult = useWeddingApprovalStatus(templateSid);
-
-  // Mock result for admin context
-  const mockResult = {
-    data: null,
-    isLoading: false,
-    error: null,
-    refetch: () => Promise.resolve(),
-  };
+  const globalApprovalResult = useGlobalApprovalStatus(templateSid);
 
   // Return the appropriate result based on context
-  return isAdminContext ? mockResult : weddingApprovalResult;
+  return isAdminContext ? globalApprovalResult : weddingApprovalResult;
 };
+
+// Export with original name for backward compatibility
+export const useApprovalStatus = useAdminApprovalStatus;
