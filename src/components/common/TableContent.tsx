@@ -26,7 +26,10 @@ const TableContent = <T extends { id: string | number }>({
   onRowSelect,
 }: TableContentProps<T>) => {
   if (data.length === 0) {
-    const colSpan = columns.length + (showSelectColumn ? 1 : 0);
+    const visibleColumnsCount = columns.filter(
+      (column) => !column.hidden
+    ).length;
+    const colSpan = visibleColumnsCount + (showSelectColumn ? 1 : 0);
     return (
       <TableRow>
         <TableCell colSpan={colSpan} align="center">
@@ -61,11 +64,13 @@ const TableContent = <T extends { id: string | number }>({
               />
             </TableCell>
           )}
-          {columns.map((column) => (
-            <TableCell key={column.id} align="center">
-              {column.render(rowData)}
-            </TableCell>
-          ))}
+          {columns
+            .filter((column) => !column.hidden)
+            .map((column) => (
+              <TableCell key={column.id} align="center">
+                {column.render(rowData)}
+              </TableCell>
+            ))}
         </TableRow>
       ))}
     </>

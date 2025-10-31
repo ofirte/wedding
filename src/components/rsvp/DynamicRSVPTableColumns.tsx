@@ -60,6 +60,86 @@ export const useDynamicRSVPTableColumns = ({
     };
 
     const columns: Column<InviteeWithDynamicRSVP>[] = [
+      // Hidden columns for filtering/sorting only
+      {
+        id: "side",
+        label: "Side",
+        render: () => null, // Not displayed
+        sortable: true,
+        hidden: true,
+        filterConfig: {
+          id: "side",
+          type: "multiple",
+          label: t("guests.side"),
+          options: [
+            { value: "חתן", label: t("guests.groom") },
+            { value: "כלה", label: t("guests.bride") },
+          ],
+        },
+      },
+      {
+        id: "relation",
+        label: "Relation",
+        render: () => null, // Not displayed
+        sortable: true,
+        hidden: true,
+        filterConfig: {
+          id: "relation",
+          type: "multiple",
+          label: t("guests.relation"),
+          options: [
+            // These are commonly used relation values - can be extended
+            { value: "משפחה", label: "משפחה" },
+            { value: "חברים", label: "חברים" },
+            { value: "עבודה", label: "עבודה" },
+            { value: "אחר", label: "אחר" },
+          ],
+        },
+      },
+      {
+        id: "amount",
+        label: "Amount",
+        render: () => null, // Not displayed
+        sortable: true,
+        hidden: true,
+        sortFn: (a, b) => (a.amount || 0) - (b.amount || 0),
+      },
+      {
+        id: "percentage",
+        label: "Percentage",
+        render: () => null, // Not displayed
+        sortable: true,
+        hidden: true,
+        sortFn: (a, b) => (a.percentage || 0) - (b.percentage || 0),
+        filterConfig: {
+          id: "percentage",
+          type: "multiple",
+          label: t("guests.attendance"),
+          options: [
+            { value: "0", label: "0%" },
+            { value: "25", label: "25%" },
+            { value: "50", label: "50%" },
+            { value: "75", label: "75%" },
+            { value: "100", label: "100%" },
+          ],
+        },
+      },
+      {
+        id: "cellphone",
+        label: "Phone",
+        render: () => null, // Not displayed
+        sortable: true,
+        hidden: true,
+        filterConfig: {
+          id: "cellphone",
+          type: "multiple",
+          label: t("guests.cellphone"),
+          options: [
+            { value: "has_phone", label: "Has Phone" },
+            { value: "no_phone", label: "No Phone" },
+          ],
+        },
+      },
       // Guest Identity Section - Always first
       {
         id: "name",
