@@ -58,7 +58,9 @@ const MobileTableView = <T extends { id: string | number }>({
     selectedRows.some((selectedRow) => selectedRow.id === row.id);
 
   const getDisplayColumns = () => {
-    return columns.filter((col) => col.showOnMobileCard !== false);
+    return columns.filter(
+      (col) => !col.hidden && col.showOnMobileCard !== false
+    );
   };
 
   const getPrimaryColumns = () => {

@@ -53,21 +53,23 @@ const TableHeader = <T extends { id: string | number }>({
             />
           </TableCell>
         )}
-        {columns.map((column) => (
-          <TableCell key={column.id} align="center">
-            {column.sortable ? (
-              <TableSortLabel
-                active={orderBy === column.id}
-                direction={orderBy === column.id ? order : "asc"}
-                onClick={createSortHandler(column.id)}
-              >
-                {column.label}
-              </TableSortLabel>
-            ) : (
-              column.label
-            )}
-          </TableCell>
-        ))}
+        {columns
+          .filter((column) => !column.hidden)
+          .map((column) => (
+            <TableCell key={column.id} align="center">
+              {column.sortable ? (
+                <TableSortLabel
+                  active={orderBy === column.id}
+                  direction={orderBy === column.id ? order : "asc"}
+                  onClick={createSortHandler(column.id)}
+                >
+                  {column.label}
+                </TableSortLabel>
+              ) : (
+                column.label
+              )}
+            </TableCell>
+          ))}
       </TableRow>
     </TableHead>
   );

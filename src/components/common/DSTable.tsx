@@ -33,6 +33,8 @@ export type Column<T extends { id: string | number }> = {
   mobileLabel?: string;
   hideOnMobile?: boolean;
   showOnMobileCard?: boolean;
+  // Hidden column - only for filtering/sorting, not displayed
+  hidden?: boolean;
 };
 
 export type ExportColumn<T extends { id: string | number }> = {
