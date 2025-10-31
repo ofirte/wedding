@@ -6,22 +6,15 @@ import {
   TextFields as TextFieldsIcon,
   Image as ImageIcon,
 } from "@mui/icons-material";
-import { stripWeddingIdFromTemplateName } from "../../utils/templatesUtils";
+import {
+  stripWeddingIdFromTemplateName,
+  getCategoryLabel,
+} from "../../utils/templatesUtils";
+import { TemplateDocument } from "@wedding-plan/types";
 
-export interface TemplateTableRow {
-  id: string;
-  sid: string;
-  friendlyName: string;
-  language: string;
+export interface TemplateTableRow extends TemplateDocument {
   type: "text" | "media" | "both";
-  approvalStatus?:
-    | "pending"
-    | "approved"
-    | "rejected"
-    | "submitted"
-    | "received";
   body?: string;
-  dateCreated: string;
 }
 
 const getTypeIcon = (type: "text" | "media" | "both") => {
@@ -41,7 +34,6 @@ const getTypeIcon = (type: "text" | "media" | "both") => {
       return <TextFieldsIcon fontSize="small" />;
   }
 };
-
 
 const getApprovalStatusColor = (
   status?: string
@@ -133,6 +125,16 @@ export const createTemplateColumns = (
     },
   },
   {
+    id: "category",
+    label: t("templates.category"),
+    sortable: true,
+    render: (template: TemplateTableRow) => (
+      <Typography variant="body2">
+        {getCategoryLabel(template.category, t)}
+      </Typography>
+    ),
+  },
+  {
     id: "approvalStatus",
     label: t("templates.eligibility"),
     sortable: true,
@@ -179,6 +181,7 @@ export const transformTemplateData = (templates: any[]): TemplateTableRow[] => {
     const body = textContent?.body || "";
 
     return {
+      ...template,
       id: template.sid || "",
       sid: template.sid || "",
       friendlyName: stripWeddingIdFromTemplateName(template.friendlyName || ""),

@@ -14,7 +14,7 @@ import {
   useDynamicRSVPTableColumns,
 } from "./DynamicRSVPTableColumns";
 import { responsivePatterns } from "../../../utils/ResponsiveUtils";
-import { useWeddingTemplates } from "src/hooks/templates/useWeddingTemplates";
+import { useAllWeddingAvailableTemplates } from "src/hooks/templates/useAllWeddingAvailableTemplates";
 
 /**
  * RSVPStatusTab - Dynamic RSVP Management based on configured questions
@@ -33,7 +33,7 @@ const RSVPStatusTab: React.FC = () => {
   // Data Management
   const { data: invitees, isLoading: isLoadingInvitees } = useInvitees();
   const { data: sentMessages = [] } = useSentMessages();
-  const { data: weddingTemplates } = useWeddingTemplates();
+  const { data: weddingTemplates } = useAllWeddingAvailableTemplates();
 
   // Interactive State
   const [selectedGuests, setSelectedGuests] = useState<Invitee[]>([]);
@@ -45,7 +45,7 @@ const RSVPStatusTab: React.FC = () => {
     if (!selectedTemplate || !weddingTemplates) return null;
 
     return (
-      weddingTemplates.templates.find(
+      weddingTemplates.find(
         (template) => template.sid === selectedTemplate
       ) || null
     );
@@ -136,7 +136,7 @@ const RSVPStatusTab: React.FC = () => {
         onSelectionChange={handleGuestSelectionChange}
         onSendMessage={handleOpenDialog}
         onFilteredDataChange={handleFilteredDataChange}
-        templates={weddingTemplates?.templates || []}
+        templates={weddingTemplates || []}
         sentMessages={sentMessages}
         isLoading={isLoadingInvitees}
         showSelectColumn={true}

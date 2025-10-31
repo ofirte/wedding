@@ -17,7 +17,10 @@ import {
 } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { formatTemplateName } from "../../utils/templatesUtils";
+import {
+  formatTemplateName,
+  TEMPLATE_CATEGORY_OPTIONS,
+} from "../../utils/templatesUtils";
 import {
   getPredefinedVariables,
   TemplateVariable,
@@ -47,20 +50,6 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
   const [language, setLanguage] = useState<"en" | "he">(environmentLanguage);
   const [category, setCategory] = useState<TemplatesCategories | "">("");
   const predefinedVariables = getPredefinedVariables(language);
-
-  const categoryOptions = [
-    {
-      value: "initialRsvp",
-      label: t("userRsvp.messagesPlan.initialRsvp.title"),
-    },
-    { value: "secondRsvp", label: t("userRsvp.messagesPlan.secondRsvp.title") },
-    { value: "finalRsvp", label: t("userRsvp.messagesPlan.finalRsvp.title") },
-    { value: "dayBefore", label: t("userRsvp.messagesPlan.dayBefore.title") },
-    {
-      value: "dayAfterThankyou",
-      label: t("userRsvp.messagesPlan.dayAfterThankyou.title"),
-    },
-  ];
   const [messageText, setMessageText] = useState("");
   const usedVariables = useMemo(() => {
     return extractUsedVariables(messageText);
@@ -176,9 +165,9 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
               <MenuItem value="">
                 <em>{t("common.select")}</em>
               </MenuItem>
-              {categoryOptions.map((option) => (
+              {TEMPLATE_CATEGORY_OPTIONS.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
-                  {option.label}
+                  {t(option.translationKey)}
                 </MenuItem>
               ))}
             </Select>

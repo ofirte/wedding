@@ -75,8 +75,10 @@ export const populateContentVariables = (
     const variables = {
       guestName: invitee.name || "Dear Guest",
       eventDate: eventDate,
+      eventLocation: wedding.venueName || "TBD",
+      eventType: "חתונה",
       eventStartTime: wedding.startTime || "TBD",
-      coupleName: coupleName,
+      coupleName: coupleName + "💍",
       rsvpLink: generateRSVPLink(wedding.id, invitee.id),
       paymentLink: generatePaymentLink(wedding.id, invitee.id),
       giftLink: `https://registry.example.com/${wedding.id}`, // Placeholder

@@ -38,6 +38,18 @@ export const getPredefinedVariables = (
     description: "The wedding date",
   },
   {
+    key: "eventLocation",
+    label: "Event Location",
+    placeholder: locale === "he" ? "גן האירועים היפה" : "The Beautiful Venue",
+    description: "The location of the wedding event",
+  },
+  {
+    key: "eventType",
+    label: "Event Name",
+    placeholder: locale === "he" ? "אירוע" : "event",
+    description: "The type of event",
+  },
+  {
     key: "eventStartTime",
     label: "Event Start Time",
     placeholder: "18:00",
@@ -165,6 +177,8 @@ export const populateVariables = (
     eventDate: eventDate,
     eventStartTime: wedding.startTime || "TBD",
     coupleName: coupleName,
+    eventLocation: wedding.venueName || "TBD",
+    event: locale === "he" ? "חתונה" : "event",
     rsvpLink: generateRSVPLink(wedding.id, guest.id),
     paymentLink: generatePaymentLink(wedding.id, guest.id),
     giftLink: `https://registry.example.com/${wedding.id}`, // Placeholder for now
