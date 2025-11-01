@@ -15,7 +15,7 @@ interface RSVPConfigDocument extends WeddingRSVPConfig {
 }
 
 // Create collection API for RSVP configurations
-const rsvpConfigAPI = createCollectionAPI<RSVPConfigDocument>(
+export const rsvpConfigAPI = createCollectionAPI<RSVPConfigDocument>(
   RSVP_CONFIG_COLLECTION
 );
 
@@ -37,6 +37,7 @@ export const getRSVPConfig = async (
     }
 
     return {
+      ...config,
       enabledQuestionIds: config.enabledQuestionIds || [],
       customQuestions: config.customQuestions || [],
       selectedTemplates: config.selectedTemplates || {},

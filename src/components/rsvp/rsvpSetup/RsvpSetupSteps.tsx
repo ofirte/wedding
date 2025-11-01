@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, Paper, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, Paper } from "@mui/material";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import {
   LoadingState,
@@ -9,10 +9,14 @@ import {
 } from "../../common";
 import {
   useRSVPConfig,
-  useAllAutomationsApproved,
   useUpdateRSVPSetupComplete,
 } from "../../../hooks/rsvp";
-import { getRSVPSetupSteps, getNextStep, getPreviousStep } from "./stepConfig";
+import {
+  getRSVPSetupSteps,
+  getNextStep,
+  getPreviousStep,
+  StepConfig,
+} from "./stepConfig";
 
 export const RSVPSetupSteps: React.FC = () => {
   const { t } = useTranslation();
@@ -20,7 +24,6 @@ export const RSVPSetupSteps: React.FC = () => {
 
   const { data: rsvpConfig, isLoading: isLoadingRsvpConfig } = useRSVPConfig();
   const { mutate: updateRsvpConfigCompleted } = useUpdateRSVPSetupComplete();
-  const { allApproved: allAutomationsApproved } = useAllAutomationsApproved();
   const steps = getRSVPSetupSteps(t);
 
   if (isLoadingRsvpConfig) {
@@ -28,10 +31,7 @@ export const RSVPSetupSteps: React.FC = () => {
   }
 
   // Custom completion check that includes automation approval
-  const isStepComplete = (step: any) => {
-    if (step.id === "automations") {
-      return allAutomationsApproved;
-    }
+  const isStepComplete = (step: StepConfig) => {
     return step.isComplete(rsvpConfig);
   };
 

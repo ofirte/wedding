@@ -21,6 +21,7 @@ const AutomationDetails: React.FC<AutomationDetailsProps> = ({
   onApproveAutomation,
 }) => {
   // Render different components based on automation status
+
   const { data: automation, isLoading: isLoadingAutomation } =
     useAutomation(automationId);
     

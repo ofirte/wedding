@@ -1319,4 +1319,8 @@ export const englishTranslations: Translations = {
         "Need help? Contact support or check our documentation for assistance.",
     },
   },
+  automationSetupDone: {
+    allDone: "All done! Your RSVP automations are set up 🎉",
+    pleaseReview: "Please review your settings before launching.",
+  },
 };

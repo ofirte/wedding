@@ -4,47 +4,84 @@ import { ScheduleOutlined } from "@mui/icons-material";
 import AutomationsSidebar from "./AutomationsSidebar";
 import AutomationDetails from "./AutomationDetails";
 import { useTranslation } from "../../../localization/LocalizationContext";
-import { useSendAutomations, useAutomation } from "../../../hooks/rsvp";
+import { useRSVPConfig, useSendAutomations } from "../../../hooks/rsvp";
+import { useUpdateRsvpConfig } from "src/hooks/rsvp/useUpdateRsvpConfig";
+import { useParams } from "react-router";
+import { SendMessagesAutomation } from "@shared/dist";
+import AutomationSetupDone from "./AutomationSetupDone";
+import { set } from "lodash";
 
 const AutomationMessagesSchedulerContainer: React.FC = () => {
   const { t } = useTranslation();
   const [selectedAutomationId, setSelectedAutomationId] = useState<
     string | null
   >(null);
-  const { data: automations = [] } = useSendAutomations();
-
-  // Get sorted inactive automations
-  const inactiveAutomations = automations
-    .filter((auto) => !auto.isActive)
-    .sort(
-      (a, b) =>
-        new Date(a.scheduledTime).getTime() -
-        new Date(b.scheduledTime).getTime()
-    );
-
+  const { data: rsvpConfig, isLoading: isLoadingRsvpConfig } = useRSVPConfig();
+  const { weddingId } = useParams();
+  const { data: automations = [], isLoading: isLoadingAutomation } =
+    useSendAutomations();
+  const { mutate: updateRsvpConfig } = useUpdateRsvpConfig();
+  const [showAllDone, setShowAllDone] = useState(false);
   // Auto-select first inactive automation on load
   useEffect(() => {
-    if (!selectedAutomationId && inactiveAutomations.length > 0) {
-      setSelectedAutomationId(inactiveAutomations[0].id);
+    if (isLoadingRsvpConfig || isLoadingAutomation) return;
+
+    if (!selectedAutomationId && automations.length > 0) {
+      if (!rsvpConfig?.isAutomationSetupComplete) {
+        const nextInactiveAutomation = getNextInactiveAutomation(automations);
+        if (nextInactiveAutomation) {
+          setSelectedAutomationId(nextInactiveAutomation?.id);
+        } else {
+          setShowAllDone(true);
+        }
+      } else {
+        if (
+          !!rsvpConfig?.isAutomationSetupComplete &&
+          !rsvpConfig.isSetupComplete
+        ) {
+          setShowAllDone(true);
+        } else {
+          setSelectedAutomationId(automations[0].id);
+        }
+      }
     }
-  }, [inactiveAutomations, selectedAutomationId]);
+  }, [automations, selectedAutomationId]);
 
   const handleSelectAutomation = (automationId: string) => {
     setSelectedAutomationId(automationId);
   };
 
+  const getNextInactiveAutomation = (
+    automations: SendMessagesAutomation[]
+  ): SendMessagesAutomation | undefined => {
+    const automation = automations
+      .sort(
+        (a, b) =>
+          new Date(a.scheduledTime).getTime() -
+          new Date(b.scheduledTime).getTime()
+      )
+      .find(
+        (automation) =>
+          !automation.isActive && automation.id !== selectedAutomationId
+      );
+    console.log(automation, selectedAutomationId);
+    return automation;
+  };
+
   const handleApproveAutomation = () => {
     // Move to next inactive automation
-    const currentIndex = inactiveAutomations.findIndex(
-      (auto) => auto.id === selectedAutomationId
-    );
-    const nextIndex = currentIndex + 1;
+    const nextInactiveAutomation = getNextInactiveAutomation(automations);
 
-    if (nextIndex < inactiveAutomations.length) {
-      setSelectedAutomationId(inactiveAutomations[nextIndex].id);
+    if (nextInactiveAutomation) {
+      setSelectedAutomationId(nextInactiveAutomation.id);
     } else {
-      // All automations approved, stay on last one or clear selection
-      setSelectedAutomationId(null);
+      updateRsvpConfig({
+        id: weddingId!,
+        data: {
+          isAutomationSetupComplete: true,
+        },
+      });
+      setShowAllDone(true);
     }
   };
   return (
@@ -69,7 +106,9 @@ const AutomationMessagesSchedulerContainer: React.FC = () => {
           p: 3,
         }}
       >
-        {selectedAutomationId ? (
+        {showAllDone && !selectedAutomationId ? (
+          <AutomationSetupDone />
+        ) : selectedAutomationId ? (
           <AutomationDetails
             automationId={selectedAutomationId}
             onClose={() => setSelectedAutomationId(null)}

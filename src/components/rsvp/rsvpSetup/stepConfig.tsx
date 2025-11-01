@@ -38,7 +38,7 @@ export const getRSVPSetupSteps = (t: (key: string) => string): StepConfig[] => [
     isComplete: (rsvpConfig) => {
       // This will be dynamically checked by the stepper component
       // using useAllAutomationsApproved hook
-      return false; // Default to false, will be overridden by stepper
+      return !!rsvpConfig?.isAutomationSetupComplete; // Default to false, will be overridden by stepper
     },
     component: AutomationMessagesSchedulerContainer,
   },

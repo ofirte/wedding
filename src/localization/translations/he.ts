@@ -1270,4 +1270,9 @@ export const hebrewTranslations: Translations = {
       },
     },
   },
+  automationSetupDone: {
+    allDone: "הכל מוכן! 🎉",
+    pleaseReview:
+      "מערכת הודעות אישורי ההגעה שלך מוכנה, ברגע שאתה מוכן לחץ על סיום להפעיל אותה",
+  },
 };

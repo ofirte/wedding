@@ -220,6 +220,10 @@ export interface Translations {
     subtitle: string;
     adminTools: string;
   };
+  automationSetupDone: {
+    allDone: string;
+    pleaseReview: string;
+  };
   weddings: {
     yourWeddings: string;
     selectWeddingMessage: string;
