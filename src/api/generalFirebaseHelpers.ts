@@ -16,6 +16,7 @@ import {
   where,
   WhereFilterOp,
   Timestamp,
+  documentId,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
@@ -243,7 +244,12 @@ class GeneralFirebaseService {
     let q = query(collectionRef);
 
     filters.forEach((filter) => {
-      q = query(q, where(filter.field, filter.op, filter.value));
+      if (filter.field === "id") {
+        // Use documentId() for ID queries
+        q = query(q, where(documentId(), filter.op, filter.value));
+      } else {
+        q = query(q, where(filter.field, filter.op, filter.value));
+      }
     });
 
     const querySnapshot = await getDocs(q);

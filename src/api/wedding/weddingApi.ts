@@ -81,6 +81,20 @@ export const getWeddingDetails = async (
   }
 };
 
+export const getWeddingsDetailsBulk = async (
+  weddingIds: string[]
+): Promise<Wedding[]> => {
+  try {
+    const weddings = await WeddingApi.fetchByFilter([
+      { field: "id", op: "in", value: weddingIds },
+    ]);
+    return weddings;
+  } catch (error) {
+    console.error("Error getting weddings details in bulk:", error);
+    return [];
+  }
+};
+
 export const joinWedding = async (
   userId: string,
   weddingIdentifier: string,

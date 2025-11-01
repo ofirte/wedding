@@ -21,6 +21,7 @@ import WeddingsPage from "./components/wedding/WeddingsPage";
 import { AdminPage } from "./components/admin";
 import ManageApp from "./components/common/ManageApp";
 import { RsvpManagerContainer } from "./components/rsvp/RsvpManagerContainer";
+import TasksManagementPage from "./components/tasksManagement/TasksManagementPage";
 
 const AppRoutes: FC = () => {
   return (
@@ -48,10 +49,11 @@ const AppRoutes: FC = () => {
           </Route>
         </Route>
         <Route path="weddings" element={<ManageApp />}>
-          <Route index element={<WeddingsPage />} />
+          <Route path="manage" element={<WeddingsPage />} />
           <Route element={<AdminProtectedRoute />}>
             <Route path="admin" element={<AdminPage />} />
           </Route>
+          <Route path="tasks" element={<TasksManagementPage />} />
         </Route>
       </Route>
     </Routes>

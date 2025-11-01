@@ -1,6 +1,62 @@
 import { Translations } from "../types";
 
 export const englishTranslations: Translations = {
+  tasksManagement: {
+    title: "Task Management",
+    description: "Manage and track tasks across all weddings",
+    filters: {
+      wedding: "Wedding",
+      allWeddings: "All Weddings",
+      search: "Search tasks",
+      dueDate: "Due Date",
+      priority: "Priority",
+      status: "Status",
+      allPriorities: "All Priorities",
+      priorities: {
+        high: "High Priority",
+        medium: "Medium Priority",
+        low: "Low Priority",
+      },
+      statuses: {
+        all: "All Tasks",
+        pending: "Pending Tasks",
+        completed: "Completed Tasks",
+      },
+    },
+    list: {
+      loadingTasks: "Loading tasks...",
+      noTasks: "No tasks found",
+      overdueTitle: "Overdue",
+      upcomingTitle: "Upcoming",
+      laterTitle: "Later",
+      noDueDate: "No due date",
+    },
+    priorities: {
+      high: "High",
+      medium: "Medium",
+      low: "Low",
+    },
+    status: {
+      all: "All",
+      pending: "Pending",
+      completed: "Completed",
+    },
+    calendar: {
+      implementation: "Calendar implementation coming soon",
+    },
+    stats: {
+      total: "Total Tasks",
+      overdue: "Overdue",
+      thisWeek: "This Week",
+      completed: "Completed",
+      activeWeddings: "Active Weddings",
+    },
+    assigned: {
+      bride: "Bride",
+      groom: "Groom",
+      both: "Both",
+    },
+  },
   common: {
     approve: "Approve",
     approved: "Approved",

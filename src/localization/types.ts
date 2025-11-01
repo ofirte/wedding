@@ -29,6 +29,62 @@ export const DEFAULT_LANGUAGE: Language = "he";
 
 // Translation key structure - expandable for different sections
 export interface Translations {
+  tasksManagement: {
+    title: string;
+    description: string;
+    filters: {
+      wedding: string;
+      allWeddings: string;
+      search: string;
+      dueDate: string;
+      priority: string;
+      status: string;
+      allPriorities: string;
+      priorities: {
+        high: string;
+        medium: string;
+        low: string;
+      };
+      statuses: {
+        all: string;
+        pending: string;
+        completed: string;
+      };
+    };
+    list: {
+      loadingTasks: string;
+      noTasks: string;
+      overdueTitle: string;
+      upcomingTitle: string;
+      laterTitle: string;
+      noDueDate: string;
+    };
+    priorities: {
+      high: string;
+      medium: string;
+      low: string;
+    };
+    status: {
+      all: string;
+      pending: string;
+      completed: string;
+    };
+    calendar: {
+      implementation: string;
+    };
+    stats: {
+      total: string;
+      overdue: string;
+      thisWeek: string;
+      completed: string;
+      activeWeddings: string;
+    };
+    assigned: {
+      bride: string;
+      groom: string;
+      both: string;
+    };
+  };
   common: {
     approved: string;
     approve: string;

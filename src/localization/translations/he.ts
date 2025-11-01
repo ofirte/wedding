@@ -1,6 +1,62 @@
 import { Translations } from "../types";
 
 export const hebrewTranslations: Translations = {
+  tasksManagement: {
+    title: "ניהול משימות",
+    description: "נהל ועקוב אחר משימות בכל החתונות",
+    filters: {
+      wedding: "חתונה",
+      allWeddings: "כל החתונות",
+      search: "חפש משימות",
+      dueDate: "תאריך יעד",
+      priority: "עדיפות",
+      status: "סטטוס",
+      allPriorities: "כל העדיפויות",
+      priorities: {
+        high: "עדיפות גבוהה",
+        medium: "עדיפות בינונית",
+        low: "עדיפות נמוכה",
+      },
+      statuses: {
+        all: "כל המשימות",
+        pending: "משימות בהמתנה",
+        completed: "משימות שהושלמו",
+      },
+    },
+    list: {
+      loadingTasks: "טוען משימות...",
+      noTasks: "לא נמצאו משימות",
+      overdueTitle: "באיחור",
+      upcomingTitle: "קרובות",
+      laterTitle: "מאוחר יותר",
+      noDueDate: "ללא תאריך יעד",
+    },
+    priorities: {
+      high: "גבוהה",
+      medium: "בינונית",
+      low: "נמוכה",
+    },
+    status: {
+      all: "הכל",
+      pending: "בהמתנה",
+      completed: "הושלם",
+    },
+    calendar: {
+      implementation: "יישום לוח שנה יגיע בקרוב",
+    },
+    stats: {
+      total: "סך משימות",
+      overdue: "באיחור",
+      thisWeek: "השבוע",
+      completed: "הושלמו",
+      activeWeddings: "חתונות פעילות",
+    },
+    assigned: {
+      bride: "כלה",
+      groom: "חתן",
+      both: "שניהם",
+    },
+  },
   common: {
     approve: "אשר",
     approved: "אושר",
