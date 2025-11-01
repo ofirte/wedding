@@ -182,7 +182,7 @@ export const transformTemplateData = (templates: any[]): TemplateTableRow[] => {
 
     return {
       ...template,
-      id: template.sid || "",
+      id: template.id || "",
       sid: template.sid || "",
       friendlyName: stripWeddingIdFromTemplateName(template.friendlyName || ""),
       language: template.language || "",

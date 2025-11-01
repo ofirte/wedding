@@ -989,6 +989,7 @@ export const englishTranslations: Translations = {
       "Click a variable button to insert it at your cursor position",
     usedVariables: "Used Variables",
     preview: "Preview",
+    rawTemplate: "Raw Template",
     createTemplate: "Create Template",
     noTemplates:
       "No templates created yet. Create your first template to get started!",
@@ -1027,6 +1028,7 @@ export const englishTranslations: Translations = {
     categoryUtility: "UTILITY",
     categoryMarketing: "MARKETING",
     categoryAuthentication: "AUTHENTICATION",
+    uncategorized: "Uncategorized",
     rejectionReason: "Rejection Reason",
     checkApprovalStatus: "Check Approval Status",
     whatsappApproval: "WhatsApp Approval",

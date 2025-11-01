@@ -926,6 +926,8 @@ export interface Translations {
     updateRsvp: string;
   };
   templates: {
+    rawTemplate: string;
+    uncategorized: string;
     noTemplate: string;
     selectThisTemplate: string;
     selectTemplate: string;

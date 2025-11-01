@@ -280,5 +280,5 @@ export const shouldSyncGlobalApprovalStatus = (
 };
 
 // Create collection API for global templates
-const globalTemplatesAPI =
+export const globalTemplatesAPI =
   createGeneralCollectionAPI<TemplateDocument>("globalTemplates");

@@ -50,11 +50,11 @@ export const getCategoryLabel = (
   t: (key: string) => string
 ): string => {
   if (!category) return t("templates.uncategorized");
-  
+
   const categoryOption = TEMPLATE_CATEGORY_OPTIONS.find(
     (option) => option.value === category
   );
-  
+
   return categoryOption ? t(categoryOption.translationKey) : category;
 };
 

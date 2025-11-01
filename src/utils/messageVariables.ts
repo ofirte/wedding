@@ -23,7 +23,7 @@ export interface PopulatedVariables {
  * @returns Array of template variables with localized placeholders
  */
 export const getPredefinedVariables = (
-  locale: Language = "en"
+  locale: Language = "he"
 ): TemplateVariable[] => [
   {
     key: "guestName",
@@ -135,7 +135,7 @@ export const generatePaymentLink = (
  */
 export const formatLocalizedDate = (
   date: Date,
-  locale: Language = "en"
+  locale: Language = "he"
 ): string => {
   if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
     return "TBD";
@@ -159,7 +159,7 @@ export const formatLocalizedDate = (
 export const populateVariables = (
   guest: Invitee,
   wedding: Wedding,
-  locale: Language = "en"
+  locale: Language = "he"
 ): PopulatedVariables => {
   // Generate couple name from individual names or use provided coupleName
   const coupleName =
@@ -178,7 +178,7 @@ export const populateVariables = (
     eventStartTime: wedding.startTime || "TBD",
     coupleName: coupleName,
     eventLocation: wedding.venueName || "TBD",
-    event: locale === "he" ? "חתונה" : "event",
+    eventType: locale === "he" ? "חתונה" : "event",
     rsvpLink: generateRSVPLink(wedding.id, guest.id),
     paymentLink: generatePaymentLink(wedding.id, guest.id),
     giftLink: `https://registry.example.com/${wedding.id}`, // Placeholder for now

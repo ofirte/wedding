@@ -1,8 +1,8 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Box, Typography, Paper, Avatar, Stack, Chip } from "@mui/material";
 import { WhatsApp, Schedule } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { Invitee, TemplateDocument } from "@wedding-plan/types";
+import { Invitee, TemplateDocument, Wedding } from "@wedding-plan/types";
 import { format } from "date-fns";
 import { enUS, he } from "date-fns/locale";
 import { useWeddingDetails } from "../../hooks/wedding/useWeddingDetails";
@@ -27,83 +27,35 @@ const WhatsAppTemplatePreview: React.FC<WhatsAppTemplatePreviewProps> = ({
   const { t, language } = useTranslation();
   const locale = language === "he" ? he : enUS;
   const isRtl = language === "he";
-
+  const templateText = template.types?.["twilio/text"]?.body || "";
   // Get real wedding data but use dummy guest
-  const { data: wedding } = useWeddingDetails();
-
-  // Memoized message rendering with dummy guest and real wedding data
-  const messageElements = useMemo(() => {
-    const messageText =
-      template?.types?.["twilio/text"]?.body ||
-      template?.friendlyName ||
-      t("common.noBodyAvailable");
-
-    if (!messageText || !wedding) {
-      return messageText;
-    }
-
-    // Create dummy guest for preview
-    const dummyGuest: Invitee = {
-      id: "preview-guest",
-      name: language === "he" ? "דנה כהן" : "Dana Cohen",
-      cellphone: "+972-50-123-4567",
-      rsvp: "",
-      percentage: 0,
-      side: "",
-      relation: "",
-      amount: 0,
-      amountConfirm: 0,
-    };
-
-    // Get populated variables using dummy guest and real wedding data
-    const variables = populateVariables(dummyGuest, wedding, language);
-
-    const elements: React.ReactNode[] = [];
-    let lastIndex = 0;
-
-    // Find all variable patterns {{variable}} or {variable}
-    const variableRegex = /(\{\{?\w+\}?\})/g;
-    let match;
-
-    while ((match = variableRegex.exec(messageText)) !== null) {
-      // Add text before the variable
-      if (match.index > lastIndex) {
-        elements.push(messageText.slice(lastIndex, match.index));
-      }
-
-      // Extract variable name (remove braces)
-      const variableName = match[0].replace(/[{}]/g, "");
-      const variableValue = variables[variableName];
-
-      if (variableValue) {
-        // Add the replaced variable with bold blue styling
-        elements.push(
-          <Typography
-            key={`var-${match.index}`}
-            component="span"
-            sx={{
-              fontWeight: 700,
-              color: "#1976d2", // Blue color for replaced variables
-            }}
-          >
-            {variableValue}
-          </Typography>
-        );
-      } else {
-        // Keep original text if variable not found
-        elements.push(match[0]);
-      }
-
-      lastIndex = match.index + match[0].length;
-    }
-
-    // Add remaining text after the last variable
-    if (lastIndex < messageText.length) {
-      elements.push(messageText.slice(lastIndex));
-    }
-
-    return elements.length > 0 ? elements : messageText;
-  }, [template, wedding, language, t]);
+  const { data: wedding, isLoading: isLoadingWedding } = useWeddingDetails();
+  const dummyWedding: Wedding = {
+    id: "dummy-wedding",
+    brideName: language === "he" ? "שרה לוי" : "Sarah Levi",
+    groomName: language === "he" ? "יוסי כהן" : "Yossi Cohen",
+    name: "",
+    venueName: language === "he" ? "גן האירועים שלנו" : "Our Event Garden",
+    date: new Date(),
+    createdAt: new Date(),
+    startTime: "18:00",
+    userIds: [],
+  };
+  const weddingData: Wedding = wedding || dummyWedding;
+  // Create dummy guest for preview
+  const dummyGuest: Invitee = {
+    id: "preview-guest",
+    name: language === "he" ? "דנה כהן" : "Dana Cohen",
+    cellphone: "+972-50-123-4567",
+    rsvp: "",
+    percentage: 0,
+    side: "",
+    relation: "",
+    amount: 0,
+    amountConfirm: 0,
+  };
+  const variables = populateVariables(dummyGuest, weddingData);
+  const message = replaceVariables(templateText, variables);
 
   return (
     <Paper
@@ -261,12 +213,11 @@ const WhatsAppTemplatePreview: React.FC<WhatsAppTemplatePreviewProps> = ({
                 whiteSpace: "pre-wrap",
                 wordBreak: "break-word",
                 lineHeight: 1.4,
-                direction: isRtl ? "rtl" : "ltr",
                 fontSize: "0.9rem",
                 color: "#303030",
               }}
             >
-              {messageElements}
+              {message}
             </Typography>
 
             {/* Message timestamp and status */}

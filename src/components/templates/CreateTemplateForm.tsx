@@ -26,7 +26,10 @@ import {
   TemplateVariable,
   extractUsedVariables,
 } from "../../utils/messageVariables";
-import { CreateMessageTemplateRequest, TemplatesCategories } from "@wedding-plan/types";
+import {
+  CreateMessageTemplateRequest,
+  TemplatesCategories,
+} from "@wedding-plan/types";
 import VariablesSelector from "../common/VariablesSelector";
 import { usePreviewText } from "../../hooks/common";
 

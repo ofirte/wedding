@@ -304,4 +304,4 @@ export const shouldSyncApprovalStatus = (approvalStatus?: string): boolean => {
 };
 
 // Create collection API for templates
-const templatesAPI = createCollectionAPI<TemplateDocument>("templates");
+export const templatesAPI = createCollectionAPI<TemplateDocument>("templates");
