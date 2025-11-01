@@ -23,13 +23,13 @@ const AutomationDetails: React.FC<AutomationDetailsProps> = ({
   // Render different components based on automation status
   const { data: automation, isLoading: isLoadingAutomation } =
     useAutomation(automationId);
+    
   if (isLoadingAutomation) {
     return <LoadingState />;
   }
   if (!automation) {
     return <div>Automation not found</div>;
   }
-
   if (automation.isActive) {
     return <ActiveAutomationDetails automation={automation} />;
   }

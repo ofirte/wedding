@@ -130,7 +130,7 @@ const SetupAutomation: FC<SetupAutomationProps> = ({
             }}
           >
             <Typography variant="h5" fontWeight="bold" gutterBottom>
-              {t("rsvp.setupAutomation")}
+              {automation.name}
             </Typography>
             <Typography variant="body2" sx={{ opacity: 0.9 }}>
               {t("rsvp.configureAutomatedMessageSettings")}
@@ -194,6 +194,7 @@ const SetupAutomation: FC<SetupAutomationProps> = ({
               >
                 <SelectAutomationTemplate
                   onSelectTemplate={handleApproveTemplate}
+                  automationRelatedCategory={automation.relatedTemplateCategory}
                 />
               </AccordionDetails>
             </Accordion>

@@ -93,6 +93,7 @@ export const useCreateInitialAutomations = () => {
           scheduledTimeZone: userTimeZone,
           automationType: config.automationType,
           targetAudienceFilter: config.targetAudience,
+          relatedTemplateCategory: config.category
         };
 
         const createdAutomationRef = await createSendAutomation(

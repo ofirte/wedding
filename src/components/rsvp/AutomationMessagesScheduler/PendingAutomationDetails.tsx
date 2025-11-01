@@ -119,21 +119,6 @@ const PendingAutomationDetails: React.FC<PendingAutomationDetailsProps> = ({
             </Stack>
           </CardContent>
         </Card>
-
-        {/* Action Button */}
-        <Button
-          variant="outlined"
-          size="large"
-          fullWidth
-          startIcon={<Stop />}
-          color="error"
-          sx={{
-            py: 1.5,
-            fontWeight: 600,
-          }}
-        >
-          {t("rsvp.deactivateAutomation")}
-        </Button>
       </Stack>
     </Box>
   );

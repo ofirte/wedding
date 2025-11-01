@@ -85,6 +85,7 @@ const CreateAutomationDialog: React.FC<CreateAutomationDialogProps> = ({
       scheduledTimeZone: userTimeZone,
       automationType: formData.automationType,
       targetAudienceFilter: formData.targetAudienceFilter,
+      relatedTemplateCategory: 'finalRsvp' // TODO: remove file
     };
 
     try {

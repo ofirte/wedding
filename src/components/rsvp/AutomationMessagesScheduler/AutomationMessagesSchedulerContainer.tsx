@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Grid, Box, Typography } from "@mui/material";
 import { ScheduleOutlined } from "@mui/icons-material";
 import AutomationsSidebar from "./AutomationsSidebar";
@@ -12,7 +12,6 @@ const AutomationMessagesSchedulerContainer: React.FC = () => {
     string | null
   >(null);
   const { data: automations = [] } = useSendAutomations();
-  const { data: selectedAutomation } = useAutomation(selectedAutomationId);
 
   // Get sorted inactive automations
   const inactiveAutomations = automations

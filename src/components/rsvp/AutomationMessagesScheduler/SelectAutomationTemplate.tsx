@@ -13,13 +13,16 @@ import { useTranslation } from "../../../localization/LocalizationContext";
 import { useAllWeddingAvailableTemplates } from "../../../hooks/templates/useAllWeddingAvailableTemplates";
 import WhatsAppTemplatePreview from "../../templates/WhatsAppTemplatePreview";
 import { LocalizedArrowIcon } from "src/components/common";
+import { TemplatesCategories } from "@wedding-plan/types";
 
 interface SelectAutomationTemplateProps {
   onSelectTemplate: (templateId: string) => void;
+  automationRelatedCategory: TemplatesCategories;
 }
 
 const SelectAutomationTemplate: FC<SelectAutomationTemplateProps> = ({
   onSelectTemplate,
+  automationRelatedCategory,
 }) => {
   const { t } = useTranslation();
   const [currentTemplateIndex, setCurrentTemplateIndex] = useState(0);
@@ -34,11 +37,15 @@ const SelectAutomationTemplate: FC<SelectAutomationTemplateProps> = ({
     return templates.filter((template) => {
       const hasContent =
         template?.types?.["twilio/text"]?.body || template?.friendlyName;
-      return hasContent && template.sid;
+      const isCorrectCategory = template.category === automationRelatedCategory;
+      return hasContent && template.sid && isCorrectCategory;
     });
   }, [templates]);
 
   const currentTemplate = validTemplates[currentTemplateIndex];
+
+  const hasNext = currentTemplateIndex !== validTemplates.length -1;
+  const hasPrevious = currentTemplateIndex !== 0;
 
   const handlePreviousTemplate = () => {
     setCurrentTemplateIndex((prev) =>
@@ -92,7 +99,7 @@ const SelectAutomationTemplate: FC<SelectAutomationTemplateProps> = ({
       >
         <IconButton
           onClick={handlePreviousTemplate}
-          disabled={validTemplates.length <= 1}
+          disabled={!hasPrevious}
           size="large"
           sx={{
             bgcolor: "primary.main",
@@ -113,7 +120,7 @@ const SelectAutomationTemplate: FC<SelectAutomationTemplateProps> = ({
         )}
         <IconButton
           onClick={handleNextTemplate}
-          disabled={validTemplates.length <= 1}
+          disabled={!hasNext}
           size="large"
           sx={{
             bgcolor: "primary.main",
