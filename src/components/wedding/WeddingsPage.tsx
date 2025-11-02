@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Container,
   Typography,
@@ -15,6 +15,7 @@ import { useWeddingsDetails } from "../../hooks/wedding/useWeddingsDetails";
 import { useTranslation } from "../../localization/LocalizationContext";
 import WeddingCard from "./WeddingCard";
 import { Wedding } from "@wedding-plan/types";
+import { CreateWeddingDialog } from "./CreateWeddingDialog";
 
 const WeddingsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -32,9 +33,11 @@ const WeddingsPage: React.FC = () => {
   const handleWeddingSelect = (weddingId: string) => {
     navigate(`/wedding/${weddingId}/home`);
   };
+  const [isCreateWeddingDialogOpen, setIsCreateWeddingDialogOpen] =
+    useState(false);
 
   const handleCreateWedding = () => {
-    navigate("/wedding");
+    setIsCreateWeddingDialogOpen(true);
   };
 
   if (isUserLoading) {
@@ -129,6 +132,13 @@ const WeddingsPage: React.FC = () => {
           </Box>
         </>
       )}
+      <CreateWeddingDialog
+        open={isCreateWeddingDialogOpen}
+        onClose={() => setIsCreateWeddingDialogOpen(false)}
+        onAccept={(weddingId) => {
+          handleWeddingSelect(weddingId);
+        }}
+      />
     </Container>
   );
 };

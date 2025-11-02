@@ -216,15 +216,12 @@ export const getAllWeddings = async (): Promise<Wedding[]> => {
 
 // Create a new wedding for a user
 export const createWedding = async (
-  userId: string,
-  weddingName: string,
-  weddingDate: Date,
-  brideName?: string,
-  groomName?: string
+  weddingData: Omit<Wedding, "id" | "createdAt" | "userIds" | "members">,
+  userId: string
 ): Promise<string> => {
   try {
     // Generate unique invitation code for the wedding
-    const invitationCode = await generateInvitationCode(weddingName);
+    const invitationCode = await generateInvitationCode(weddingData.name);
 
     // Create initial member record for the creator
     const creatorMember: WeddingMemberInput = {
@@ -232,17 +229,14 @@ export const createWedding = async (
       addedAt: new Date().toISOString(),
       addedBy: "self",
     };
-    const processedWeddingDate = normalizeToUTCMidnight(weddingDate);
+    const processedWeddingDate = normalizeToUTCMidnight(weddingData.date);
 
     // Create a wedding document
     const weddingRef = await WeddingApi.create({
-      name: weddingName,
+      ...weddingData,
       date: processedWeddingDate,
       createdAt: new Date(),
-      brideName: brideName || "",
-      groomName: groomName || "",
       invitationCode,
-      userIds: [],
       members: {
         [userId]: creatorMember,
       },

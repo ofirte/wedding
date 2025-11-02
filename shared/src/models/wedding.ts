@@ -45,7 +45,7 @@ export interface Wedding {
   name: string;
   date: Date;
   createdAt: Date;
-  userIds: string[]; // Legacy array of user IDs
+  userIds?: string[]; // Legacy array of user IDs
   members?: WeddingMembers;
   brideName?: string;
   groomName?: string;
