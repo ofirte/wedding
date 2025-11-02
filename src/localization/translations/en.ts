@@ -19,11 +19,13 @@ export const englishTranslations: Translations = {
       },
       statuses: {
         all: "All Tasks",
-        pending: "Pending Tasks",
+        unassigned: "Unassigned Tasks",
+        inProgress: "In Progress Tasks",
         completed: "Completed Tasks",
       },
     },
     list: {
+      completedTitle: "Completed Tasks",
       loadingTasks: "Loading tasks...",
       noTasks: "No tasks found",
       overdueTitle: "Overdue",

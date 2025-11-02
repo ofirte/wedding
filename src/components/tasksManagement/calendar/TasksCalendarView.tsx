@@ -140,18 +140,10 @@ const DayTasks: React.FC<DayTasksProps> = ({
                   ? (theme) => alpha(theme.palette.success.main, 0.1)
                   : (theme) => alpha(theme.palette.info.main, 0.1),
                 border: 1,
-                borderColor: task.completed ? "success.main" : "info.main",
+                borderColor: stringToColor(task.weddingId),
+                borderWidth: 1.5,
                 position: "relative",
                 overflow: "hidden",
-                "&::before": {
-                  content: '""',
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: 3,
-                  backgroundColor: stringToColor(task.weddingId),
-                },
               }}
             >
               {task.completed ? (

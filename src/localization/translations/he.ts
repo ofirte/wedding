@@ -19,11 +19,13 @@ export const hebrewTranslations: Translations = {
       },
       statuses: {
         all: "כל המשימות",
-        pending: "משימות בהמתנה",
+        unassigned: "משימות לא מוקצות",
+        inProgress: "משימות בתהליך",
         completed: "משימות שהושלמו",
       },
     },
     list: {
+      completedTitle: "משימות שהושלמו",
       loadingTasks: "טוען משימות...",
       noTasks: "לא נמצאו משימות",
       overdueTitle: "באיחור",

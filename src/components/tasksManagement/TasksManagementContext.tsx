@@ -13,7 +13,9 @@ interface TasksManagementContextType {
   setViewType: (view: ViewType) => void;
   filters: TaskFilter;
   setFilters: (filters: TaskFilter) => void;
-  filterTasks: (tasks: (Task & { weddingId: string })[]) => (Task & { weddingId: string })[];
+  filterTasks: (
+    tasks: (Task & { weddingId: string })[]
+  ) => (Task & { weddingId: string })[];
 }
 
 const defaultFilters: TaskFilter = {
@@ -36,9 +38,9 @@ export const TasksManagementProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [viewType, setViewType] = useState<ViewType>("list");
   const [filters, setFilters] = useState<TaskFilter>(defaultFilters);
-  console.log("Current Filters:", filters);
   const filterTasks = useMemo(
     () => (tasks: (Task & { weddingId: string })[]) => {
+      console.log("Filtering tasks with filters:", tasks);
       return tasks.filter((task: Task & { weddingId?: string }) => {
         // Filter by wedding
         if (filters.wedding && task.weddingId !== filters.wedding) {
@@ -48,7 +50,7 @@ export const TasksManagementProvider: React.FC<{ children: ReactNode }> = ({
         // Filter by priority
         if (
           filters.priority?.length &&
-          !filters.priority.includes(task.priority as "high" | "medium" | "low")
+          !filters.priority.includes(task.priority as "High" | "Medium" | "Low")
         ) {
           return false;
         }
@@ -58,7 +60,10 @@ export const TasksManagementProvider: React.FC<{ children: ReactNode }> = ({
           if (filters.status === "completed" && !task.completed) {
             return false;
           }
-          if (filters.status === "pending" && task.completed) {
+          if (filters.status === "unassigned" && task.assignedTo) {
+            return false;
+          }
+          if (filters.status === "inProgress" && !task.assignedTo) {
             return false;
           }
         }

@@ -47,11 +47,13 @@ export interface Translations {
       };
       statuses: {
         all: string;
-        pending: string;
+        unassigned: string;
+        inProgress: string;
         completed: string;
       };
     };
     list: {
+      completedTitle: string;
       loadingTasks: string;
       noTasks: string;
       overdueTitle: string;

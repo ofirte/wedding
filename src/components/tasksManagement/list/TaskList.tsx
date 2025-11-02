@@ -99,9 +99,9 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
                       taskWedding?.name || t("tasksManagement.unknownWedding")
                     }
                     size="small"
+                    variant="outlined"
                     sx={{
-                      backgroundColor: stringToColor(taskWedding?.id || ""),
-                      color: "white",
+                      borderColor: stringToColor(taskWedding?.id || ""),
                     }}
                   />
                 </Box>

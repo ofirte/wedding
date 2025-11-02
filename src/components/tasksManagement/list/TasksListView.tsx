@@ -9,7 +9,7 @@ import { useTasksManagement } from "../TasksManagementContext";
 const TasksListView: React.FC = () => {
   const { t } = useTranslation();
   const { data: tasks = [], isLoading: isLoadingTasks } = useAllWeddingsTasks();
-  const { filterTasks } = useTasksManagement();
+  const { filterTasks, filters } = useTasksManagement();
   const filteredTasks = filterTasks(tasks);
   const now = useMemo(() => new Date(), []); // Memoize current date
   const twoWeeks = useMemo(() => {
@@ -22,35 +22,42 @@ const TasksListView: React.FC = () => {
     overdueTasks: (Task & { weddingId: string })[];
     upcomingTasks: (Task & { weddingId: string })[];
     laterTasks: (Task & { weddingId: string })[];
+    completedTasks: (Task & { weddingId: string })[];
   }
 
-  const { overdueTasks, upcomingTasks, laterTasks } = useMemo(() => {
-    return filteredTasks.reduce<TaskGroups>(
-      (acc, task) => {
-        // Skip tasks without due date for date-based filtering
-        if (!task.dueDate) {
+  const { overdueTasks, upcomingTasks, laterTasks, completedTasks } =
+    useMemo(() => {
+      return filteredTasks.reduce<TaskGroups>(
+        (acc, task) => {
+          // Skip tasks without due date for date-based filtering
+          if (!task.dueDate) {
+            return acc;
+          }
+
+          const dueDate = new Date(task.dueDate);
+
+          if (dueDate < now && !task.completed) {
+            acc.overdueTasks.push(task);
+          } else if (dueDate >= now && dueDate <= twoWeeks) {
+            acc.upcomingTasks.push(task);
+          } else if (dueDate > twoWeeks) {
+            acc.laterTasks.push(task);
+          }
+
+          if (task.completed) {
+            acc.completedTasks.push(task);
+          }
+
           return acc;
+        },
+        {
+          overdueTasks: [],
+          upcomingTasks: [],
+          laterTasks: [],
+          completedTasks: [],
         }
-
-        const dueDate = new Date(task.dueDate);
-
-        if (dueDate < now && !task.completed) {
-          acc.overdueTasks.push(task);
-        } else if (dueDate >= now && dueDate <= twoWeeks) {
-          acc.upcomingTasks.push(task);
-        } else if (dueDate > twoWeeks) {
-          acc.laterTasks.push(task);
-        }
-
-        return acc;
-      },
-      {
-        overdueTasks: [],
-        upcomingTasks: [],
-        laterTasks: [],
-      }
-    );
-  }, [filteredTasks, now, twoWeeks]);
+      );
+    }, [filteredTasks, now, twoWeeks]);
 
   if (isLoadingTasks) {
     return (
@@ -61,7 +68,16 @@ const TasksListView: React.FC = () => {
       </Box>
     );
   }
-
+  if (filters.status === "completed") {
+    return (
+      <Box>
+        <Typography variant="h6" gutterBottom>
+          {t("tasksManagement.list.completedTitle")}
+        </Typography>
+        <TaskList tasks={completedTasks} />
+      </Box>
+    );
+  }
   return (
     <Box>
       <Box sx={{ mb: 3 }}>

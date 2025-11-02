@@ -26,7 +26,7 @@ const TasksFiltersBar: React.FC<TasksFiltersBarProps> = ({
     const value = event.target.value;
     onFiltersChange({
       ...filters,
-      priority: value ? [value as "high" | "medium" | "low"] : null,
+      priority: value ? [value as "High" | "Medium" | "Low"] : null,
     });
   };
 
@@ -35,7 +35,7 @@ const TasksFiltersBar: React.FC<TasksFiltersBarProps> = ({
     if (value) {
       onFiltersChange({
         ...filters,
-        status: value as "pending" | "completed" | "all",
+        status: value as "unassigned" | "inProgress" | "completed" | "all",
       });
     }
   };
@@ -88,13 +88,13 @@ const TasksFiltersBar: React.FC<TasksFiltersBarProps> = ({
             <MenuItem value="">
               {t("tasksManagement.filters.allPriorities")}
             </MenuItem>
-            <MenuItem value="high">
+            <MenuItem value="High">
               {t("tasksManagement.filters.priorities.high")}
             </MenuItem>
-            <MenuItem value="medium">
+            <MenuItem value="Medium">
               {t("tasksManagement.filters.priorities.medium")}
             </MenuItem>
-            <MenuItem value="low">
+            <MenuItem value="Low">
               {t("tasksManagement.filters.priorities.low")}
             </MenuItem>
           </TextField>
@@ -110,8 +110,11 @@ const TasksFiltersBar: React.FC<TasksFiltersBarProps> = ({
             <MenuItem value="all">
               {t("tasksManagement.filters.statuses.all")}
             </MenuItem>
-            <MenuItem value="pending">
-              {t("tasksManagement.filters.statuses.pending")}
+            <MenuItem value="unassigned">
+              {t("tasksManagement.filters.statuses.unassigned")}
+            </MenuItem>
+            <MenuItem value="inProgress">
+              {t("tasksManagement.filters.statuses.inProgress")}
             </MenuItem>
             <MenuItem value="completed">
               {t("tasksManagement.filters.statuses.completed")}
