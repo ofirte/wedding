@@ -19,9 +19,9 @@ const TasksListView: React.FC = () => {
   }, []);
 
   interface TaskGroups {
-    overdueTasks: Task[];
-    upcomingTasks: Task[];
-    laterTasks: Task[];
+    overdueTasks: (Task & { weddingId: string })[];
+    upcomingTasks: (Task & { weddingId: string })[];
+    laterTasks: (Task & { weddingId: string })[];
   }
 
   const { overdueTasks, upcomingTasks, laterTasks } = useMemo(() => {
