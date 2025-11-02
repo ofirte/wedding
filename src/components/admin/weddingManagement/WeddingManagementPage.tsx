@@ -14,15 +14,26 @@ import { WeddingDetailsDialog } from "./WeddingDetailsDialog";
 import { Wedding } from "@wedding-plan/types";
 import { useUpdateUser } from "src/hooks/auth";
 import { arrayUnion } from "firebase/firestore";
+import { set } from "lodash";
+import { WeddingDeleteDialog } from "./WeddingDeleteDialog";
+import { useDeleteWedding } from "src/hooks/wedding/useDeleteWedding";
 
 const WeddingManagementPage: React.FC = () => {
   const { t } = useTranslation();
   const [selectedWedding, setSelectedWedding] = useState<Wedding | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const { mutate: updateUser } = useUpdateUser({
     onError: (error) => {
       console.error("Error updating user weddingIds:", error);
+    },
+  });
+
+  const { mutate: deleteWedding, isPending: isDeleting } = useDeleteWedding({
+    onSuccess: () => {
+      setIsDeleteDialogOpen(false);
+      setSelectedWedding(null);
     },
   });
   // Fetch all weddings using the custom hook
@@ -38,6 +49,10 @@ const WeddingManagementPage: React.FC = () => {
   const handleAddUserToWedding = (wedding: Wedding) => {
     setSelectedWedding(wedding);
     setDialogOpen(true);
+  };
+  const handleDeleteWedding = (wedding: Wedding) => {
+    setSelectedWedding(wedding);
+    setIsDeleteDialogOpen(true);
   };
 
   const handleSaveUser = (weddingId: string, userId: string, plan: string) => {
@@ -102,6 +117,7 @@ const WeddingManagementPage: React.FC = () => {
       <WeddingTable
         weddings={weddings}
         onAddUserToWedding={handleAddUserToWedding}
+        onDeleteClick={handleDeleteWedding}
         isUpdating={addUserToWeddingMutation.isPending}
       />
 
@@ -111,6 +127,15 @@ const WeddingManagementPage: React.FC = () => {
         onClose={handleCloseDialog}
         onSave={handleSaveUser}
         isLoading={addUserToWeddingMutation.isPending}
+      />
+      <WeddingDeleteDialog
+        open={isDeleteDialogOpen}
+        weddingId={selectedWedding?.id || ""}
+        onConfirm={async () => {
+          deleteWedding(selectedWedding?.id || "");
+        }}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        isLoading={isDeleting}
       />
     </Container>
   );

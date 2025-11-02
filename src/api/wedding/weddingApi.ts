@@ -214,6 +214,15 @@ export const getAllWeddings = async (): Promise<Wedding[]> => {
   }
 };
 
+export const deleteWedding = async (weddingId: string): Promise<void> => {
+  try {
+    await WeddingApi.delete(weddingId);
+  } catch (error) {
+    console.error("Error deleting wedding:", error);
+    throw error;
+  }
+};
+
 // Create a new wedding for a user
 export const createWedding = async (
   weddingData: Omit<Wedding, "id" | "createdAt" | "userIds" | "members">,

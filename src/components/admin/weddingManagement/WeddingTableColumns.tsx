@@ -1,5 +1,6 @@
 import React from "react";
-import { IconButton } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { PersonAdd as PersonAddIcon } from "@mui/icons-material";
 import { Column } from "src/components/common/DSTable";
 import { Wedding } from "@wedding-plan/types";
@@ -15,6 +16,7 @@ type TFunction = (
 interface WeddingTableColumnsOptions {
   t: TFunction;
   onAddUserToWedding: (wedding: Wedding) => void;
+  onDeleteClick: (wedding: Wedding) => void;
   isUpdating?: boolean;
 }
 
@@ -24,6 +26,7 @@ interface WeddingTableColumnsOptions {
 export const createWeddingTableColumns = ({
   t,
   onAddUserToWedding,
+  onDeleteClick,
   isUpdating = false,
 }: WeddingTableColumnsOptions): Column<WeddingTableData>[] => [
   {
@@ -125,14 +128,24 @@ export const createWeddingTableColumns = ({
     id: "actions",
     label: t("common.actions"),
     render: (wedding) => (
-      <IconButton
-        onClick={() => onAddUserToWedding(wedding)}
-        size="small"
-        disabled={isUpdating}
-        aria-label={`Add user to wedding ${wedding.name}`}
-      >
-        <PersonAddIcon />
-      </IconButton>
+      <Box display="flex" justifyContent="center">
+        <IconButton
+          onClick={() => onAddUserToWedding(wedding)}
+          size="small"
+          disabled={isUpdating}
+          aria-label={`Add user to wedding ${wedding.name}`}
+        >
+          <PersonAddIcon />
+        </IconButton>
+        <IconButton
+          onClick={() => onDeleteClick(wedding)}
+          size="small"
+          disabled={isUpdating}
+          aria-label={`Delete wedding ${wedding.name}`}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </Box>
     ),
     hideOnMobile: false,
     showOnMobileCard: true,

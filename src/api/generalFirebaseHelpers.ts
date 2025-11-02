@@ -295,7 +295,8 @@ export const generalFirebase = new GeneralFirebaseService();
  * This eliminates code duplication across all API files for general collections
  */
 export const createGeneralCollectionAPI = <T extends { id?: string }>(
-  collectionName: string
+  collectionName: string,
+  softDeleteField?: string
 ) => {
   return {
     /**

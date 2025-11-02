@@ -12,6 +12,7 @@ import { Wedding } from "@wedding-plan/types";
 interface WeddingTableProps {
   weddings: Wedding[];
   onAddUserToWedding: (wedding: Wedding) => void;
+  onDeleteClick: (wedding: Wedding) => void;
   isUpdating?: boolean;
 }
 
@@ -21,6 +22,7 @@ interface WeddingTableProps {
 export const WeddingTable: React.FC<WeddingTableProps> = ({
   weddings,
   onAddUserToWedding,
+  onDeleteClick,
   isUpdating = false,
 }) => {
   const { t } = useTranslation();
@@ -32,6 +34,7 @@ export const WeddingTable: React.FC<WeddingTableProps> = ({
   const columns = createWeddingTableColumns({
     t,
     onAddUserToWedding,
+    onDeleteClick,
     isUpdating,
   });
 
