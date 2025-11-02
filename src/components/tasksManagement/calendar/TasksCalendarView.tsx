@@ -42,7 +42,7 @@ interface DayTasksProps {
   date: Date;
   tasks: (Task & { weddingId: string })[];
   isCurrentMonth: boolean;
-  onDayClick: (date: Date) => void;
+  onDayClick?: (date: Date) => void;
   weddingsDetails: Record<string, Wedding>;
 }
 
@@ -65,7 +65,7 @@ const DayTasks: React.FC<DayTasksProps> = ({
   return (
     <Paper
       elevation={0}
-      onClick={() => onDayClick(date)}
+      onClick={() => onDayClick?.(date)}
       sx={{
         height: 120,
         p: 1.5,
@@ -214,9 +214,8 @@ const DayTasks: React.FC<DayTasksProps> = ({
 };
 
 const TasksCalendarView: React.FC = () => {
-  const { t, language, isRtl } = useTranslation();
+  const { language, isRtl } = useTranslation();
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const { filterTasks } = useTasksManagement();
 
   const { data: notFilteredTasks = [], isLoading: isLoadingTasks } =
@@ -400,7 +399,6 @@ const TasksCalendarView: React.FC = () => {
                     }, {} as Record<string, Wedding>) ?? {}
                   }
                   isCurrentMonth={isSameMonth(date, currentDate)}
-                  onDayClick={setSelectedDate}
                 />
               </Box>
             </Fade>
