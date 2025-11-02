@@ -1,3 +1,5 @@
+import { TemplatesCategories } from "./template";
+
 export type TargetAudienceFilter = {
   attendance?: boolean;
 };
@@ -33,4 +35,5 @@ export interface SendMessagesAutomation {
     errorCode?: string;
     errorMessage?: string;
   }>;
+  relatedTemplateCategory?: TemplatesCategories; // Category of the template used to create this automation
 }

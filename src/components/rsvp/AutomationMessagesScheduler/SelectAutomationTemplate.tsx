@@ -17,7 +17,7 @@ import { TemplatesCategories } from "@wedding-plan/types";
 
 interface SelectAutomationTemplateProps {
   onSelectTemplate: (templateId: string) => void;
-  automationRelatedCategory: TemplatesCategories;
+  automationRelatedCategory?: TemplatesCategories;
 }
 
 const SelectAutomationTemplate: FC<SelectAutomationTemplateProps> = ({
@@ -44,7 +44,7 @@ const SelectAutomationTemplate: FC<SelectAutomationTemplateProps> = ({
 
   const currentTemplate = validTemplates[currentTemplateIndex];
 
-  const hasNext = currentTemplateIndex !== validTemplates.length -1;
+  const hasNext = currentTemplateIndex !== validTemplates.length - 1;
   const hasPrevious = currentTemplateIndex !== 0;
 
   const handlePreviousTemplate = () => {

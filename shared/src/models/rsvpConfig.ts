@@ -35,6 +35,7 @@ export interface WeddingRSVPConfig {
   isSetupComplete?: boolean; // Whether the RSVP setup has been completed
   createdAt: Date;
   updatedAt: Date;
+  isAutomationSetupComplete?: boolean; // Whether automation setup is complete
 }
 
 // Dynamic RSVP data - any question can add its field

@@ -35,36 +35,42 @@ export const useCreateInitialAutomations = () => {
         dayOffset: number;
         automationType: "rsvp" | "reminder";
         targetAudience: { attendance?: boolean };
+        relatedTemplateCategory: TemplatesCategories;
       }> = [
         {
           category: "initialRsvp",
           dayOffset: -21, // 21 days before
           automationType: "rsvp",
           targetAudience: {}, // All guests
+          relatedTemplateCategory: "initialRsvp",
         },
         {
           category: "secondRsvp",
           dayOffset: -16, // 16 days before
           automationType: "rsvp",
           targetAudience: {}, // All guests
+          relatedTemplateCategory: "secondRsvp",
         },
         {
           category: "finalRsvp",
           dayOffset: -12, // 12 days before
           automationType: "rsvp",
           targetAudience: {}, // All guests
+          relatedTemplateCategory: "finalRsvp",
         },
         {
           category: "dayBefore",
           dayOffset: -1, // 1 day before
           automationType: "reminder",
           targetAudience: { attendance: true }, // Only attending guests
+          relatedTemplateCategory: "dayBefore",
         },
         {
           category: "dayAfterThankyou",
           dayOffset: 1, // 1 day after
           automationType: "reminder",
           targetAudience: { attendance: true }, // Only attending guests
+          relatedTemplateCategory: "dayAfterThankyou",
         },
       ];
 
@@ -93,7 +99,7 @@ export const useCreateInitialAutomations = () => {
           scheduledTimeZone: userTimeZone,
           automationType: config.automationType,
           targetAudienceFilter: config.targetAudience,
-          relatedTemplateCategory: config.category
+          relatedTemplateCategory: config.relatedTemplateCategory,
         };
 
         const createdAutomationRef = await createSendAutomation(
