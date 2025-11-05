@@ -1,25 +1,25 @@
 import { useMemo } from "react";
-import { Roles, Role } from "@wedding-plan/types";
+import { WeddingRole, WeddingRoles } from "@wedding-plan/types";
 import { useCurrentUser } from "./useCurrentUser";
 
 /**
  * Role hierarchy levels (higher number = more permissions)
  */
 const ROLE_HIERARCHY = {
-  [Roles.USER]: 1,
-  [Roles.PRODUCER]: 2,
-  [Roles.ADMIN]: 3,
+  [WeddingRoles.USER]: 1,
+  [WeddingRoles.PRODUCER]: 2,
+  [WeddingRoles.ADMIN]: 3,
 } as const;
 
 /**
  * Check if a role has access level for a specific permission tier
  */
 const hasRoleAccess = (
-  userRole: Role | string | undefined,
-  requiredRole: Role
+  userRole: WeddingRole | string | undefined,
+  requiredRole: WeddingRole
 ): boolean => {
   if (!userRole) return false;
-  const userLevel = ROLE_HIERARCHY[userRole as Role] || 0;
+  const userLevel = ROLE_HIERARCHY[userRole as WeddingRole] || 0;
   const requiredLevel = ROLE_HIERARCHY[requiredRole] || 0;
   return userLevel >= requiredLevel;
 };
