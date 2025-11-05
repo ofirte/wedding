@@ -252,6 +252,8 @@ export const englishTranslations: Translations = {
     title: "Wedding Management",
     subtitle: "Manage your weddings and settings",
     adminTools: "Admin Tools",
+    accessDeniedTitle: "Access Denied",
+    accessDeniedMessage: "You need producer or admin access to view this page. Please contact an administrator if you believe you should have access.",
   },
   weddings: {
     yourWeddings: "Your Weddings",

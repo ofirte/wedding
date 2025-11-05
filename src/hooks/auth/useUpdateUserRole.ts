@@ -4,6 +4,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { setUserRole } from "../../api/firebaseFunctions";
+import { WeddingRole } from "@wedding-plan/types";
 
 interface UpdateUserRoleVariables {
   userId: string;
@@ -35,7 +36,7 @@ export const useUpdateUserRole = (
 
   return useMutation({
     mutationFn: async ({ userId, role }: UpdateUserRoleVariables) => {
-      const result = await setUserRole({ userId, role });
+      const result = await setUserRole({ userId, role: role as WeddingRole });
       return result.data as UpdateUserRoleResponse;
     },
     onSuccess: (data, variables) => {

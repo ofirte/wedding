@@ -252,6 +252,8 @@ export const hebrewTranslations: Translations = {
     title: "ניהול חתונות",
     subtitle: "נהל את החתונות וההגדרות שלך",
     adminTools: "כלי ניהול",
+    accessDeniedTitle: "גישה נדחתה",
+    accessDeniedMessage: "נדרשת הרשאת מפיק או מנהל לצפייה בעמוד זה. אנא צור קשר עם מנהל אם אתה סבור שצריכה להיות לך גישה.",
   },
   weddings: {
     yourWeddings: "החתונות שלך",

@@ -14,6 +14,7 @@ export { useUpdateUserRole } from "./useUpdateUserRole";
 export { useInitializeNewUser } from "./useInitializeNewUser";
 export { useUsersInfo } from "./useUsersInfo";
 export { useUsersByIds } from "./useUsersByIds";
+export { useRolePermissions } from "./useRolePermissions";
 
 // Also export types from authApi for convenience
 export type { WeddingUser } from "../../api/auth/authApi";

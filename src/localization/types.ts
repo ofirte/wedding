@@ -277,6 +277,8 @@ export interface Translations {
     title: string;
     subtitle: string;
     adminTools: string;
+    accessDeniedTitle: string;
+    accessDeniedMessage: string;
   };
   automationSetupDone: {
     allDone: string;
