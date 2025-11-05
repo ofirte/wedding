@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { WeddingRole, WeddingRoles } from "@wedding-plan/types";
 import { useCurrentUser } from "./useCurrentUser";
+import { useAuth } from "./AuthContext";
 
 /**
  * Role hierarchy levels (higher number = more permissions)
@@ -33,14 +34,14 @@ const hasRoleAccess = (
  * - hasAdminAccess: true for admin role only
  */
 export const useRolePermissions = () => {
-  const { data: user } = useCurrentUser();
+  const { userClaims } = useAuth();
 
   return useMemo(() => {
-    const role = user?.role;
+    const role = userClaims?.role;
     return {
       hasUserAccess: hasRoleAccess(role, WeddingRoles.USER),
       hasProducerAccess: hasRoleAccess(role, WeddingRoles.PRODUCER),
       hasAdminAccess: hasRoleAccess(role, WeddingRoles.ADMIN),
     };
-  }, [user?.role]);
+  }, [userClaims?.role]);
 };

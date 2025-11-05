@@ -18,13 +18,15 @@ const ManageApp: React.FC = () => {
   };
   
   if (!hasProducerAccess) {
-    return <AccessDenied
-      reason="general"
-      title={t("manage.accessDeniedTitle")}
-      message={t("manage.accessDeniedMessage")}
-      redirectPath="/"
-      redirectLabel={t("common.goToWeddings")}
-    />;
+    return (
+      <AccessDenied
+        reason="general"
+        title={t("manage.accessDeniedTitle")}
+        message={t("manage.accessDeniedMessage")}
+        redirectPath="/"
+        redirectLabel={t("common.goToWeddings")}
+      />
+    );
   }
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
