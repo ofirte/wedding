@@ -5,6 +5,17 @@
 
 import { TemplateContentTypes, TemplateApprovalStatus } from "../api/templates";
 
+/**
+ * Template Categories
+ * Semantic categories matching the 5 message types in MessagesPlanManager
+ */
+export type TemplatesCategories =
+  | "initialRsvp"
+  | "secondRsvp"
+  | "finalRsvp"
+  | "dayBefore"
+  | "dayAfterThankyou";
+
 // Core template data structure (our canonical template representation)
 export interface Template {
   sid: string;
@@ -15,6 +26,8 @@ export interface Template {
   dateCreated: string;
   dateUpdated: string;
   accountSid: string;
+  category?: TemplatesCategories;
+  isGlobal?: boolean;
 }
 
 // Template document as stored in Firebase (extends Template with metadata)

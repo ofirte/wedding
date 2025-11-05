@@ -5,6 +5,7 @@ import {
   WeddingPlan,
 } from "@wedding-plan/types";
 import { createGeneralCollectionAPI } from "../generalFirebaseHelpers";
+import { normalizeToUTCMidnight } from "../../utils/weddingDateUtils";
 
 const WeddingApi = createGeneralCollectionAPI<Wedding>("weddings");
 // Find wedding by invitation code
@@ -80,6 +81,20 @@ export const getWeddingDetails = async (
   }
 };
 
+export const getWeddingsDetailsBulk = async (
+  weddingIds: string[]
+): Promise<Wedding[]> => {
+  try {
+    const weddings = await WeddingApi.fetchByFilter([
+      { field: "id", op: "in", value: weddingIds },
+    ]);
+    return weddings;
+  } catch (error) {
+    console.error("Error getting weddings details in bulk:", error);
+    return [];
+  }
+};
+
 export const joinWedding = async (
   userId: string,
   weddingIdentifier: string,
@@ -117,7 +132,14 @@ export const updateWeddingDetails = async (
   data: Partial<Wedding>
 ): Promise<void> => {
   try {
-    await WeddingApi.update(weddingId, data);
+    // Ensure wedding date is stored as UTC midnight for consistent timezone handling
+    const processedData = { ...data };
+    if (processedData.date && processedData.date instanceof Date) {
+      const utcDate = normalizeToUTCMidnight(processedData.date);
+      processedData.date = utcDate as any; // Will be converted to Timestamp in Firebase
+    }
+
+    await WeddingApi.update(weddingId, processedData);
   } catch (error) {
     console.error("Error updating wedding details:", error);
     throw error;
@@ -192,17 +214,23 @@ export const getAllWeddings = async (): Promise<Wedding[]> => {
   }
 };
 
+export const deleteWedding = async (weddingId: string): Promise<void> => {
+  try {
+    await WeddingApi.delete(weddingId);
+  } catch (error) {
+    console.error("Error deleting wedding:", error);
+    throw error;
+  }
+};
+
 // Create a new wedding for a user
 export const createWedding = async (
-  userId: string,
-  weddingName: string,
-  weddingDate: Date,
-  brideName?: string,
-  groomName?: string
+  weddingData: Omit<Wedding, "id" | "createdAt" | "userIds" | "members">,
+  userId: string
 ): Promise<string> => {
   try {
     // Generate unique invitation code for the wedding
-    const invitationCode = await generateInvitationCode(weddingName);
+    const invitationCode = await generateInvitationCode(weddingData.name);
 
     // Create initial member record for the creator
     const creatorMember: WeddingMemberInput = {
@@ -210,16 +238,14 @@ export const createWedding = async (
       addedAt: new Date().toISOString(),
       addedBy: "self",
     };
+    const processedWeddingDate = normalizeToUTCMidnight(weddingData.date);
 
     // Create a wedding document
     const weddingRef = await WeddingApi.create({
-      name: weddingName,
-      date: weddingDate || null,
+      ...weddingData,
+      date: processedWeddingDate,
       createdAt: new Date(),
-      brideName: brideName || "",
-      groomName: groomName || "",
       invitationCode,
-      userIds: [],
       members: {
         [userId]: creatorMember,
       },

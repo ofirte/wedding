@@ -26,12 +26,18 @@ export const createTemplate = async (
       language: templateData.language,
       variables: templateData.variables,
       types: templateData.types,
+      category: templateData.category,
     });
 
     const createdTemplate = result.data.template;
 
     // Save the template information to Firebase
-    await saveTemplateToFirebase(createdTemplate, weddingId, userId);
+    await saveTemplateToFirebase(
+      createdTemplate,
+      weddingId,
+      userId,
+      templateData.category
+    );
 
     return createdTemplate;
   } catch (error) {
@@ -50,20 +56,15 @@ export const createTemplate = async (
 export const saveTemplateToFirebase = async (
   template: Template,
   weddingId?: string,
-  userId?: string
+  userId?: string,
+  category?: string
 ): Promise<string> => {
   try {
     const templateDocument: Omit<TemplateDocument, "id"> = {
-      sid: template.sid,
-      friendlyName: template.friendlyName,
-      language: template.language,
-      variables: template.variables,
-      types: template.types,
-      dateCreated: template.dateCreated,
-      dateUpdated: template.dateUpdated,
-      accountSid: template.accountSid,
+      ...template,
       createdBy: userId,
       approvalStatus: "pending", // Default approval status when created
+      category: category as any, // Add category to the document
     };
 
     const docRef = await templatesAPI.create(templateDocument, weddingId);
@@ -131,6 +132,8 @@ export const getWeddingTemplates = async (
           approvalStatus: firebaseTemplate.approvalStatus,
           createdBy: firebaseTemplate.createdBy,
           firebaseId: firebaseTemplate.id,
+          category: firebaseTemplate.category,
+          id: firebaseTemplate.id,
           // Keep Twilio as source of truth for template content and metadata
           // But add Firebase-specific fields
         };
@@ -257,7 +260,18 @@ export const updateTemplateApprovalStatus = async (
     // Find the template document in Firebase
     const firebaseTemplates = await getTemplatesFromFirebase(weddingId);
     const template = firebaseTemplates.find((t) => t.sid === templateSid);
-
+    console.log(
+      firebaseTemplates.map((t) => {
+        return {
+          sid: t.sid,
+          approvalStatus: t.approvalStatus,
+          name: t.friendlyName,
+        };
+      })
+    );
+    console.log(
+      `Updating template ${firebaseTemplates} approval status to ${status}`
+    );
     if (template) {
       await templatesAPI.update(
         template.id,
@@ -285,18 +299,9 @@ export const shouldSyncApprovalStatus = (approvalStatus?: string): boolean => {
   // Only sync templates that might have status updates from WhatsApp
   return !!(
     approvalStatus &&
-    ["submitted", "received", "pending"].includes(approvalStatus)
+    ["submitted", "received", "pending", "unsubmitted"].includes(approvalStatus)
   );
 };
 
 // Create collection API for templates
-const templatesAPI = createCollectionAPI<TemplateDocument>("templates");
-
-// Export the standard CRUD operations for templates
-export const fetchTemplates = templatesAPI.fetchAll;
-export const subscribeToTemplates = templatesAPI.subscribe;
-export const fetchTemplate = templatesAPI.fetchById;
-export const updateTemplate = templatesAPI.update;
-export const bulkUpdateTemplates = templatesAPI.bulkUpdate;
-export const bulkDeleteTemplates = templatesAPI.bulkDelete;
-export const fetchTemplatesByFilter = templatesAPI.fetchByFilter;
+export const templatesAPI = createCollectionAPI<TemplateDocument>("templates");

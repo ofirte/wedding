@@ -1,5 +1,7 @@
 // RSVP Question System Types
 
+import { WeddingRSVPConfig } from "@wedding-plan/types";
+
 // For boolean questions, defines custom text and which option maps to true/false
 export interface BooleanOptions {
   trueOption: string; // Text for the "true" choice
@@ -111,14 +113,6 @@ export const PREDEFINED_QUESTIONS: RSVPQuestion[] = getPredefinedQuestions(
   (key: string) => key
 );
 
-// Wedding RSVP Configuration
-export interface WeddingRSVPConfig {
-  enabledQuestionIds: string[]; // IDs of enabled predefined questions
-  customQuestions: RSVPQuestion[]; // User-created questions
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 // Dynamic RSVP data - any question can add its field
 export interface InviteeRSVP {
   isSubmitted: boolean;
@@ -155,7 +149,6 @@ export const getAllAvailableQuestions = (
     config.enabledQuestionIds.includes(q.id)
   );
   const custom = config.customQuestions;
-
   return [...predefined, ...custom].sort(
     (a, b) => (a.order || 0) - (b.order || 0)
   );

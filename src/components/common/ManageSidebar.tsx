@@ -18,13 +18,10 @@ import {
   Event as WeddingsIcon,
   AdminPanelSettings as AdminIcon,
   Logout as LogoutIcon,
+  Task as TaskIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router";
-import {
-  useCurrentUser,
-  useSignOut,
-  useIsAdmin,
-} from "../../hooks/auth";
+import { useCurrentUser, useSignOut, useIsAdmin } from "../../hooks/auth";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useResponsive } from "../../utils/ResponsiveUtils";
@@ -48,7 +45,12 @@ const ManageSidebar: React.FC<ManageSidebarProps> = ({
   const { isAdmin } = useIsAdmin();
 
   const menuItems = [
-    { text: t("nav.weddings"), icon: <WeddingsIcon />, path: "/weddings" },
+    {
+      text: t("nav.weddings"),
+      icon: <WeddingsIcon />,
+      path: "/weddings/manage",
+    },
+    { text: t("nav.tasks"), icon: <TaskIcon />, path: "/weddings/tasks" },
   ];
 
   const adminMenuItems = [
@@ -58,7 +60,10 @@ const ManageSidebar: React.FC<ManageSidebarProps> = ({
   // Function to check if a menu item is currently active
   const isMenuItemActive = (itemPath: string) => {
     if (itemPath === "/weddings") {
-      return location.pathname === "/weddings" || !location.pathname.includes("/admin");
+      return (
+        location.pathname === "/weddings" ||
+        !location.pathname.includes("/admin")
+      );
     }
     return location.pathname.includes(itemPath);
   };
@@ -112,7 +117,14 @@ const ManageSidebar: React.FC<ManageSidebarProps> = ({
   }
 
   const drawerContent = (
-    <Box sx={{ height: "100%", display: "flex", flexDirection: "column", mt: isMobile ? 6 : 0 }}>
+    <Box
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        mt: isMobile ? 6 : 0,
+      }}
+    >
       <Box
         sx={{
           padding: 2,

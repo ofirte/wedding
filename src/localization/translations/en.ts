@@ -1,11 +1,78 @@
 import { Translations } from "../types";
 
 export const englishTranslations: Translations = {
+  tasksManagement: {
+    title: "Task Management",
+    description: "Manage and track tasks across all weddings",
+    filters: {
+      wedding: "Wedding",
+      allWeddings: "All Weddings",
+      search: "Search tasks",
+      dueDate: "Due Date",
+      priority: "Priority",
+      status: "Status",
+      allPriorities: "All Priorities",
+      priorities: {
+        high: "High Priority",
+        medium: "Medium Priority",
+        low: "Low Priority",
+      },
+      statuses: {
+        all: "All Tasks",
+        unassigned: "Unassigned Tasks",
+        inProgress: "In Progress Tasks",
+        completed: "Completed Tasks",
+      },
+    },
+    list: {
+      completedTitle: "Completed Tasks",
+      loadingTasks: "Loading tasks...",
+      noTasks: "No tasks found",
+      overdueTitle: "Overdue",
+      upcomingTitle: "Upcoming",
+      laterTitle: "Later",
+      noDueDate: "No due date",
+    },
+    priorities: {
+      high: "High",
+      medium: "Medium",
+      low: "Low",
+    },
+    status: {
+      all: "All",
+      pending: "Pending",
+      completed: "Completed",
+    },
+    calendar: {
+      implementation: "Calendar implementation coming soon",
+    },
+    stats: {
+      total: "Total Tasks",
+      overdue: "Overdue",
+      thisWeek: "This Week",
+      completed: "Completed",
+      activeWeddings: "Active Weddings",
+    },
+    assigned: {
+      bride: "Bride",
+      groom: "Groom",
+      both: "Both",
+    },
+  },
   common: {
+    approve: "Approve",
+    approved: "Approved",
     close: "Close",
     back: "Back",
+    next: "Next",
+    previous: "Previous",
+    finish: "Finish",
     save: "Save",
     cancel: "Cancel",
+    yesNo: "Yes/No",
+    select: "Select",
+    required: "Required",
+    options: "Options",
     delete: "Delete",
     edit: "Edit",
     add: "Add",
@@ -16,7 +83,11 @@ export const englishTranslations: Translations = {
     confirm: "Confirm",
     yes: "Yes",
     no: "No",
+    inactive: "Inactive",
+    active: "Active",
+    template: "Template",
     changeLanguage: "Change Language",
+    clickForDetails: "Click for details",
     signOut: "Sign Out",
     user: "User",
     actions: "Actions",
@@ -132,6 +203,7 @@ export const englishTranslations: Translations = {
     more: "more",
     update: "Update",
     clearAll: "Clear All",
+    all: "All",
     item: "Item",
     noDataAvailable: "No data available",
     noDataDescription: "There are no items to display at the moment",
@@ -157,6 +229,7 @@ export const englishTranslations: Translations = {
     noVariables: "No variables",
     unnamedTemplate: "Unnamed Template",
     unknown: "Unknown",
+    confirmDelete: "Are you sure you want to delete this item?",
     accessDenied: "Access Denied",
     insufficientPermissions:
       "You don't have permission to access this page. Please contact an administrator if you believe this is an error.",
@@ -165,6 +238,8 @@ export const englishTranslations: Translations = {
   },
   nav: {
     home: "Home",
+    weddingDay: "Wedding Day",
+    days: "days",
     budget: "Budget",
     guests: "Guests",
     tasks: "Tasks",
@@ -275,6 +350,7 @@ export const englishTranslations: Translations = {
     tabs: {
       users: "Users",
       weddings: "Weddings",
+      templates: "Templates",
       migrations: "Migrations",
     },
   },
@@ -450,6 +526,8 @@ export const englishTranslations: Translations = {
     searchPlaceholder: "Edit name or type to search contacts...",
   },
   rsvp: {
+    completed: "Completed",
+    pending: "Pending",
     confirmationTitle: "{{guestName}}, You're Invited to Our Wedding",
     stepsCompleted: "{{completed}}/{{total}} steps completed",
     updating: "Updating...",
@@ -497,6 +575,21 @@ export const englishTranslations: Translations = {
     stayContinue: "Stay & Continue",
     leaveWithoutSaving: "Leave Without Saving",
     markAllAsSentAndClose: "Mark All as Sent & Close",
+    // Welcome page translations
+    welcome: {
+      title: "Welcome to RSVP Setup",
+      subtitle:
+        "Let's set up your wedding RSVP system to collect guest responses and manage your guest list efficiently.",
+      stepsTitle: "Here's what we'll help you set up:",
+      step1Title: "Create Your RSVP Form",
+      step1Description:
+        "Design custom questions to collect the information you need from your guests, from meal preferences to plus-ones.",
+      step2Title: "Set Up Two Types of Messages",
+      step2Description:
+        "RSVP invitations with form links for collecting responses, plus reminders and thank you messages for attending guests.",
+      getStarted: "Get Started",
+      creating: "Setting up your RSVP...",
+    },
     // Send progress translations
     sendingMessages: "Sending Messages",
     messageSummary: "Message Summary",
@@ -515,8 +608,271 @@ export const englishTranslations: Translations = {
     sendingSummary: "Sending Summary",
     messagesQueued: "Messages Queued",
     failedToSend: "Failed to Send",
+    messages: "messages",
     messageQueuedSingular: "Message has been queued for delivery.",
     messagesQueuedPlural: "{{count}} messages have been queued for delivery.",
+    // Send Automation translations
+    sendAutomations: "Send Automations",
+    selectAutomationToEdit: "Select an automation to configure",
+    selectAutomationDescription:
+      "Choose an automation from the sidebar to edit its schedule, template, and settings.",
+    createAutomation: "Create Send Automation",
+    runNow: "Run Now",
+    automationName: "Automation Name",
+    scheduledTime: "Scheduled Time",
+    automationType: "Automation Type",
+    rsvpAutomation: "RSVP Request",
+    reminderAutomation: "Reminder Message",
+    rsvpAutomationDescription: "Send to guests who haven't responded to RSVP",
+    reminderAutomationDescription: "Send reminder or thank you messages",
+    targetAudience: "Target Audience",
+    // Status translations
+    statuses: {
+      pending: "Pending",
+      inProgress: "In Progress",
+      completed: "Completed",
+      failed: "Failed",
+    },
+    attendingGuests: "Attending Guests",
+    notAttendingGuests: "Not Attending Guests",
+    guestsAttending: "Guests who are attending",
+    guestsNotAttending: "Guests who are not attending",
+    allGuests: "All guests",
+    noAutomationsTitle: "No Send Automations",
+    noAutomationsDescription:
+      "Create automated message campaigns to send RSVP requests and reminders to your guests.",
+    createFirstAutomation: "Create First Automation",
+    // Automation Info Dialog
+    automationDetails: "Automation Details",
+    basicInformation: "Basic Information",
+    executionStatistics: "Execution Statistics",
+    totalMessagesSent: "Total Messages Sent",
+    successfulMessages: "Successful Messages",
+    failedMessages: "Failed Messages",
+    completedAt: "Completed At",
+    configureAutomationDescription:
+      "Configure scheduling and template settings for this automation",
+    currentScheduledTime: "Current",
+    activateAutomation: "Activate Automation",
+    automationActive: "Automation Active",
+    noTemplatesAvailable: "No templates available",
+    failureDetails: "Failure Details",
+    failureDetailsDescription: "The following messages failed to send:",
+    messageSid: "Message ID",
+    errorCode: "Error Code",
+    errorMessage: "Error Message",
+    // Automation details components
+    automationPending: "Automation Scheduled",
+    automationPendingDescription:
+      "This automation is scheduled to run automatically",
+    automationCompleted: "Automation Completed",
+    automationCompletedDescription:
+      "This automation has completed successfully",
+    automationFailed: "Automation Failed",
+    automationFailedDescription:
+      "This automation encountered errors during execution",
+    contactSupport: "Contact Support",
+    contactSupportDescription:
+      "Need help resolving these issues? Our support team is here to help.",
+    contactSupportButton: "Get Help",
+    messageSentTo: "Messages sent to {{count}} guests",
+    deactivateAutomation: "Deactivate Automation",
+    viewFailureDetails: "View Failure Details",
+    automationActiveMessage:
+      "This automation is currently active and will run at the scheduled time.",
+    automationInProgressInfo:
+      "This automation is currently running. Status will be updated automatically.",
+    automationCompletedSuccessfully:
+      "This automation completed successfully with all messages sent.",
+    automationFailedInfo:
+      "This automation failed during execution. Check the failure details below for more information.",
+    // Setup Automation translations
+    setupAutomation: "Setup Automation",
+    configureAutomatedMessageSettings:
+      "Configure your automated message settings",
+    selectMessageTemplate: "Select Message Template",
+    chooseTemplateForAutomatedMessages:
+      "Choose the template for your automated messages",
+    scheduleDeliveryTime: "Schedule Delivery Time",
+    setAutomatedMessageSendTime:
+      "Set when the automated messages should be sent",
+    approveScheduleAutomation: "Approve & Schedule Automation",
+    approveBothTemplateAndSchedule:
+      "Please approve both template and schedule sections above",
+    updatingAutomation: "Updating automation...",
+    selectTemplateHint:
+      "This template will be used for your automated messages",
+    swipeToSeeMore: "Swipe to see more",
+    singleTemplate: "Only template",
+    weddingDateRequired: "Wedding date is required to schedule messages",
+    selectScheduledTime: "Select Scheduled Time",
+    selectScheduledTimeHint: "Choose when this message should be sent",
+    scheduledSendTime: "Scheduled Send Time",
+    selectDateTime: "Select date and time",
+    messageWillBeSent: "Message will be sent",
+    confirmScheduledTime: "Confirm Scheduled Time",
+    confirmScheduledTimeHint:
+      "This will set when the message is automatically sent",
+    // Preview dummy data
+    preview: {
+      weddingName: "Sarah & John's Wedding",
+      brideName: "Sarah Johnson",
+      groomName: "John Smith",
+      venueName: "Garden Paradise Resort",
+      guestName: "Alex Wilson",
+      guestSide: "bride",
+      guestRelation: "friend",
+    },
+    changeInvitationPhoto: "Change Invitation Photo",
+    addInvitationPhoto: "Add Invitation Photo",
+    changePhoto: "Change Photo",
+    addPhoto: "Add Photo",
+    removePhoto: "Remove Photo",
+    presetQuestions: "Preset Questions",
+    custom: "Custom",
+    createQuestionFormPlaceholder:
+      "Create Question Form Component will go here",
+    addQuestionsFromSidebar:
+      "Add questions from the sidebar to see the form preview",
+    // Premium pricing page
+    premiumPricing: {
+      hero: {
+        title: "Effortless Guest Updates",
+        subtitle: "5 Beautiful Messages. Zero Stress.",
+        description:
+          "Upgrade to our Premium RSVP Messaging Service and automate your entire guest communication journey with professional WhatsApp messages.",
+      },
+      howItWorks: {
+        title: "How It Works",
+        step1: {
+          title: "Set Up Your Form",
+          description:
+            "Create your custom RSVP form with the questions you need",
+          icon: "settings",
+        },
+        step2: {
+          title: "Guests Respond",
+          description:
+            "Guests receive beautiful WhatsApp messages with form links",
+          icon: "message",
+        },
+        step3: {
+          title: "Automated Reminders",
+          description:
+            "We handle reminders, event details, and thank you messages",
+          icon: "automation",
+        },
+      },
+      features: {
+        title: "What's Included",
+        rsvpMessages: {
+          title: "3 RSVP Messages",
+          description:
+            "Initial invitation, follow-up reminder, and final notice to collect all responses",
+          icon: "message",
+        },
+        eventReminder: {
+          title: "Day Before Reminder",
+          description:
+            "Event details and location sent 1 day before your wedding",
+          icon: "calendar",
+        },
+        giftLink: {
+          title: "Gift-by-Card Link",
+          description:
+            "Include your gift registry link in the day-before message",
+          icon: "gift",
+        },
+        thankYou: {
+          title: "Thank You Message",
+          description:
+            "Heartfelt thank you message sent after your special day",
+          icon: "heart",
+        },
+        phoneSupport: {
+          title: "Phone Call Service",
+          description:
+            "We'll call guests who haven't responded to ensure maximum attendance",
+          icon: "phone",
+        },
+      },
+      pricing: {
+        title: "Simple, Transparent Pricing",
+        subtitle: "Choose the package that fits your guest list",
+        startingPrice: "Starting at ₪1.5 per guest",
+        perInvitee: "per invitee phone number",
+        packages: {
+          small: {
+            title: "Intimate Wedding",
+            guestCount: "Up to 100 guests",
+            price: "₪150",
+            features: [
+              "All 5 message types",
+              "Phone call service",
+              "Gift registry link",
+              "24/7 support",
+            ],
+          },
+          medium: {
+            title: "Classic Wedding",
+            guestCount: "Up to 250 guests",
+            price: "₪375",
+            popular: true,
+            features: [
+              "All 5 message types",
+              "Phone call service",
+              "Gift registry link",
+              "Priority support",
+              "Custom message timing",
+            ],
+          },
+          large: {
+            title: "Grand Celebration",
+            guestCount: "Up to 500 guests",
+            price: "₪750",
+            features: [
+              "All 5 message types",
+              "Phone call service",
+              "Gift registry link",
+              "Dedicated support",
+              "Custom message timing",
+              "Advanced analytics",
+            ],
+          },
+        },
+        customPricing:
+          "Need more than 500 guests? Contact us for custom pricing.",
+      },
+      testimonials: {
+        title: "What Couples Say",
+        testimonial1: {
+          text: "The automated messages saved us so much stress! 98% of our guests responded, and the thank you message was such a nice touch.",
+          author: "Sarah & Michael",
+          wedding: "September 2024",
+        },
+        testimonial2: {
+          text: "Best investment we made for our wedding. The phone call service got responses from our elderly relatives who don't use WhatsApp much.",
+          author: "Rachel & David",
+          wedding: "October 2024",
+        },
+      },
+      sampleMessage: {
+        title: "Sample Message Preview",
+        subtitle: "See what your guests will receive",
+        messageText:
+          "Hi {{guestName}}! 🎉\n\nYou're invited to {{brideName}} & {{groomName}}'s wedding at {{venueName}} on {{weddingDate}}.\n\nPlease confirm your attendance: [RSVP Link]\n\nWe can't wait to celebrate with you! 💕",
+        variables:
+          "Messages are personalized with guest names and wedding details",
+      },
+      cta: {
+        title: "Ready to Upgrade?",
+        description:
+          "Join hundreds of couples who've made their RSVP process stress-free",
+        upgradeButton: "Upgrade to Premium RSVP",
+        contactUs: "Have questions? Contact us",
+        guarantee: "30-day money-back guarantee",
+      },
+    },
   },
   rsvpEmptyState: {
     title: "Create Your RSVP Form",
@@ -691,15 +1047,21 @@ export const englishTranslations: Translations = {
       "Click a variable button to insert it at your cursor position",
     usedVariables: "Used Variables",
     preview: "Preview",
+    rawTemplate: "Raw Template",
     createTemplate: "Create Template",
     noTemplates:
       "No templates created yet. Create your first template to get started!",
     loadError: "Failed to load templates",
     unnamed: "Unnamed Template",
     noContent: "No content available",
+    noTemplate: "No template assigned",
+    selectThisTemplate: "Select This Template",
+    selectTemplate: "Select Template",
+    messageTemplate: "Message Template",
     variables: "Variables",
     name: "Name",
     type: "Type",
+    category: "Message Type",
     eligibility: "Eligibility",
     textType: "Text",
     mediaType: "Media",
@@ -724,6 +1086,7 @@ export const englishTranslations: Translations = {
     categoryUtility: "UTILITY",
     categoryMarketing: "MARKETING",
     categoryAuthentication: "AUTHENTICATION",
+    uncategorized: "Uncategorized",
     rejectionReason: "Rejection Reason",
     checkApprovalStatus: "Check Approval Status",
     whatsappApproval: "WhatsApp Approval",
@@ -748,5 +1111,274 @@ export const englishTranslations: Translations = {
     requestApproval: "Request Approval",
     requestWhatsappApproval: "Request WhatsApp Approval",
     checkingApprovalStatus: "Checking approval status...",
+  },
+  globalTemplates: {
+    title: "Global Templates",
+    description:
+      "Create and manage global message templates available to all weddings",
+    createNew: "Create Global Template",
+    createTemplate: "Create Template",
+    templateName: "Template Name",
+    category: "Category",
+    language: "Language",
+    messageText: "Message Text",
+    messagePreview: "Message Preview",
+    messageTextPlaceholder: "Enter your message template here...",
+    variablesInfo:
+      "Use variables like {{guestName}}, {{eventDate}} to personalize messages",
+    global: "Global",
+    totalTemplates: "Total Templates",
+    noTemplates:
+      "No global templates created yet. Create your first global template!",
+    noTemplatesInCategory: "No templates found in {{category}} category.",
+    createSuccess: "Global template created successfully!",
+    createError: "Failed to create global template. Please try again.",
+    loadError: "Failed to load global templates",
+    created: "Created",
+    categories: {
+      initialRsvp: "Initial RSVP Invitation",
+      initialRsvpDescription:
+        "First message sent to guests requesting their RSVP response",
+      secondRsvp: "Second RSVP Reminder",
+      secondRsvpDescription:
+        "Follow-up reminder for guests who haven't responded yet",
+      finalRsvp: "Final RSVP Notice",
+      finalRsvpDescription: "Last chance reminder before RSVP deadline closes",
+      dayBefore: "Day Before Reminder",
+      dayBeforeDescription:
+        "Event details reminder sent one day before the wedding",
+      dayAfterThankyou: "Thank You Message",
+      dayAfterThankyouDescription:
+        "Gratitude message sent after the wedding to thank guests",
+    },
+  },
+  automation: {
+    allMessagesSent: "Great! All messages were sent successfully! 🎉",
+    successMessage:
+      "Your message was delivered to {{count}} guests. Everyone should have received it!",
+    mostMessagesSent: "Almost there! Most messages were sent 📱",
+    partialSuccessMessage:
+      "{{successful}} messages were sent successfully, but {{failed}} had delivery issues.",
+    issuesExplanation:
+      "Don't worry - this is usually due to invalid phone numbers or network issues. Most guests received your message!",
+    sentOn: "Sent on",
+    messagesBeingSent: "Your messages are being sent now 📤",
+    inProgressMessage:
+      "Please wait while we deliver your messages to all guests. This usually takes just a few minutes.",
+    somethingWentWrong: "Oops! Something went wrong 😔",
+    failedMessage:
+      "We weren't able to send your messages this time. This is rare and usually temporary.",
+    contactSupport:
+      "Please try again, or contact support if the issue persists.",
+    messageScheduled: "Message is scheduled ⏰",
+    willBeSentOn: "Your message will be automatically sent on",
+  },
+  rsvpSetup: {
+    title: "RSVP Setup",
+    subtitle: "Configure your RSVP system step by step",
+    loading: "Loading RSVP configuration...",
+    setupComplete: "Setup Complete",
+    steps: {
+      welcome: {
+        title: "Welcome",
+        description:
+          "Introduction to RSVP setup process and overview of required configurations",
+      },
+      form: {
+        title: "Form Questions",
+        description:
+          "Configure the RSVP form questions that guests will see when responding",
+      },
+      automations: {
+        title: "Message Templates",
+        description:
+          "Set up RSVP messages, reminders, and thank you templates for automated messaging",
+      },
+    },
+  },
+  userRsvp: {
+    title: "Wedding RSVP Setup",
+    subtitle: "Set up your automated RSVP system in just a few easy steps",
+    launchRsvp: "Launch RSVP System",
+    completeStepToContinue: "Please complete this step to continue",
+    steps: {
+      createForm: "Create Form",
+      createFormDesc: "Build your RSVP form",
+      chooseMessages: "Choose Messages",
+      chooseMessagesDesc: "Select your templates",
+      scheduleTimeline: "Schedule Timeline",
+      scheduleTimelineDesc: "Set send dates",
+      reviewLaunch: "Review & Launch",
+      reviewLaunchDesc: "Finalize and activate",
+    },
+    form: {
+      title: "Create Your RSVP Form",
+      description: "Start by creating the form your guests will use to RSVP",
+      startWithDefaults: "Start with Default Questions",
+      customizeQuestions: "Customize Your RSVP Questions",
+      customizeDesc: "Choose which questions to include in your RSVP form",
+      availableQuestions: "Available Questions",
+      selectedCount: "{{count}} questions selected",
+      confirmQuestions: "Confirm Questions",
+      updateError: "Failed to update questions. Please try again.",
+      preview: "Preview Form",
+      addCustom: "Add Custom Question",
+      createCustomQuestion: "Create Custom Question",
+      questionText: "Question Text",
+      displayName: "Display Name",
+      displayNameHelp:
+        "Short name for table headers (e.g., 'Meal', 'Transport')",
+      questionType: "Question Type",
+      selectOptions: "Select Options",
+      option: "Option {{number}}",
+      addOption: "Add Option",
+      quickStart: "Quick Start",
+      quickStartDesc: "Use our recommended RSVP questions to get started fast",
+      customize: "Custom Form",
+      createDefault: "Create Default Form",
+      buildCustom: "Build Custom Form",
+      completed: "RSVP Form Created!",
+      completedDesc: "Your RSVP form is ready. You can customize it anytime.",
+      customizeForm: "Customize Form",
+      createError: "Failed to create RSVP form. Please try again.",
+      tip: "You can always change your form questions later in the setup process.",
+    },
+    templates: {
+      title: "Choose Your Message Templates",
+      description: "Select templates for your automated messaging campaign",
+      rsvpInitial: "RSVP Invitations",
+      rsvpInitialDesc: "Initial invitation messages to request RSVP responses",
+      dayBefore: "Day Before Reminder",
+      dayBeforeDesc: "Reminder message sent the day before your wedding",
+      thankYou: "Thank You Message",
+      thankYouDesc: "Thank your guests after the wedding",
+      selectTemplate: "Select a template",
+      template: "Template",
+      preview: "Preview",
+      selected: "Selected",
+      selectionComplete: "All required templates selected!",
+      selectAllRequired: "Please select all required message templates",
+      noTemplatesAvailable: "No templates available for this category",
+      previewTitle: "Template Preview",
+      previewPlaceholder: "Template preview will be shown here",
+    },
+    scheduler: {
+      title: "Schedule Your Messages",
+      description: "Set when each message should be sent to your guests",
+      scheduledTime: "Scheduled Time",
+      automationsCreated: "Automations created successfully!",
+      completeAllSchedules: "Please complete all message schedules to continue",
+      noTemplatesSelected:
+        "No templates selected. Please go back and select templates first.",
+      noScheduleItems: "No schedule items to create automations",
+      createAutomationsError: "Failed to create automations. Please try again.",
+      weddingDateRequired: "Wedding date is required for scheduling",
+      templatesRequired: "Please select templates before scheduling",
+      approvePlan: "Approve & Create Plan",
+      creatingAutomations: "Creating Automations...",
+      scheduleOverview: "Schedule Overview",
+      weddingDate: "Wedding Date",
+      messageTimeline: "Message Timeline",
+      onWeddingDay: "On wedding day",
+      oneDayBefore: "1 day before",
+      oneDayAfter: "1 day after",
+      daysBefore: "{{days}} days before",
+      daysAfter: "{{days}} days after",
+      existingAutomations:
+        "{{count}} automations are already configured and active",
+    },
+    messagesPlan: {
+      title: "Messages Plan",
+      description:
+        "Select templates for your 5 automated messages to create a complete communication flow",
+      initialRsvp: {
+        title: "Initial RSVP Invitation",
+        description:
+          "First message sent to guests requesting their RSVP response",
+      },
+      secondRsvp: {
+        title: "Second RSVP Reminder",
+        description: "Follow-up reminder for guests who haven't responded yet",
+      },
+      finalRsvp: {
+        title: "Final RSVP Notice",
+        description: "Last chance reminder before RSVP deadline closes",
+      },
+      dayBefore: {
+        title: "Day Before Reminder",
+        description: "Event details reminder sent one day before the wedding",
+      },
+      dayAfterThankyou: {
+        title: "Thank You Message",
+        description: "Gratitude message sent after the wedding to thank guests",
+      },
+      selectTemplate: "Select Template",
+      changeTemplate: "Change Template",
+      templatesSelected: "Templates Selected",
+      continue: "Continue to Scheduling",
+      loadingTemplates: "Loading available templates...",
+      noTemplatesAvailable:
+        "No approved templates available. Please create templates first.",
+      weddingTemplates: "Wedding Templates",
+      globalTemplates: "Global Templates",
+      weddingTemplate: "Wedding",
+      globalTemplate: "Global",
+    },
+    review: {
+      title: "Review & Launch",
+      description:
+        "Review your RSVP setup and launch your automated messaging system",
+      setupSummary: "Setup Summary",
+      rsvpForm: "RSVP Form",
+      rsvpFormDesc: "Guest response form is ready",
+      messageTemplates: "Message Templates",
+      messageTemplatesDesc: "{{count}} templates selected and configured",
+      automationSchedule: "Automation Schedule",
+      automationScheduleDesc: "{{count}} automated messages scheduled",
+      whatHappensNext: "What Happens Next?",
+      step1Title: "Your RSVP system goes live",
+      step1Desc: "Guests can start responding to your RSVP form immediately",
+      step2Title: "Automated messages are scheduled",
+      step2Desc:
+        "Your messages will be sent automatically at the scheduled times",
+      step3Title: "Monitor responses",
+      step3Desc:
+        "Track guest responses and automation status in your dashboard",
+      launchRsvpSystem: "Launch RSVP System",
+      completeAllSteps: "Please complete all previous steps before launching",
+      launchSuccess: "Your RSVP system is now live and ready to use!",
+    },
+    dashboard: {
+      title: "RSVP Dashboard",
+      subtitle: "Monitor your RSVP responses and automation status",
+      backToSetup: "Back to Setup",
+      totalInvitees: "Total Invitees",
+      guestsInvited: "guests invited",
+      responseRate: "Response Rate",
+      responded: "responded",
+      attending: "Attending",
+      confirmedAttending: "confirmed attending",
+      automations: "Automations",
+      automationsComplete: "automations complete",
+      responseProgress: "Response Progress",
+      responseProgressDesc:
+        "{{responded}} of {{total}} guests have responded ({{remaining}} remaining)",
+      automationStatus: "Automation Status",
+      completed: "completed",
+      inProgress: "in progress",
+      pending: "pending",
+      automationStatusDesc: "Your automated messages are running on schedule",
+      noAutomationsDesc: "No automations have been set up yet",
+      quickActions: "Quick Actions",
+      viewInvitees: "View Invitees",
+      manageAutomations: "Manage Automations",
+      editForm: "Edit Form",
+      helpText:
+        "Need help? Contact support or check our documentation for assistance.",
+    },
+  },
+  automationSetupDone: {
+    allDone: "All done! Your RSVP automations are set up 🎉",
+    pleaseReview: "Please review your settings before launching.",
   },
 };

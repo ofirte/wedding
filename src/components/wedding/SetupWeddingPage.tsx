@@ -15,11 +15,9 @@ import {
 import { useNavigate, useSearchParams } from "react-router";
 import { useCurrentUser, useUpdateUser } from "../../hooks/auth";
 import { useCreateWedding, useJoinWedding } from "../../hooks/wedding";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { Wedding } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { CreateWeddingForm, WeddingFormValues } from "./CreateWeddingForm";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -52,18 +50,12 @@ const SetupWeddingPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [invitationCode, setInvitationCode] = useState("");
 
-  // Create wedding form fields
-  const [weddingName, setWeddingName] = useState("");
-  const [brideName, setBrideName] = useState("");
-  const [groomName, setGroomName] = useState("");
-  const [weddingDate, setWeddingDate] = useState<Date | null>(null);
-
   const { data: currentUser } = useCurrentUser();
-  const { mutate: updateUser } = useUpdateUser();
+  const { mutateAsync: updateUser } = useUpdateUser();
   const { mutate: createWedding, isPending: isCreating } = useCreateWedding({
-    onSuccess: (weddingId) => {
+    onSuccess: async (weddingId) => {
       console.log("Wedding created successfully:", weddingId);
-      updateUser({
+      await updateUser({
         userData: {
           weddingIds: [...(currentUser?.weddingIds || []), weddingId],
         },
@@ -72,7 +64,12 @@ const SetupWeddingPage: React.FC = () => {
     },
   });
   const { mutate: joinWedding, isPending: isJoining } = useJoinWedding({
-    onSuccess: (wedding: Wedding) => {
+    onSuccess: async (wedding: Wedding) => {
+      await updateUser({
+        userData: {
+          weddingIds: [...(currentUser?.weddingIds || []), wedding.id],
+        },
+      });
       navigate(`./${wedding.id}/home`);
     },
   });
@@ -92,38 +89,12 @@ const SetupWeddingPage: React.FC = () => {
     setError(null);
   };
 
-  const handleCreateWedding = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    if (!currentUser?.uid) {
-      setError(t("common.mustBeLoggedIn"));
-      return;
-    }
-
-    if (!weddingName) {
-      setError(t("common.pleaseEnterWeddingName"));
-      return;
-    }
-
-    if (weddingDate && weddingDate < new Date()) {
-      setError(t("common.weddingDateInPast"));
-      return;
-    }
-
-    if (!weddingDate) {
-      setError(t("common.pleaseEnterWeddingDate"));
-      return;
-    }
-
+  const handleCreateWedding = async (
+    weddingData: Omit<Wedding, "id" | "createdAt" | "userIds" | "members">,
+    userId: string
+  ) => {
     try {
-      createWedding({
-        userId: currentUser.uid,
-        weddingName,
-        brideName: brideName,
-        groomName: groomName,
-        weddingDate: weddingDate,
-      });
+      createWedding({ weddingData, userId });
     } catch (err: any) {
       setError(err.message || t("common.unexpectedError"));
     }
@@ -215,63 +186,10 @@ const SetupWeddingPage: React.FC = () => {
         </Tabs>
 
         <TabPanel value={tabValue} index={0}>
-          <Box component="form" onSubmit={handleCreateWedding}>
-            <Stack spacing={3}>
-              <TextField
-                required
-                fullWidth
-                id="weddingName"
-                label={t("common.weddingName")}
-                placeholder={t("placeholders.exampleWeddingName")}
-                value={weddingName}
-                onChange={(e) => setWeddingName(e.target.value)}
-              />
-
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <TextField
-                    fullWidth
-                    id="brideName"
-                    label={t("common.brideName")}
-                    value={brideName}
-                    onChange={(e) => setBrideName(e.target.value)}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <TextField
-                    fullWidth
-                    id="groomName"
-                    label={t("common.groomName")}
-                    value={groomName}
-                    onChange={(e) => setGroomName(e.target.value)}
-                  />
-                </Grid>
-              </Grid>
-
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  label={t("common.weddingDate")}
-                  value={weddingDate}
-                  onChange={(date) => setWeddingDate(date)}
-                />
-              </LocalizationProvider>
-
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                size="large"
-                fullWidth
-                disabled={isCreating}
-              >
-                {isCreating ? (
-                  <CircularProgress size={24} />
-                ) : (
-                  t("common.createWedding")
-                )}
-              </Button>
-            </Stack>
-          </Box>
+          <CreateWeddingForm
+            onSubmit={handleCreateWedding}
+            loading={isCreating}
+          />
         </TabPanel>
 
         <TabPanel value={tabValue} index={1}>

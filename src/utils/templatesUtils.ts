@@ -2,11 +2,61 @@
  * Utility functions for template management and wedding ID handling
  */
 
+import { TemplatesCategories } from "@wedding-plan/types";
+
 // Utility functions for template name formatting and display
 // Examples:
 // formatTemplateName("Welcome Message!") -> "welcome_message"
 // formatTemplateName("RSVP @ 2024") -> "rsvp_2024"
 // stripWeddingIdFromTemplateName("welcome_message") -> "Welcome Message"
+
+/**
+ * Category options for templates with translation keys
+ */
+export const TEMPLATE_CATEGORY_OPTIONS: Array<{
+  value: TemplatesCategories;
+  translationKey: string;
+}> = [
+  {
+    value: "initialRsvp",
+    translationKey: "userRsvp.messagesPlan.initialRsvp.title",
+  },
+  {
+    value: "secondRsvp",
+    translationKey: "userRsvp.messagesPlan.secondRsvp.title",
+  },
+  {
+    value: "finalRsvp",
+    translationKey: "userRsvp.messagesPlan.finalRsvp.title",
+  },
+  {
+    value: "dayBefore",
+    translationKey: "userRsvp.messagesPlan.dayBefore.title",
+  },
+  {
+    value: "dayAfterThankyou",
+    translationKey: "userRsvp.messagesPlan.dayAfterThankyou.title",
+  },
+];
+
+/**
+ * Get translated category label for a given category value
+ * @param category The category value
+ * @param t Translation function
+ * @returns Translated category label
+ */
+export const getCategoryLabel = (
+  category: TemplatesCategories | undefined,
+  t: (key: string) => string
+): string => {
+  if (!category) return t("templates.uncategorized");
+
+  const categoryOption = TEMPLATE_CATEGORY_OPTIONS.find(
+    (option) => option.value === category
+  );
+
+  return categoryOption ? t(categoryOption.translationKey) : category;
+};
 
 /**
  * Formats a template name to comply with Twilio requirements:

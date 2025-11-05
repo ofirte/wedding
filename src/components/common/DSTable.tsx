@@ -46,6 +46,7 @@ type DSTableProps<T extends { id: string | number }> = {
   columns: Column<T>[];
   data: T[];
   onRowDelete?: (row: T) => void;
+  onRowClick?: (row: T) => void;
   onDisplayedDataChange?: (data: T[]) => void;
   showExport?: boolean;
   exportFilename?: string;
@@ -63,6 +64,7 @@ type Order = "asc" | "desc";
 const DSTable: FC<DSTableProps<any>> = ({
   columns,
   data,
+  onRowClick,
   onDisplayedDataChange,
   showExport = false,
   exportFilename = "export",
@@ -225,6 +227,7 @@ const DSTable: FC<DSTableProps<any>> = ({
                 showSelectColumn={showSelectColumn}
                 selectedRows={selectedRows}
                 onRowSelect={handleRowSelect}
+                onRowClick={onRowClick}
               />
             </TableBody>
           </Table>

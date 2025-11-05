@@ -103,7 +103,19 @@ const WeddingSettings: React.FC = () => {
       };
 
       if (formData.date) {
-        updateData.date = formData.date as any; // Will be converted to Timestamp in the API
+        // Convert to UTC midnight to ensure consistent date across timezones
+        const utcDate = new Date(
+          Date.UTC(
+            formData.date.getFullYear(),
+            formData.date.getMonth(),
+            formData.date.getDate(),
+            0,
+            0,
+            0,
+            0
+          )
+        );
+        updateData.date = utcDate as any; // Will be converted to Timestamp in the API
       }
 
       if (formData.startTime) {

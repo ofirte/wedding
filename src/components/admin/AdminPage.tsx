@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import { Box, Container, Tab, Tabs, Paper } from "@mui/material";
-import { Settings, People, Favorite } from "@mui/icons-material";
+import { Settings, People, Favorite, Description } from "@mui/icons-material";
 import { useSearchParams } from "react-router";
-import { useTranslation } from "../../localization/LocalizationContext";
-import UserManagementPage from "./UserManagementPage";
-import WeddingManagementPage from "../weddingManagement/WeddingManagementPage";
-import MigrationManager from "../../migrations/components/MigrationManager";
+import { useTranslation } from "src/localization/LocalizationContext";
+import UserManagementPage from "./userManagement/UserManagementPage";
+import MigrationManager from "src/migrations/components/MigrationManager";
+import TemplatesManager from "../templates/TemplatesManager";
+import WeddingManagementPage from "./weddingManagement/WeddingManagementPage";
+import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -37,6 +39,7 @@ const a11yProps = (index: number) => {
 const TabValue = {
   USERS: "users",
   WEDDINGS: "weddings",
+  TEMPLATES: "templates",
   MIGRATIONS: "migrations",
 } as const;
 
@@ -46,13 +49,15 @@ type TabValueType = (typeof TabValue)[keyof typeof TabValue];
 const tabValueToIndex = {
   [TabValue.USERS]: 0,
   [TabValue.WEDDINGS]: 1,
-  [TabValue.MIGRATIONS]: 2,
+  [TabValue.TEMPLATES]: 2,
+  [TabValue.MIGRATIONS]: 3,
 };
 
 const indexToTabValue: Record<number, TabValueType> = {
   0: TabValue.USERS,
   1: TabValue.WEDDINGS,
-  2: TabValue.MIGRATIONS,
+  2: TabValue.TEMPLATES,
+  3: TabValue.MIGRATIONS,
 };
 
 export const AdminPage: React.FC = () => {
@@ -113,10 +118,16 @@ export const AdminPage: React.FC = () => {
               {...a11yProps(1)}
             />
             <Tab
+              icon={<Description />}
+              iconPosition="start"
+              label={t("admin.tabs.templates")}
+              {...a11yProps(2)}
+            />
+            <Tab
               icon={<Settings />}
               iconPosition="start"
               label={t("admin.tabs.migrations")}
-              {...a11yProps(2)}
+              {...a11yProps(3)}
             />
           </Tabs>
         </Box>
@@ -130,6 +141,10 @@ export const AdminPage: React.FC = () => {
         </TabPanel>
 
         <TabPanel value={activeTabIndex} index={2}>
+          <TemplatesManager />
+        </TabPanel>
+
+        <TabPanel value={activeTabIndex} index={3}>
           <MigrationManager />
         </TabPanel>
       </Paper>

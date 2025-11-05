@@ -1,5 +1,5 @@
 import React from "react";
-import {  Button } from "@mui/material";
+import { Button } from "@mui/material";
 import { useNavigate, useLocation } from "react-router";
 import { useCurrentUser } from "../../hooks/auth";
 import { useTranslation } from "../../localization/LocalizationContext";
@@ -16,14 +16,9 @@ const ManageBackButton: React.FC = () => {
 
   const handleBackClick = () => {
     // If we're in admin section, go back to main weddings page
-    if (location.pathname.includes("/admin")) {
-      navigate("/weddings");
-    } else {
-      // Otherwise, navigate back or to weddings page
-      navigate("/weddings");
-    }
+    navigate("/weddings/manage");
   };
-  
+
   if (!shouldShowBackButton) {
     return null;
   }

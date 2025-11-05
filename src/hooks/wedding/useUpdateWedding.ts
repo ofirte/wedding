@@ -23,9 +23,18 @@ export const useUpdateWedding = (
     mutationFn: ({ weddingId, data }: UpdateWeddingParams) =>
       updateWeddingDetails(weddingId, data),
     onSuccess: (_, { weddingId, data }) => {
-      // Invalidate and refetch wedding details
+      // Invalidate and refetch wedding details with multiple possible query key patterns
       queryClient.invalidateQueries({
         queryKey: ["wedding", weddingId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["weddingDetails", weddingId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["weddingDetails", undefined],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["weddingDetails"],
       });
 
       // Also invalidate the current user's wedding details if it's the same wedding

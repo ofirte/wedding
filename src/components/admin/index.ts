@@ -1,10 +1,13 @@
 // Admin components exports
-export { EditUserDialog } from "./EditUserDialog";
-export { UserAvatar } from "./UserAvatar";
-export { UserRoleChip } from "./UserRoleChip";
-export { UserTable } from "./UserTable";
-export { UserActions } from "./UserActions";
-export { UserTableEmptyState } from "./UserTableEmptyState";
-export { createUserTableColumns, type UserTableData } from "./UserTableColumns";
-export { default as UserManagementPage } from "./UserManagementPage";
+export { EditUserDialog } from "./userManagement/EditUserDialog";
+export { UserAvatar } from "./userManagement/UserAvatar";
+export { UserRoleChip } from "./userManagement/UserRoleChip";
+export { UserTable } from "./userManagement/UserTable";
+export { UserActions } from "./userManagement/UserActions";
+export { UserTableEmptyState } from "./userManagement/UserTableEmptyState";
+export {
+  createUserTableColumns,
+  type UserTableData,
+} from "./userManagement/UserTableColumns";
+export { default as UserManagementPage } from "./userManagement/UserManagementPage";
 export { default as AdminPage } from "./AdminPage";

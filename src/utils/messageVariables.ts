@@ -23,7 +23,7 @@ export interface PopulatedVariables {
  * @returns Array of template variables with localized placeholders
  */
 export const getPredefinedVariables = (
-  locale: Language = "en"
+  locale: Language = "he"
 ): TemplateVariable[] => [
   {
     key: "guestName",
@@ -36,6 +36,18 @@ export const getPredefinedVariables = (
     label: "Event Date",
     placeholder: locale === "he" ? "15 ביוני 2025" : "June 15, 2025",
     description: "The wedding date",
+  },
+  {
+    key: "eventLocation",
+    label: "Event Location",
+    placeholder: locale === "he" ? "גן האירועים היפה" : "The Beautiful Venue",
+    description: "The location of the wedding event",
+  },
+  {
+    key: "eventType",
+    label: "Event Name",
+    placeholder: locale === "he" ? "אירוע" : "event",
+    description: "The type of event",
   },
   {
     key: "eventStartTime",
@@ -123,7 +135,7 @@ export const generatePaymentLink = (
  */
 export const formatLocalizedDate = (
   date: Date,
-  locale: Language = "en"
+  locale: Language = "he"
 ): string => {
   if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
     return "TBD";
@@ -147,7 +159,7 @@ export const formatLocalizedDate = (
 export const populateVariables = (
   guest: Invitee,
   wedding: Wedding,
-  locale: Language = "en"
+  locale: Language = "he"
 ): PopulatedVariables => {
   // Generate couple name from individual names or use provided coupleName
   const coupleName =
@@ -165,6 +177,8 @@ export const populateVariables = (
     eventDate: eventDate,
     eventStartTime: wedding.startTime || "TBD",
     coupleName: coupleName,
+    eventLocation: wedding.venueName || "TBD",
+    eventType: locale === "he" ? "חתונה" : "event",
     rsvpLink: generateRSVPLink(wedding.id, guest.id),
     paymentLink: generatePaymentLink(wedding.id, guest.id),
     giftLink: `https://registry.example.com/${wedding.id}`, // Placeholder for now

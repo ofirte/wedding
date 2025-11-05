@@ -2,6 +2,7 @@
  * Template Firebase Functions API Types
  */
 
+import { TemplatesCategories } from "../models";
 import { BaseResponse, ErrorResponse } from "./base";
 
 // Core template content types
@@ -59,6 +60,7 @@ export interface CreateMessageTemplateRequest {
   language: string;
   variables?: Record<string, string>;
   types: TemplateContentTypes;
+  category?: TemplatesCategories; // Template category for filtering
 }
 
 export interface CreateMessageTemplateResponse extends BaseResponse {
@@ -98,8 +100,6 @@ export interface GetTemplateApprovalStatusResponse extends BaseResponse {
   templateSid: string;
   approvalData: TemplateApprovalStatusData;
 }
-
-
 
 // Union types for all template functions
 export type TemplateFunctionRequest =

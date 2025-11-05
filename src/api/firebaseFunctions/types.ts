@@ -31,6 +31,11 @@ export enum UsersFunctions {
   DELETE_USER_AUTH = "deleteUserAuth",
 }
 
+export enum SendAutomationsFunctions {
+  MANUAL_RUN_MESSAGES_AUTOMATION = "manualRunMessagesAutomation",
+  MANUAL_UPDATE_AUTOMATION_STATUSES = "manualUpdateAutomationStatuses",
+}
+
 /**
  * All Firebase Functions combined
  */
@@ -39,6 +44,7 @@ export const AllFunctions = {
   ...MessagingFunctions,
   ...TemplateFunctions,
   ...UsersFunctions,
+  ...SendAutomationsFunctions,
 } as const;
 
 /**
@@ -48,4 +54,5 @@ export type FunctionName =
   | UserRolesFunctions
   | MessagingFunctions
   | TemplateFunctions
-  | UsersFunctions;
+  | UsersFunctions
+  | SendAutomationsFunctions;

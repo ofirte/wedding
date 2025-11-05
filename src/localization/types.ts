@@ -29,11 +29,81 @@ export const DEFAULT_LANGUAGE: Language = "he";
 
 // Translation key structure - expandable for different sections
 export interface Translations {
+  tasksManagement: {
+    title: string;
+    description: string;
+    filters: {
+      wedding: string;
+      allWeddings: string;
+      search: string;
+      dueDate: string;
+      priority: string;
+      status: string;
+      allPriorities: string;
+      priorities: {
+        high: string;
+        medium: string;
+        low: string;
+      };
+      statuses: {
+        all: string;
+        unassigned: string;
+        inProgress: string;
+        completed: string;
+      };
+    };
+    list: {
+      completedTitle: string;
+      loadingTasks: string;
+      noTasks: string;
+      overdueTitle: string;
+      upcomingTitle: string;
+      laterTitle: string;
+      noDueDate: string;
+    };
+    priorities: {
+      high: string;
+      medium: string;
+      low: string;
+    };
+    status: {
+      all: string;
+      pending: string;
+      completed: string;
+    };
+    calendar: {
+      implementation: string;
+    };
+    stats: {
+      total: string;
+      overdue: string;
+      thisWeek: string;
+      completed: string;
+      activeWeddings: string;
+    };
+    assigned: {
+      bride: string;
+      groom: string;
+      both: string;
+    };
+  };
   common: {
+    approved: string;
+    approve: string;
+    inactive: string;
+    template: string;
+    active: string;
     close: string;
     back: string;
+    next: string;
+    previous: string;
+    finish: string;
     save: string;
     cancel: string;
+    yesNo: string;
+    select: string;
+    required: string;
+    options: string;
     delete: string;
     edit: string;
     add: string;
@@ -45,6 +115,7 @@ export interface Translations {
     yes: string;
     no: string;
     changeLanguage: string;
+    clickForDetails: string;
     signOut: string;
     user: string;
     actions: string;
@@ -158,6 +229,7 @@ export interface Translations {
     more: string;
     update: string;
     clearAll: string;
+    all: string;
     item: string;
     noDataAvailable: string;
     noDataDescription: string;
@@ -183,12 +255,15 @@ export interface Translations {
     noVariables: string;
     unnamedTemplate: string;
     unknown: string;
+    confirmDelete: string;
     accessDenied: string;
     insufficientPermissions: string;
     goToWeddings: string;
     goBack: string;
   };
   nav: {
+    weddingDay: string;
+    days: string;
     home: string;
     budget: string;
     guests: string;
@@ -202,6 +277,10 @@ export interface Translations {
     title: string;
     subtitle: string;
     adminTools: string;
+  };
+  automationSetupDone: {
+    allDone: string;
+    pleaseReview: string;
   };
   weddings: {
     yourWeddings: string;
@@ -291,6 +370,7 @@ export interface Translations {
     tabs: {
       users: string;
       weddings: string;
+      templates: string;
       migrations: string;
     };
   };
@@ -462,6 +542,35 @@ export interface Translations {
     searchPlaceholder: string;
   };
   rsvp: {
+    setupAutomation: string;
+    selectTemplateHint: string;
+    swipeToSeeMore: string;
+    singleTemplate: string;
+    configureAutomatedMessageSettings: string;
+    selectMessageTemplate: string;
+    chooseTemplateForAutomatedMessages: string;
+    scheduleDeliveryTime: string;
+    setAutomatedMessageSendTime: string;
+    approveScheduleAutomation: string;
+    approveBothTemplateAndSchedule: string;
+    updatingAutomation: string;
+    weddingDateRequired: string;
+    selectScheduledTime: string;
+    selectScheduledTimeHint: string;
+    scheduledSendTime: string;
+    selectDateTime: string;
+    messageWillBeSent: string;
+    confirmScheduledTime: string;
+    confirmScheduledTimeHint: string;
+    selectAutomationToEdit: string;
+    selectAutomationDescription: string;
+    configureAutomationDescription: string;
+    currentScheduledTime: string;
+    activateAutomation: string;
+    automationActive: string;
+    noTemplatesAvailable: string;
+    completed: string;
+    pending: string;
     confirmationTitle: string;
     stepsCompleted: string;
     updating: string;
@@ -524,6 +633,216 @@ export interface Translations {
     failedToSend: string;
     messageQueuedSingular: string;
     messagesQueuedPlural: string;
+    // Send Automation types
+    sendAutomations: string;
+    createAutomation: string;
+    runNow: string;
+    automationName: string;
+    scheduledTime: string;
+    automationType: string;
+    rsvpAutomation: string;
+    reminderAutomation: string;
+    rsvpAutomationDescription: string;
+    reminderAutomationDescription: string;
+    targetAudience: string;
+    // Status translations
+    statuses: {
+      pending: string;
+      inProgress: string;
+      completed: string;
+      failed: string;
+    };
+    guestsAttending: string;
+    guestsNotAttending: string;
+    allGuests: string;
+    messages: string;
+    attendingGuests: string;
+    notAttendingGuests: string;
+    noAutomationsTitle: string;
+    noAutomationsDescription: string;
+    createFirstAutomation: string;
+    // Automation Info Dialog
+    automationDetails: string;
+    basicInformation: string;
+    executionStatistics: string;
+    totalMessagesSent: string;
+    successfulMessages: string;
+    failedMessages: string;
+    completedAt: string;
+    failureDetails: string;
+    failureDetailsDescription: string;
+    messageSid: string;
+    errorCode: string;
+    errorMessage: string;
+    automationInProgressInfo: string;
+    automationCompletedSuccessfully: string;
+    automationFailedInfo: string;
+    // Automation details components
+    automationPending: string;
+    automationPendingDescription: string;
+    automationCompleted: string;
+    automationCompletedDescription: string;
+    automationFailed: string;
+    automationFailedDescription: string;
+    contactSupport: string;
+    contactSupportDescription: string;
+    contactSupportButton: string;
+    messageSentTo: string;
+    deactivateAutomation: string;
+    viewFailureDetails: string;
+    automationActiveMessage: string;
+    // Preview dummy data
+    preview: {
+      weddingName: string;
+      brideName: string;
+      groomName: string;
+      venueName: string;
+      guestName: string;
+      guestSide: string;
+      guestRelation: string;
+    };
+    changeInvitationPhoto: string;
+    addInvitationPhoto: string;
+    changePhoto: string;
+    addPhoto: string;
+    removePhoto: string;
+    presetQuestions: string;
+    custom: string;
+    createQuestionFormPlaceholder: string;
+    addQuestionsFromSidebar: string;
+    welcome: {
+      title: string;
+      subtitle: string;
+      stepsTitle: string;
+      step1Title: string;
+      step1Description: string;
+      step2Title: string;
+      step2Description: string;
+      getStarted: string;
+      creating: string;
+    };
+    premiumPricing: {
+      hero: {
+        title: string;
+        subtitle: string;
+        description: string;
+      };
+      howItWorks: {
+        title: string;
+        step1: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        step2: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        step3: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+      };
+      features: {
+        title: string;
+        rsvpMessages: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        eventReminder: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        giftLink: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        thankYou: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        phoneSupport: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+      };
+      pricing: {
+        title: string;
+        subtitle: string;
+        startingPrice: string;
+        perInvitee: string;
+        packages: {
+          small: {
+            title: string;
+            guestCount: string;
+            price: string;
+            features: string[];
+          };
+          medium: {
+            title: string;
+            guestCount: string;
+            price: string;
+            popular: boolean;
+            features: string[];
+          };
+          large: {
+            title: string;
+            guestCount: string;
+            price: string;
+            features: string[];
+          };
+        };
+        customPricing: string;
+      };
+      testimonials: {
+        title: string;
+        testimonial1: {
+          text: string;
+          author: string;
+          wedding: string;
+        };
+        testimonial2: {
+          text: string;
+          author: string;
+          wedding: string;
+        };
+      };
+      sampleMessage: {
+        title: string;
+        subtitle: string;
+        messageText: string;
+        variables: string;
+      };
+      cta: {
+        title: string;
+        description: string;
+        upgradeButton: string;
+        contactUs: string;
+        guarantee: string;
+      };
+    };
+  };
+  automation: {
+    allMessagesSent: string;
+    successMessage: string;
+    mostMessagesSent: string;
+    partialSuccessMessage: string;
+    issuesExplanation: string;
+    sentOn: string;
+    messagesBeingSent: string;
+    inProgressMessage: string;
+    somethingWentWrong: string;
+    failedMessage: string;
+    contactSupport: string;
+    messageScheduled: string;
+    willBeSentOn: string;
   };
   rsvpEmptyState: {
     title: string;
@@ -669,6 +988,12 @@ export interface Translations {
     updateRsvp: string;
   };
   templates: {
+    rawTemplate: string;
+    uncategorized: string;
+    noTemplate: string;
+    selectThisTemplate: string;
+    selectTemplate: string;
+    messageTemplate: string;
     title: string;
     description: string;
     createDummy: string;
@@ -694,6 +1019,7 @@ export interface Translations {
     variables: string;
     name: string;
     type: string;
+    category: string;
     eligibility: string;
     textType: string;
     mediaType: string;
@@ -739,5 +1065,230 @@ export interface Translations {
     requestApproval: string;
     requestWhatsappApproval: string;
     checkingApprovalStatus: string;
+  };
+  globalTemplates: GlobalTemplatesTranslations;
+  userRsvp: UserRSVPTranslations;
+  rsvpSetup: RsvpSetupTranslations;
+}
+
+interface GlobalTemplatesTranslations {
+  title: string;
+  description: string;
+  createNew: string;
+  createTemplate: string;
+  templateName: string;
+  category: string;
+  language: string;
+  messageText: string;
+  messagePreview: string;
+  messageTextPlaceholder: string;
+  variablesInfo: string;
+  global: string;
+  totalTemplates: string;
+  noTemplates: string;
+  noTemplatesInCategory: string;
+  createSuccess: string;
+  createError: string;
+  loadError: string;
+  created: string;
+  categories: {
+    initialRsvp: string;
+    initialRsvpDescription: string;
+    secondRsvp: string;
+    secondRsvpDescription: string;
+    finalRsvp: string;
+    finalRsvpDescription: string;
+    dayBefore: string;
+    dayBeforeDescription: string;
+    dayAfterThankyou: string;
+    dayAfterThankyouDescription: string;
+  };
+}
+
+interface RsvpSetupStepTranslations {
+  title: string;
+  description: string;
+}
+
+interface RsvpSetupTranslations {
+  title: string;
+  subtitle: string;
+  loading: string;
+  setupComplete: string;
+  steps: {
+    welcome: RsvpSetupStepTranslations;
+    form: RsvpSetupStepTranslations;
+    automations: RsvpSetupStepTranslations;
+  };
+}
+
+interface UserRSVPTranslations {
+  title: string;
+  subtitle: string;
+  launchRsvp: string;
+  completeStepToContinue: string;
+  steps: {
+    createForm: string;
+    createFormDesc: string;
+    chooseMessages: string;
+    chooseMessagesDesc: string;
+    scheduleTimeline: string;
+    scheduleTimelineDesc: string;
+    reviewLaunch: string;
+    reviewLaunchDesc: string;
+  };
+  form: {
+    title: string;
+    description: string;
+    startWithDefaults: string;
+    customizeQuestions: string;
+    customizeDesc: string;
+    availableQuestions: string;
+    selectedCount: string;
+    confirmQuestions: string;
+    updateError: string;
+    preview: string;
+    addCustom: string;
+    createCustomQuestion: string;
+    questionText: string;
+    displayName: string;
+    displayNameHelp: string;
+    questionType: string;
+    selectOptions: string;
+    option: string;
+    addOption: string;
+    quickStart: string;
+    quickStartDesc: string;
+    customize: string;
+    createDefault: string;
+    buildCustom: string;
+    completed: string;
+    completedDesc: string;
+    customizeForm: string;
+    createError: string;
+    tip: string;
+  };
+  templates: {
+    title: string;
+    description: string;
+    rsvpInitial: string;
+    rsvpInitialDesc: string;
+    dayBefore: string;
+    dayBeforeDesc: string;
+    thankYou: string;
+    thankYouDesc: string;
+    selectTemplate: string;
+    template: string;
+    preview: string;
+    selected: string;
+    selectionComplete: string;
+    selectAllRequired: string;
+    noTemplatesAvailable: string;
+    previewTitle: string;
+    previewPlaceholder: string;
+  };
+  scheduler: {
+    title: string;
+    description: string;
+    scheduledTime: string;
+    automationsCreated: string;
+    completeAllSchedules: string;
+    noTemplatesSelected: string;
+    noScheduleItems: string;
+    createAutomationsError: string;
+    weddingDateRequired: string;
+    templatesRequired: string;
+    approvePlan: string;
+    creatingAutomations: string;
+    scheduleOverview: string;
+    weddingDate: string;
+    messageTimeline: string;
+    onWeddingDay: string;
+    oneDayBefore: string;
+    oneDayAfter: string;
+    daysBefore: string;
+    daysAfter: string;
+    existingAutomations: string;
+  };
+  review: {
+    title: string;
+    description: string;
+    setupSummary: string;
+    rsvpForm: string;
+    rsvpFormDesc: string;
+    messageTemplates: string;
+    messageTemplatesDesc: string;
+    automationSchedule: string;
+    automationScheduleDesc: string;
+    whatHappensNext: string;
+    step1Title: string;
+    step1Desc: string;
+    step2Title: string;
+    step2Desc: string;
+    step3Title: string;
+    step3Desc: string;
+    launchRsvpSystem: string;
+    completeAllSteps: string;
+    launchSuccess: string;
+  };
+  dashboard: {
+    title: string;
+    subtitle: string;
+    backToSetup: string;
+    totalInvitees: string;
+    guestsInvited: string;
+    responseRate: string;
+    responded: string;
+    attending: string;
+    confirmedAttending: string;
+    automations: string;
+    automationsComplete: string;
+    responseProgress: string;
+    responseProgressDesc: string;
+    automationStatus: string;
+    completed: string;
+    inProgress: string;
+    pending: string;
+    automationStatusDesc: string;
+    noAutomationsDesc: string;
+    quickActions: string;
+    viewInvitees: string;
+    manageAutomations: string;
+    editForm: string;
+    helpText: string;
+  };
+  messagesPlan: {
+    title: string;
+    description: string;
+    initialRsvp: {
+      title: string;
+      description: string;
+    };
+    secondRsvp: {
+      title: string;
+      description: string;
+    };
+    finalRsvp: {
+      title: string;
+      description: string;
+    };
+    dayBefore: {
+      title: string;
+      description: string;
+    };
+    dayAfterThankyou: {
+      title: string;
+      description: string;
+    };
+    selectTemplate: string;
+    changeTemplate: string;
+    templatesSelected: string;
+    continue: string;
+    loadingTemplates: string;
+    noTemplatesAvailable: string;
+    weddingTemplates: string;
+    globalTemplates: string;
+    weddingTemplate: string;
+    globalTemplate: string;
   };
 }
