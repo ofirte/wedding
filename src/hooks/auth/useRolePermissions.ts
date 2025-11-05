@@ -38,9 +38,9 @@ export const useRolePermissions = () => {
   return useMemo(() => {
     const role = user?.role;
     return {
-      hasUserAccess: hasRoleAccess(role, Roles.USER),
-      hasProducerAccess: hasRoleAccess(role, Roles.PRODUCER),
-      hasAdminAccess: hasRoleAccess(role, Roles.ADMIN),
+      hasUserAccess: hasRoleAccess(role, WeddingRoles.USER),
+      hasProducerAccess: hasRoleAccess(role, WeddingRoles.PRODUCER),
+      hasAdminAccess: hasRoleAccess(role, WeddingRoles.ADMIN),
     };
   }, [user?.role]);
 };
