@@ -203,16 +203,15 @@ export const listInvitations = onCall<ListInvitationsRequest>(
         createdAt:
           invitation.createdAt instanceof Date
             ? invitation.createdAt.toISOString()
-            : new Date(invitation.createdAt as any).toISOString(),
+            : new Date().toISOString(), // Fallback to current date if not a Date
         expiresAt:
           invitation.expiresAt instanceof Date
             ? invitation.expiresAt.toISOString()
-            : new Date(invitation.expiresAt as any).toISOString(),
-        usedAt: invitation.usedAt
-          ? invitation.usedAt instanceof Date
+            : new Date().toISOString(), // Fallback to current date if not a Date
+        usedAt:
+          invitation.usedAt && invitation.usedAt instanceof Date
             ? invitation.usedAt.toISOString()
-            : new Date(invitation.usedAt as any).toISOString()
-          : undefined,
+            : undefined, // Skip if not a valid Date
         invitedBy: invitation.invitedBy,
         inviterName: invitation.inviterName,
       }));
