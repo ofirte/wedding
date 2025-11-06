@@ -294,6 +294,11 @@ export interface Translations {
     invitationCode: string;
     errorLoadingUserData: string;
     errorLoadingWeddings: string;
+    emptyState: {
+      title: string;
+      description: string;
+      createButton: string;
+    };
   };
   userManagement: {
     deleteUser: string;

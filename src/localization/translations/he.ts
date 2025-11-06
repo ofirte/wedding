@@ -265,6 +265,11 @@ export const hebrewTranslations: Translations = {
     invitationCode: "קוד הזמנה",
     errorLoadingUserData: "שגיאה בטעינת נתוני המשתמש. אנא נסה לרענן את הדף.",
     errorLoadingWeddings: "שגיאה בטעינת החתונות. אנא נסה לרענן את הדף.",
+    emptyState: {
+      title: "מוכנים להתחיל?",
+      description: "צרו את החתונה הראשונה שלכם, והתחילו לנהל אירועים בנוחות.",
+      createButton: "צור חתונה",
+    },
   },
   userManagement: {
     deleteUser: "מחק משתמש",

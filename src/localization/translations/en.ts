@@ -268,6 +268,11 @@ export const englishTranslations: Translations = {
       "Error loading user data. Please try refreshing the page.",
     errorLoadingWeddings:
       "Error loading weddings. Please try refreshing the page.",
+    emptyState: {
+      title: "Ready to Get Started?",
+      description: "Create your first wedding event and start managing it with ease.",
+      createButton: "Create Wedding",
+    },
   },
   userManagement: {
     deleteUser: "Delete User",
