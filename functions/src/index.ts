@@ -13,6 +13,7 @@ setGlobalOptions({
 });
 
 export * from "./controllers/auth";
+export * from "./controllers/invitations";
 export * from "./controllers/users";
 export * from "./controllers/messages";
 export * from "./controllers/templates";

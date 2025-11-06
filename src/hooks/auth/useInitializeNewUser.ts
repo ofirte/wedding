@@ -5,15 +5,11 @@ import {
 } from "@tanstack/react-query";
 import { initializeNewUser } from "../../api/firebaseFunctions";
 import { auth } from "../../api/firebaseConfig";
+import { InitializeNewUserResponse } from "@wedding-plan/types";
 
 interface InitializeUserVariables {
   userId: string;
-}
-
-export interface InitializeUserResponse {
-  success: boolean;
-  message: string;
-  userId: string;
+  invitationToken?: string;
 }
 
 /**
@@ -24,7 +20,7 @@ export interface InitializeUserResponse {
 export const useInitializeNewUser = (
   options?: Omit<
     UseMutationOptions<
-      InitializeUserResponse,
+      InitializeNewUserResponse,
       unknown,
       InitializeUserVariables,
       unknown
@@ -35,13 +31,18 @@ export const useInitializeNewUser = (
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ userId }: InitializeUserVariables) => {
+    mutationFn: async ({
+      userId,
+      invitationToken,
+    }: InitializeUserVariables) => {
       if (!userId) {
         throw new Error("User ID is required to initialize user");
       }
 
-      const result = await initializeNewUser({ uid: userId });
-      return result.data as InitializeUserResponse;
+      const result = await initializeNewUser({
+        invitationToken,
+      });
+      return result.data;
     },
     onSuccess: (data, variables) => {
       // Invalidate user claims and current user queries to refresh the data

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -12,7 +12,12 @@ import {
 } from "@mui/material";
 import { Link as RouterLink, useNavigate, useSearchParams } from "react-router";
 import { useSignUp } from "../../hooks/auth";
+import { useSignInWithGoogle } from "../../hooks/auth/useSignInWithGoogle";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { saveInvitationToken } from "../../hooks/invitations/invitationStorage";
+import InvitationBanner from "./InvitationBanner";
+import GoogleSignInButton from "./GoogleSignInButton";
+import { useAuth } from "../../hooks/auth";
 
 const RegisterPage: React.FC = () => {
   const [name, setName] = useState("");
@@ -20,20 +25,55 @@ const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { currentUser, role, isClaimsLoading } = useAuth();
 
-  const { mutate: signUp, isPending } = useSignUp({
-    onSuccess: () => {
-      // Preserve invite parameter when navigating to wedding page
+  // Check for invitation token in URL
+  const inviteToken = searchParams.get("inviteToken");
+
+  // Save invitation token to localStorage when component mounts
+  useEffect(() => {
+    if (inviteToken) {
+      saveInvitationToken(inviteToken);
+    }
+  }, [inviteToken]);
+
+  // Wait for role to be initialized, then navigate based on role
+  useEffect(() => {
+    if (isAuthenticating && currentUser && !isClaimsLoading && role !== "not set") {
+      // Role is initialized, now navigate based on role
       const inviteCode = searchParams.get("invite");
-      const targetUrl = inviteCode
-        ? `/wedding?invite=${inviteCode}`
-        : "/wedding";
-      navigate(targetUrl);
+
+      if (role === "producer") {
+        navigate("/weddings/manage");
+      } else {
+        const targetUrl = inviteCode
+          ? `/wedding?invite=${inviteCode}`
+          : "/wedding";
+        navigate(targetUrl);
+      }
+
+      setIsAuthenticating(false);
+    }
+  }, [isAuthenticating, currentUser, role, isClaimsLoading, navigate, searchParams]);
+
+  const signUpMutateOptions = {
+    onSuccess: () => {
+      // Set flag to wait for role initialization
+      setIsAuthenticating(true);
     },
-  });
+    onError: (error: any) => {
+      setError(error.message || t("common.failedToSignUp"));
+      setIsAuthenticating(false);
+    },
+  };
+
+  const { mutate: signUp, isPending } = useSignUp(signUpMutateOptions);
+  const { mutate: signInWithGoogle, isPending: isGoogleSignInPending } =
+    useSignInWithGoogle(signUpMutateOptions);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,6 +122,7 @@ const RegisterPage: React.FC = () => {
             onSubmit={handleSubmit}
             sx={{ mt: 1, width: "100%", maxWidth: 400 }}
           >
+            <InvitationBanner token={inviteToken} />
             {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
                 {error}
@@ -137,11 +178,23 @@ const RegisterPage: React.FC = () => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{
+                mt: 3,
+                mb: 2,
+                backgroundColor: ({ palette }) => palette.primary.light,
+                color: "white",
+                fontWeight: 600,
+                fontSize: "1rem",
+                textTransform: "none",
+              }}
               disabled={isPending}
             >
               {isPending ? <CircularProgress size={24} /> : t("common.signUp")}
             </Button>
+            <GoogleSignInButton
+              onClick={() => signInWithGoogle({})}
+              isLoading={isGoogleSignInPending}
+            />
             <Grid container justifyContent="flex-end">
               <Grid>
                 <Link

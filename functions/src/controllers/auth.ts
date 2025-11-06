@@ -4,6 +4,7 @@ import { logger } from "firebase-functions/v2";
 import { standardFunctionConfig } from "../common/config";
 import {
   WeddingRoles,
+  WeddingRole,
   isValidWeddingRole,
   InitializeNewUserRequest,
   InitializeNewUserResponse,
@@ -17,6 +18,7 @@ import {
   isAuthenticated,
   isSufficientWeddingRole,
 } from "../common/utils";
+import { InvitationService } from "../services/invitationService";
 
 export const setUserRole = onCall<SetUserRoleRequest>(
   standardFunctionConfig,
@@ -68,12 +70,14 @@ export const setUserRole = onCall<SetUserRoleRequest>(
 /**
  * Initialize default role for a new user
  * Called automatically when a user signs up
+ * If invitationToken is provided, validates and assigns producer role
  */
 export const initializeNewUser = onCall<InitializeNewUserRequest>(
   standardFunctionConfig,
   async (request): Promise<InitializeNewUserResponse> => {
     isAuthenticated(request);
     const userId = request.auth.uid;
+    const { invitationToken } = request.data || {};
 
     try {
       const auth = getAuth();
@@ -88,26 +92,45 @@ export const initializeNewUser = onCall<InitializeNewUserRequest>(
           success: true,
           message: "User already initialized",
           userId,
+          role: userRecord.customClaims.role as WeddingRole,
         };
       }
 
-      // Set default claims for new user
-      const defaultClaims = {
-        role: WeddingRoles.USER,
+      let assignedRole: WeddingRole = WeddingRoles.USER;
+
+      // If invitation token is provided, validate and use it
+      if (invitationToken) {
+        const invitationService = new InvitationService();
+        const { valid, role: updatedRole } =
+          await invitationService.validateAndUseInvitation(
+            invitationToken,
+            userId,
+            userRecord.email || ""
+          );
+
+        if (valid && updatedRole) {
+          assignedRole = updatedRole;
+        }
+      }
+
+      // Set claims for new user
+      const claims = {
+        role: assignedRole,
       };
 
-      await auth.setCustomUserClaims(userId, defaultClaims);
+      await auth.setCustomUserClaims(userId, claims);
 
-      logger.info("New user initialized with default role", {
+      logger.info("New user initialized", {
         userId,
-        defaultRole: "user",
+        role: assignedRole,
+        usedInvitation: !!invitationToken && assignedRole !== WeddingRoles.USER,
       });
 
       return {
         success: true,
-        message: "User initialized with default role",
+        message: `User initialized with ${assignedRole} role`,
         userId,
-        role: "user",
+        role: assignedRole,
       };
     } catch (error) {
       handleFunctionError(error, { userId }, "Failed to initialize new user");

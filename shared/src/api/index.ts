@@ -1,4 +1,5 @@
 export * from "./base";
+export * from "./invitations";
 export * from "./messaging";
 export * from "./sendAutomations";
 export * from "./templates";
