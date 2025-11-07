@@ -277,6 +277,8 @@ export interface Translations {
     title: string;
     subtitle: string;
     adminTools: string;
+    accessDeniedTitle: string;
+    accessDeniedMessage: string;
   };
   automationSetupDone: {
     allDone: string;
@@ -292,6 +294,11 @@ export interface Translations {
     invitationCode: string;
     errorLoadingUserData: string;
     errorLoadingWeddings: string;
+    emptyState: {
+      title: string;
+      description: string;
+      createButton: string;
+    };
   };
   userManagement: {
     deleteUser: string;
@@ -322,6 +329,59 @@ export interface Translations {
     searchUsers: string;
     searchByEmail: string;
     filterByRole: string;
+  };
+  invitations: {
+    title: string;
+    inviteProducer: string;
+    inviteProducerDescription: string;
+    emailAddress: string;
+    language: string;
+    sendInvitation: string;
+    sending: string;
+    invitationSent: string;
+    invitationSentDescription: string;
+    invitationError: string;
+    invalidEmail: string;
+    status: string;
+    email: string;
+    role: string;
+    sentAt: string;
+    expiresAt: string;
+    usedAt: string;
+    invitedBy: string;
+    actions: string;
+    resend: string;
+    revoke: string;
+    resending: string;
+    revoking: string;
+    resendSuccess: string;
+    revokeSuccess: string;
+    confirmRevoke: string;
+    confirmRevokeDescription: string;
+    noInvitations: string;
+    errorLoadingInvitations: string;
+    resendTooltip: string;
+    revokeTooltip: string;
+    whatHappensNext: string;
+    whatHappensNextItems: {
+      emailSent: string;
+      signupOptions: string;
+      emailMatch: string;
+      autoAccess: string;
+    };
+    statuses: {
+      pending: string;
+      used: string;
+      expired: string;
+    };
+    banner: {
+      title: string;
+      producerInvitation: string;
+      invitedAs: string;
+      signInPrompt: string;
+      invalidInvitation: string;
+      expiredInvitation: string;
+    };
   };
   weddingManagement: {
     confirm: string;

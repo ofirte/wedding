@@ -37,6 +37,18 @@ export enum SendAutomationsFunctions {
 }
 
 /**
+ * Enum for Invitation-related Firebase Functions
+ */
+export enum InvitationsFunctions {
+  SEND_PRODUCER_INVITATION = "sendProducerInvitation",
+  VALIDATE_INVITATION_TOKEN = "validateInvitationToken",
+  USE_INVITATION_TOKEN = "useInvitationToken",
+  LIST_INVITATIONS = "listInvitations",
+  RESEND_INVITATION = "resendInvitation",
+  REVOKE_INVITATION = "revokeInvitation",
+}
+
+/**
  * All Firebase Functions combined
  */
 export const AllFunctions = {
@@ -45,6 +57,7 @@ export const AllFunctions = {
   ...TemplateFunctions,
   ...UsersFunctions,
   ...SendAutomationsFunctions,
+  ...InvitationsFunctions,
 } as const;
 
 /**
@@ -55,4 +68,5 @@ export type FunctionName =
   | MessagingFunctions
   | TemplateFunctions
   | UsersFunctions
-  | SendAutomationsFunctions;
+  | SendAutomationsFunctions
+  | InvitationsFunctions;

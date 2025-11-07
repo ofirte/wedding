@@ -10,6 +10,10 @@ import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../api/firebaseConfig";
 import { useQueryClient } from "@tanstack/react-query";
 import { useInitializeNewUser } from "./useInitializeNewUser";
+import {
+  getInvitationToken,
+  clearInvitationToken,
+} from "../invitations/invitationStorage";
 
 interface UserClaims {
   role?: string;
@@ -36,8 +40,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isClaimsLoading, setIsClaimsLoading] = useState(false);
   const queryClient = useQueryClient();
   const { mutate: initializeNewUser } = useInitializeNewUser({
-    onSuccess: () => {
-      setUserClaims({ role: "user" });
+    onSuccess: async (data) => {
+      // Force token refresh to get the new role claim
+      console.log("User initialized successfully:", data);
+      setUserClaims({ role: data.role });
+      setIsClaimsLoading(false);
+    },
+    onError: () => {
+      // If initialization fails, mark as complete anyway
+      setIsClaimsLoading(false);
     },
   });
 
@@ -60,14 +71,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           };
 
           if (!claims.role) {
-            initializeNewUser({ userId: user.uid });
+            // Check for invitation token
+            const invitationToken = getInvitationToken();
+            // Call initializeNewUser - its onSuccess will handle setting claims and isClaimsLoading
+            initializeNewUser({
+              userId: user.uid,
+              invitationToken: invitationToken || undefined,
+            });
+            // Clear invitation token after use
+            if (invitationToken) {
+              clearInvitationToken();
+            }
+            // Don't set claims or mark loading as false here - let the mutation callbacks handle it
+          } else {
+            // User already has a role, set it immediately
+            setUserClaims(claims);
+            setIsClaimsLoading(false);
           }
-
-          setUserClaims(claims);
         } catch (error) {
           console.error("Error fetching claims:", error);
           setUserClaims({});
-        } finally {
           setIsClaimsLoading(false);
         }
 

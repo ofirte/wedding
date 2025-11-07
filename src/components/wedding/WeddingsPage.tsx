@@ -16,6 +16,7 @@ import { useTranslation } from "../../localization/LocalizationContext";
 import WeddingCard from "./WeddingCard";
 import { Wedding } from "@wedding-plan/types";
 import { CreateWeddingDialog } from "./CreateWeddingDialog";
+import { WeddingsEmptyState } from "./WeddingsEmptyState";
 
 const WeddingsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -66,21 +67,14 @@ const WeddingsPage: React.FC = () => {
   if (!currentUser?.weddingIds || currentUser.weddingIds.length === 0) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Box textAlign="center">
-          <Typography variant="h4" component="h1" gutterBottom>
-            {t("weddings.yourWeddings")}
-          </Typography>
-          <Typography variant="body1" color="text.secondary" paragraph>
-            {t("weddings.noWeddingsMessage")}
-          </Typography>
-          <Button
-            variant="contained"
-            size="large"
-            onClick={handleCreateWedding}
-          >
-            {t("weddings.createFirstWedding")}
-          </Button>
-        </Box>
+        <WeddingsEmptyState onCreateWedding={handleCreateWedding} />
+        <CreateWeddingDialog
+          open={isCreateWeddingDialogOpen}
+          onClose={() => setIsCreateWeddingDialogOpen(false)}
+          onAccept={(weddingId) => {
+            handleWeddingSelect(weddingId);
+          }}
+        />
       </Container>
     );
   }

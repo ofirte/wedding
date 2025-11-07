@@ -6,6 +6,7 @@
 // Model exports
 export * from "./users";
 export * from "./wedding";
+export * from "./invitation";
 export * from "./invitee";
 export * from "./budget";
 export * from "./task";

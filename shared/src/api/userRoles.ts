@@ -4,8 +4,10 @@
 
 import { BaseResponse, ErrorResponse } from "./base";
 
-// Initialize New User - No request body needed (uses auth.uid)
-export interface InitializeNewUserRequest {}
+// Initialize New User - Can optionally include invitation token
+export interface InitializeNewUserRequest {
+  invitationToken?: string;
+}
 
 export interface InitializeNewUserResponse extends BaseResponse {
   success: true;

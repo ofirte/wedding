@@ -5,16 +5,29 @@ import ManageSidebar from "./ManageSidebar";
 import GeneralMobileAppBar from "./GeneralMobileAppBar";
 import { useTranslation } from "../../localization/LocalizationContext";
 import useResponsive from "../../utils/ResponsiveUtils";
+import { useRolePermissions } from "src/hooks/auth";
+import AccessDenied from "./AccessDenied";
 
 const ManageApp: React.FC = () => {
   const { isMobile } = useResponsive();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { t } = useTranslation();
-
+  const { hasProducerAccess } = useRolePermissions();
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
+  
+  if (!hasProducerAccess) {
+    return (
+      <AccessDenied
+        reason="general"
+        title={t("manage.accessDeniedTitle")}
+        message={t("manage.accessDeniedMessage")}
+        redirectPath="/"
+        redirectLabel={t("common.goToWeddings")}
+      />
+    );
+  }
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       {isMobile && (
@@ -24,7 +37,10 @@ const ManageApp: React.FC = () => {
           subtitle={t("manage.subtitle")}
         />
       )}
-      <ManageSidebar mobileOpen={mobileOpen} onMobileClose={handleDrawerToggle} />
+      <ManageSidebar
+        mobileOpen={mobileOpen}
+        onMobileClose={handleDrawerToggle}
+      />
       {/* Main content area */}
       <Container
         component="main"

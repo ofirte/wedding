@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -15,26 +15,57 @@ import { useSignIn } from "../../hooks/auth";
 import { useSignInWithGoogle } from "../../hooks/auth/useSignInWithGoogle";
 import GoogleSignInButton from "./GoogleSignInButton";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { saveInvitationToken } from "../../hooks/invitations/invitationStorage";
+import InvitationBanner from "./InvitationBanner";
+import { useAuth } from "../../hooks/auth";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { currentUser, role, isClaimsLoading } = useAuth();
+
+  // Check for invitation token in URL
+  const inviteToken = searchParams.get("inviteToken");
+
+  // Save invitation token to localStorage when component mounts
+  useEffect(() => {
+    if (inviteToken) {
+      saveInvitationToken(inviteToken);
+    }
+  }, [inviteToken]);
+
+  // Wait for role to be initialized, then navigate based on role
+  useEffect(() => {
+    if (isAuthenticating && currentUser && !isClaimsLoading && role !== "not set") {
+      // Role is initialized, now navigate based on role
+      const inviteCode = searchParams.get("invite");
+
+      if (role === "producer") {
+        navigate("/weddings/manage");
+      } else {
+        const targetUrl = inviteCode
+          ? `/wedding?invite=${inviteCode}`
+          : "/wedding";
+        navigate(targetUrl);
+      }
+
+      setIsAuthenticating(false);
+    }
+  }, [isAuthenticating, currentUser, role, isClaimsLoading, navigate, searchParams]);
 
   const signInMutateOptions = {
     onSuccess: () => {
-      // Preserve invite parameter when navigating to wedding page
-      const inviteCode = searchParams.get("invite");
-      const targetUrl = inviteCode
-        ? `/wedding?invite=${inviteCode}`
-        : "/wedding";
-      navigate(targetUrl);
+      // Set flag to wait for role initialization
+      setIsAuthenticating(true);
     },
     onError: (error: any) => {
       setError(error.message || t("common.failedToSignIn"));
+      setIsAuthenticating(false);
     },
   };
   const { mutate: signIn, isPending } = useSignIn(signInMutateOptions);
@@ -86,6 +117,7 @@ const LoginPage: React.FC = () => {
             onSubmit={handleSubmit}
             sx={{ mt: 1, width: "100%", maxWidth: 400 }}
           >
+            <InvitationBanner token={inviteToken} />
             {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
                 {error}

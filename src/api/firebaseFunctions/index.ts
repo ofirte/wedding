@@ -20,12 +20,16 @@ export * from "./sendAutomations";
 // Export template functions
 export * from "./templates";
 
+// Export invitation functions
+export * from "./invitations";
+
 // Convenience re-exports for commonly used items
 export {
   UserRolesFunctions,
   MessagingFunctions,
   SendAutomationsFunctions,
   TemplateFunctions,
+  InvitationsFunctions,
   AllFunctions,
   type FunctionName,
 } from "./types";
@@ -35,3 +39,4 @@ export { userRolesFunctions } from "./userRoles";
 export { messagingFunctions } from "./messaging";
 export { sendAutomationsFunctions } from "./sendAutomations";
 export { templateFunctions } from "./templates";
+export { invitationsFunctions } from "./invitations";
