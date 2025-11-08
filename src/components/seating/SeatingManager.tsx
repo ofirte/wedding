@@ -6,13 +6,14 @@ import { TouchBackend } from "react-dnd-touch-backend";
 import { Table, LayoutElement } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { useResponsive } from "../../utils/ResponsiveUtils";
-import { useTables, useCreateTable, useUpdateTable, useDeleteTable, useBulkUpdateTables, useLayoutElements, useCreateLayoutElement, useUpdateLayoutElement } from "../../hooks/seating";
+import { useTables, useCreateTable, useUpdateTable, useDeleteTable, useBulkUpdateTables, useLayoutElements, useCreateLayoutElement, useUpdateLayoutElement, useDeleteLayoutElement } from "../../hooks/seating";
 import { useInvitees } from "../../hooks/invitees";
 import SeatingToolbar from "./SeatingToolbar";
 import SeatingToolsSidebar from "./SeatingToolsSidebar";
 import SeatingCanvas from "./SeatingCanvas";
 import BulkAddTablesDialog from "./BulkAddTablesDialog";
 import TablePropertiesPopover from "./TablePropertiesPopover";
+import LayoutElementPropertiesPopover from "./LayoutElementPropertiesPopover";
 
 const SeatingManager: React.FC = () => {
   const { t } = useTranslation();
@@ -30,6 +31,7 @@ const SeatingManager: React.FC = () => {
   const { mutate: bulkUpdateTables } = useBulkUpdateTables();
   const { mutate: createLayoutElement } = useCreateLayoutElement();
   const { mutate: updateLayoutElement } = useUpdateLayoutElement();
+  const { mutate: deleteLayoutElement } = useDeleteLayoutElement();
 
   // Dialog states
   const [isBulkAddDialogOpen, setIsBulkAddDialogOpen] = useState(false);
@@ -38,6 +40,7 @@ const SeatingManager: React.FC = () => {
   const [selectedTableId, setSelectedTableId] = useState<string | null>(null);
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
   const [popoverAnchorEl, setPopoverAnchorEl] = useState<HTMLElement | null>(null);
+  const [elementPopoverAnchorEl, setElementPopoverAnchorEl] = useState<HTMLElement | null>(null);
 
   // For now, use a single default arrangement ID
   // In the future, you can allow multiple arrangements
@@ -49,6 +52,12 @@ const SeatingManager: React.FC = () => {
     [tables, selectedTableId]
   );
 
+  // Get selected element
+  const selectedElement = useMemo(
+    () => layoutElements.find((e) => e.id === selectedElementId) || null,
+    [layoutElements, selectedElementId]
+  );
+
   // Handle bulk table creation
   const handleBulkCreate = (newTables: Omit<Table, "id">[]) => {
     newTables.forEach((table) => {
@@ -56,24 +65,22 @@ const SeatingManager: React.FC = () => {
     });
   };
 
-  // Handle table selection
+  // Handle table selection (just selects, doesn't open popover)
   const handleTableSelect = (tableId: string | null) => {
     setSelectedTableId(tableId);
-    if (tableId) {
-      // Set a dummy anchor element for the popover
-      // In a real implementation, you'd get the actual element position
-      const dummyAnchor = document.createElement("div");
-      dummyAnchor.style.position = "fixed";
-      dummyAnchor.style.top = "50%";
-      dummyAnchor.style.left = "400px";
-      document.body.appendChild(dummyAnchor);
-      setPopoverAnchorEl(dummyAnchor);
-    } else {
-      if (popoverAnchorEl && document.body.contains(popoverAnchorEl)) {
-        document.body.removeChild(popoverAnchorEl);
-      }
-      setPopoverAnchorEl(null);
-    }
+    // Don't open popover on selection anymore - only on edit icon click
+  };
+
+  // Handle table edit (opens popover)
+  const handleTableEdit = (tableId: string) => {
+    setSelectedTableId(tableId);
+    // Set a dummy anchor element for the popover
+    const dummyAnchor = document.createElement("div");
+    dummyAnchor.style.position = "fixed";
+    dummyAnchor.style.top = "50%";
+    dummyAnchor.style.left = "400px";
+    document.body.appendChild(dummyAnchor);
+    setPopoverAnchorEl(dummyAnchor);
   };
 
   // Handle table movement
@@ -233,9 +240,62 @@ const SeatingManager: React.FC = () => {
     });
   };
 
-  // Handle popover close
+  // Handle layout element rotation
+  const handleElementRotate = (elementId: string, rotation: number) => {
+    updateLayoutElement({
+      id: elementId,
+      data: { rotation },
+    });
+  };
+
+  // Handle layout element selection (just selects, doesn't open popover)
+  const handleElementSelect = (elementId: string | null) => {
+    setSelectedElementId(elementId);
+    // Don't open popover on selection anymore - only on edit icon click
+  };
+
+  // Handle layout element edit (opens popover)
+  const handleElementEdit = (elementId: string) => {
+    setSelectedElementId(elementId);
+    // Set a dummy anchor element for the popover
+    const dummyAnchor = document.createElement("div");
+    dummyAnchor.style.position = "fixed";
+    dummyAnchor.style.top = "50%";
+    dummyAnchor.style.left = "400px";
+    document.body.appendChild(dummyAnchor);
+    setElementPopoverAnchorEl(dummyAnchor);
+  };
+
+  // Handle layout element property update
+  const handleElementUpdate = (elementId: string, updates: Partial<LayoutElement>) => {
+    updateLayoutElement({
+      id: elementId,
+      data: updates,
+    });
+  };
+
+  // Handle layout element deletion
+  const handleElementDelete = (elementId: string) => {
+    deleteLayoutElement(elementId);
+    handleElementSelect(null);
+  };
+
+  // Handle table popover close
   const handlePopoverClose = () => {
-    handleTableSelect(null);
+    if (popoverAnchorEl && document.body.contains(popoverAnchorEl)) {
+      document.body.removeChild(popoverAnchorEl);
+    }
+    setPopoverAnchorEl(null);
+    // Keep table selected, just close popover
+  };
+
+  // Handle element popover close
+  const handleElementPopoverClose = () => {
+    if (elementPopoverAnchorEl && document.body.contains(elementPopoverAnchorEl)) {
+      document.body.removeChild(elementPopoverAnchorEl);
+    }
+    setElementPopoverAnchorEl(null);
+    // Keep element selected, just close popover
   };
 
   // Drag-drop backend - memoized to prevent recreation
@@ -295,10 +355,13 @@ const SeatingManager: React.FC = () => {
               selectedTableId={selectedTableId}
               selectedElementId={selectedElementId}
               onTableSelect={handleTableSelect}
-              onElementSelect={setSelectedElementId}
+              onTableEdit={handleTableEdit}
+              onElementSelect={handleElementSelect}
+              onElementEdit={handleElementEdit}
               onTableMove={handleTableMove}
               onElementMove={handleElementMove}
               onElementResize={handleElementResize}
+              onElementRotate={handleElementRotate}
               onGuestDrop={handleAssignGuest}
             />
           </Box>
@@ -323,6 +386,14 @@ const SeatingManager: React.FC = () => {
           onRemoveGuest={handleRemoveGuest}
           allTables={tables}
           allInvitees={invitees}
+        />
+
+        <LayoutElementPropertiesPopover
+          element={selectedElement}
+          anchorEl={elementPopoverAnchorEl}
+          onClose={handleElementPopoverClose}
+          onUpdate={handleElementUpdate}
+          onDelete={handleElementDelete}
         />
       </Box>
     </DndProvider>

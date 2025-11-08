@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Group, Circle, Rect, Text } from "react-konva";
 import { Table } from "@wedding-plan/types";
 import Konva from "konva";
@@ -7,6 +7,7 @@ interface TableShapeProps {
   table: Table;
   isSelected: boolean;
   onSelect: () => void;
+  onEdit: () => void;
   onDragEnd: (position: { x: number; y: number }) => void;
   onGuestDrop?: (guestId: string, tableId: string) => void;
 }
@@ -15,6 +16,7 @@ const TableShape: React.FC<TableShapeProps> = ({
   table,
   isSelected,
   onSelect,
+  onEdit,
   onDragEnd,
 }) => {
   const groupRef = useRef<Konva.Group>(null);
@@ -23,7 +25,7 @@ const TableShape: React.FC<TableShapeProps> = ({
   const getScaleSize = () => {
     const baseSize = 30;
     const scalePerSeat = 4;
-    return baseSize + (table.capacity * scalePerSeat);
+    return baseSize + table.capacity * scalePerSeat;
   };
 
   const getFillColor = () => {
@@ -110,6 +112,19 @@ const TableShape: React.FC<TableShapeProps> = ({
     }
   };
 
+  const getEditIconY = () => {
+    const size = getScaleSize();
+    switch (table.shape) {
+      case "rectangular":
+        return -size * 0.6 - 20;
+      case "square":
+        return -size * 0.8 - 20;
+      case "round":
+      default:
+        return -size - 20;
+    }
+  };
+
   return (
     <Group
       ref={groupRef}
@@ -160,48 +175,87 @@ const TableShape: React.FC<TableShapeProps> = ({
       />
 
       {/* Selection Indicator */}
-      {isSelected && (() => {
-        const size = getScaleSize();
-        const padding = 5;
-        switch (table.shape) {
-          case "rectangular":
-            return (
-              <Rect
-                x={-size * 1.2 - padding}
-                y={-size * 0.6 - padding}
-                width={size * 2.4 + padding * 2}
-                height={size * 1.2 + padding * 2}
-                stroke="#4A6F8A"
-                strokeWidth={2}
-                dash={[5, 5]}
-                cornerRadius={8}
-              />
-            );
-          case "square":
-            return (
-              <Rect
-                x={-size * 0.8 - padding}
-                y={-size * 0.8 - padding}
-                width={size * 1.6 + padding * 2}
-                height={size * 1.6 + padding * 2}
-                stroke="#4A6F8A"
-                strokeWidth={2}
-                dash={[5, 5]}
-                cornerRadius={8}
-              />
-            );
-          case "round":
-          default:
-            return (
-              <Circle
-                radius={size + padding}
-                stroke="#4A6F8A"
-                strokeWidth={2}
-                dash={[5, 5]}
-              />
-            );
-        }
-      })()}
+      {isSelected &&
+        (() => {
+          const size = getScaleSize();
+          const padding = 5;
+          switch (table.shape) {
+            case "rectangular":
+              return (
+                <Rect
+                  x={-size * 1.2 - padding}
+                  y={-size * 0.6 - padding}
+                  width={size * 2.4 + padding * 2}
+                  height={size * 1.2 + padding * 2}
+                  stroke="#4A6F8A"
+                  strokeWidth={2}
+                  dash={[5, 5]}
+                  cornerRadius={8}
+                />
+              );
+            case "square":
+              return (
+                <Rect
+                  x={-size * 0.8 - padding}
+                  y={-size * 0.8 - padding}
+                  width={size * 1.6 + padding * 2}
+                  height={size * 1.6 + padding * 2}
+                  stroke="#4A6F8A"
+                  strokeWidth={2}
+                  dash={[5, 5]}
+                  cornerRadius={8}
+                />
+              );
+            case "round":
+            default:
+              return (
+                <Circle
+                  radius={size + padding}
+                  stroke="#4A6F8A"
+                  strokeWidth={2}
+                  dash={[5, 5]}
+                />
+              );
+          }
+        })()}
+
+      {/* Edit Icon - Shows on hover when selected */}
+      {isSelected && (
+        <Group
+          x={0}
+          y={getEditIconY()}
+          onClick={(e) => {
+            e.cancelBubble = true;
+            onEdit();
+          }}
+          onTap={(e) => {
+            e.cancelBubble = true;
+            onEdit();
+          }}
+        >
+          {/* Icon Background Circle */}
+          <Circle
+            radius={14}
+            fill="#4A6F8A"
+            stroke="#FFFFFF"
+            strokeWidth={2}
+            shadowColor="black"
+            shadowBlur={4}
+            shadowOpacity={0.3}
+            shadowOffsetY={2}
+          />
+          {/* Edit Icon (Settings gear emoji) */}
+          <Text
+            text={"✏️"}
+            fontSize={16}
+            fontFamily="Arial"
+            align="center"
+            verticalAlign="middle"
+            offsetX={8}
+            offsetY={8}
+          />
+        </Group>
+      )}
     </Group>
   );
 };

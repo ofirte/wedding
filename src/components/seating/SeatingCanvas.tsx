@@ -12,10 +12,19 @@ interface SeatingCanvasProps {
   selectedTableId: string | null;
   selectedElementId?: string | null;
   onTableSelect: (tableId: string | null) => void;
+  onTableEdit?: (tableId: string) => void;
   onElementSelect?: (elementId: string | null) => void;
+  onElementEdit?: (elementId: string) => void;
   onTableMove: (tableId: string, position: { x: number; y: number }) => void;
-  onElementMove?: (elementId: string, position: { x: number; y: number }) => void;
-  onElementResize?: (elementId: string, size: { width: number; height: number }) => void;
+  onElementMove?: (
+    elementId: string,
+    position: { x: number; y: number }
+  ) => void;
+  onElementResize?: (
+    elementId: string,
+    size: { width: number; height: number }
+  ) => void;
+  onElementRotate?: (elementId: string, rotation: number) => void;
   onGuestDrop?: (guestId: string, tableId: string) => void;
 }
 
@@ -25,10 +34,13 @@ const SeatingCanvas: React.FC<SeatingCanvasProps> = ({
   selectedTableId,
   selectedElementId,
   onTableSelect,
+  onTableEdit,
   onElementSelect,
+  onElementEdit,
   onTableMove,
   onElementMove,
   onElementResize,
+  onElementRotate,
   onGuestDrop,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -133,13 +145,25 @@ const SeatingCanvas: React.FC<SeatingCanvasProps> = ({
           {/* Render all layout elements */}
           {layoutElements.map((element) => (
             <LayoutElementShape
-              key={element.id}
+              key={
+                element.id +
+                element.position.x +
+                element.position.y +
+                element.size.width +
+                element.size.height +
+                element.rotation
+              }
               element={element}
               isSelected={selectedElementId === element.id}
               onSelect={() => {
                 if (onElementSelect) {
                   onElementSelect(element.id);
                   onTableSelect(null); // Deselect tables when selecting an element
+                }
+              }}
+              onEdit={() => {
+                if (onElementEdit) {
+                  onElementEdit(element.id);
                 }
               }}
               onDragEnd={(pos) => {
@@ -150,6 +174,11 @@ const SeatingCanvas: React.FC<SeatingCanvasProps> = ({
               onSizeChange={(size) => {
                 if (onElementResize) {
                   onElementResize(element.id, size);
+                }
+              }}
+              onRotationChange={(rotation) => {
+                if (onElementRotate) {
+                  onElementRotate(element.id, rotation);
                 }
               }}
             />
@@ -165,6 +194,11 @@ const SeatingCanvas: React.FC<SeatingCanvasProps> = ({
                 onTableSelect(table.id);
                 if (onElementSelect) {
                   onElementSelect(null); // Deselect elements when selecting a table
+                }
+              }}
+              onEdit={() => {
+                if (onTableEdit) {
+                  onTableEdit(table.id);
                 }
               }}
               onDragEnd={(pos) => onTableMove(table.id, pos)}

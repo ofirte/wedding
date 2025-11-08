@@ -1,22 +1,28 @@
-import React, { useRef, useEffect } from "react";
-import { Group, Rect, Text, Transformer } from "react-konva";
+import React, { useRef, useEffect, useState } from "react";
+import { Group, Rect, Text, Transformer, Circle } from "react-konva";
 import { LayoutElement } from "@wedding-plan/types";
+import { Edit as EditIcon } from "@mui/icons-material";
 import Konva from "konva";
+import { Box } from "@mui/system";
 
 interface LayoutElementShapeProps {
   element: LayoutElement;
   isSelected: boolean;
   onSelect: () => void;
+  onEdit: () => void;
   onDragEnd: (position: { x: number; y: number }) => void;
   onSizeChange: (size: { width: number; height: number }) => void;
+  onRotationChange: (rotation: number) => void;
 }
 
 const LayoutElementShape: React.FC<LayoutElementShapeProps> = ({
   element,
   isSelected,
   onSelect,
+  onEdit,
   onDragEnd,
   onSizeChange,
+  onRotationChange,
 }) => {
   const groupRef = useRef<Konva.Group>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
@@ -29,25 +35,48 @@ const LayoutElementShape: React.FC<LayoutElementShapeProps> = ({
     }
   }, [isSelected]);
 
-  // Handle transform end to update size
+  // Handle transform end to update size and rotation
   const handleTransformEnd = () => {
     if (!groupRef.current) return;
-
     const node = groupRef.current;
+    if (!node) return;
+
     const scaleX = node.scaleX();
     const scaleY = node.scaleY();
+    const rotation = node.rotation();
 
-    // Calculate new size based on scale
-    const newWidth = Math.max(50, element.size.width * scaleX);
-    const newHeight = Math.max(50, element.size.height * scaleY);
+    const newWidth = Math.max(5, element.size.width * scaleX);
+    const newHeight = Math.max(5, element.size.height * scaleY);
 
-    // Reset scale to 1 after applying size change
     node.scaleX(1);
     node.scaleY(1);
+    node.getLayer()?.batchDraw();
 
     onSizeChange({ width: newWidth, height: newHeight });
-  };
 
+    // Persist rotation if it changed
+    if (rotation !== (element.rotation || 0)) {
+      onRotationChange(rotation);
+    }
+  };
+  const getEditButtonPosition = () => {
+    const rotation = (element.rotation || 0) * (Math.PI / 180); // Convert to radians
+
+    // Offset from center (top-right corner + padding)
+    const offsetX = element.size.width / 2 + 30;
+    const offsetY = -element.size.height / 2 - 30;
+
+    // Rotate the offset around the origin
+    const rotatedX =
+      offsetX * Math.cos(rotation) - offsetY * Math.sin(rotation);
+    const rotatedY =
+      offsetX * Math.sin(rotation) + offsetY * Math.cos(rotation);
+
+    return {
+      x: element.position.x + rotatedX,
+      y: element.position.y + rotatedY,
+    };
+  };
   const getElementColor = () => {
     switch (element.type) {
       case "stage":
@@ -129,58 +158,95 @@ const LayoutElementShape: React.FC<LayoutElementShapeProps> = ({
         }}
         onTransformEnd={handleTransformEnd}
       >
-      {/* Element Rectangle */}
-      <Rect
-        x={-element.size.width / 2}
-        y={-element.size.height / 2}
-        width={element.size.width}
-        height={element.size.height}
-        fill={getElementColor()}
-        stroke={isSelected ? "#4A6F8A" : "#333333"}
-        strokeWidth={isSelected ? 3 : 2}
-        cornerRadius={8}
-        opacity={0.8}
-      />
-
-      {/* Element Icon */}
-      <Text
-        text={getElementIcon()}
-        fontSize={24}
-        fontFamily="Arial"
-        align="center"
-        width={element.size.width}
-        x={-element.size.width / 2}
-        y={-element.size.height / 2 + 10}
-      />
-
-      {/* Element Label */}
-      <Text
-        text={getElementLabel()}
-        fontSize={14}
-        fontFamily="Arial"
-        fontStyle="bold"
-        fill="#FFFFFF"
-        align="center"
-        width={element.size.width}
-        x={-element.size.width / 2}
-        y={-element.size.height / 2 + 40}
-      />
-
-      {/* Selection Indicator */}
-      {isSelected && (
+        {/* Element Rectangle */}
         <Rect
-          x={-element.size.width / 2 - 5}
-          y={-element.size.height / 2 - 5}
-          width={element.size.width + 10}
-          height={element.size.height + 10}
-          stroke="#4A6F8A"
-          strokeWidth={2}
-          dash={[5, 5]}
-          cornerRadius={10}
+          x={-element.size.width / 2}
+          y={-element.size.height / 2}
+          width={element.size.width}
+          height={element.size.height}
+          fill={getElementColor()}
+          stroke={isSelected ? "#4A6F8A" : "#333333"}
+          strokeWidth={isSelected ? 3 : 2}
+          cornerRadius={8}
+          opacity={0.8}
+          perfectDrawEnabled={false}
         />
-      )}
-      </Group>
 
+        {/* Element Icon */}
+        <Text
+          text={getElementIcon()}
+          fontSize={24}
+          fontFamily="Arial"
+          align="center"
+          width={element.size.width}
+          x={-element.size.width / 2}
+          y={-element.size.height / 2 + 10}
+        />
+
+        {/* Element Label */}
+        <Text
+          text={getElementLabel()}
+          fontSize={14}
+          fontFamily="Arial"
+          fontStyle="bold"
+          fill="#FFFFFF"
+          align="center"
+          width={element.size.width}
+          x={-element.size.width / 2}
+          y={-element.size.height / 2 + 40}
+        />
+
+        {/* Selection Indicator */}
+        {isSelected && (
+          <Rect
+            x={-element.size.width / 2 - 5}
+            y={-element.size.height / 2 - 5}
+            width={element.size.width + 10}
+            height={element.size.height + 10}
+            stroke="#4A6F8A"
+            strokeWidth={2}
+            dash={[5, 5]}
+            cornerRadius={10}
+          />
+        )}
+
+        {/* Edit Icon - Shows on hover when selected */}
+      </Group>
+      {isSelected && (
+        <Group
+          x={getEditButtonPosition().x}
+          y={getEditButtonPosition().y}
+          onClick={(e) => {
+            e.cancelBubble = true;
+            onEdit();
+          }}
+          onTap={(e) => {
+            e.cancelBubble = true;
+            onEdit();
+          }}
+        >
+          {/* Icon Background Circle */}
+          <Circle
+            radius={14}
+            fill="#4A6F8A"
+            stroke="#FFFFFF"
+            strokeWidth={2}
+            shadowColor="black"
+            shadowBlur={4}
+            shadowOpacity={0.3}
+            shadowOffsetY={2}
+          />
+          <Text
+            text={"✏️"}
+            fontSize={16}
+            fontFamily="Arial"
+            align="center"
+            verticalAlign="middle"
+            offsetX={8}
+            offsetY={8}
+          />
+        </Group>
+      )}
       {/* Transformer for resizing when selected */}
       {isSelected && (
         <Transformer
