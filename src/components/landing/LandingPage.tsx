@@ -19,6 +19,10 @@ import {
   Schedule as ScheduleIcon,
   PhotoCamera as PhotoCameraIcon,
   MusicNote as MusicNoteIcon,
+  Email as EmailIcon,
+  Phone as PhoneIcon,
+  LocationOn as LocationOnIcon,
+  WhatsApp as WhatsAppIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 
@@ -333,15 +337,24 @@ const LandingPage: React.FC = () => {
             textAlign: "center",
             mt: 8,
             p: 4,
-            bgcolor: "rgba(255,255,255,0.1)",
+            bgcolor: "rgba(255,255,255,0.7)",
             borderRadius: 3,
-            color: "white",
+            backdropFilter: "blur(10px)",
+            border: `1px solid ${theme.palette.cream.dark}`,
           }}
         >
-          <Typography variant="h4" gutterBottom fontWeight="bold">
+          <Typography
+            variant="h4"
+            gutterBottom
+            fontWeight="bold"
+            sx={{ color: theme.palette.sage.dark }}
+          >
             Ready to start planning?
           </Typography>
-          <Typography variant="body1" sx={{ mb: 3, opacity: 0.9 }}>
+          <Typography
+            variant="body1"
+            sx={{ mb: 3, color: theme.palette.sage.main }}
+          >
             Join thousands of couples who have planned their perfect wedding
             with us
           </Typography>
@@ -350,18 +363,252 @@ const LandingPage: React.FC = () => {
             size="large"
             onClick={() => navigate("/register")}
             sx={{
-              bgcolor: "white",
-              color: "primary.main",
+              bgcolor: theme.palette.sage.main,
+              color: "white",
               px: 4,
               py: 1.5,
               fontSize: "1.1rem",
+              borderRadius: "50px",
               "&:hover": {
-                bgcolor: "grey.100",
+                bgcolor: theme.palette.sage.dark,
               },
             }}
           >
             Start Planning Today
           </Button>
+        </Box>
+
+        {/* Contact Information & Footer */}
+        <Box
+          sx={{
+            mt: 8,
+            pt: 6,
+            pb: 4,
+            borderTop: `2px solid ${theme.palette.cream.dark}`,
+          }}
+        >
+          {/* About Section */}
+          <Box sx={{ textAlign: "center", mb: 6 }}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              sx={{
+                fontWeight: 600,
+                color: theme.palette.sage.dark,
+                mb: 2,
+              }}
+            >
+              Wedding Planner Studio
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: theme.palette.sage.main,
+                maxWidth: "800px",
+                margin: "0 auto",
+                mb: 4,
+                lineHeight: 1.8,
+              }}
+            >
+              Wedding Planner Studio is a comprehensive wedding planning platform
+              designed to help couples organize every aspect of their special day.
+              From guest management and budget tracking to seating arrangements and
+              vendor coordination, we provide all the tools you need to plan your
+              perfect wedding with ease and elegance.
+            </Typography>
+          </Box>
+
+          {/* Contact Details */}
+          <Grid container spacing={4} sx={{ mb: 6 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Card
+                elevation={0}
+                sx={{
+                  height: "100%",
+                  bgcolor: "rgba(255,255,255,0.6)",
+                  borderRadius: 2,
+                  border: `1px solid ${theme.palette.cream.dark}`,
+                  textAlign: "center",
+                  p: 3,
+                }}
+              >
+                <EmailIcon
+                  sx={{
+                    fontSize: 40,
+                    color: theme.palette.sage.main,
+                    mb: 2,
+                  }}
+                />
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    color: theme.palette.sage.dark,
+                    fontWeight: 600,
+                    mb: 1,
+                  }}
+                >
+                  Email
+                </Typography>
+                <Typography
+                  component="a"
+                  href="mailto:ofirtene@weddingplannerstudioapp.com"
+                  sx={{
+                    color: theme.palette.sage.main,
+                    textDecoration: "none",
+                    fontSize: "0.9rem",
+                    "&:hover": {
+                      textDecoration: "underline",
+                    },
+                  }}
+                >
+                  ofirtene@weddingplannerstudioapp.com
+                </Typography>
+              </Card>
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Card
+                elevation={0}
+                sx={{
+                  height: "100%",
+                  bgcolor: "rgba(255,255,255,0.6)",
+                  borderRadius: 2,
+                  border: `1px solid ${theme.palette.cream.dark}`,
+                  textAlign: "center",
+                  p: 3,
+                }}
+              >
+                <WhatsAppIcon
+                  sx={{
+                    fontSize: 40,
+                    color: "#25D366",
+                    mb: 2,
+                  }}
+                />
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    color: theme.palette.sage.dark,
+                    fontWeight: 600,
+                    mb: 1,
+                  }}
+                >
+                  WhatsApp
+                </Typography>
+                <Typography
+                  component="a"
+                  href="https://wa.me/972542101631"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    color: theme.palette.sage.main,
+                    textDecoration: "none",
+                    fontSize: "0.9rem",
+                    "&:hover": {
+                      textDecoration: "underline",
+                    },
+                  }}
+                >
+                  054-210-1631
+                </Typography>
+              </Card>
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Card
+                elevation={0}
+                sx={{
+                  height: "100%",
+                  bgcolor: "rgba(255,255,255,0.6)",
+                  borderRadius: 2,
+                  border: `1px solid ${theme.palette.cream.dark}`,
+                  textAlign: "center",
+                  p: 3,
+                }}
+              >
+                <LocationOnIcon
+                  sx={{
+                    fontSize: 40,
+                    color: theme.palette.sage.main,
+                    mb: 2,
+                  }}
+                />
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    color: theme.palette.sage.dark,
+                    fontWeight: 600,
+                    mb: 1,
+                  }}
+                >
+                  Address
+                </Typography>
+                <Typography
+                  sx={{
+                    color: theme.palette.sage.main,
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  Yonatan Havipsi
+                  <br />
+                  Tel Aviv, Israel
+                </Typography>
+              </Card>
+            </Grid>
+          </Grid>
+
+          {/* Legal Links */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 3,
+              flexWrap: "wrap",
+              mb: 3,
+            }}
+          >
+            <Button
+              onClick={() => navigate("/privacy-policy")}
+              sx={{
+                color: theme.palette.sage.main,
+                textTransform: "none",
+                fontSize: "0.9rem",
+                "&:hover": {
+                  color: theme.palette.sage.dark,
+                  bgcolor: "rgba(255,255,255,0.3)",
+                },
+              }}
+            >
+              Privacy Policy
+            </Button>
+            <Typography sx={{ color: theme.palette.cream.dark }}>•</Typography>
+            <Button
+              onClick={() => navigate("/terms-of-service")}
+              sx={{
+                color: theme.palette.sage.main,
+                textTransform: "none",
+                fontSize: "0.9rem",
+                "&:hover": {
+                  color: theme.palette.sage.dark,
+                  bgcolor: "rgba(255,255,255,0.3)",
+                },
+              }}
+            >
+              Terms of Service
+            </Button>
+          </Box>
+
+          {/* Copyright */}
+          <Typography
+            variant="body2"
+            sx={{
+              textAlign: "center",
+              color: theme.palette.sage.main,
+              mt: 4,
+            }}
+          >
+            © {new Date().getFullYear()} Wedding Planner Studio. All rights reserved.
+          </Typography>
         </Box>
       </Container>
     </Box>
