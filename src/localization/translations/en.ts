@@ -1498,7 +1498,27 @@ export const englishTranslations: Translations = {
         danceFloor: "Dance Floor",
         entrance: "Entrance",
         bathroom: "Restroom",
+        element: "Element",
       },
+      properties: {
+        type: "Type",
+        size: "Size",
+        position: "Position",
+        customName: "Custom Name",
+        customNameHelper: "Optional custom name for this element",
+        shape: "Shape",
+      },
+      shapes: {
+        rectangle: "Rectangle",
+        circle: "Circle",
+      },
+      deleteElement: "Delete Element",
+    },
+    table: {
+      defaultName: "Table {{number}}",
+    },
+    tableProperties: {
+      title: "Table {{number}}",
     },
     actions: {
       addTables: "Add Tables",
@@ -1577,6 +1597,7 @@ export const englishTranslations: Translations = {
       noUnassignedGuests: "All guests are assigned",
       confirmClearAll: "Are you sure you want to remove all guest assignments? This cannot be undone.",
       confirmOverCapacity: "You are assigning {{selected}} guests but only {{remaining}} seats remain. Continue anyway?",
+      applyFailed: "Failed to apply assignments. Please try again.",
     },
     autoAssignment: {
       title: "Auto Assignment Settings",
@@ -1592,6 +1613,7 @@ export const englishTranslations: Translations = {
       noTablesAvailable: "Please create tables first",
       notEnoughCapacity:
         "Not enough table capacity for all guests.",
+      failed: "Auto-assignment failed. Please try again.",
     },
     suggestions: {
       title: "Suggestions",

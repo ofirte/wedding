@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Box, Chip, IconButton, TextField, Typography } from "@mui/material";
 import { Table } from "../../../../shared/src/models/seating";
 import { Edit } from "@mui/icons-material";
+import { useTranslation } from "src/localization/LocalizationContext";
 
 interface TableAccordionHeaderProps {
   table: Table;
@@ -16,6 +17,7 @@ const TableAccordionHeader: React.FC<TableAccordionHeaderProps> = ({
   isOverCapacity,
   onUpdateName,
 }) => {
+  const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(table.name || "");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -49,8 +51,8 @@ const TableAccordionHeader: React.FC<TableAccordionHeaderProps> = ({
   };
 
   const displayText = table.name
-    ? `Table ${table.number} - ${table.name}`
-    : `Table ${table.number}`;
+    ? `${t("seating.table.defaultName", { number: table.number })} - ${table.name}`
+    : t("seating.table.defaultName", { number: table.number });
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>
@@ -63,7 +65,7 @@ const TableAccordionHeader: React.FC<TableAccordionHeaderProps> = ({
           onBlur={handleSave}
           onKeyDown={handleKeyDown}
           onClick={(e) => e.stopPropagation()}
-          placeholder={`Table ${table.number}`}
+          placeholder={t("seating.table.defaultName", { number: table.number })}
           sx={{ flex: 1, maxWidth: 300 }}
         />
       ) : (
@@ -85,7 +87,7 @@ const TableAccordionHeader: React.FC<TableAccordionHeaderProps> = ({
             : "default"
         }
       />
-      {table.isVIP && <Chip label="VIP" size="small" color="secondary" />}
+      {table.isVIP && <Chip label={t("seating.setup.vipTable")} size="small" color="secondary" />}
     </Box>
   );
 };

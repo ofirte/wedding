@@ -1,9 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Group, Rect, Text, Transformer, Circle } from "react-konva";
 import { LayoutElement } from "@wedding-plan/types";
-import { Edit as EditIcon } from "@mui/icons-material";
 import Konva from "konva";
-import { Box } from "@mui/system";
+import { useTranslation } from "src/localization/LocalizationContext";
 
 interface LayoutElementShapeProps {
   element: LayoutElement;
@@ -24,6 +23,7 @@ const LayoutElementShape: React.FC<LayoutElementShapeProps> = ({
   onSizeChange,
   onRotationChange,
 }) => {
+  const { t } = useTranslation();
   const groupRef = useRef<Konva.Group>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
 
@@ -120,21 +120,48 @@ const LayoutElementShape: React.FC<LayoutElementShapeProps> = ({
 
     switch (element.type) {
       case "stage":
-        return "Stage";
+        return t("seating.layoutElements.types.stage");
       case "bar":
-        return "Bar";
+        return t("seating.layoutElements.types.bar");
       case "food-court":
-        return "Food Court";
+        return t("seating.layoutElements.types.foodCourt");
       case "dance-floor":
-        return "Dance Floor";
+        return t("seating.layoutElements.types.danceFloor");
       case "entrance":
-        return "Entrance";
+        return t("seating.layoutElements.types.entrance");
       case "bathroom":
-        return "Restroom";
+        return t("seating.layoutElements.types.bathroom");
       default:
-        return "Element";
+        return t("seating.layoutElements.types.element");
     }
   };
+
+  const getTextMetrics = () => {
+    // Calculate optimal font size based on element size (clamped between 12-32px)
+    const fontSize = Math.max(12, Math.min(32, element.size.height / 4));
+
+    // Estimate line heights (typical line height is 1.2x font size)
+    const lineHeight = fontSize * 1.2;
+    const iconHeight = lineHeight;
+    const labelHeight = lineHeight;
+
+    // Spacing between icon and label (proportional to element height, 5-15px range)
+    const spacing = Math.max(5, Math.min(15, element.size.height * 0.08));
+
+    // Calculate total content height
+    const totalHeight = iconHeight + spacing + labelHeight;
+
+    // Calculate vertical offset to center the content block
+    const startY = -totalHeight / 2;
+
+    return {
+      fontSize,
+      iconY: startY,
+      labelY: startY + iconHeight + spacing,
+    };
+  };
+
+  const textMetrics = getTextMetrics();
 
   return (
     <>
@@ -186,25 +213,25 @@ const LayoutElementShape: React.FC<LayoutElementShapeProps> = ({
         {/* Element Icon */}
         <Text
           text={getElementIcon()}
-          fontSize={element.size.height/4}
+          fontSize={textMetrics.fontSize}
           fontFamily="Arial"
           align="center"
           width={element.size.width}
           x={-element.size.width / 2}
-          y={element.shape === "circle" ? -10 : -element.size.height / 2 + 10}
+          y={textMetrics.iconY}
         />
 
         {/* Element Label */}
         <Text
           text={getElementLabel()}
-          fontSize={element.size.height/4}
+          fontSize={textMetrics.fontSize}
           fontFamily="Arial"
           fontStyle="bold"
           fill="#FFFFFF"
           align="center"
           width={element.size.width}
           x={-element.size.width / 2}
-          y={element.shape === "circle" ? 10 : -element.size.height / 2 + 40}
+          y={textMetrics.labelY}
         />
 
         {/* Selection Indicator */}

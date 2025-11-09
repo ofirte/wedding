@@ -1174,7 +1174,27 @@ interface SeatingTranslations {
       danceFloor: string;
       entrance: string;
       bathroom: string;
+      element: string;
     };
+    properties: {
+      type: string;
+      size: string;
+      position: string;
+      customName: string;
+      customNameHelper: string;
+      shape: string;
+    };
+    shapes: {
+      rectangle: string;
+      circle: string;
+    };
+    deleteElement: string;
+  };
+  table: {
+    defaultName: string;
+  };
+  tableProperties: {
+    title: string;
   };
   bulkAdd: {
     title: string;
@@ -1258,6 +1278,7 @@ interface SeatingTranslations {
     noUnassignedGuests: string;
     confirmClearAll: string;
     confirmOverCapacity: string;
+    applyFailed: string;
   };
   autoAssignment: {
     title: string;
@@ -1271,6 +1292,7 @@ interface SeatingTranslations {
     noGuestsToAssign: string;
     noTablesAvailable: string;
     notEnoughCapacity: string;
+    failed: string;
   };
   suggestions: {
     title: string;

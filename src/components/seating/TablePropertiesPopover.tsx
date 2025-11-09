@@ -136,7 +136,9 @@ const TablePropertiesPopover: React.FC<TablePropertiesPopoverProps> = ({
       <Box sx={{ width: 320, p: 2 }}>
         <Stack spacing={2}>
           {/* Header */}
-          <Typography variant="h6">Table {table.number}</Typography>
+          <Typography variant="h6">
+            {t("seating.tableProperties.title", { number: table.number })}
+          </Typography>
 
           <Divider />
 

@@ -210,7 +210,7 @@ const UnassignedGuestsList: React.FC<UnassignedGuestsListProps> = ({
                   const assigned = assignments.get(table.id) || [];
                   return (
                     <MenuItem key={table.id} value={table.id}>
-                      {table.name || `Table ${table.number}`} (
+                      {table.name || t("seating.table.defaultName", { number: table.number })} (
                       {assigned.length}/{table.capacity})
                     </MenuItem>
                   );

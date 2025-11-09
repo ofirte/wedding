@@ -131,7 +131,7 @@ const AssignmentDialog: React.FC<AssignmentDialogProps> = ({
       onClose();
     } catch (error) {
       console.error("Failed to apply assignments:", error);
-      alert("Failed to apply assignments. Please try again.");
+      alert(t("seating.assignmentDialog.applyFailed"));
     } finally {
       setIsApplying(false);
     }

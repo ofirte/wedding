@@ -63,19 +63,19 @@ const LayoutElementPropertiesPopover: React.FC<LayoutElementPropertiesPopoverPro
   const getElementTypeLabel = () => {
     switch (element.type) {
       case "stage":
-        return "Stage";
+        return t("seating.layoutElements.types.stage");
       case "bar":
-        return "Bar";
+        return t("seating.layoutElements.types.bar");
       case "food-court":
-        return "Food Court";
+        return t("seating.layoutElements.types.foodCourt");
       case "dance-floor":
-        return "Dance Floor";
+        return t("seating.layoutElements.types.danceFloor");
       case "entrance":
-        return "Entrance";
+        return t("seating.layoutElements.types.entrance");
       case "bathroom":
-        return "Restroom";
+        return t("seating.layoutElements.types.bathroom");
       default:
-        return "Element";
+        return t("seating.layoutElements.types.stage"); // fallback
     }
   };
 
@@ -104,13 +104,13 @@ const LayoutElementPropertiesPopover: React.FC<LayoutElementPropertiesPopoverPro
           {/* Element Info */}
           <Box>
             <Typography variant="body2" color="text.secondary">
-              Type: {getElementTypeLabel()}
+              {t("seating.layoutElements.properties.type")}: {getElementTypeLabel()}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Size: {Math.round(element.size.width)} × {Math.round(element.size.height)}
+              {t("seating.layoutElements.properties.size")}: {Math.round(element.size.width)} × {Math.round(element.size.height)}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Position: ({Math.round(element.position.x)}, {Math.round(element.position.y)})
+              {t("seating.layoutElements.properties.position")}: ({Math.round(element.position.x)}, {Math.round(element.position.y)})
             </Typography>
           </Box>
 
@@ -118,25 +118,25 @@ const LayoutElementPropertiesPopover: React.FC<LayoutElementPropertiesPopoverPro
 
           {/* Quick Edit Fields */}
           <TextField
-            label="Custom Name"
+            label={t("seating.layoutElements.properties.customName")}
             value={editedName}
             onChange={(e) => handleNameChange(e.target.value)}
             size="small"
             fullWidth
             placeholder={getElementTypeLabel()}
-            helperText="Optional custom name for this element"
+            helperText={t("seating.layoutElements.properties.customNameHelper")}
           />
 
           {/* Shape Selector */}
           <FormControl fullWidth size="small">
-            <InputLabel>Shape</InputLabel>
+            <InputLabel>{t("seating.layoutElements.properties.shape")}</InputLabel>
             <Select
               value={element.shape || "rectangle"}
               onChange={(e) => handleUpdate({ shape: e.target.value as "rectangle" | "circle" })}
-              label="Shape"
+              label={t("seating.layoutElements.properties.shape")}
             >
-              <MenuItem value="rectangle">Rectangle</MenuItem>
-              <MenuItem value="circle">Circle</MenuItem>
+              <MenuItem value="rectangle">{t("seating.layoutElements.shapes.rectangle")}</MenuItem>
+              <MenuItem value="circle">{t("seating.layoutElements.shapes.circle")}</MenuItem>
             </Select>
           </FormControl>
 
@@ -150,7 +150,7 @@ const LayoutElementPropertiesPopover: React.FC<LayoutElementPropertiesPopoverPro
             startIcon={<DeleteIcon />}
             onClick={handleDeleteClick}
           >
-            Delete Element
+            {t("seating.layoutElements.deleteElement")}
           </Button>
         </Stack>
       </Box>

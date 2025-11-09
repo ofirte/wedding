@@ -196,7 +196,7 @@ export const useGuestAssignment = ({
       clearSelection();
     } catch (error) {
       console.error("Auto-assignment failed:", error);
-      alert("Auto-assignment failed. Please try again.");
+      alert(t("seating.autoAssignment.failed"));
     } finally {
       setIsAutoAssigning(false);
     }

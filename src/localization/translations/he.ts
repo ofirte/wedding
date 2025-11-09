@@ -1447,7 +1447,27 @@ export const hebrewTranslations: Translations = {
         danceFloor: "רחבת ריקודים",
         entrance: "כניסה",
         bathroom: "שירותים",
+        element: "אלמנט",
       },
+      properties: {
+        type: "סוג",
+        size: "גודל",
+        position: "מיקום",
+        customName: "שם מותאם אישית",
+        customNameHelper: "שם מותאם אישי לאלמנט זה (אופציונלי)",
+        shape: "צורה",
+      },
+      shapes: {
+        rectangle: "מלבן",
+        circle: "עיגול",
+      },
+      deleteElement: "מחק אלמנט",
+    },
+    table: {
+      defaultName: "שולחן {{number}}",
+    },
+    tableProperties: {
+      title: "שולחן {{number}}",
     },
     actions: {
       addTables: "הוסף שולחנות",
@@ -1521,6 +1541,7 @@ export const hebrewTranslations: Translations = {
       noUnassignedGuests: "כל האורחים משוייכים",
       confirmClearAll: "האם אתה בטוח שברצונך להסיר את כל הקצאות האורחים? לא ניתן לבטל פעולה זו.",
       confirmOverCapacity: "אתה מקצה {{selected}} אורחים אך נותרו רק {{remaining}} מקומות. להמשיך בכל זאת?",
+      applyFailed: "החלת ההקצאות נכשלה. אנא נסה שוב.",
     },
     autoAssignment: {
       title: "הגדרות הקצאה אוטומטית",
@@ -1534,6 +1555,7 @@ export const hebrewTranslations: Translations = {
       noGuestsToAssign: "כל האורחים כבר הוקצו!",
       noTablesAvailable: "אנא צור שולחנות תחילה",
       notEnoughCapacity: "אין מספיק קיבולת שולחנות לכל האורחים.",
+      failed: "ההקצאה האוטומטית נכשלה. אנא נסה שוב.",
     },
     suggestions: {
       title: "הצעות",

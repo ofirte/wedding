@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { Group, Circle, Rect, Text } from "react-konva";
 import { Table } from "@wedding-plan/types";
 import Konva from "konva";
+import { useTranslation } from "src/localization/LocalizationContext";
 
 interface TableShapeProps {
   table: Table;
@@ -19,6 +20,7 @@ const TableShape: React.FC<TableShapeProps> = ({
   onEdit,
   onDragEnd,
 }) => {
+  const { t } = useTranslation();
   const groupRef = useRef<Konva.Group>(null);
 
   // Calculate size based on capacity (scale factor: 4 pixels per seat)
@@ -154,7 +156,7 @@ const TableShape: React.FC<TableShapeProps> = ({
         text={
           table.name
             ? `${table.number}\n ${table.name}`
-            : `Table ${table.number}`
+            : t("seating.table.defaultName", { number: table.number })
         }
         fontSize={14}
         fontFamily="Arial"
