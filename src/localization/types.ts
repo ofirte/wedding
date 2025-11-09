@@ -1190,6 +1190,7 @@ interface SeatingTranslations {
     addTables: string;
     autoArrange: string;
     addGuest: string;
+    assignGuests: string;
   };
   templates: Record<string, any>;
   assignment: {
@@ -1207,6 +1208,7 @@ interface SeatingTranslations {
     noMatchingGuests: string;
     noGuestsAssigned: string;
     filter: {
+      title: string;
       all: string;
       byRelation: string;
       bySide: string;
@@ -1232,6 +1234,31 @@ interface SeatingTranslations {
     averagePerTable: string;
     capacityUsed: string;
   };
+  assignmentDialog: {
+    title: string;
+    autoAssign: string;
+    clearAll: string;
+    assigned: string;
+    tables: string;
+    capacity: string;
+    unassigned: string;
+    search: string;
+    relation: string;
+    side: string;
+    all: string;
+    selectAll: string;
+    deselectAll: string;
+    selectedCount: string;
+    selectTable: string;
+    assign: string;
+    applyChanges: string;
+    tablesAndAssignments: string;
+    overCapacity: string;
+    dropGuestsHere: string;
+    noUnassignedGuests: string;
+    confirmClearAll: string;
+    confirmOverCapacity: string;
+  };
   autoAssignment: {
     title: string;
     description: string;
@@ -1241,6 +1268,7 @@ interface SeatingTranslations {
     run: string;
     confirm: string;
     success: string;
+    noGuestsToAssign: string;
     noTablesAvailable: string;
     notEnoughCapacity: string;
   };

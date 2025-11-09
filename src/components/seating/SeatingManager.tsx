@@ -6,14 +6,16 @@ import { TouchBackend } from "react-dnd-touch-backend";
 import { Table, LayoutElement } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { useResponsive } from "../../utils/ResponsiveUtils";
-import { useTables, useCreateTable, useUpdateTable, useDeleteTable, useBulkUpdateTables, useLayoutElements, useCreateLayoutElement, useUpdateLayoutElement, useDeleteLayoutElement } from "../../hooks/seating";
+import { useTables, useCreateTable, useUpdateTable, useDeleteTable, useBulkUpdateTables, useLayoutElements, useCreateLayoutElement, useUpdateLayoutElement, useDeleteLayoutElement, useSeatingArrangements } from "../../hooks/seating";
 import { useInvitees } from "../../hooks/invitees";
+import { getUnassignedGuests } from "../../api/seating/seatingApi";
 import SeatingToolbar from "./SeatingToolbar";
 import SeatingToolsSidebar from "./SeatingToolsSidebar";
 import SeatingCanvas from "./SeatingCanvas";
 import BulkAddTablesDialog from "./BulkAddTablesDialog";
 import TablePropertiesPopover from "./TablePropertiesPopover";
 import LayoutElementPropertiesPopover from "./LayoutElementPropertiesPopover";
+import AssignmentDialog from "./AssignmentDialog";
 
 const SeatingManager: React.FC = () => {
   const { t } = useTranslation();
@@ -23,6 +25,7 @@ const SeatingManager: React.FC = () => {
   const { data: tables = [], isLoading: isLoadingTables, isError } = useTables();
   const { data: layoutElements = [] } = useLayoutElements();
   const { data: invitees = [] } = useInvitees();
+  const { data: arrangements = [] } = useSeatingArrangements();
 
   // Mutations
   const { mutate: createTable } = useCreateTable();
@@ -35,6 +38,8 @@ const SeatingManager: React.FC = () => {
 
   // Dialog states
   const [isBulkAddDialogOpen, setIsBulkAddDialogOpen] = useState(false);
+  const [isAssignmentDialogOpen, setIsAssignmentDialogOpen] = useState(false);
+  const [assignmentDialogInitialState, setAssignmentDialogInitialState] = useState<Map<string, string[]> | undefined>(undefined);
 
   // Canvas states
   const [selectedTableId, setSelectedTableId] = useState<string | null>(null);
@@ -149,58 +154,63 @@ const SeatingManager: React.FC = () => {
     });
   };
 
-  // Handle auto-arrange
+  // Handle auto-assign guests to tables - opens dialog with auto-assigned results
   const handleAutoArrange = () => {
-    const gridCols = Math.ceil(Math.sqrt(tables.length));
-    const spacing = 180;
-    const startX = 100;
-    const startY = 100;
+    // Get unassigned guests
+    const unassignedGuests = getUnassignedGuests(invitees, tables);
 
-    const updates = tables.map((table, index) => ({
-      id: table.id,
-      data: {
-        position: {
-          x: startX + (index % gridCols) * spacing,
-          y: startY + Math.floor(index / gridCols) * spacing,
-        },
-      },
-    }));
+    if (unassignedGuests.length === 0) {
+      alert(t("seating.autoAssignment.noGuestsToAssign") || "All guests are already assigned!");
+      return;
+    }
 
-    bulkUpdateTables(updates);
+    // Check if there are tables
+    if (tables.length === 0) {
+      alert(t("seating.autoAssignment.noTablesAvailable"));
+      return;
+    }
+
+    // Open dialog with current assignments (will run auto-assign within dialog)
+    const currentAssignments = new Map<string, string[]>();
+    tables.forEach((table) => {
+      if (table.assignedGuests.length > 0) {
+        currentAssignments.set(table.id, [...table.assignedGuests]);
+      }
+    });
+
+    setAssignmentDialogInitialState(currentAssignments);
+    setIsAssignmentDialogOpen(true);
   };
 
-  // Handle template selection
-  const handleTemplateSelect = (templateId: string) => {
-    // Template presets
-    const templates: Record<string, Omit<Table, "id">[]> = {
-      "standard-150": Array.from({ length: 15 }, (_, i) => ({
-        arrangementId,
-        number: i + 1,
-        shape: "round" as const,
-        capacity: 10,
-        assignedGuests: [],
-        position: {
-          x: 100 + (i % 5) * 180,
-          y: 100 + Math.floor(i / 5) * 180,
-        },
-      })),
-      "intimate-50": Array.from({ length: 5 }, (_, i) => ({
-        arrangementId,
-        number: i + 1,
-        shape: "round" as const,
-        capacity: 10,
-        assignedGuests: [],
-        position: {
-          x: 100 + (i % 3) * 180,
-          y: 100 + Math.floor(i / 3) * 180,
-        },
-      })),
-    };
+  // Handle manual assignment dialog open
+  const handleOpenManualAssignment = () => {
+    // Get current assignments
+    const currentAssignments = new Map<string, string[]>();
+    tables.forEach((table) => {
+      if (table.assignedGuests.length > 0) {
+        currentAssignments.set(table.id, [...table.assignedGuests]);
+      }
+    });
 
-    const selectedTemplate = templates[templateId];
-    if (selectedTemplate) {
-      handleBulkCreate(selectedTemplate);
-    }
+    setAssignmentDialogInitialState(currentAssignments);
+    setIsAssignmentDialogOpen(true);
+  };
+
+  // Handle apply assignments from dialog
+  const handleApplyAssignments = async (assignments: Map<string, string[]>) => {
+    // Convert assignments to table updates
+    const updates = tables.map((table) => {
+      const newAssignedGuests = assignments.get(table.id) || [];
+      return {
+        id: table.id,
+        data: {
+          assignedGuests: newAssignedGuests,
+        },
+      };
+    });
+
+    // Use bulk update
+    bulkUpdateTables(updates as any);
   };
 
   // Handle layout element creation
@@ -214,9 +224,13 @@ const SeatingManager: React.FC = () => {
       "bathroom": { width: 80, height: 80 },
     };
 
+    // Default some elements to circle shape
+    const defaultShape: "rectangle" | "circle" = (type === "dance-floor" || type === "stage") ? "circle" : "rectangle";
+
     const newElement: Omit<LayoutElement, "id"> = {
       arrangementId,
       type,
+      shape: defaultShape,
       position: { x: 300, y: 300 }, // Center-ish starting position
       size: defaultSizes[type],
     };
@@ -334,16 +348,14 @@ const SeatingManager: React.FC = () => {
           tables={tables}
           invitees={invitees}
           onAutoArrange={handleAutoArrange}
+          onOpenAssignment={handleOpenManualAssignment}
         />
 
         {/* Main Content: Sidebar + Canvas */}
         <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
           {/* Left Sidebar */}
           <SeatingToolsSidebar
-            tables={tables}
-            invitees={invitees}
             onBulkAddClick={() => setIsBulkAddDialogOpen(true)}
-            onTemplateSelect={handleTemplateSelect}
             onAddLayoutElement={handleAddLayoutElement}
           />
 
@@ -394,6 +406,15 @@ const SeatingManager: React.FC = () => {
           onClose={handleElementPopoverClose}
           onUpdate={handleElementUpdate}
           onDelete={handleElementDelete}
+        />
+
+        <AssignmentDialog
+          open={isAssignmentDialogOpen}
+          onClose={() => setIsAssignmentDialogOpen(false)}
+          onApply={handleApplyAssignments}
+          tables={tables}
+          invitees={invitees}
+          initialAssignments={assignmentDialogInitialState}
         />
       </Box>
     </DndProvider>

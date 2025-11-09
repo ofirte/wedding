@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Stack, Typography, Button } from "@mui/material";
-import { GridOn as GridIcon, Download as DownloadIcon } from "@mui/icons-material";
+import { GridOn as GridIcon, Download as DownloadIcon, PersonAdd as PersonAddIcon } from "@mui/icons-material";
 import { Table, Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 import SeatingStats from "./SeatingStats";
@@ -9,6 +9,7 @@ interface SeatingToolbarProps {
   tables: Table[];
   invitees: Invitee[];
   onAutoArrange: () => void;
+  onOpenAssignment: () => void;
   onExport?: () => void;
   isSaving?: boolean;
 }
@@ -17,6 +18,7 @@ const SeatingToolbar: React.FC<SeatingToolbarProps> = ({
   tables,
   invitees,
   onAutoArrange,
+  onOpenAssignment,
   onExport,
   isSaving = false,
 }) => {
@@ -48,6 +50,16 @@ const SeatingToolbar: React.FC<SeatingToolbarProps> = ({
 
       {/* Right: Action Buttons */}
       <Stack direction="row" spacing={2}>
+        <Button
+          variant="contained"
+          startIcon={<PersonAddIcon />}
+          onClick={onOpenAssignment}
+          disabled={tables.length === 0}
+          sx={{ borderRadius: 2 }}
+        >
+          {t("seating.actions.assignGuests")}
+        </Button>
+
         <Button
           variant="outlined"
           startIcon={<GridIcon />}

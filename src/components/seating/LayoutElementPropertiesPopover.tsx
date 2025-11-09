@@ -7,6 +7,10 @@ import {
   TextField,
   Button,
   Divider,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
 import { LayoutElement } from "@wedding-plan/types";
@@ -122,6 +126,19 @@ const LayoutElementPropertiesPopover: React.FC<LayoutElementPropertiesPopoverPro
             placeholder={getElementTypeLabel()}
             helperText="Optional custom name for this element"
           />
+
+          {/* Shape Selector */}
+          <FormControl fullWidth size="small">
+            <InputLabel>Shape</InputLabel>
+            <Select
+              value={element.shape || "rectangle"}
+              onChange={(e) => handleUpdate({ shape: e.target.value as "rectangle" | "circle" })}
+              label="Shape"
+            >
+              <MenuItem value="rectangle">Rectangle</MenuItem>
+              <MenuItem value="circle">Circle</MenuItem>
+            </Select>
+          </FormControl>
 
           <Divider />
 

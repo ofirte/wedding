@@ -108,7 +108,7 @@ const TableShape: React.FC<TableShapeProps> = ({
         return isTopText ? -10 : 5;
       case "round":
       default:
-        return isTopText ? -12 : 4;
+        return isTopText ? -24 : 4;
     }
   };
 
@@ -151,7 +151,11 @@ const TableShape: React.FC<TableShapeProps> = ({
 
       {/* Table Name or Number */}
       <Text
-        text={table.name || `Table ${table.number}`}
+        text={
+          table.name
+            ? `${table.number}\n ${table.name}`
+            : `Table ${table.number}`
+        }
         fontSize={14}
         fontFamily="Arial"
         fontStyle="bold"

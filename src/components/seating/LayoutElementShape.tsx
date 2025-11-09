@@ -158,46 +158,64 @@ const LayoutElementShape: React.FC<LayoutElementShapeProps> = ({
         }}
         onTransformEnd={handleTransformEnd}
       >
-        {/* Element Rectangle */}
-        <Rect
-          x={-element.size.width / 2}
-          y={-element.size.height / 2}
-          width={element.size.width}
-          height={element.size.height}
-          fill={getElementColor()}
-          stroke={isSelected ? "#4A6F8A" : "#333333"}
-          strokeWidth={isSelected ? 3 : 2}
-          cornerRadius={8}
-          opacity={0.8}
-          perfectDrawEnabled={false}
-        />
+        {/* Element Shape - Circle or Rectangle */}
+        {element.shape === "circle" ? (
+          <Circle
+            radius={element.size.width / 2}
+            fill={getElementColor()}
+            stroke={isSelected ? "#4A6F8A" : "#333333"}
+            strokeWidth={isSelected ? 3 : 2}
+            opacity={0.8}
+            perfectDrawEnabled={false}
+          />
+        ) : (
+          <Rect
+            x={-element.size.width / 2}
+            y={-element.size.height / 2}
+            width={element.size.width}
+            height={element.size.height}
+            fill={getElementColor()}
+            stroke={isSelected ? "#4A6F8A" : "#333333"}
+            strokeWidth={isSelected ? 3 : 2}
+            cornerRadius={8}
+            opacity={0.8}
+            perfectDrawEnabled={false}
+          />
+        )}
 
         {/* Element Icon */}
         <Text
           text={getElementIcon()}
-          fontSize={24}
+          fontSize={element.size.height/4}
           fontFamily="Arial"
           align="center"
           width={element.size.width}
           x={-element.size.width / 2}
-          y={-element.size.height / 2 + 10}
+          y={element.shape === "circle" ? -10 : -element.size.height / 2 + 10}
         />
 
         {/* Element Label */}
         <Text
           text={getElementLabel()}
-          fontSize={14}
+          fontSize={element.size.height/4}
           fontFamily="Arial"
           fontStyle="bold"
           fill="#FFFFFF"
           align="center"
           width={element.size.width}
           x={-element.size.width / 2}
-          y={-element.size.height / 2 + 40}
+          y={element.shape === "circle" ? 10 : -element.size.height / 2 + 40}
         />
 
         {/* Selection Indicator */}
-        {isSelected && (
+        {isSelected && (element.shape === "circle" ? (
+          <Circle
+            radius={element.size.width / 2 + 5}
+            stroke="#4A6F8A"
+            strokeWidth={2}
+            dash={[5, 5]}
+          />
+        ) : (
           <Rect
             x={-element.size.width / 2 - 5}
             y={-element.size.height / 2 - 5}
@@ -208,7 +226,7 @@ const LayoutElementShape: React.FC<LayoutElementShapeProps> = ({
             dash={[5, 5]}
             cornerRadius={10}
           />
-        )}
+        ))}
 
         {/* Edit Icon - Shows on hover when selected */}
       </Group>

@@ -29,6 +29,7 @@ export interface LayoutElement {
   id: string;
   arrangementId: string;
   type: "stage" | "bar" | "food-court" | "entrance" | "bathroom" | "dance-floor";
+  shape?: "rectangle" | "circle";
   name?: string;
   position: { x: number; y: number };
   size: { width: number; height: number };

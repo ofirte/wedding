@@ -1,0 +1,172 @@
+/**
+ * Auto-assignment algorithm for seating guests
+ * Groups guests by relation and side, then assigns them to tables
+ */
+
+import { Invitee, Table } from "@wedding-plan/types";
+
+interface AssignmentRules {
+  groupByRelation: boolean;
+  groupBySide: boolean;
+}
+
+interface GuestGroup {
+  guests: Invitee[];
+  relation?: string;
+  side?: string;
+}
+
+/**
+ * Auto-assign guests to tables based on grouping rules
+ * @param unassignedGuests - List of guests without table assignments
+ * @param tables - List of available tables
+ * @param rules - Grouping rules for assignment
+ * @returns Map of table IDs to guest IDs to assign
+ */
+export function autoAssignGuests(
+  unassignedGuests: Invitee[],
+  tables: Table[],
+  rules: AssignmentRules
+): Map<string, string[]> {
+  const assignments = new Map<string, string[]>();
+
+  // Sort tables by available capacity (descending)
+  const sortedTables = [...tables]
+    .map((table) => ({
+      ...table,
+      availableSeats: table.capacity - table.assignedGuests.length,
+    }))
+    .filter((table) => table.availableSeats > 0)
+    .sort((a, b) => b.availableSeats - a.availableSeats);
+
+  if (sortedTables.length === 0) {
+    return assignments; // No available tables
+  }
+
+  // Group guests based on rules
+  const groups = groupGuests(unassignedGuests, rules);
+
+  // Track table capacity
+  const tableCapacity = new Map<string, number>();
+  sortedTables.forEach((table) => {
+    tableCapacity.set(table.id, table.availableSeats);
+  });
+
+  let currentTableIndex = 0;
+
+  // Assign groups to tables
+  for (const group of groups) {
+    const groupSize = group.guests.length;
+
+    // Find a table that can fit the group
+    let assigned = false;
+    for (let i = currentTableIndex; i < sortedTables.length; i++) {
+      const table = sortedTables[i];
+      const available = tableCapacity.get(table.id) || 0;
+
+      if (available >= groupSize) {
+        // Assign entire group to this table
+        const existingAssignments = assignments.get(table.id) || [];
+        const newAssignments = [...existingAssignments, ...group.guests.map((g) => g.id)];
+        assignments.set(table.id, newAssignments);
+
+        tableCapacity.set(table.id, available - groupSize);
+
+        // If table is full, move to next table
+        if (tableCapacity.get(table.id) === 0) {
+          currentTableIndex = i + 1;
+        } else {
+          currentTableIndex = i;
+        }
+
+        assigned = true;
+        break;
+      }
+    }
+
+    // If group doesn't fit anywhere, split it across tables
+    if (!assigned) {
+      let remainingGuests = [...group.guests];
+
+      for (let i = currentTableIndex; i < sortedTables.length && remainingGuests.length > 0; i++) {
+        const table = sortedTables[i];
+        const available = tableCapacity.get(table.id) || 0;
+
+        if (available > 0) {
+          const toAssign = remainingGuests.slice(0, available);
+          const existingAssignments = assignments.get(table.id) || [];
+          const newAssignments = [...existingAssignments, ...toAssign.map((g) => g.id)];
+          assignments.set(table.id, newAssignments);
+
+          remainingGuests = remainingGuests.slice(available);
+          tableCapacity.set(table.id, 0);
+
+          if (remainingGuests.length > 0) {
+            currentTableIndex = i + 1;
+          }
+        }
+      }
+    }
+  }
+
+  return assignments;
+}
+
+/**
+ * Group guests based on grouping rules
+ */
+function groupGuests(guests: Invitee[], rules: AssignmentRules): GuestGroup[] {
+  if (!rules.groupByRelation && !rules.groupBySide) {
+    // No grouping - return individual guests
+    return guests.map((guest) => ({ guests: [guest] }));
+  }
+
+  const groups = new Map<string, GuestGroup>();
+
+  for (const guest of guests) {
+    let key = "";
+
+    if (rules.groupByRelation && guest.relation) {
+      key += `relation:${guest.relation}`;
+    }
+
+    if (rules.groupBySide && guest.side) {
+      key += key ? `_side:${guest.side}` : `side:${guest.side}`;
+    }
+
+    // If no key (guest has no relation/side), create individual key
+    if (!key) {
+      key = `individual:${guest.id}`;
+    }
+
+    if (!groups.has(key)) {
+      groups.set(key, {
+        guests: [],
+        relation: rules.groupByRelation ? guest.relation : undefined,
+        side: rules.groupBySide ? guest.side : undefined,
+      });
+    }
+
+    groups.get(key)!.guests.push(guest);
+  }
+
+  // Sort groups by size (larger groups first for better packing)
+  return Array.from(groups.values()).sort((a, b) => b.guests.length - a.guests.length);
+}
+
+/**
+ * Calculate total capacity needed
+ */
+export function calculateCapacityNeeded(guests: Invitee[]): number {
+  return guests.length;
+}
+
+/**
+ * Calculate available capacity in tables
+ */
+export function calculateAvailableCapacity(tables: Table[]): number {
+  return tables.reduce((sum, table) => {
+    const available = table.capacity - table.assignedGuests.length;
+    return sum + (available > 0 ? available : 0);
+  }, 0);
+}
