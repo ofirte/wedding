@@ -22,13 +22,19 @@ import { AdminPage } from "./components/admin";
 import ManageApp from "./components/common/ManageApp";
 import { RsvpManagerContainer } from "./components/rsvp/RsvpManagerContainer";
 import TasksManagementPage from "./components/tasksManagement/TasksManagementPage";
+import LandingPage from "./components/landing/LandingPage";
+import PrivacyPolicy from "./components/legal/PrivacyPolicy";
+import TermsOfService from "./components/legal/TermsOfService";
 
 const AppRoutes: FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<RootRedirect />} />
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/home" element={<RootRedirect />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/terms-of-service" element={<TermsOfService />} />
       <Route
         path="/guest-rsvp/:weddingId/:guestId"
         element={<GuestRSVPPage />}
