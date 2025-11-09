@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { Table } from "../../../../../shared/src/models/seating";
 import { Invitee } from "../../../../../shared/src/models/invitee";
 import { autoAssignGuests } from "src/utils/autoAssignment";
+import { getGuestAmount } from "./utils";
 
 interface UseGuestAssignmentProps {
   assignments: Map<string, string[]>;
@@ -90,14 +91,29 @@ export const useGuestAssignment = ({
     const table = tables.find((t) => t.id === bulkAssignTableId);
     if (!table) return;
 
-    const currentAssigned = assignments.get(table.id) || [];
-    const remainingCapacity = table.capacity - currentAssigned.length;
+    // Calculate current used capacity based on guest amounts
+    const currentAssignedIds = assignments.get(table.id) || [];
+    const currentUsedCapacity = currentAssignedIds.reduce((sum, guestId) => {
+      const guest = invitees.find((inv) => inv.id === guestId);
+      return sum + (guest ? getGuestAmount(guest) : 0);
+    }, 0);
 
-    if (selectedGuests.size > remainingCapacity) {
+    // Calculate total guest count for selected invitees
+    const selectedGuestCount = Array.from(selectedGuests).reduce(
+      (sum, guestId) => {
+        const guest = invitees.find((inv) => inv.id === guestId);
+        return sum + (guest ? getGuestAmount(guest) : 0);
+      },
+      0
+    );
+
+    const remainingCapacity = table.capacity - currentUsedCapacity;
+
+    if (selectedGuestCount > remainingCapacity) {
       if (
         !window.confirm(
           t("seating.assignmentDialog.confirmOverCapacity", {
-            selected: selectedGuests.size,
+            selected: selectedGuestCount,
             remaining: remainingCapacity,
           })
         )
@@ -123,6 +139,7 @@ export const useGuestAssignment = ({
     selectedGuests,
     tables,
     assignments,
+    invitees,
     t,
     setAssignments,
     clearSelection,
@@ -194,13 +211,23 @@ export const useGuestAssignment = ({
     clearSelection,
   ]);
 
-  // Handle clear all
+  // Handle clear all - clears both assignments and table names
   const handleClearAll = useCallback(() => {
     if (window.confirm(t("seating.assignmentDialog.confirmClearAll"))) {
+      // Clear all guest assignments
       setAssignments(new Map());
       clearSelection();
+
+      // Clear table names if onUpdateTable is available
+      if (onUpdateTable) {
+        tables.forEach((table) => {
+          if (table.name) {
+            onUpdateTable(table.id, { name: "" });
+          }
+        });
+      }
     }
-  }, [t, setAssignments, clearSelection]);
+  }, [t, setAssignments, clearSelection, onUpdateTable, tables]);
 
   return {
     bulkAssignTableId,

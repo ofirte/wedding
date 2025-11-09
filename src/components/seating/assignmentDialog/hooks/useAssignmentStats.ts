@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Table } from "../../../../../shared/src/models/seating";
 import { Invitee } from "../../../../../shared/src/models/invitee";
+import { getGuestAmount } from "./utils";
 
 interface UseAssignmentStatsProps {
   invitees: Invitee[];
@@ -20,6 +21,7 @@ interface AssignmentStats {
 
 /**
  * Custom hook to calculate assignment statistics
+ * Calculates based on actual guest count (using rsvpStatus.amount)
  */
 export const useAssignmentStats = ({
   invitees,
@@ -28,16 +30,24 @@ export const useAssignmentStats = ({
   tables,
 }: UseAssignmentStatsProps): AssignmentStats => {
   return useMemo(() => {
-    const totalGuests = invitees.length;
-    const assignedCount = assignedGuestIds.size;
+    // Calculate total guests based on RSVP amounts for attending guests only
+    const totalGuests = invitees
+      .filter((inv) => inv.rsvpStatus?.attendance)
+      .reduce((sum, invitee) => sum + getGuestAmount(invitee), 0);
+
+    // Calculate assigned guest count (sum of amounts for assigned invitees)
+    const assignedCount = invitees
+      .filter((inv) => assignedGuestIds.has(inv.id))
+      .reduce((sum, invitee) => sum + getGuestAmount(invitee), 0);
+
     const tablesUsed = Array.from(assignments.values()).filter(
       (guests) => guests.length > 0
     ).length;
+
     const totalCapacity = tables.reduce(
       (sum, table) => sum + table.capacity,
       0
     );
-    const usedCapacity = assignedCount;
 
     return {
       totalGuests,
@@ -47,7 +57,7 @@ export const useAssignmentStats = ({
       totalTables: tables.length,
       capacityPercent:
         totalCapacity > 0
-          ? Math.round((usedCapacity / totalCapacity) * 100)
+          ? Math.round((assignedCount / totalCapacity) * 100)
           : 0,
     };
   }, [invitees, assignedGuestIds, assignments, tables]);

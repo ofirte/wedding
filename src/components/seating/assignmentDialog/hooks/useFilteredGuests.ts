@@ -30,9 +30,17 @@ export const useFilteredGuests = ({
   const [relationFilter, setRelationFilter] = useState<string>("all");
   const [sideFilter, setSideFilter] = useState<string>("all");
 
-  // Get unassigned guests
+  // Get unassigned guests - only include confirmed attending guests
   const unassignedGuests = useMemo(() => {
-    return invitees.filter((invitee) => !assignedGuestIds.has(invitee.id));
+    return invitees.filter((invitee) => {
+      // Filter out already assigned guests
+      if (assignedGuestIds.has(invitee.id)) return false;
+
+      // Only include guests who have confirmed attendance
+      if (!invitee.rsvpStatus?.attendance) return false;
+
+      return true;
+    });
   }, [invitees, assignedGuestIds]);
 
   // Apply filters to unassigned guests
