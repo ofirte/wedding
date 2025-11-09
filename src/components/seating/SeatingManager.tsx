@@ -347,7 +347,6 @@ const SeatingManager: React.FC = () => {
         <SeatingToolbar
           tables={tables}
           invitees={invitees}
-          onAutoArrange={handleAutoArrange}
           onOpenAssignment={handleOpenManualAssignment}
         />
 

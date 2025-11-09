@@ -15,6 +15,19 @@ interface SeatingStatsProps {
   inline?: boolean;
 }
 
+/**
+ * Get the number of guests for an invitee based on their RSVP amount
+ * Defaults to 1 if amount is not specified or invalid
+ */
+const getGuestAmount = (invitee: Invitee): number => {
+  if (!invitee.rsvpStatus?.amount) {
+    return 1;
+  }
+
+  const amount = parseInt(invitee.rsvpStatus.amount, 10);
+  return isNaN(amount) || amount < 1 ? 1 : amount;
+};
+
 const SeatingStats: React.FC<SeatingStatsProps> = ({
   tables,
   invitees,
@@ -24,19 +37,32 @@ const SeatingStats: React.FC<SeatingStatsProps> = ({
 
   const stats = useMemo(() => {
     const totalCapacity = tables.reduce((sum, t) => sum + t.capacity, 0);
-    const assignedCount = tables.reduce(
-      (sum, t) => sum + t.assignedGuests.length,
-      0
-    );
-    const unassignedCount = invitees.length - assignedCount;
+
+    // Calculate total guests based on RSVP amounts for attending guests only
+    const totalGuests = invitees
+      .filter((inv) => inv.rsvpStatus?.attendance)
+      .reduce((sum, invitee) => sum + getGuestAmount(invitee), 0);
+
+    // Get set of assigned guest IDs from all tables
+    const assignedGuestIds = new Set<string>();
+    tables.forEach((table) => {
+      table.assignedGuests.forEach((guestId) => assignedGuestIds.add(guestId));
+    });
+
+    // Calculate assigned count (sum of amounts for assigned invitees)
+    const assignedCount = invitees
+      .filter((inv) => assignedGuestIds.has(inv.id))
+      .reduce((sum, invitee) => sum + getGuestAmount(invitee), 0);
+
+    const unassignedCount = totalGuests - assignedCount;
     const assignedPercentage =
-      invitees.length > 0
-        ? Math.round((assignedCount / invitees.length) * 100)
+      totalGuests > 0
+        ? Math.round((assignedCount / totalGuests) * 100)
         : 0;
 
     return {
       totalTables: tables.length,
-      totalGuests: invitees.length,
+      totalGuests,
       totalCapacity,
       assigned: assignedCount,
       unassigned: unassignedCount,
