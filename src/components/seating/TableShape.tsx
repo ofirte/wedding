@@ -108,7 +108,7 @@ const TableShape: React.FC<TableShapeProps> = ({
         return isTopText ? -10 : 5;
       case "round":
       default:
-        return isTopText ? -24 : 4;
+        return isTopText ? -24 : 24;
     }
   };
 

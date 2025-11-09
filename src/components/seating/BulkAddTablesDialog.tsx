@@ -38,13 +38,17 @@ const BulkAddTablesDialog: React.FC<BulkAddTablesDialogProps> = ({
     if (existingTables.length === 0) return 1;
     const maxNumber = Math.max(
       ...existingTables.map((t) =>
-        typeof t.number === "number" ? t.number : parseInt(String(t.number)) || 0
+        typeof t.number === "number"
+          ? t.number
+          : parseInt(String(t.number)) || 0
       )
     );
     return maxNumber + 1;
   };
 
-  const [shape, setShape] = useState<"round" | "rectangular" | "square">("round");
+  const [shape, setShape] = useState<"round" | "rectangular" | "square">(
+    "round"
+  );
   const [capacity, setCapacity] = useState(8);
   const [quantity, setQuantity] = useState(10);
   const [startingNumber, setStartingNumber] = useState(getNextTableNumber());
@@ -94,13 +98,11 @@ const BulkAddTablesDialog: React.FC<BulkAddTablesDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle
-        sx={{ bgcolor: "info.light", color: "info.contrastText" }}
-      >
+      <DialogTitle sx={{ bgcolor: "info.light", color: "info.contrastText" }}>
         {t("seating.bulkAdd.title")}
       </DialogTitle>
-      <DialogContent sx={{ pt: 3 }}>
-        <Stack spacing={3}>
+      <DialogContent sx={{ mt: 4 }}>
+        <Stack spacing={2}>
           {/* Table Shape */}
           <FormControl fullWidth required>
             <InputLabel>{t("seating.setup.shape")}</InputLabel>
@@ -137,7 +139,9 @@ const BulkAddTablesDialog: React.FC<BulkAddTablesDialogProps> = ({
             label={t("seating.bulkAdd.quantity")}
             type="number"
             value={quantity}
-            onChange={(e) => setQuantity(Math.max(1, Math.min(50, Number(e.target.value))))}
+            onChange={(e) =>
+              setQuantity(Math.max(1, Math.min(50, Number(e.target.value))))
+            }
             required
             inputProps={{ min: 1, max: 50 }}
             helperText={t("seating.bulkAdd.quantityHelper")}
@@ -148,7 +152,9 @@ const BulkAddTablesDialog: React.FC<BulkAddTablesDialogProps> = ({
             label={t("seating.bulkAdd.startingNumber")}
             type="number"
             value={startingNumber}
-            onChange={(e) => setStartingNumber(Math.max(1, Number(e.target.value)))}
+            onChange={(e) =>
+              setStartingNumber(Math.max(1, Number(e.target.value)))
+            }
             helperText={t("seating.bulkAdd.startingNumberHelper")}
             inputProps={{ min: 1 }}
           />

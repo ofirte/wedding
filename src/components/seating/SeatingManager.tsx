@@ -15,7 +15,7 @@ import SeatingCanvas from "./SeatingCanvas";
 import BulkAddTablesDialog from "./BulkAddTablesDialog";
 import TablePropertiesPopover from "./TablePropertiesPopover";
 import LayoutElementPropertiesPopover from "./LayoutElementPropertiesPopover";
-import AssignmentDialog from "./AssignmentDialog";
+import AssignmentDialog from "./assignmentDialog/AssignmentDialog";
 
 const SeatingManager: React.FC = () => {
   const { t } = useTranslation();
@@ -412,6 +412,7 @@ const SeatingManager: React.FC = () => {
           open={isAssignmentDialogOpen}
           onClose={() => setIsAssignmentDialogOpen(false)}
           onApply={handleApplyAssignments}
+          onUpdateTable={handleTableUpdate}
           tables={tables}
           invitees={invitees}
           initialAssignments={assignmentDialogInitialState}

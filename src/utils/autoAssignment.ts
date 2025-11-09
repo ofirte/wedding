@@ -16,19 +16,25 @@ interface GuestGroup {
   side?: string;
 }
 
+interface AutoAssignmentResult {
+  assignments: Map<string, string[]>;
+  tableNames: Map<string, string>;
+}
+
 /**
  * Auto-assign guests to tables based on grouping rules
  * @param unassignedGuests - List of guests without table assignments
  * @param tables - List of available tables
  * @param rules - Grouping rules for assignment
- * @returns Map of table IDs to guest IDs to assign
+ * @returns Object containing assignments map and suggested table names map
  */
 export function autoAssignGuests(
   unassignedGuests: Invitee[],
   tables: Table[],
   rules: AssignmentRules
-): Map<string, string[]> {
+): AutoAssignmentResult {
   const assignments = new Map<string, string[]>();
+  const tableNames = new Map<string, string>();
 
   // Sort tables by available capacity (descending)
   const sortedTables = [...tables]
@@ -40,16 +46,20 @@ export function autoAssignGuests(
     .sort((a, b) => b.availableSeats - a.availableSeats);
 
   if (sortedTables.length === 0) {
-    return assignments; // No available tables
+    return { assignments, tableNames }; // No available tables
   }
 
   // Group guests based on rules
   const groups = groupGuests(unassignedGuests, rules);
 
-  // Track table capacity
+  // Track table capacity, relations, and sides
   const tableCapacity = new Map<string, number>();
+  const tableRelations = new Map<string, Set<string>>();
+  const tableSides = new Map<string, Set<string>>();
   sortedTables.forEach((table) => {
     tableCapacity.set(table.id, table.availableSeats);
+    tableRelations.set(table.id, new Set());
+    tableSides.set(table.id, new Set());
   });
 
   let currentTableIndex = 0;
@@ -69,6 +79,14 @@ export function autoAssignGuests(
         const existingAssignments = assignments.get(table.id) || [];
         const newAssignments = [...existingAssignments, ...group.guests.map((g) => g.id)];
         assignments.set(table.id, newAssignments);
+
+        // Track relation and side for this table
+        if (group.relation) {
+          tableRelations.get(table.id)?.add(group.relation);
+        }
+        if (group.side) {
+          tableSides.get(table.id)?.add(group.side);
+        }
 
         tableCapacity.set(table.id, available - groupSize);
 
@@ -98,6 +116,14 @@ export function autoAssignGuests(
           const newAssignments = [...existingAssignments, ...toAssign.map((g) => g.id)];
           assignments.set(table.id, newAssignments);
 
+          // Track relation and side for this table
+          if (group.relation) {
+            tableRelations.get(table.id)?.add(group.relation);
+          }
+          if (group.side) {
+            tableSides.get(table.id)?.add(group.side);
+          }
+
           remainingGuests = remainingGuests.slice(available);
           tableCapacity.set(table.id, 0);
 
@@ -109,7 +135,34 @@ export function autoAssignGuests(
     }
   }
 
-  return assignments;
+  // Generate table names based on relations and sides
+  tableRelations.forEach((relations, tableId) => {
+    if (relations.size > 0) {
+      const relationArray = Array.from(relations).sort();
+      const sideArray = Array.from(tableSides.get(tableId) || []).sort();
+
+      let tableName = "";
+
+      // Build relation part
+      if (relationArray.length === 1) {
+        tableName = relationArray[0];
+      } else if (relationArray.length > 1) {
+        tableName = relationArray.join(" & ");
+      }
+
+      // Add side part in parentheses if available
+      if (sideArray.length > 0) {
+        const sidesText = sideArray.join(" & ");
+        tableName += ` (${sidesText})`;
+      }
+
+      if (tableName) {
+        tableNames.set(tableId, tableName);
+      }
+    }
+  });
+
+  return { assignments, tableNames };
 }
 
 /**
