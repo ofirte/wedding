@@ -818,7 +818,7 @@ export interface Translations {
           description: string;
           icon: string;
         };
-        giftLink: {
+        giftLink?: {
           title: string;
           description: string;
           icon: string;
@@ -833,32 +833,42 @@ export interface Translations {
           description: string;
           icon: string;
         };
+        customDesign: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        transportAndMeal: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        smartTracking: {
+          title: string;
+          description: string;
+          icon: string;
+        };
       };
       pricing: {
         title: string;
         subtitle: string;
         startingPrice: string;
         perInvitee: string;
-        packages: {
-          small: {
-            title: string;
-            guestCount: string;
-            price: string;
-            features: string[];
-          };
-          medium: {
-            title: string;
-            guestCount: string;
-            price: string;
-            popular: boolean;
-            features: string[];
-          };
-          large: {
-            title: string;
-            guestCount: string;
-            price: string;
-            features: string[];
-          };
+        calculator: {
+          title: string;
+          inputLabel: string;
+          inputPlaceholder: string;
+          priceLabel: string;
+          totalPrice: string;
+          perRecordRate: string;
+          minRecords: string;
+          examplesTitle: string;
+          example1: string;
+          example1Price: string;
+          example1Rate: string;
+          example2: string;
+          example2Price: string;
+          example2Rate: string;
         };
         customPricing: string;
       };

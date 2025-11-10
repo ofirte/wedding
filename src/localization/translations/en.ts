@@ -802,10 +802,10 @@ export const englishTranslations: Translations = {
     // Premium pricing page
     premiumPricing: {
       hero: {
-        title: "Effortless Guest Updates",
-        subtitle: "5 Beautiful Messages. Zero Stress.",
+        title: "RSVP Management Made Easy",
+        subtitle: "Save time, money, and stress – Starting at just ₪1.5 per record",
         description:
-          "Upgrade to our Premium RSVP Messaging Service and automate your entire guest communication journey with professional WhatsApp messages.",
+          "Enter your number of records and get an accurate price quote for personalized, professional service.",
       },
       howItWorks: {
         title: "How It Works",
@@ -831,82 +831,65 @@ export const englishTranslations: Translations = {
       features: {
         title: "What's Included",
         rsvpMessages: {
-          title: "3 RSVP Messages",
-          description:
-            "Initial invitation, follow-up reminder, and final notice to collect all responses",
+          title: "3 Rounds of Automated RSVP Messages",
+          description: "Sent directly via WhatsApp to all guests",
           icon: "message",
         },
-        eventReminder: {
-          title: "Day Before Reminder",
+        phoneSupport: {
+          title: "Phone Calls for Non-Responders",
           description:
-            "Event details and location sent 1 day before your wedding",
+            "Personal verification with guests to ensure high response rate",
+          icon: "phone",
+        },
+        eventReminder: {
+          title: "Event Day Reminder Message",
+          description: "With direct Waze navigation link for easy arrival",
           icon: "calendar",
         },
-        giftLink: {
-          title: "Gift-by-Card Link",
-          description:
-            "Include your gift registry link in the day-before message",
-          icon: "gift",
-        },
         thankYou: {
-          title: "Thank You Message",
-          description:
-            "Heartfelt thank you message sent after your special day",
+          title: "Post-Event Thank You Message",
+          description: "Close the loop elegantly with your guests",
           icon: "heart",
         },
-        phoneSupport: {
-          title: "Phone Call Service",
-          description:
-            "We'll call guests who haven't responded to ensure maximum attendance",
-          icon: "phone",
+        customDesign: {
+          title: "Custom Message Design",
+          description: "Personalize text, colors, and icons to match your style",
+          icon: "settings",
+        },
+        transportAndMeal: {
+          title: "Transportation & Meal Preferences Tracking",
+          description: "Avoid surprises on your wedding day",
+          icon: "gift",
+        },
+        smartTracking: {
+          title: "Smart Tracking & Real-Time Reports",
+          description: "With automatic reminders for simple, stress-free management",
+          icon: "automation",
         },
       },
       pricing: {
         title: "Simple, Transparent Pricing",
-        subtitle: "Choose the package that fits your guest list",
-        startingPrice: "Starting at ₪1.5 per guest",
+        subtitle: "Enter your number of records for an accurate price",
+        startingPrice: "Starting at ₪1.5 per record",
         perInvitee: "per invitee phone number",
-        packages: {
-          small: {
-            title: "Intimate Wedding",
-            guestCount: "Up to 100 guests",
-            price: "₪150",
-            features: [
-              "All 5 message types",
-              "Phone call service",
-              "Gift registry link",
-              "24/7 support",
-            ],
-          },
-          medium: {
-            title: "Classic Wedding",
-            guestCount: "Up to 250 guests",
-            price: "₪375",
-            popular: true,
-            features: [
-              "All 5 message types",
-              "Phone call service",
-              "Gift registry link",
-              "Priority support",
-              "Custom message timing",
-            ],
-          },
-          large: {
-            title: "Grand Celebration",
-            guestCount: "Up to 500 guests",
-            price: "₪750",
-            features: [
-              "All 5 message types",
-              "Phone call service",
-              "Gift registry link",
-              "Dedicated support",
-              "Custom message timing",
-              "Advanced analytics",
-            ],
-          },
+        calculator: {
+          title: "Calculate Your Price",
+          inputLabel: "Number of Records",
+          inputPlaceholder: "Enter number of records (50-1000)",
+          priceLabel: "Your Price",
+          totalPrice: "₪{price}",
+          perRecordRate: "(₪{rate} per record)",
+          minRecords: "Minimum 50 records",
+          examplesTitle: "Pricing Examples",
+          example1: "100 records",
+          example1Price: "₪150",
+          example1Rate: "(₪1.5 per record)",
+          example2: "250 records",
+          example2Price: "₪450",
+          example2Rate: "(₪1.8 per record)",
         },
         customPricing:
-          "Need more than 500 guests? Contact us for custom pricing.",
+          "Need more than 1000 records? Contact us for custom pricing.",
       },
       testimonials: {
         title: "What Couples Say",
