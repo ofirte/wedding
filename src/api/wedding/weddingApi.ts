@@ -2,7 +2,6 @@ import {
   Wedding,
   WeddingMemberInput,
   WeddingPlans,
-  WeddingPlan,
 } from "@wedding-plan/types";
 import { createGeneralCollectionAPI } from "../generalFirebaseHelpers";
 import { normalizeToUTCMidnight } from "../../utils/weddingDateUtils";
@@ -147,10 +146,10 @@ export const updateWeddingDetails = async (
 };
 
 // Add a user to a wedding
+// Note: Users inherit the wedding's plan, no need for individual plan parameter
 export const addUserToWedding = async (
   weddingId: string,
   userId: string,
-  plan: WeddingPlan = WeddingPlans.FREE,
   addedBy: string = "admin"
 ): Promise<void> => {
   try {
@@ -161,7 +160,6 @@ export const addUserToWedding = async (
 
     const currentMembers = wedding.members || {};
     const newMember: WeddingMemberInput = {
-      plan,
       addedAt: new Date().toISOString(),
       addedBy,
     };
@@ -234,7 +232,6 @@ export const createWedding = async (
 
     // Create initial member record for the creator
     const creatorMember: WeddingMemberInput = {
-      plan: WeddingPlans.FREE, // Default plan
       addedAt: new Date().toISOString(),
       addedBy: "self",
     };
@@ -246,6 +243,7 @@ export const createWedding = async (
       date: processedWeddingDate,
       createdAt: new Date(),
       invitationCode,
+      plan: WeddingPlans.FREE, // Default plan at wedding level
       members: {
         [userId]: creatorMember,
       },

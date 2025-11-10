@@ -21,3 +21,4 @@ export { TemplateModel } from "./TemplateModel";
 export { GlobalTemplateModel } from "./GlobalTemplateModel";
 export { SendMessagesAutomationModel } from "./SendMessagesAutomationModel";
 export { ProducerInvitationModel } from "./ProducerInvitationModel";
+export { PaymentModel } from "./PaymentModel";

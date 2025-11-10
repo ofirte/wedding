@@ -13,6 +13,8 @@ import {
   Avatar,
   TextField,
   InputAdornment,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 import {
   Settings as SettingsIcon,
@@ -25,12 +27,57 @@ import {
   Phone as PhoneIcon,
   Upgrade as UpgradeIcon,
   Calculate as CalculateIcon,
+  Payment as PaymentIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { useAuth, useCurrentUserWeddingId } from "../../hooks/auth";
+import { createPayment } from "../../api/firebaseFunctions/payments";
+import { useParams } from "react-router";
 
 const RSVPPricingPage: React.FC = () => {
   const { t } = useTranslation();
+  const { currentUser } = useAuth();
+  const { weddingId } = useParams<string>();
   const [guestCount, setGuestCount] = useState<string>("");
+  const [isCreatingPayment, setIsCreatingPayment] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+
+  // Payment handler
+  const handlePayment = async () => {
+    if (!currentUser || !weddingId) {
+      setPaymentError("Please sign in and select a wedding to continue");
+      return;
+    }
+
+    const count = parseInt(guestCount);
+    if (!count || count < 50) {
+      setPaymentError("Please enter at least 50 guests");
+      return;
+    }
+
+    setIsCreatingPayment(true);
+    setPaymentError(null);
+
+    try {
+      const result = await createPayment({
+        weddingId,
+        guestCount: count,
+      });
+
+      if (result.data.success) {
+        // Redirect to AllPay payment page
+        window.location.href = result.data.paymentUrl;
+      } else {
+        setPaymentError("Failed to create payment. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Payment error:", error);
+      setPaymentError(
+        error.message || "An error occurred. Please try again later."
+      );
+      setIsCreatingPayment(false);
+    }
+  };
 
   // Flat-rate pricing logic based on guest count ranges
   const calculatePrice = (count: number): { price: number; rate: string } => {
@@ -331,9 +378,7 @@ const RSVPPricingPage: React.FC = () => {
                         justifyContent: "center",
                       }}
                     >
-                      <CalculateIcon
-                        sx={{ fontSize: 32, color: "white" }}
-                      />
+                      <CalculateIcon sx={{ fontSize: 32, color: "white" }} />
                     </Box>
                     <Typography
                       variant="h5"
@@ -381,8 +426,13 @@ const RSVPPricingPage: React.FC = () => {
                           color: "white",
                         }}
                       >
-                        <Typography variant="body2" sx={{ mb: 1, opacity: 0.9 }}>
-                          {t("rsvp.premiumPricing.pricing.calculator.priceLabel")}
+                        <Typography
+                          variant="body2"
+                          sx={{ mb: 1, opacity: 0.9 }}
+                        >
+                          {t(
+                            "rsvp.premiumPricing.pricing.calculator.priceLabel"
+                          )}
                         </Typography>
                         <Typography
                           variant="h2"
@@ -396,7 +446,8 @@ const RSVPPricingPage: React.FC = () => {
                           {t("rsvp.premiumPricing.pricing.perInvitee")})
                         </Typography>
                       </Box>
-                    ) : parseInt(guestCount) > 0 && parseInt(guestCount) < 50 ? (
+                    ) : parseInt(guestCount) > 0 &&
+                      parseInt(guestCount) < 50 ? (
                       <Typography
                         variant="body1"
                         color="warning.main"
@@ -430,9 +481,7 @@ const RSVPPricingPage: React.FC = () => {
                     gutterBottom
                     sx={{ mb: 4 }}
                   >
-                    {t(
-                      "rsvp.premiumPricing.pricing.calculator.examplesTitle"
-                    )}
+                    {t("rsvp.premiumPricing.pricing.calculator.examplesTitle")}
                   </Typography>
                   <Stack spacing={3}>
                     {/* Example 1 */}
@@ -456,10 +505,7 @@ const RSVPPricingPage: React.FC = () => {
                               "rsvp.premiumPricing.pricing.calculator.example1"
                             )}
                           </Typography>
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                          >
+                          <Typography variant="body2" color="text.secondary">
                             {t(
                               "rsvp.premiumPricing.pricing.calculator.example1Rate"
                             )}
@@ -498,10 +544,7 @@ const RSVPPricingPage: React.FC = () => {
                               "rsvp.premiumPricing.pricing.calculator.example2"
                             )}
                           </Typography>
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                          >
+                          <Typography variant="body2" color="text.secondary">
                             {t(
                               "rsvp.premiumPricing.pricing.calculator.example2Rate"
                             )}
@@ -639,6 +682,11 @@ const RSVPPricingPage: React.FC = () => {
           >
             {t("rsvp.premiumPricing.cta.description")}
           </Typography>
+          {paymentError && (
+            <Alert severity="error" sx={{ mb: 3, maxWidth: 600, mx: "auto" }}>
+              {paymentError}
+            </Alert>
+          )}
           <Stack
             direction={{ xs: "column", sm: "row" }}
             spacing={3}
@@ -649,7 +697,21 @@ const RSVPPricingPage: React.FC = () => {
             <Button
               variant="contained"
               size="large"
-              startIcon={<UpgradeIcon />}
+              onClick={handlePayment}
+              disabled={
+                isCreatingPayment ||
+                !currentUser ||
+                !weddingId ||
+                !guestCount ||
+                parseInt(guestCount) < 50
+              }
+              startIcon={
+                isCreatingPayment ? (
+                  <CircularProgress size={20} sx={{ color: "inherit" }} />
+                ) : (
+                  <PaymentIcon />
+                )
+              }
               sx={{
                 py: 2,
                 px: 4,
@@ -662,9 +724,15 @@ const RSVPPricingPage: React.FC = () => {
                 "&:hover": {
                   backgroundColor: "rgba(255,255,255,0.9)",
                 },
+                "&:disabled": {
+                  backgroundColor: "rgba(255,255,255,0.5)",
+                  color: "rgba(102, 126, 234, 0.5)",
+                },
               }}
             >
-              {t("rsvp.premiumPricing.cta.upgradeButton")}
+              {isCreatingPayment
+                ? "Processing..."
+                : t("rsvp.premiumPricing.cta.upgradeButton")}
             </Button>
             <Button
               variant="outlined"

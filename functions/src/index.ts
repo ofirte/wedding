@@ -18,3 +18,4 @@ export * from "./controllers/users";
 export * from "./controllers/messages";
 export * from "./controllers/templates";
 export * from "./controllers/messagesAutomation";
+export * from "./controllers/payments";

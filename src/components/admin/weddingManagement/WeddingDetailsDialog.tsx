@@ -9,10 +9,6 @@ import {
   AccordionSummary,
   AccordionDetails,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
 } from "@mui/material";
 
 import { useTranslation } from "../../../localization/LocalizationContext";
@@ -26,7 +22,7 @@ interface WeddingDetailsDialogProps {
   open: boolean;
   weddingId: string;
   onClose: () => void;
-  onSave: (weddingId: string, userId: string, plan: string) => void;
+  onSave: (weddingId: string, userId: string) => void;
   isLoading?: boolean;
 }
 
@@ -44,20 +40,18 @@ export const WeddingDetailsDialog: React.FC<WeddingDetailsDialogProps> = ({
 
   const { t } = useTranslation();
   const [userId, setUserId] = useState("");
-  const [plan, setPlan] = useState(WeddingPlans.FREE);
   const weddingMembers = useMemo(() => {
     return wedding?.members ?? {};
   }, [wedding]);
   useEffect(() => {
     if (wedding) {
       setUserId("");
-      setPlan(WeddingPlans.FREE);
     }
   }, [wedding]);
 
   const handleSave = () => {
     if (wedding && userId) {
-      onSave(wedding.id, userId, plan);
+      onSave(wedding.id, userId);
     }
   };
 
@@ -91,23 +85,18 @@ export const WeddingDetailsDialog: React.FC<WeddingDetailsDialogProps> = ({
               />
             </Box>
 
-            <Box sx={{ flex: 0.4 }}>
-              <FormControl fullWidth>
-                <InputLabel>{t("weddingManagement.membershipPlan")}</InputLabel>
-                <Select
-                  value={plan}
-                  onChange={(e) => setPlan(e.target.value)}
-                  disabled={isLoading}
-                  label={t("weddingManagement.membershipPlan")}
-                >
-                  <MenuItem value={WeddingPlans.FREE}>
-                    {t("weddingManagement.plans.free")}
-                  </MenuItem>
-                  <MenuItem value={WeddingPlans.PAID}>
-                    {t("weddingManagement.plans.paid")}
-                  </MenuItem>
-                </Select>
-              </FormControl>
+            <Box sx={{ flex: 0.4, display: "flex", flexDirection: "column", gap: 1 }}>
+              <Typography variant="subtitle2" color="text.secondary">
+                {t("weddingManagement.membershipPlan")}
+              </Typography>
+              <Typography variant="body1">
+                {wedding.plan === WeddingPlans.PAID
+                  ? t("weddingManagement.plans.paid")
+                  : t("weddingManagement.plans.free")}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                All users inherit the wedding's plan
+              </Typography>
             </Box>
 
             <Box
