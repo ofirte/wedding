@@ -19,6 +19,7 @@ import {
   List as ListIcon,
   Money as MoneyIcon,
   Assignment as TaskIcon,
+  EventSeat as SeatingIcon,
   WhatsApp as RSVPIcon,
   AdminPanelSettings as AdminIcon,
   Logout as LogoutIcon,
@@ -59,6 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     { text: t("nav.guests"), icon: <ListIcon />, path: "/invite" },
     { text: t("nav.budget"), icon: <MoneyIcon />, path: "/budget" },
     { text: t("nav.tasks"), icon: <TaskIcon />, path: "/tasks" },
+    { text: t("nav.seating"), icon: <SeatingIcon />, path: "/seating" },
     { text: t("nav.rsvp"), icon: <RSVPIcon />, path: "/rsvp" },
   ];
 

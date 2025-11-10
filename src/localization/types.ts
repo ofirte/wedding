@@ -268,6 +268,7 @@ export interface Translations {
     budget: string;
     guests: string;
     tasks: string;
+    seating: string;
     rsvp: string;
     wedding: string;
     weddings: string;
@@ -1129,6 +1130,185 @@ export interface Translations {
   globalTemplates: GlobalTemplatesTranslations;
   userRsvp: UserRSVPTranslations;
   rsvpSetup: RsvpSetupTranslations;
+  seating: SeatingTranslations;
+}
+
+interface SeatingTranslations {
+  title: string;
+  description: string;
+  setup: {
+    title: string;
+    addTable: string;
+    editTable: string;
+    deleteTable: string;
+    tableNumber: string;
+    tableName: string;
+    tableNamePlaceholder: string;
+    tableNameHelper: string;
+    capacity: string;
+    shape: string;
+    notes: string;
+    position: string;
+    vipTable: string;
+    shapes: {
+      round: string;
+      rectangular: string;
+      square: string;
+    };
+    validation: {
+      numberRequired: string;
+      capacityRequired: string;
+      capacityMinimum: string;
+      shapeRequired: string;
+    };
+    deleteConfirm: string;
+    deleteWithGuests: string;
+  };
+  layoutElements: {
+    title: string;
+    addElement: string;
+    types: {
+      stage: string;
+      bar: string;
+      foodCourt: string;
+      danceFloor: string;
+      entrance: string;
+      bathroom: string;
+      element: string;
+    };
+    properties: {
+      type: string;
+      size: string;
+      position: string;
+      customName: string;
+      customNameHelper: string;
+      shape: string;
+    };
+    shapes: {
+      rectangle: string;
+      circle: string;
+    };
+    deleteElement: string;
+  };
+  table: {
+    defaultName: string;
+  };
+  tableProperties: {
+    title: string;
+  };
+  bulkAdd: {
+    title: string;
+    quantity: string;
+    quantityHelper: string;
+    startingNumber: string;
+    startingNumberHelper: string;
+    capacityHelper: string;
+    preview: string;
+    create: string;
+  };
+  actions: {
+    addTables: string;
+    autoArrange: string;
+    addGuest: string;
+    assignGuests: string;
+  };
+  templates: Record<string, any>;
+  assignment: {
+    title: string;
+    unassigned: string;
+    assigned: string;
+    autoAssign: string;
+    dragHint: string;
+    clickToAssign: string;
+    removeGuest: string;
+    moveGuest: string;
+    tableCapacityReached: string;
+    guestsRemaining: string;
+    allAssigned: string;
+    noMatchingGuests: string;
+    noGuestsAssigned: string;
+    filter: {
+      title: string;
+      all: string;
+      byRelation: string;
+      bySide: string;
+      searchGuests: string;
+    };
+  };
+  preview: {
+    title: string;
+    subtitle: string;
+    export: string;
+    print: string;
+    zoomIn: string;
+    zoomOut: string;
+    resetView: string;
+    viewMode: string;
+    editMode: string;
+  };
+  stats: {
+    totalGuests: string;
+    assigned: string;
+    unassigned: string;
+    totalTables: string;
+    averagePerTable: string;
+    capacityUsed: string;
+  };
+  assignmentDialog: {
+    title: string;
+    autoAssign: string;
+    clearAll: string;
+    assigned: string;
+    tables: string;
+    capacity: string;
+    unassigned: string;
+    search: string;
+    relation: string;
+    side: string;
+    all: string;
+    selectAll: string;
+    deselectAll: string;
+    selectedCount: string;
+    selectTable: string;
+    assign: string;
+    applyChanges: string;
+    tablesAndAssignments: string;
+    overCapacity: string;
+    dropGuestsHere: string;
+    noUnassignedGuests: string;
+    confirmClearAll: string;
+    confirmOverCapacity: string;
+    applyFailed: string;
+  };
+  autoAssignment: {
+    title: string;
+    description: string;
+    groupByRelation: string;
+    groupBySide: string;
+    preferFamilyTogether: string;
+    run: string;
+    confirm: string;
+    success: string;
+    noGuestsToAssign: string;
+    noTablesAvailable: string;
+    notEnoughCapacity: string;
+    failed: string;
+  };
+  suggestions: {
+    title: string;
+    guestsToSitTogether: string;
+    basedOnRelation: string;
+    basedOnSide: string;
+  };
+  errors: {
+    loadingTables: string;
+    loadingGuests: string;
+    creatingTable: string;
+    updatingTable: string;
+    deletingTable: string;
+    assigningGuest: string;
+    removingGuest: string;
+  };
 }
 
 interface GlobalTemplatesTranslations {

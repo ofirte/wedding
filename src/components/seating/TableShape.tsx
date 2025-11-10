@@ -1,0 +1,273 @@
+import React, { useRef, useState } from "react";
+import { Group, Circle, Rect, Text } from "react-konva";
+import { Table, Invitee } from "@wedding-plan/types";
+import Konva from "konva";
+import { useTranslation } from "src/localization/LocalizationContext";
+import { calculateUsedCapacity } from "../../utils/seatingUtils";
+
+interface TableShapeProps {
+  table: Table;
+  allInvitees: Invitee[];
+  isSelected: boolean;
+  onSelect: () => void;
+  onEdit: () => void;
+  onDragEnd: (position: { x: number; y: number }) => void;
+  onGuestDrop?: (guestId: string, tableId: string) => void;
+}
+
+const TableShape: React.FC<TableShapeProps> = ({
+  table,
+  allInvitees,
+  isSelected,
+  onSelect,
+  onEdit,
+  onDragEnd,
+}) => {
+  const { t } = useTranslation();
+  const groupRef = useRef<Konva.Group>(null);
+
+  // Calculate size based on capacity (scale factor: 4 pixels per seat)
+  const getScaleSize = () => {
+    const baseSize = 30;
+    const scalePerSeat = 4;
+    return baseSize + table.capacity * scalePerSeat;
+  };
+
+  const getFillColor = () => {
+    const usedCapacity = calculateUsedCapacity(table.assignedGuests, allInvitees);
+    if (isSelected) return "#B8D1E0"; // Info light - selected
+    if (usedCapacity >= table.capacity) return "#B7D9BD"; // Success - full
+    if (usedCapacity > 0) return "#F0E5B2"; // Warning - partial
+    return "#FFFFFF"; // White - empty
+  };
+
+  const getStrokeColor = () => {
+    if (isSelected) return "#4A6F8A";
+    return "#D1E4C4";
+  };
+
+  const renderShape = () => {
+    const fillColor = getFillColor();
+    const strokeColor = getStrokeColor();
+    const strokeWidth = isSelected ? 3 : 2;
+    const size = getScaleSize();
+
+    switch (table.shape) {
+      case "round":
+        return (
+          <Circle
+            radius={size}
+            fill={fillColor}
+            stroke={strokeColor}
+            strokeWidth={strokeWidth}
+          />
+        );
+      case "rectangular":
+        return (
+          <Rect
+            x={-size * 1.2}
+            y={-size * 0.6}
+            width={size * 2.4}
+            height={size * 1.2}
+            fill={fillColor}
+            stroke={strokeColor}
+            strokeWidth={strokeWidth}
+            cornerRadius={4}
+          />
+        );
+      case "square":
+        return (
+          <Rect
+            x={-size * 0.8}
+            y={-size * 0.8}
+            width={size * 1.6}
+            height={size * 1.6}
+            fill={fillColor}
+            stroke={strokeColor}
+            strokeWidth={strokeWidth}
+            cornerRadius={4}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  const getTextWidth = () => {
+    const size = getScaleSize();
+    switch (table.shape) {
+      case "rectangular":
+        return size * 2.4;
+      case "square":
+        return size * 1.6;
+      case "round":
+      default:
+        return size * 2;
+    }
+  };
+
+  const getTextY = (isTopText: boolean) => {
+    switch (table.shape) {
+      case "rectangular":
+        return isTopText ? -10 : 5;
+      case "square":
+        return isTopText ? -10 : 5;
+      case "round":
+      default:
+        return isTopText ? -24 : 24;
+    }
+  };
+
+  const getEditIconY = () => {
+    const size = getScaleSize();
+    switch (table.shape) {
+      case "rectangular":
+        return -size * 0.6 - 20;
+      case "square":
+        return -size * 0.8 - 20;
+      case "round":
+      default:
+        return -size - 20;
+    }
+  };
+
+  return (
+    <Group
+      ref={groupRef}
+      x={table.position.x}
+      y={table.position.y}
+      draggable
+      onClick={onSelect}
+      onTap={onSelect}
+      onDragStart={(e) => {
+        // Prevent drag event from bubbling to Stage
+        e.cancelBubble = true;
+      }}
+      onDragEnd={(e) => {
+        // Stop propagation to prevent Stage from panning
+        e.cancelBubble = true;
+        onDragEnd({
+          x: e.target.x(),
+          y: e.target.y(),
+        });
+      }}
+    >
+      {/* Table Shape */}
+      {renderShape()}
+
+      {/* Table Name or Number */}
+      <Text
+        text={
+          table.name
+            ? `${table.number}\n ${table.name}`
+            : t("seating.table.defaultName", { number: table.number })
+        }
+        fontSize={14}
+        fontFamily="Arial"
+        fontStyle="bold"
+        fill="#333333"
+        align="center"
+        width={getTextWidth()}
+        x={-getTextWidth() / 2}
+        y={getTextY(true)}
+      />
+
+      {/* Capacity Display */}
+      <Text
+        text={`${calculateUsedCapacity(table.assignedGuests, allInvitees)}/${table.capacity}`}
+        fontSize={12}
+        fontFamily="Arial"
+        fill="#666666"
+        align="center"
+        width={getTextWidth()}
+        x={-getTextWidth() / 2}
+        y={getTextY(false)}
+      />
+
+      {/* Selection Indicator */}
+      {isSelected &&
+        (() => {
+          const size = getScaleSize();
+          const padding = 5;
+          switch (table.shape) {
+            case "rectangular":
+              return (
+                <Rect
+                  x={-size * 1.2 - padding}
+                  y={-size * 0.6 - padding}
+                  width={size * 2.4 + padding * 2}
+                  height={size * 1.2 + padding * 2}
+                  stroke="#4A6F8A"
+                  strokeWidth={2}
+                  dash={[5, 5]}
+                  cornerRadius={8}
+                />
+              );
+            case "square":
+              return (
+                <Rect
+                  x={-size * 0.8 - padding}
+                  y={-size * 0.8 - padding}
+                  width={size * 1.6 + padding * 2}
+                  height={size * 1.6 + padding * 2}
+                  stroke="#4A6F8A"
+                  strokeWidth={2}
+                  dash={[5, 5]}
+                  cornerRadius={8}
+                />
+              );
+            case "round":
+            default:
+              return (
+                <Circle
+                  radius={size + padding}
+                  stroke="#4A6F8A"
+                  strokeWidth={2}
+                  dash={[5, 5]}
+                />
+              );
+          }
+        })()}
+
+      {/* Edit Icon - Shows on hover when selected */}
+      {isSelected && (
+        <Group
+          x={0}
+          y={getEditIconY()}
+          onClick={(e) => {
+            e.cancelBubble = true;
+            onEdit();
+          }}
+          onTap={(e) => {
+            e.cancelBubble = true;
+            onEdit();
+          }}
+        >
+          {/* Icon Background Circle */}
+          <Circle
+            radius={14}
+            fill="#4A6F8A"
+            stroke="#FFFFFF"
+            strokeWidth={2}
+            shadowColor="black"
+            shadowBlur={4}
+            shadowOpacity={0.3}
+            shadowOffsetY={2}
+          />
+          {/* Edit Icon (Settings gear emoji) */}
+          <Text
+            text={"✏️"}
+            fontSize={16}
+            fontFamily="Arial"
+            align="center"
+            verticalAlign="middle"
+            offsetX={8}
+            offsetY={8}
+          />
+        </Group>
+      )}
+    </Group>
+  );
+};
+
+export default TableShape;
