@@ -38,7 +38,7 @@ const RSVPPricingPage: React.FC = () => {
   const { t } = useTranslation();
   const { currentUser } = useAuth();
   const { weddingId } = useParams<string>();
-  const [guestCount, setGuestCount] = useState<string>("");
+  const [guestCount, setGuestCount] = useState<string>("250");
   const [isCreatingPayment, setIsCreatingPayment] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
 
@@ -414,38 +414,96 @@ const RSVPPricingPage: React.FC = () => {
                     />
 
                     {parseInt(guestCount) >= 50 && pricing.price > 0 ? (
-                      <Box
-                        sx={{
-                          width: "100%",
-                          textAlign: "center",
-                          py: 3,
-                          px: 2,
-                          borderRadius: 3,
-                          background:
-                            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                          color: "white",
-                        }}
-                      >
-                        <Typography
-                          variant="body2"
-                          sx={{ mb: 1, opacity: 0.9 }}
+                      <>
+                        <Box
+                          sx={{
+                            width: "100%",
+                            textAlign: "center",
+                            py: 3,
+                            px: 2,
+                            borderRadius: 3,
+                            background:
+                              "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                            color: "white",
+                          }}
                         >
-                          {t(
-                            "rsvp.premiumPricing.pricing.calculator.priceLabel"
-                          )}
-                        </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{ mb: 1, opacity: 0.9 }}
+                          >
+                            {t(
+                              "rsvp.premiumPricing.pricing.calculator.priceLabel"
+                            )}
+                          </Typography>
+                          <Typography
+                            variant="h2"
+                            fontWeight="bold"
+                            sx={{ mb: 1 }}
+                          >
+                            ₪{pricing.price}
+                          </Typography>
+                          <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                            ({pricing.rate} ₪{" "}
+                            {t("rsvp.premiumPricing.pricing.perInvitee")})
+                          </Typography>
+                        </Box>
+
+                        {/* CTA Section */}
+                        <Divider sx={{ width: "100%", my: 1 }} />
+
+                        {paymentError && (
+                          <Alert severity="error" sx={{ width: "100%" }}>
+                            {paymentError}
+                          </Alert>
+                        )}
+
                         <Typography
-                          variant="h2"
-                          fontWeight="bold"
-                          sx={{ mb: 1 }}
+                          variant="body1"
+                          color="text.secondary"
+                          textAlign="center"
+                          sx={{ px: 2 }}
                         >
-                          ₪{pricing.price}
+                          {t("rsvp.premiumPricing.cta.description")}
                         </Typography>
-                        <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                          ({pricing.rate} ₪{" "}
-                          {t("rsvp.premiumPricing.pricing.perInvitee")})
+
+                        <Button
+                          fullWidth
+                          variant="contained"
+                          size="large"
+                          onClick={handlePayment}
+                          disabled={isCreatingPayment || !currentUser || !weddingId}
+                          startIcon={
+                            isCreatingPayment ? (
+                              <CircularProgress size={20} sx={{ color: "inherit" }} />
+                            ) : (
+                              <PaymentIcon />
+                            )
+                          }
+                          sx={{
+                            py: 2,
+                            fontSize: "1.1rem",
+                            fontWeight: "600",
+                            borderRadius: 2,
+                            textTransform: "none",
+                            "&:disabled": {
+                              opacity: 0.6,
+                            },
+                          }}
+                        >
+                          {isCreatingPayment
+                            ? "Processing..."
+                            : t("rsvp.premiumPricing.cta.upgradeButton")}
+                        </Button>
+
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          textAlign="center"
+                          sx={{ opacity: 0.8 }}
+                        >
+                          {t("rsvp.premiumPricing.cta.guarantee")}
                         </Typography>
-                      </Box>
+                      </>
                     ) : parseInt(guestCount) > 0 &&
                       parseInt(guestCount) < 50 ? (
                       <Typography
@@ -649,115 +707,6 @@ const RSVPPricingPage: React.FC = () => {
               </Grid>
             ))}
           </Grid>
-        </Box>
-
-        {/* CTA Section */}
-        <Box
-          sx={{
-            textAlign: "center",
-            py: 8,
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            borderRadius: 4,
-            color: "white",
-          }}
-        >
-          <Typography
-            variant="h3"
-            component="h2"
-            fontWeight="bold"
-            gutterBottom
-            sx={{ color: "inherit" }}
-          >
-            {t("rsvp.premiumPricing.cta.title")}
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{
-              mb: 4,
-              maxWidth: 600,
-              mx: "auto",
-              color: "inherit",
-              opacity: 0.9,
-            }}
-          >
-            {t("rsvp.premiumPricing.cta.description")}
-          </Typography>
-          {paymentError && (
-            <Alert severity="error" sx={{ mb: 3, maxWidth: 600, mx: "auto" }}>
-              {paymentError}
-            </Alert>
-          )}
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            spacing={3}
-            justifyContent="center"
-            alignItems="center"
-            sx={{ mb: 3 }}
-          >
-            <Button
-              variant="contained"
-              size="large"
-              onClick={handlePayment}
-              disabled={
-                isCreatingPayment ||
-                !currentUser ||
-                !weddingId ||
-                !guestCount ||
-                parseInt(guestCount) < 50
-              }
-              startIcon={
-                isCreatingPayment ? (
-                  <CircularProgress size={20} sx={{ color: "inherit" }} />
-                ) : (
-                  <PaymentIcon />
-                )
-              }
-              sx={{
-                py: 2,
-                px: 4,
-                fontSize: "1.1rem",
-                fontWeight: "600",
-                borderRadius: 3,
-                textTransform: "none",
-                backgroundColor: "white",
-                color: "primary.main",
-                "&:hover": {
-                  backgroundColor: "rgba(255,255,255,0.9)",
-                },
-                "&:disabled": {
-                  backgroundColor: "rgba(255,255,255,0.5)",
-                  color: "rgba(102, 126, 234, 0.5)",
-                },
-              }}
-            >
-              {isCreatingPayment
-                ? "Processing..."
-                : t("rsvp.premiumPricing.cta.upgradeButton")}
-            </Button>
-            <Button
-              variant="outlined"
-              size="large"
-              sx={{
-                py: 2,
-                px: 4,
-                fontSize: "1rem",
-                fontWeight: "500",
-                borderRadius: 3,
-                textTransform: "none",
-                borderColor: "rgba(255,255,255,0.5)",
-                color: "inherit",
-                "&:hover": {
-                  borderColor: "white",
-                  backgroundColor: "rgba(255,255,255,0.1)",
-                },
-              }}
-            >
-              {t("rsvp.premiumPricing.cta.contactUs")}
-            </Button>
-          </Stack>
-          <Typography variant="body2" sx={{ opacity: 0.8 }}>
-            {t("rsvp.premiumPricing.cta.guarantee")}
-          </Typography>
         </Box>
       </Stack>
     </Container>
