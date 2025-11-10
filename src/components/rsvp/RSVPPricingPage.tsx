@@ -133,8 +133,8 @@ const RSVPPricingPage: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Stack spacing={8}>
+    <Container maxWidth="lg">
+      <Stack>
         {/* Hero Section */}
         <Box textAlign="center" sx={{ py: { xs: 4, md: 8 } }}>
           <Typography
@@ -244,14 +244,13 @@ const RSVPPricingPage: React.FC = () => {
         </Box>
 
         {/* Features Section */}
-        <Box>
+        <Box sx={{ mt: 12 }}>
           <Typography
             variant="h3"
             component="h2"
             fontWeight="bold"
             textAlign="center"
             gutterBottom
-            sx={{ mb: 6 }}
           >
             {t("rsvp.premiumPricing.features.title")}
           </Typography>
@@ -322,7 +321,12 @@ const RSVPPricingPage: React.FC = () => {
         </Box>
 
         {/* Pricing Section */}
-        <Box>
+        <Box
+          sx={{
+            px: ({ spacing }) => spacing(16),
+            mt: 3,
+          }}
+        >
           <Typography
             variant="h3"
             component="h2"
@@ -350,295 +354,166 @@ const RSVPPricingPage: React.FC = () => {
           </Box>
 
           {/* Calculator and Examples */}
-          <Grid container spacing={4} sx={{ mb: 4 }}>
-            {/* Calculator Card */}
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Card
-                elevation={4}
-                sx={{
-                  height: "100%",
-                  border: "3px solid",
-                  borderColor: "primary.main",
-                  borderRadius: 4,
-                  background:
-                    "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
-                }}
-              >
-                <CardContent sx={{ p: 4 }}>
-                  <Stack spacing={3} alignItems="center">
+          {/* Calculator Card */}
+
+          <Card
+            elevation={4}
+            sx={{
+              height: "100%",
+              border: "3px solid",
+              borderColor: "primary.main",
+              borderRadius: 4,
+              background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+            }}
+          >
+            <CardContent sx={{ p: 4 }}>
+              <Stack spacing={3} alignItems="center">
+                <Box
+                  sx={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: "50%",
+                    background:
+                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <CalculateIcon sx={{ fontSize: 32, color: "white" }} />
+                </Box>
+                <Typography
+                  variant="h5"
+                  fontWeight="bold"
+                  color="text.primary"
+                  textAlign="center"
+                >
+                  {t("rsvp.premiumPricing.pricing.calculator.title")}
+                </Typography>
+
+                <TextField
+                  fullWidth
+                  type="number"
+                  label={t("rsvp.premiumPricing.pricing.calculator.inputLabel")}
+                  placeholder={t(
+                    "rsvp.premiumPricing.pricing.calculator.inputPlaceholder"
+                  )}
+                  value={guestCount}
+                  onChange={(e) => setGuestCount(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">#</InputAdornment>
+                    ),
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      fontSize: "1.2rem",
+                      fontWeight: "600",
+                    },
+                  }}
+                />
+
+                {parseInt(guestCount) >= 50 && pricing.price > 0 ? (
+                  <>
                     <Box
                       sx={{
-                        width: 64,
-                        height: 64,
-                        borderRadius: "50%",
+                        width: "100%",
+                        textAlign: "center",
+                        py: 3,
+                        px: 2,
+                        borderRadius: 3,
                         background:
                           "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+                        color: "white",
                       }}
                     >
-                      <CalculateIcon sx={{ fontSize: 32, color: "white" }} />
-                    </Box>
-                    <Typography
-                      variant="h5"
-                      fontWeight="bold"
-                      color="text.primary"
-                      textAlign="center"
-                    >
-                      {t("rsvp.premiumPricing.pricing.calculator.title")}
-                    </Typography>
-
-                    <TextField
-                      fullWidth
-                      type="number"
-                      label={t(
-                        "rsvp.premiumPricing.pricing.calculator.inputLabel"
-                      )}
-                      placeholder={t(
-                        "rsvp.premiumPricing.pricing.calculator.inputPlaceholder"
-                      )}
-                      value={guestCount}
-                      onChange={(e) => setGuestCount(e.target.value)}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">#</InputAdornment>
-                        ),
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          fontSize: "1.2rem",
-                          fontWeight: "600",
-                        },
-                      }}
-                    />
-
-                    {parseInt(guestCount) >= 50 && pricing.price > 0 ? (
-                      <>
-                        <Box
-                          sx={{
-                            width: "100%",
-                            textAlign: "center",
-                            py: 3,
-                            px: 2,
-                            borderRadius: 3,
-                            background:
-                              "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                            color: "white",
-                          }}
-                        >
-                          <Typography
-                            variant="body2"
-                            sx={{ mb: 1, opacity: 0.9 }}
-                          >
-                            {t(
-                              "rsvp.premiumPricing.pricing.calculator.priceLabel"
-                            )}
-                          </Typography>
-                          <Typography
-                            variant="h2"
-                            fontWeight="bold"
-                            sx={{ mb: 1 }}
-                          >
-                            ₪{pricing.price}
-                          </Typography>
-                          <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                            ({pricing.rate} ₪{" "}
-                            {t("rsvp.premiumPricing.pricing.perInvitee")})
-                          </Typography>
-                        </Box>
-
-                        {/* CTA Section */}
-                        <Divider sx={{ width: "100%", my: 1 }} />
-
-                        {paymentError && (
-                          <Alert severity="error" sx={{ width: "100%" }}>
-                            {paymentError}
-                          </Alert>
-                        )}
-
-                        <Typography
-                          variant="body1"
-                          color="text.secondary"
-                          textAlign="center"
-                          sx={{ px: 2 }}
-                        >
-                          {t("rsvp.premiumPricing.cta.description")}
-                        </Typography>
-
-                        <Button
-                          fullWidth
-                          variant="contained"
-                          size="large"
-                          onClick={handlePayment}
-                          disabled={isCreatingPayment || !currentUser || !weddingId}
-                          startIcon={
-                            isCreatingPayment ? (
-                              <CircularProgress size={20} sx={{ color: "inherit" }} />
-                            ) : (
-                              <PaymentIcon />
-                            )
-                          }
-                          sx={{
-                            py: 2,
-                            fontSize: "1.1rem",
-                            fontWeight: "600",
-                            borderRadius: 2,
-                            textTransform: "none",
-                            "&:disabled": {
-                              opacity: 0.6,
-                            },
-                          }}
-                        >
-                          {isCreatingPayment
-                            ? "Processing..."
-                            : t("rsvp.premiumPricing.cta.upgradeButton")}
-                        </Button>
-
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          textAlign="center"
-                          sx={{ opacity: 0.8 }}
-                        >
-                          {t("rsvp.premiumPricing.cta.guarantee")}
-                        </Typography>
-                      </>
-                    ) : parseInt(guestCount) > 0 &&
-                      parseInt(guestCount) < 50 ? (
-                      <Typography
-                        variant="body1"
-                        color="warning.main"
-                        textAlign="center"
-                      >
-                        {t("rsvp.premiumPricing.pricing.calculator.minRecords")}
+                      <Typography variant="body2" sx={{ mb: 1, opacity: 0.9 }}>
+                        {t("rsvp.premiumPricing.pricing.calculator.priceLabel")}
                       </Typography>
-                    ) : null}
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            {/* Examples Card */}
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Card
-                elevation={0}
-                sx={{
-                  height: "100%",
-                  border: "2px solid",
-                  borderColor: "divider",
-                  borderRadius: 4,
-                }}
-              >
-                <CardContent sx={{ p: 4 }}>
-                  <Typography
-                    variant="h5"
-                    fontWeight="bold"
-                    color="text.primary"
-                    textAlign="center"
-                    gutterBottom
-                    sx={{ mb: 4 }}
-                  >
-                    {t("rsvp.premiumPricing.pricing.calculator.examplesTitle")}
-                  </Typography>
-                  <Stack spacing={3}>
-                    {/* Example 1 */}
-                    <Box
-                      sx={{
-                        p: 3,
-                        borderRadius: 2,
-                        border: "2px solid",
-                        borderColor: "primary.light",
-                        background: "rgba(102, 126, 234, 0.05)",
-                      }}
-                    >
-                      <Stack
-                        direction="row"
-                        justifyContent="space-between"
-                        alignItems="center"
-                      >
-                        <Box>
-                          <Typography variant="h6" fontWeight="600">
-                            {t(
-                              "rsvp.premiumPricing.pricing.calculator.example1"
-                            )}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {t(
-                              "rsvp.premiumPricing.pricing.calculator.example1Rate"
-                            )}
-                          </Typography>
-                        </Box>
-                        <Typography
-                          variant="h4"
-                          fontWeight="bold"
-                          color="primary.main"
-                        >
-                          {t(
-                            "rsvp.premiumPricing.pricing.calculator.example1Price"
-                          )}
-                        </Typography>
-                      </Stack>
+                      <Typography variant="h2" fontWeight="bold" sx={{ mb: 1 }}>
+                        ₪{pricing.price}
+                      </Typography>
                     </Box>
 
-                    {/* Example 2 */}
-                    <Box
-                      sx={{
-                        p: 3,
-                        borderRadius: 2,
-                        border: "2px solid",
-                        borderColor: "secondary.light",
-                        background: "rgba(118, 75, 162, 0.05)",
-                      }}
-                    >
-                      <Stack
-                        direction="row"
-                        justifyContent="space-between"
-                        alignItems="center"
-                      >
-                        <Box>
-                          <Typography variant="h6" fontWeight="600">
-                            {t(
-                              "rsvp.premiumPricing.pricing.calculator.example2"
-                            )}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {t(
-                              "rsvp.premiumPricing.pricing.calculator.example2Rate"
-                            )}
-                          </Typography>
-                        </Box>
-                        <Typography
-                          variant="h4"
-                          fontWeight="bold"
-                          color="secondary.main"
-                        >
-                          {t(
-                            "rsvp.premiumPricing.pricing.calculator.example2Price"
-                          )}
-                        </Typography>
-                      </Stack>
-                    </Box>
+                    {/* CTA Section */}
+                    <Divider sx={{ width: "100%", my: 1 }} />
 
-                    <Divider />
+                    {paymentError && (
+                      <Alert severity="error" sx={{ width: "100%" }}>
+                        {paymentError}
+                      </Alert>
+                    )}
 
                     <Typography
-                      variant="body2"
+                      variant="body1"
                       color="text.secondary"
                       textAlign="center"
-                      sx={{ fontStyle: "italic" }}
+                      sx={{ px: 2 }}
                     >
-                      {t("rsvp.premiumPricing.pricing.customPricing")}
+                      {t("rsvp.premiumPricing.cta.description")}
                     </Typography>
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
+
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      size="large"
+                      onClick={handlePayment}
+                      disabled={isCreatingPayment || !currentUser || !weddingId}
+                      startIcon={
+                        isCreatingPayment ? (
+                          <CircularProgress
+                            size={20}
+                            sx={{ color: "inherit" }}
+                          />
+                        ) : (
+                          <PaymentIcon />
+                        )
+                      }
+                      sx={{
+                        py: 2,
+                        fontSize: "1.1rem",
+                        fontWeight: "600",
+                        borderRadius: 2,
+                        textTransform: "none",
+                        "&:disabled": {
+                          opacity: 0.6,
+                        },
+                      }}
+                    >
+                      {isCreatingPayment
+                        ? "Processing..."
+                        : t("rsvp.premiumPricing.cta.upgradeButton")}
+                    </Button>
+
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      textAlign="center"
+                      sx={{ opacity: 0.8 }}
+                    >
+                      {t("rsvp.premiumPricing.cta.guarantee")}
+                    </Typography>
+                  </>
+                ) : parseInt(guestCount) > 0 && parseInt(guestCount) < 50 ? (
+                  <Typography
+                    variant="body1"
+                    color="warning.main"
+                    textAlign="center"
+                  >
+                    {t("rsvp.premiumPricing.pricing.calculator.minRecords")}
+                  </Typography>
+                ) : null}
+              </Stack>
+            </CardContent>
+          </Card>
         </Box>
 
         {/* Testimonials Section */}
-        <Box>
+        <Box
+          sx={{
+            mt: 3,
+          }}
+        >
           <Typography
             variant="h3"
             component="h2"
