@@ -31,7 +31,8 @@ export const getValidWeddingRoles = (): WeddingRole[] => {
 };
 
 export interface WeddingMemberInput {
-  plan: WeddingPlan;
+  /** @deprecated Plan is now stored at wedding level, not per member */
+  plan?: WeddingPlan;
   addedAt: string;
   addedBy: string;
 }
@@ -54,4 +55,8 @@ export interface Wedding {
   startTime?: string;
   invitationPhoto?: string;
   invitationCode?: string;
+  // Payment/Plan related fields
+  plan?: WeddingPlan;
+  planActivatedAt?: string;
+  paidGuestCount?: number;
 }

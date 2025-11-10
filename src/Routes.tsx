@@ -26,6 +26,7 @@ import TasksManagementPage from "./components/tasksManagement/TasksManagementPag
 import LandingPage from "./components/landing/LandingPage";
 import PrivacyPolicy from "./components/legal/PrivacyPolicy";
 import TermsOfService from "./components/legal/TermsOfService";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 
 const AppRoutes: FC = () => {
   return (
@@ -50,6 +51,7 @@ const AppRoutes: FC = () => {
               <Route path="budget" element={<BudgetPlanner />} />
               <Route path="tasks" element={<TaskManager />} />
               <Route path="seating" element={<SeatingManager />} />
+              <Route path="payment/success" element={<PaymentSuccessPage />} />
               <Route path="rsvp" element={<RsvpManagerContainer />} />
               <Route path="rsvp/admin" element={<RSVPManager />} />
               <Route path="settings" element={<WeddingSettings />} />

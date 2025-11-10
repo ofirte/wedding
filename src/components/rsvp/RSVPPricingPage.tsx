@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -9,13 +9,12 @@ import {
   Card,
   CardContent,
   Grid,
-  Chip,
   Divider,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Avatar,
+  TextField,
+  InputAdornment,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 import {
   Settings as SettingsIcon,
@@ -26,14 +25,86 @@ import {
   CardGiftcard as GiftIcon,
   Favorite as HeartIcon,
   Phone as PhoneIcon,
-  Check as CheckIcon,
-  Star as StarIcon,
   Upgrade as UpgradeIcon,
+  Calculate as CalculateIcon,
+  Payment as PaymentIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { useAuth, useCurrentUserWeddingId } from "../../hooks/auth";
+import { createPayment } from "../../api/firebaseFunctions/payments";
+import { useParams } from "react-router";
 
 const RSVPPricingPage: React.FC = () => {
   const { t } = useTranslation();
+  const { currentUser } = useAuth();
+  const { weddingId } = useParams<string>();
+  const [guestCount, setGuestCount] = useState<string>("250");
+  const [isCreatingPayment, setIsCreatingPayment] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+
+  // Payment handler
+  const handlePayment = async () => {
+    if (!currentUser || !weddingId) {
+      setPaymentError("Please sign in and select a wedding to continue");
+      return;
+    }
+
+    const count = parseInt(guestCount);
+    if (!count || count < 50) {
+      setPaymentError("Please enter at least 50 guests");
+      return;
+    }
+
+    setIsCreatingPayment(true);
+    setPaymentError(null);
+
+    try {
+      const result = await createPayment({
+        weddingId,
+        guestCount: count,
+      });
+
+      if (result.data.success) {
+        // Redirect to AllPay payment page
+        window.location.href = result.data.paymentUrl;
+      } else {
+        setPaymentError("Failed to create payment. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Payment error:", error);
+      setPaymentError(
+        error.message || "An error occurred. Please try again later."
+      );
+      setIsCreatingPayment(false);
+    }
+  };
+
+  // Flat-rate pricing logic based on guest count ranges
+  const calculatePrice = (count: number): { price: number; rate: string } => {
+    if (count < 50) return { price: 0, rate: "0" };
+    if (count < 100) return { price: 150, rate: "1.5" };
+    if (count < 150) return { price: 225, rate: "1.5-2.3" };
+    if (count < 200) return { price: 300, rate: "1.5-2.0" };
+    if (count < 250) return { price: 375, rate: "1.5-1.9" };
+    if (count < 300) return { price: 450, rate: "1.5-1.8" };
+    if (count < 350) return { price: 525, rate: "1.5-1.8" };
+    if (count < 400) return { price: 600, rate: "1.5-1.7" };
+    if (count < 450) return { price: 675, rate: "1.5-1.7" };
+    if (count < 500) return { price: 750, rate: "1.5-1.7" };
+    if (count < 550) return { price: 825, rate: "1.5-1.7" };
+    if (count < 600) return { price: 900, rate: "1.5-1.6" };
+    if (count < 650) return { price: 975, rate: "1.5-1.6" };
+    if (count < 700) return { price: 1050, rate: "1.5-1.6" };
+    if (count < 750) return { price: 1125, rate: "1.5-1.6" };
+    if (count < 800) return { price: 1200, rate: "1.5-1.6" };
+    if (count < 850) return { price: 1275, rate: "1.5-1.6" };
+    if (count < 900) return { price: 1350, rate: "1.5-1.6" };
+    if (count < 950) return { price: 1425, rate: "1.5-1.6" };
+    if (count < 1000) return { price: 1500, rate: "1.5-1.6" };
+    return { price: 0, rate: "0" }; // Contact for custom pricing
+  };
+
+  const pricing = calculatePrice(parseInt(guestCount) || 0);
 
   const getStepIcon = (iconName: string) => {
     const icons = {
@@ -53,37 +124,17 @@ const RSVPPricingPage: React.FC = () => {
       gift: <GiftIcon sx={{ fontSize: 32, color: "secondary.main" }} />,
       heart: <HeartIcon sx={{ fontSize: 32, color: "error.main" }} />,
       phone: <PhoneIcon sx={{ fontSize: 32, color: "info.main" }} />,
+      settings: <SettingsIcon sx={{ fontSize: 32, color: "primary.main" }} />,
+      automation: (
+        <AutomationIcon sx={{ fontSize: 32, color: "success.main" }} />
+      ),
     };
     return icons[iconName as keyof typeof icons] || icons.message;
   };
 
-  const packages = [
-    {
-      title: t("rsvp.premiumPricing.pricing.packages.small.title"),
-      guestCount: t("rsvp.premiumPricing.pricing.packages.small.guestCount"),
-      price: t("rsvp.premiumPricing.pricing.packages.small.price"),
-      features: t("rsvp.premiumPricing.pricing.packages.small.features"),
-      isPopular: false,
-    },
-    {
-      title: t("rsvp.premiumPricing.pricing.packages.medium.title"),
-      guestCount: t("rsvp.premiumPricing.pricing.packages.medium.guestCount"),
-      price: t("rsvp.premiumPricing.pricing.packages.medium.price"),
-      features: t("rsvp.premiumPricing.pricing.packages.medium.features"),
-      isPopular: true,
-    },
-    {
-      title: t("rsvp.premiumPricing.pricing.packages.large.title"),
-      guestCount: t("rsvp.premiumPricing.pricing.packages.large.guestCount"),
-      price: t("rsvp.premiumPricing.pricing.packages.large.price"),
-      features: t("rsvp.premiumPricing.pricing.packages.large.features"),
-      isPopular: false,
-    },
-  ];
-
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Stack spacing={8}>
+    <Container maxWidth="lg">
+      <Stack>
         {/* Hero Section */}
         <Box textAlign="center" sx={{ py: { xs: 4, md: 8 } }}>
           <Typography
@@ -193,24 +244,25 @@ const RSVPPricingPage: React.FC = () => {
         </Box>
 
         {/* Features Section */}
-        <Box>
+        <Box sx={{ mt: 12 }}>
           <Typography
             variant="h3"
             component="h2"
             fontWeight="bold"
             textAlign="center"
             gutterBottom
-            sx={{ mb: 6 }}
           >
             {t("rsvp.premiumPricing.features.title")}
           </Typography>
           <Grid container spacing={4}>
             {[
               "rsvpMessages",
-              "eventReminder",
-              "giftLink",
-              "thankYou",
               "phoneSupport",
+              "eventReminder",
+              "thankYou",
+              "customDesign",
+              "transportAndMeal",
+              "smartTracking",
             ].map((feature) => (
               <Grid size={{ xs: 12, md: 6, lg: 4 }} key={feature}>
                 <Card
@@ -269,7 +321,12 @@ const RSVPPricingPage: React.FC = () => {
         </Box>
 
         {/* Pricing Section */}
-        <Box>
+        <Box
+          sx={{
+            px: ({ spacing }) => spacing(16),
+            mt: 3,
+          }}
+        >
           <Typography
             variant="h3"
             component="h2"
@@ -296,131 +353,167 @@ const RSVPPricingPage: React.FC = () => {
             </Typography>
           </Box>
 
-          <Grid container spacing={4} sx={{ mb: 4 }}>
-            {packages.map((pkg, index) => (
-              <Grid size={{ xs: 12, md: 4 }} key={index}>
-                <Card
-                  elevation={pkg.isPopular ? 8 : 0}
+          {/* Calculator and Examples */}
+          {/* Calculator Card */}
+
+          <Card
+            elevation={4}
+            sx={{
+              height: "100%",
+              border: "3px solid",
+              borderColor: "primary.main",
+              borderRadius: 4,
+              background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+            }}
+          >
+            <CardContent sx={{ p: 4 }}>
+              <Stack spacing={3} alignItems="center">
+                <Box
                   sx={{
-                    height: "100%",
-                    border: pkg.isPopular ? "3px solid" : "2px solid",
-                    borderColor: pkg.isPopular ? "primary.main" : "divider",
-                    borderRadius: 4,
-                    position: "relative",
-                    transition: "all 0.3s ease-in-out",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
-                      boxShadow: pkg.isPopular
-                        ? "0 16px 40px rgba(102, 126, 234, 0.3)"
-                        : "0 12px 32px rgba(0,0,0,0.15)",
-                    },
+                    width: 64,
+                    height: 64,
+                    borderRadius: "50%",
+                    background:
+                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  {pkg.isPopular && (
+                  <CalculateIcon sx={{ fontSize: 32, color: "white" }} />
+                </Box>
+                <Typography
+                  variant="h5"
+                  fontWeight="bold"
+                  color="text.primary"
+                  textAlign="center"
+                >
+                  {t("rsvp.premiumPricing.pricing.calculator.title")}
+                </Typography>
+
+                <TextField
+                  fullWidth
+                  type="number"
+                  label={t("rsvp.premiumPricing.pricing.calculator.inputLabel")}
+                  placeholder={t(
+                    "rsvp.premiumPricing.pricing.calculator.inputPlaceholder"
+                  )}
+                  value={guestCount}
+                  onChange={(e) => setGuestCount(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">#</InputAdornment>
+                    ),
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      fontSize: "1.2rem",
+                      fontWeight: "600",
+                    },
+                  }}
+                />
+
+                {parseInt(guestCount) >= 50 && pricing.price > 0 ? (
+                  <>
                     <Box
                       sx={{
-                        position: "absolute",
-                        top: -12,
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        zIndex: 1,
+                        width: "100%",
+                        textAlign: "center",
+                        py: 3,
+                        px: 2,
+                        borderRadius: 3,
+                        background:
+                          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        color: "white",
                       }}
                     >
-                      <Chip
-                        label="Popular"
-                        color="primary"
-                        size="medium"
-                        icon={<StarIcon />}
-                        sx={{
-                          fontWeight: "bold",
-                          px: 2,
-                        }}
-                      />
+                      <Typography variant="body2" sx={{ mb: 1, opacity: 0.9 }}>
+                        {t("rsvp.premiumPricing.pricing.calculator.priceLabel")}
+                      </Typography>
+                      <Typography variant="h2" fontWeight="bold" sx={{ mb: 1 }}>
+                        ₪{pricing.price}
+                      </Typography>
                     </Box>
-                  )}
-                  <CardContent sx={{ p: 4, textAlign: "center" }}>
-                    <Typography
-                      variant="h5"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                    >
-                      {pkg.title}
-                    </Typography>
+
+                    {/* CTA Section */}
+                    <Divider sx={{ width: "100%", my: 1 }} />
+
+                    {paymentError && (
+                      <Alert severity="error" sx={{ width: "100%" }}>
+                        {paymentError}
+                      </Alert>
+                    )}
+
                     <Typography
                       variant="body1"
                       color="text.secondary"
-                      sx={{ mb: 2 }}
+                      textAlign="center"
+                      sx={{ px: 2 }}
                     >
-                      {pkg.guestCount}
+                      {t("rsvp.premiumPricing.cta.description")}
                     </Typography>
-                    <Typography
-                      variant="h3"
-                      fontWeight="bold"
-                      color="primary.main"
-                      sx={{ mb: 3 }}
-                    >
-                      {pkg.price}
-                    </Typography>
-                    <Divider sx={{ my: 3 }} />
-                    <List dense sx={{ mb: 3 }}>
-                      {(Array.isArray(pkg.features) ? pkg.features : []).map(
-                        (feature: string, featureIndex: number) => (
-                          <ListItem key={featureIndex} sx={{ px: 0 }}>
-                            <ListItemIcon sx={{ minWidth: 32 }}>
-                              <CheckIcon color="success" fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={feature}
-                              primaryTypographyProps={{
-                                variant: "body2",
-                                color: "text.secondary",
-                              }}
-                            />
-                          </ListItem>
-                        )
-                      )}
-                    </List>
+
                     <Button
-                      variant={pkg.isPopular ? "contained" : "outlined"}
-                      size="large"
                       fullWidth
-                      startIcon={<UpgradeIcon />}
+                      variant="contained"
+                      size="large"
+                      onClick={handlePayment}
+                      disabled={isCreatingPayment || !currentUser || !weddingId}
+                      startIcon={
+                        isCreatingPayment ? (
+                          <CircularProgress
+                            size={20}
+                            sx={{ color: "inherit" }}
+                          />
+                        ) : (
+                          <PaymentIcon />
+                        )
+                      }
                       sx={{
-                        py: 1.5,
+                        py: 2,
+                        fontSize: "1.1rem",
                         fontWeight: "600",
-                        textTransform: "none",
                         borderRadius: 2,
-                        ...(pkg.isPopular && {
-                          background:
-                            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                          "&:hover": {
-                            background:
-                              "linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)",
-                          },
-                        }),
+                        textTransform: "none",
+                        "&:disabled": {
+                          opacity: 0.6,
+                        },
                       }}
                     >
-                      {t("rsvp.premiumPricing.cta.upgradeButton")}
+                      {isCreatingPayment
+                        ? "Processing..."
+                        : t("rsvp.premiumPricing.cta.upgradeButton")}
                     </Button>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
 
-          <Typography
-            variant="body1"
-            color="text.secondary"
-            textAlign="center"
-            sx={{ fontStyle: "italic" }}
-          >
-            {t("rsvp.premiumPricing.pricing.customPricing")}
-          </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      textAlign="center"
+                      sx={{ opacity: 0.8 }}
+                    >
+                      {t("rsvp.premiumPricing.cta.guarantee")}
+                    </Typography>
+                  </>
+                ) : parseInt(guestCount) > 0 && parseInt(guestCount) < 50 ? (
+                  <Typography
+                    variant="body1"
+                    color="warning.main"
+                    textAlign="center"
+                  >
+                    {t("rsvp.premiumPricing.pricing.calculator.minRecords")}
+                  </Typography>
+                ) : null}
+              </Stack>
+            </CardContent>
+          </Card>
         </Box>
 
         {/* Testimonials Section */}
-        <Box>
+        <Box
+          sx={{
+            mt: 3,
+          }}
+        >
           <Typography
             variant="h3"
             component="h2"
@@ -489,90 +582,6 @@ const RSVPPricingPage: React.FC = () => {
               </Grid>
             ))}
           </Grid>
-        </Box>
-
-        {/* CTA Section */}
-        <Box
-          sx={{
-            textAlign: "center",
-            py: 8,
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            borderRadius: 4,
-            color: "white",
-          }}
-        >
-          <Typography
-            variant="h3"
-            component="h2"
-            fontWeight="bold"
-            gutterBottom
-            sx={{ color: "inherit" }}
-          >
-            {t("rsvp.premiumPricing.cta.title")}
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{
-              mb: 4,
-              maxWidth: 600,
-              mx: "auto",
-              color: "inherit",
-              opacity: 0.9,
-            }}
-          >
-            {t("rsvp.premiumPricing.cta.description")}
-          </Typography>
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            spacing={3}
-            justifyContent="center"
-            alignItems="center"
-            sx={{ mb: 3 }}
-          >
-            <Button
-              variant="contained"
-              size="large"
-              startIcon={<UpgradeIcon />}
-              sx={{
-                py: 2,
-                px: 4,
-                fontSize: "1.1rem",
-                fontWeight: "600",
-                borderRadius: 3,
-                textTransform: "none",
-                backgroundColor: "white",
-                color: "primary.main",
-                "&:hover": {
-                  backgroundColor: "rgba(255,255,255,0.9)",
-                },
-              }}
-            >
-              {t("rsvp.premiumPricing.cta.upgradeButton")}
-            </Button>
-            <Button
-              variant="outlined"
-              size="large"
-              sx={{
-                py: 2,
-                px: 4,
-                fontSize: "1rem",
-                fontWeight: "500",
-                borderRadius: 3,
-                textTransform: "none",
-                borderColor: "rgba(255,255,255,0.5)",
-                color: "inherit",
-                "&:hover": {
-                  borderColor: "white",
-                  backgroundColor: "rgba(255,255,255,0.1)",
-                },
-              }}
-            >
-              {t("rsvp.premiumPricing.cta.contactUs")}
-            </Button>
-          </Stack>
-          <Typography variant="body2" sx={{ opacity: 0.8 }}>
-            {t("rsvp.premiumPricing.cta.guarantee")}
-          </Typography>
         </Box>
       </Stack>
     </Container>

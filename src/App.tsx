@@ -32,7 +32,6 @@ function App() {
       addWeddingMember({
         userId: currentUser?.uid || "",
         weddingId: weddingDetails?.id || "",
-        plan: "free",
         addedBy: currentUser?.uid || "",
       });
     }

@@ -15,3 +15,4 @@ export * from "./template";
 export * from "./sendMessagesAutomation";
 export * from "./rsvpConfig";
 export * from "./seating";
+export * from "./payment";

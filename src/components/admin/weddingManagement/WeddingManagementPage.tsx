@@ -55,7 +55,7 @@ const WeddingManagementPage: React.FC = () => {
     setIsDeleteDialogOpen(true);
   };
 
-  const handleSaveUser = (weddingId: string, userId: string, plan: string) => {
+  const handleSaveUser = (weddingId: string, userId: string) => {
     // First, update user's weddingIds array to include this wedding
     updateUser({
       userId: userId,
@@ -65,10 +65,10 @@ const WeddingManagementPage: React.FC = () => {
     });
 
     // Then add user to the wedding's members
+    // Note: Users automatically inherit the wedding's plan
     addUserToWeddingMutation.mutate({
       weddingId,
       userId,
-      plan: plan as any, // Type assertion since we know it's a valid plan
       addedBy: "admin",
     });
   };

@@ -780,10 +780,10 @@ export const hebrewTranslations: Translations = {
     // Premium pricing page
     premiumPricing: {
       hero: {
-        title: "עדכוני אורחים ללא מאמץ",
-        subtitle: "5 הודעות יפהפיות. אפס לחץ.",
+        title: "אישורי הגעה בקלות",
+        subtitle: "חוסכים זמן, כסף ודאגות – החל מ־₪1.5 לרשומה בלבד",
         description:
-          "שדרג לשירות ההודעות הפרימיום שלנו ואוטומטי את כל מסע התקשורת עם האורחים עם הודעות ווטסאפ מקצועיות.",
+          "הכניסו את מספר הרשומות שלכם וקבלו הצעת מחיר מדויקת לשירות אישי ומקצועי.",
       },
       howItWorks: {
         title: "איך זה עובד",
@@ -806,77 +806,63 @@ export const hebrewTranslations: Translations = {
       features: {
         title: "מה כלול",
         rsvpMessages: {
-          title: "3 הודעות אישור הגעה",
-          description:
-            "הזמנה ראשונית, תזכורת המשך והודעה סופית לאיסוף כל התגובות",
+          title: "3 סבבי הודעות אישור הגעה אוטומטיות",
+          description: "ישירות ב-WhatsApp לכל האורחים",
           icon: "message",
         },
+        phoneSupport: {
+          title: "שיחות טלפון למי שלא השיב",
+          description: "וידוא אישי מול האורחים להבטחת אחוז תגובה גבוה",
+          icon: "phone",
+        },
         eventReminder: {
-          title: "תזכורת יום לפני",
-          description: "פרטי האירוע והמיקום נשלחים יום לפני החתונה שלכם",
+          title: "הודעת תזכורת ביום האירוע",
+          description: "עם קישור ישיר לניווט ב-Waze להגעה נוחה",
           icon: "calendar",
         },
-        giftLink: {
-          title: "קישור לרישום מתנות",
-          description: "כלול את קישור רישום המתנות שלכם בהודעת יום לפני",
-          icon: "gift",
-        },
         thankYou: {
-          title: "הודעת תודה",
-          description: "הודעת תודה לבבית שנשלחת אחרי היום המיוחד שלכם",
+          title: "הודעת תודה אחרי האירוע",
+          description: "סוגרים מעגל באלגנטיות עם האורחים",
           icon: "heart",
         },
-        phoneSupport: {
-          title: "שירות שיחות טלפון",
-          description: "נתקשר לאורחים שלא הגיבו כדי להבטיח נוכחות מקסימלית",
-          icon: "phone",
+        customDesign: {
+          title: "עיצוב אישי של ההודעות",
+          description: "התאימו את הנוסח, הצבעים והאייקונים לסגנון שלכם",
+          icon: "settings",
+        },
+        transportAndMeal: {
+          title: "בדיקת היענות להסעה והעדפות מזון",
+          description: "חוסכים הפתעות ביום החתונה",
+          icon: "gift",
+        },
+        smartTracking: {
+          title: "מעקב חכם ודוחות בזמן אמת",
+          description: "עם תזכורות אוטומטיות לניהול פשוט ורגוע",
+          icon: "automation",
         },
       },
       pricing: {
         title: "תמחור פשוט ושקוף",
-        subtitle: "בחר את החבילה המתאימה לרשימת האורחים שלך",
-        startingPrice: "מתחיל ב-₪1.5 לאורח",
+        subtitle: "הזינו את מספר הרשומות לקבלת מחיר מדויק",
+        startingPrice: "מתחיל ב-₪1.5 לרשומה",
         perInvitee: "למספר טלפון של מוזמן",
-        packages: {
-          small: {
-            title: "חתונה אינטימית",
-            guestCount: "עד 100 אורחים",
-            price: "₪150",
-            features: [
-              "כל 5 סוגי ההודעות",
-              "שירות שיחות טלפון",
-              "קישור לרישום מתנות",
-              "תמיכה 24/7",
-            ],
-          },
-          medium: {
-            title: "חתונה קלאסית",
-            guestCount: "עד 250 אורחים",
-            price: "₪375",
-            popular: true,
-            features: [
-              "כל 5 סוגי ההודעות",
-              "שירות שיחות טלפון",
-              "קישור לרישום מתנות",
-              "תמיכה עדיפה",
-              "תזמון הודעות מותאם",
-            ],
-          },
-          large: {
-            title: "חגיגה גדולה",
-            guestCount: "עד 500 אורחים",
-            price: "₪750",
-            features: [
-              "כל 5 סוגי ההודעות",
-              "שירות שיחות טלפון",
-              "קישור לרישום מתנות",
-              "תמיכה ייעודית",
-              "תזמון הודעות מותאם",
-              "אנליטיקה מתקדמת",
-            ],
-          },
+        calculator: {
+          title: "חשבו את המחיר שלכם",
+          inputLabel: "מספר רשומות",
+          inputPlaceholder: "הזינו מספר רשומות (50-1000)",
+          priceLabel: "המחיר שלכם",
+          totalPrice: "₪{price}",
+          perRecordRate: "({rate} ₪ לרשומה)",
+          minRecords: "מינימום 50 רשומות",
+          examplesTitle: "דוגמאות תמחור",
+          example1: "100 רשומות",
+          example1Price: "₪150",
+          example1Rate: "(₪1.5 לרשומה)",
+          example2: "250 רשומות",
+          example2Price: "₪450",
+          example2Rate: "(₪1.8 לרשומה)",
         },
-        customPricing: "צריך יותר מ-500 אורחים? צור קשר עבור תמחור מותאם.",
+        customPricing: "צריך יותר מ-1000 רשומות? צור קשר עבור תמחור מותאם.",
       },
       testimonials: {
         title: "מה זוגות אומרים",
@@ -1571,6 +1557,23 @@ export const hebrewTranslations: Translations = {
       deletingTable: "שגיאה במחיקת שולחן. אנא נסה שנית.",
       assigningGuest: "שגיאה בהקצאת אורח. אנא נסה שנית.",
       removingGuest: "שגיאה בהסרת אורח. אנא נסה שנית.",
+    },
+  },
+  payment: {
+    success: {
+      title: "!התשלום בוצע בהצלחה",
+      subtitle: "ברוכים הבאים ל-RSVP פרימיום",
+      description: "החתונה שלכם שודרגה לתוכנית RSVP פרימיום. כעת יש לכם גישה מלאה לכל התכונות הפרימיום.",
+      featuresTitle: ":מה נפתח עבורכם",
+      features: {
+        customForm: "טפסי RSVP מותאמים אישית עם שאלות ללא הגבלה",
+        unlimitedMessages: "הודעות WhatsApp ללא הגבלה לאורחים שלכם",
+        automation: "תזמון אוטומטי של הודעות ותזכורות",
+        analytics: "מעקב אחר תגובות וניתוח נתונים בזמן אמת",
+        support: "תמיכת לקוחות עדיפות",
+      },
+      continueButton: "בואו נגדיר את ה-RSVP",
+      loading: "...טוען",
     },
   },
 };

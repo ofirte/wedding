@@ -49,6 +49,14 @@ export enum InvitationsFunctions {
 }
 
 /**
+ * Enum for Payment-related Firebase Functions
+ */
+export enum PaymentFunctions {
+  CREATE_PAYMENT = "createPayment",
+  GET_PAYMENT_STATUS = "getPaymentStatus",
+}
+
+/**
  * All Firebase Functions combined
  */
 export const AllFunctions = {
@@ -58,6 +66,7 @@ export const AllFunctions = {
   ...UsersFunctions,
   ...SendAutomationsFunctions,
   ...InvitationsFunctions,
+  ...PaymentFunctions,
 } as const;
 
 /**
@@ -69,4 +78,5 @@ export type FunctionName =
   | TemplateFunctions
   | UsersFunctions
   | SendAutomationsFunctions
-  | InvitationsFunctions;
+  | InvitationsFunctions
+  | PaymentFunctions;
