@@ -9,6 +9,7 @@ import { useResponsive } from "../../utils/ResponsiveUtils";
 import { useTables, useCreateTable, useUpdateTable, useDeleteTable, useBulkUpdateTables, useLayoutElements, useCreateLayoutElement, useUpdateLayoutElement, useDeleteLayoutElement, useSeatingArrangements } from "../../hooks/seating";
 import { useInvitees } from "../../hooks/invitees";
 import { getUnassignedGuests } from "../../api/seating/seatingApi";
+import { calculateUsedCapacity, getGuestAmount } from "../../utils/seatingUtils";
 import SeatingToolbar from "./SeatingToolbar";
 import SeatingToolsSidebar from "./SeatingToolsSidebar";
 import SeatingCanvas from "./SeatingCanvas";
@@ -115,8 +116,12 @@ const SeatingManager: React.FC = () => {
     const table = tables.find((t) => t.id === tableId);
     if (!table) return;
 
-    // Check capacity
-    if (table.assignedGuests.length >= table.capacity) {
+    // Check capacity using actual guest amounts
+    const currentUsedCapacity = calculateUsedCapacity(table.assignedGuests, invitees);
+    const guestToAssign = invitees.find((inv) => inv.id === guestId);
+    const guestAmount = guestToAssign ? getGuestAmount(guestToAssign) : 1;
+
+    if (currentUsedCapacity + guestAmount > table.capacity) {
       alert(t("seating.assignment.tableCapacityReached"));
       return;
     }
@@ -362,6 +367,7 @@ const SeatingManager: React.FC = () => {
           <Box sx={{ flex: 1, position: "relative" }}>
             <SeatingCanvas
               tables={tables}
+              allInvitees={invitees}
               layoutElements={layoutElements}
               selectedTableId={selectedTableId}
               selectedElementId={selectedElementId}

@@ -3,6 +3,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { Table } from "../../../../shared/src/models/seating";
 import { Invitee } from "../../../../shared/src/models/invitee";
 import { useTranslation } from "src/localization/LocalizationContext";
+import { getGuestAmount } from "../../../utils/seatingUtils";
 import TableAccordion from "./TableAccordion";
 
 interface TablesAssignmentListProps {
@@ -33,7 +34,12 @@ const TablesAssignmentList: React.FC<TablesAssignmentListProps> = ({
       <Stack spacing={1}>
         {tables.map((table) => {
           const tableGuests = assignments.get(table.id) || [];
-          const isOverCapacity = tableGuests.length > table.capacity;
+          // Calculate used capacity based on actual guest amounts
+          const usedCapacity = tableGuests.reduce((sum, guestId) => {
+            const guest = getGuest(guestId);
+            return sum + (guest ? getGuestAmount(guest) : 0);
+          }, 0);
+          const isOverCapacity = usedCapacity > table.capacity;
 
           return (
             <TableAccordion

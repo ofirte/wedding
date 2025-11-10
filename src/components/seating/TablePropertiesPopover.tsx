@@ -18,6 +18,7 @@ import { Delete as DeleteIcon } from "@mui/icons-material";
 import { Table, Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { getUnassignedGuests } from "../../api/seating/seatingApi";
+import { calculateUsedCapacity, getGuestAmount } from "../../utils/seatingUtils";
 
 interface TablePropertiesPopoverProps {
   table: Table | null;
@@ -116,7 +117,8 @@ const TablePropertiesPopover: React.FC<TablePropertiesPopoverProps> = ({
     }
   };
 
-  const isAtCapacity = table.assignedGuests.length >= table.capacity;
+  const usedCapacity = calculateUsedCapacity(table.assignedGuests, allInvitees);
+  const isAtCapacity = usedCapacity >= table.capacity;
 
   return (
     <Popover
@@ -232,14 +234,18 @@ const TablePropertiesPopover: React.FC<TablePropertiesPopoverProps> = ({
                 </Typography>
               ) : (
                 <Stack spacing={0.5}>
-                  {assignedGuests.map((guest) => (
-                    <Chip
-                      key={guest.id}
-                      label={guest.name}
-                      size="small"
-                      onDelete={() => onRemoveGuest(guest.id, table.id)}
-                    />
-                  ))}
+                  {assignedGuests.map((guest) => {
+                    const guestAmount = getGuestAmount(guest);
+                    const label = guestAmount > 1 ? `${guest.name} (+${guestAmount})` : guest.name;
+                    return (
+                      <Chip
+                        key={guest.id}
+                        label={label}
+                        size="small"
+                        onDelete={() => onRemoveGuest(guest.id, table.id)}
+                      />
+                    );
+                  })}
                 </Stack>
               )}
             </Box>

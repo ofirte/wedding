@@ -2,6 +2,7 @@ import {
   createCollectionAPI,
 } from "../weddingFirebaseHelpers";
 import { SeatingArrangement, Table, Invitee, LayoutElement } from "@wedding-plan/types";
+import { calculateUsedCapacity, getGuestAmount } from "../../utils/seatingUtils";
 
 // Create all CRUD operations for seating arrangements (DRY approach)
 const seatingAPI = createCollectionAPI<SeatingArrangement>("seating");
@@ -74,12 +75,15 @@ export const getTableGuests = (
  * Assign a guest to a table
  * @param guestId Invitee ID to assign
  * @param tableId Table ID to assign to
+ * @param tables All tables
+ * @param allInvitees All invitees (needed for capacity calculation)
  * @param weddingId Optional wedding ID
  */
 export const assignGuestToTable = async (
   guestId: string,
   tableId: string,
   tables: Table[],
+  allInvitees: Invitee[],
   weddingId?: string
 ): Promise<void> => {
   const table = tables.find((t) => t.id === tableId);
@@ -92,8 +96,12 @@ export const assignGuestToTable = async (
     return; // Already assigned
   }
 
-  // Check capacity
-  if (table.assignedGuests.length >= table.capacity) {
+  // Check capacity using actual guest amounts
+  const currentUsedCapacity = calculateUsedCapacity(table.assignedGuests, allInvitees);
+  const guestToAssign = allInvitees.find((inv) => inv.id === guestId);
+  const guestAmount = guestToAssign ? getGuestAmount(guestToAssign) : 1;
+
+  if (currentUsedCapacity + guestAmount > table.capacity) {
     throw new Error("Table is at full capacity");
   }
 
@@ -130,6 +138,7 @@ export const removeGuestFromTable = async (
  * @param fromTableId Source table ID
  * @param toTableId Destination table ID
  * @param tables All tables
+ * @param allInvitees All invitees (needed for capacity calculation)
  * @param weddingId Optional wedding ID
  */
 export const moveGuestBetweenTables = async (
@@ -137,11 +146,12 @@ export const moveGuestBetweenTables = async (
   fromTableId: string,
   toTableId: string,
   tables: Table[],
+  allInvitees: Invitee[],
   weddingId?: string
 ): Promise<void> => {
   // Remove from old table
   await removeGuestFromTable(guestId, fromTableId, tables, weddingId);
 
   // Add to new table
-  await assignGuestToTable(guestId, toTableId, tables, weddingId);
+  await assignGuestToTable(guestId, toTableId, tables, allInvitees, weddingId);
 };

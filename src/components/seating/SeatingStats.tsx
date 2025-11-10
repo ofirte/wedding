@@ -8,25 +8,13 @@ import {
 } from "@mui/icons-material";
 import { Table, Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { getGuestAmount } from "../../utils/seatingUtils";
 
 interface SeatingStatsProps {
   tables: Table[];
   invitees: Invitee[];
   inline?: boolean;
 }
-
-/**
- * Get the number of guests for an invitee based on their RSVP amount
- * Defaults to 1 if amount is not specified or invalid
- */
-const getGuestAmount = (invitee: Invitee): number => {
-  if (!invitee.rsvpStatus?.amount) {
-    return 1;
-  }
-
-  const amount = parseInt(invitee.rsvpStatus.amount, 10);
-  return isNaN(amount) || amount < 1 ? 1 : amount;
-};
 
 const SeatingStats: React.FC<SeatingStatsProps> = ({
   tables,

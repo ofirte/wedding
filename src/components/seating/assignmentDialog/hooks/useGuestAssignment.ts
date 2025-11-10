@@ -176,7 +176,7 @@ export const useGuestAssignment = ({
         groupBySide: true,
       };
 
-      const result = autoAssignGuests(unassigned, availableTables, rules);
+      const result = autoAssignGuests(unassigned, availableTables, invitees, rules);
 
       // Merge with existing assignments
       const newAssignments = new Map(assignments);

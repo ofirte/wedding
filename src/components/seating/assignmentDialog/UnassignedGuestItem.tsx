@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Checkbox, Typography } from "@mui/material";
 import { useDrag } from "react-dnd";
 import { Invitee } from "../../../../shared/src/models/invitee";
+import { getGuestAmount } from "../../../utils/seatingUtils";
 
 interface UnassignedGuestItemProps {
   guest: Invitee;
@@ -21,6 +22,9 @@ const UnassignedGuestItem: React.FC<UnassignedGuestItemProps> = ({
       isDragging: monitor.isDragging(),
     }),
   });
+
+  const guestAmount = getGuestAmount(guest);
+  const displayName = guestAmount > 1 ? `${guest.name} (+${guestAmount})` : guest.name;
 
   return (
     <Box
@@ -44,7 +48,7 @@ const UnassignedGuestItem: React.FC<UnassignedGuestItemProps> = ({
       <Checkbox checked={isSelected} size="small" sx={{ p: 0, mr: 1 }} />
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Typography variant="body2" noWrap>
-          {guest.name}
+          {displayName}
         </Typography>
         <Typography variant="caption" color="text.secondary" noWrap>
           {guest.relation} • {guest.side}

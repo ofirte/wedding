@@ -1,11 +1,13 @@
 import React, { useRef, useState } from "react";
 import { Group, Circle, Rect, Text } from "react-konva";
-import { Table } from "@wedding-plan/types";
+import { Table, Invitee } from "@wedding-plan/types";
 import Konva from "konva";
 import { useTranslation } from "src/localization/LocalizationContext";
+import { calculateUsedCapacity } from "../../utils/seatingUtils";
 
 interface TableShapeProps {
   table: Table;
+  allInvitees: Invitee[];
   isSelected: boolean;
   onSelect: () => void;
   onEdit: () => void;
@@ -15,6 +17,7 @@ interface TableShapeProps {
 
 const TableShape: React.FC<TableShapeProps> = ({
   table,
+  allInvitees,
   isSelected,
   onSelect,
   onEdit,
@@ -31,9 +34,10 @@ const TableShape: React.FC<TableShapeProps> = ({
   };
 
   const getFillColor = () => {
+    const usedCapacity = calculateUsedCapacity(table.assignedGuests, allInvitees);
     if (isSelected) return "#B8D1E0"; // Info light - selected
-    if (table.assignedGuests.length >= table.capacity) return "#B7D9BD"; // Success - full
-    if (table.assignedGuests.length > 0) return "#F0E5B2"; // Warning - partial
+    if (usedCapacity >= table.capacity) return "#B7D9BD"; // Success - full
+    if (usedCapacity > 0) return "#F0E5B2"; // Warning - partial
     return "#FFFFFF"; // White - empty
   };
 
@@ -170,7 +174,7 @@ const TableShape: React.FC<TableShapeProps> = ({
 
       {/* Capacity Display */}
       <Text
-        text={`${table.assignedGuests.length}/${table.capacity}`}
+        text={`${calculateUsedCapacity(table.assignedGuests, allInvitees)}/${table.capacity}`}
         fontSize={12}
         fontFamily="Arial"
         fill="#666666"

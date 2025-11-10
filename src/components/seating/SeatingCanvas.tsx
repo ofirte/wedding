@@ -1,13 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import { Stage, Layer } from "react-konva";
-import { Table, LayoutElement } from "@wedding-plan/types";
+import { Table, LayoutElement, Invitee } from "@wedding-plan/types";
 import TableShape from "./TableShape";
 import LayoutElementShape from "./LayoutElementShape";
 import { KonvaEventObject } from "konva/lib/Node";
 
 interface SeatingCanvasProps {
   tables: Table[];
+  allInvitees: Invitee[];
   layoutElements?: LayoutElement[];
   selectedTableId: string | null;
   selectedElementId?: string | null;
@@ -30,6 +31,7 @@ interface SeatingCanvasProps {
 
 const SeatingCanvas: React.FC<SeatingCanvasProps> = ({
   tables,
+  allInvitees,
   layoutElements = [],
   selectedTableId,
   selectedElementId,
@@ -189,6 +191,7 @@ const SeatingCanvas: React.FC<SeatingCanvasProps> = ({
             <TableShape
               key={table.id}
               table={table}
+              allInvitees={allInvitees}
               isSelected={selectedTableId === table.id}
               onSelect={() => {
                 onTableSelect(table.id);

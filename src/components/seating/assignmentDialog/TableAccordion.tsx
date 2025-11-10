@@ -13,6 +13,7 @@ import { useDrop } from "react-dnd";
 import { Table } from "../../../../shared/src/models/seating";
 import { Invitee } from "../../../../shared/src/models/invitee";
 import { useTranslation } from "src/localization/LocalizationContext";
+import { getGuestAmount } from "../../../utils/seatingUtils";
 import TableAccordionHeader from "./TableAccordionHeader";
 
 interface TableAccordionProps {
@@ -50,12 +51,18 @@ const TableAccordion: React.FC<TableAccordionProps> = ({
     }),
   });
 
+  // Calculate actual assigned count based on guest amounts
+  const assignedCount = assignedGuestIds.reduce((sum, guestId) => {
+    const guest = getGuest(guestId);
+    return sum + (guest ? getGuestAmount(guest) : 0);
+  }, 0);
+
   return (
     <Accordion defaultExpanded={assignedGuestIds.length > 0}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <TableAccordionHeader
           table={table}
-          assignedCount={assignedGuestIds.length}
+          assignedCount={assignedCount}
           isOverCapacity={isOverCapacity}
           onUpdateName={onUpdateTableName}
         />
@@ -83,10 +90,13 @@ const TableAccordion: React.FC<TableAccordionProps> = ({
               const guest = getGuest(guestId);
               if (!guest) return null;
 
+              const guestAmount = getGuestAmount(guest);
+              const label = guestAmount > 1 ? `${guest.name} (+${guestAmount})` : guest.name;
+
               return (
                 <Chip
                   key={guestId}
-                  label={guest.name}
+                  label={label}
                   size="small"
                   onDelete={() => onRemoveGuest(guestId, table.id)}
                 />

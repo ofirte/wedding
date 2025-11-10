@@ -4,6 +4,7 @@
  */
 
 import { Invitee, Table } from "@wedding-plan/types";
+import { getGuestAmount, calculateUsedCapacity } from "./seatingUtils";
 
 interface AssignmentRules {
   groupByRelation: boolean;
@@ -25,12 +26,14 @@ interface AutoAssignmentResult {
  * Auto-assign guests to tables based on grouping rules
  * @param unassignedGuests - List of guests without table assignments
  * @param tables - List of available tables
+ * @param allInvitees - All invitees (needed for capacity calculation)
  * @param rules - Grouping rules for assignment
  * @returns Object containing assignments map and suggested table names map
  */
 export function autoAssignGuests(
   unassignedGuests: Invitee[],
   tables: Table[],
+  allInvitees: Invitee[],
   rules: AssignmentRules
 ): AutoAssignmentResult {
   const assignments = new Map<string, string[]>();
@@ -40,7 +43,7 @@ export function autoAssignGuests(
   const sortedTables = [...tables]
     .map((table) => ({
       ...table,
-      availableSeats: table.capacity - table.assignedGuests.length,
+      availableSeats: table.capacity - calculateUsedCapacity(table.assignedGuests, allInvitees),
     }))
     .filter((table) => table.availableSeats > 0)
     .sort((a, b) => b.availableSeats - a.availableSeats);
@@ -66,7 +69,8 @@ export function autoAssignGuests(
 
   // Assign groups to tables
   for (const group of groups) {
-    const groupSize = group.guests.length;
+    // Calculate actual group size using guest amounts
+    const groupSize = group.guests.reduce((sum, guest) => sum + getGuestAmount(guest), 0);
 
     // Find a table that can fit the group
     let assigned = false;
@@ -111,21 +115,36 @@ export function autoAssignGuests(
         const available = tableCapacity.get(table.id) || 0;
 
         if (available > 0) {
-          const toAssign = remainingGuests.slice(0, available);
-          const existingAssignments = assignments.get(table.id) || [];
-          const newAssignments = [...existingAssignments, ...toAssign.map((g) => g.id)];
-          assignments.set(table.id, newAssignments);
+          // Take guests until we reach capacity
+          const toAssign: Invitee[] = [];
+          let usedCapacity = 0;
 
-          // Track relation and side for this table
-          if (group.relation) {
-            tableRelations.get(table.id)?.add(group.relation);
-          }
-          if (group.side) {
-            tableSides.get(table.id)?.add(group.side);
+          for (const guest of remainingGuests) {
+            const guestAmount = getGuestAmount(guest);
+            if (usedCapacity + guestAmount <= available) {
+              toAssign.push(guest);
+              usedCapacity += guestAmount;
+            } else {
+              break;
+            }
           }
 
-          remainingGuests = remainingGuests.slice(available);
-          tableCapacity.set(table.id, 0);
+          if (toAssign.length > 0) {
+            const existingAssignments = assignments.get(table.id) || [];
+            const newAssignments = [...existingAssignments, ...toAssign.map((g) => g.id)];
+            assignments.set(table.id, newAssignments);
+
+            // Track relation and side for this table
+            if (group.relation) {
+              tableRelations.get(table.id)?.add(group.relation);
+            }
+            if (group.side) {
+              tableSides.get(table.id)?.add(group.side);
+            }
+
+            remainingGuests = remainingGuests.filter(g => !toAssign.includes(g));
+            tableCapacity.set(table.id, available - usedCapacity);
+          }
 
           if (remainingGuests.length > 0) {
             currentTableIndex = i + 1;
@@ -208,18 +227,20 @@ function groupGuests(guests: Invitee[], rules: AssignmentRules): GuestGroup[] {
 }
 
 /**
- * Calculate total capacity needed
+ * Calculate total capacity needed based on actual guest amounts
  */
 export function calculateCapacityNeeded(guests: Invitee[]): number {
-  return guests.length;
+  return guests.reduce((sum, guest) => sum + getGuestAmount(guest), 0);
 }
 
 /**
- * Calculate available capacity in tables
+ * Calculate available capacity in tables based on actual guest amounts
+ * Requires allInvitees to calculate used capacity properly
  */
-export function calculateAvailableCapacity(tables: Table[]): number {
+export function calculateAvailableCapacity(tables: Table[], allInvitees: Invitee[]): number {
   return tables.reduce((sum, table) => {
-    const available = table.capacity - table.assignedGuests.length;
+    const usedCapacity = calculateUsedCapacity(table.assignedGuests, allInvitees);
+    const available = table.capacity - usedCapacity;
     return sum + (available > 0 ? available : 0);
   }, 0);
 }
