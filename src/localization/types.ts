@@ -1141,6 +1141,23 @@ export interface Translations {
   userRsvp: UserRSVPTranslations;
   rsvpSetup: RsvpSetupTranslations;
   seating: SeatingTranslations;
+  payment: {
+    success: {
+      title: string;
+      subtitle: string;
+      description: string;
+      featuresTitle: string;
+      features: {
+        customForm: string;
+        unlimitedMessages: string;
+        automation: string;
+        analytics: string;
+        support: string;
+      };
+      continueButton: string;
+      loading: string;
+    };
+  };
 }
 
 interface SeatingTranslations {

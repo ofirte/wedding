@@ -59,7 +59,7 @@ export const createPayment = onCall<CreatePaymentRequest>(
         request.rawRequest.headers.origin ||
         process.env.APP_URL ||
         "https://weddingplannerstudioapp.com";
-      const returnUrl = `${baseUrl}/wedding/${weddingId}/rsvp`;
+      const returnUrl = `${baseUrl}/wedding/${weddingId}/payment/success`;
 
       const paymentService = new PaymentService();
       const result = await paymentService.createPaymentForWedding({

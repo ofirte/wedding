@@ -1559,4 +1559,21 @@ export const hebrewTranslations: Translations = {
       removingGuest: "שגיאה בהסרת אורח. אנא נסה שנית.",
     },
   },
+  payment: {
+    success: {
+      title: "!התשלום בוצע בהצלחה",
+      subtitle: "ברוכים הבאים ל-RSVP פרימיום",
+      description: "החתונה שלכם שודרגה לתוכנית RSVP פרימיום. כעת יש לכם גישה מלאה לכל התכונות הפרימיום.",
+      featuresTitle: ":מה נפתח עבורכם",
+      features: {
+        customForm: "טפסי RSVP מותאמים אישית עם שאלות ללא הגבלה",
+        unlimitedMessages: "הודעות WhatsApp ללא הגבלה לאורחים שלכם",
+        automation: "תזמון אוטומטי של הודעות ותזכורות",
+        analytics: "מעקב אחר תגובות וניתוח נתונים בזמן אמת",
+        support: "תמיכת לקוחות עדיפות",
+      },
+      continueButton: "בואו נגדיר את ה-RSVP",
+      loading: "...טוען",
+    },
+  },
 };

@@ -1614,4 +1614,21 @@ export const englishTranslations: Translations = {
       removingGuest: "Error removing guest. Please try again.",
     },
   },
+  payment: {
+    success: {
+      title: "Payment Successful!",
+      subtitle: "Welcome to Premium RSVP",
+      description: "Your wedding has been upgraded to the Premium RSVP plan. You now have full access to all premium features.",
+      featuresTitle: "What You've Unlocked:",
+      features: {
+        customForm: "Custom RSVP forms with unlimited questions",
+        unlimitedMessages: "Unlimited WhatsApp messages to your guests",
+        automation: "Automated message scheduling and reminders",
+        analytics: "Real-time response tracking and analytics",
+        support: "Priority customer support",
+      },
+      continueButton: "Let's Setup RSVP",
+      loading: "Loading...",
+    },
+  },
 };
