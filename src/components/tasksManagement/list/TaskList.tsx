@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   List,
   ListItem,
@@ -10,6 +10,8 @@ import {
   Typography,
 } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { format } from "date-fns";
+import { he, enUS } from "date-fns/locale";
 
 import { useTranslation } from "../../../localization/LocalizationContext";
 import { Task } from "@wedding-plan/types";
@@ -21,9 +23,12 @@ interface TaskListProps {
 }
 
 const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { data: weddingsDetails, isLoading: isLoadingWeddings } =
     useWeddingsDetails();
+
+  const dateLocale = useMemo(() => (language === "he" ? he : enUS), [language]);
+
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high":
@@ -78,22 +83,56 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
             <Checkbox checked={task.completed} edge="start" />
             <ListItemText
               primary={
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    flexWrap: "wrap",
+                  }}
+                >
                   <Typography
                     variant="body1"
                     sx={{
                       textDecoration: task.completed ? "line-through" : "none",
+                      fontWeight: 500,
                     }}
                   >
                     {task.title}
                   </Typography>
+                  {/* Status Badge */}
+                  <Chip
+                    label={
+                      task.completed
+                        ? t("common.completed")
+                        : task.assignedTo
+                        ? t("common.inProgress")
+                        : t("common.unassigned")
+                    }
+                    size="small"
+                    variant={task.completed ? "filled" : "outlined"}
+                    color={
+                      task.completed
+                        ? "success"
+                        : task.assignedTo
+                        ? "primary"
+                        : "default"
+                    }
+                    sx={{ height: 20, fontSize: "0.7rem" }}
+                  />
+                  {/* Priority Badge */}
                   <Chip
                     label={t(
                       `tasksManagement.priorities.${task.priority.toLowerCase()}`
                     )}
                     size="small"
                     color={getPriorityColor(task.priority)}
+                    sx={{ height: 20, fontSize: "0.7rem" }}
                   />
+                </Box>
+              }
+              secondary={
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
                   <Chip
                     label={
                       taskWedding?.name || t("tasksManagement.unknownWedding")
@@ -101,15 +140,16 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
                     size="small"
                     variant="outlined"
                     sx={{
+                      height: 18,
+                      fontSize: "0.65rem",
+                      mr: 1,
                       borderColor: stringToColor(taskWedding?.id || ""),
                     }}
                   />
-                </Box>
-              }
-              secondary={
-                <Typography variant="body2" color="text.secondary">
                   {task.dueDate
-                    ? new Date(task.dueDate).toLocaleDateString()
+                    ? format(new Date(task.dueDate), "PPP", {
+                        locale: dateLocale,
+                      })
                     : t("tasksManagement.noDueDate")}
                   {task.assignedTo &&
                     ` • ${t(`common.${task.assignedTo.toLocaleLowerCase()}`)}`}

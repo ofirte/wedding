@@ -27,23 +27,21 @@ class MultiWeddingFirebaseService {
     weddingIds: string[],
     subCollectionName: string
   ): Promise<T[]> {
-    const results: T[] = [];
-
-    for (const weddingId of weddingIds) {
+    // Parallelize queries for better performance
+    const promises = weddingIds.map(async (weddingId) => {
       const subCollectionPath = `${this.weddingCollection}/${weddingId}/${subCollectionName}`;
       const subCollectionRef = collection(db, subCollectionPath);
       const snapshot = await getDocs(subCollectionRef);
 
-      const items = snapshot.docs.map((doc) => ({
+      return snapshot.docs.map((doc) => ({
         id: doc.id,
         weddingId, // Include the wedding ID for reference
         ...generalFirebase.convertTimestampsToDate(doc.data()),
       })) as T[];
+    });
 
-      results.push(...items);
-    }
-
-    return results;
+    const results = await Promise.all(promises);
+    return results.flat();
   }
 
   /**
@@ -109,9 +107,8 @@ class MultiWeddingFirebaseService {
     subCollectionName: string,
     filters: Array<{ field: string; op: WhereFilterOp; value: unknown }>
   ): Promise<T[]> {
-    const results: T[] = [];
-
-    for (const weddingId of weddingIds) {
+    // Parallelize queries for better performance
+    const promises = weddingIds.map(async (weddingId) => {
       const subCollectionPath = `${this.weddingCollection}/${weddingId}/${subCollectionName}`;
       const subCollectionRef = collection(db, subCollectionPath);
 
@@ -121,16 +118,15 @@ class MultiWeddingFirebaseService {
       });
 
       const snapshot = await getDocs(q);
-      const items = snapshot.docs.map((doc) => ({
+      return snapshot.docs.map((doc) => ({
         id: doc.id,
         weddingId,
         ...generalFirebase.convertTimestampsToDate(doc.data()),
       })) as T[];
+    });
 
-      results.push(...items);
-    }
-
-    return results;
+    const results = await Promise.all(promises);
+    return results.flat();
   }
 }
 

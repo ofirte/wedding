@@ -1,211 +1,26 @@
 import React, { useState, useMemo } from "react";
-import {
-  Box,
-  IconButton,
-  Typography,
-  Paper,
-  Tooltip,
-  Chip,
-  Stack,
-  Fade,
-  alpha,
-} from "@mui/material";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Circle,
-  CheckCircle,
-  Today,
-} from "@mui/icons-material";
+import { Box, Typography, Paper, Chip, alpha, useTheme } from "@mui/material";
+import { CheckCircle } from "@mui/icons-material";
+import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
+import { format, parse, startOfWeek, getDay } from "date-fns";
+import { he, enUS } from "date-fns/locale";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
-import {
-  format,
-  startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
-  eachDayOfInterval,
-  isSameMonth,
-  isToday,
-  isSameDay,
-  addMonths,
-  subMonths,
-} from "date-fns";
-import { he, enUS } from "date-fns/locale";
 import { Task, Wedding } from "@wedding-plan/types";
 import { useWeddingsDetails } from "src/hooks/wedding";
 import { stringToColor } from "src/utils/ColorUtils";
 import { useTasksManagement } from "../TasksManagementContext";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
-interface DayTasksProps {
-  date: Date;
-  tasks: (Task & { weddingId: string })[];
-  isCurrentMonth: boolean;
-  onDayClick?: (date: Date) => void;
-  weddingsDetails: Record<string, Wedding>;
+// Custom event interface extending Task with wedding info
+interface TaskEvent extends Event {
+  task: Task;
+  weddingId: string;
+  weddingName: string;
 }
 
-const DayTasks: React.FC<DayTasksProps> = ({
-  date,
-  tasks,
-  isCurrentMonth,
-  onDayClick,
-  weddingsDetails,
-}) => {
-  const { isRtl } = useTranslation();
-
-  const dayTasks = tasks.filter(
-    (task) => task.dueDate && isSameDay(new Date(task.dueDate), date)
-  );
-
-  const completedCount = dayTasks.filter((t) => t.completed).length;
-  const isCurrentDay = isToday(date);
-
-  return (
-    <Paper
-      elevation={0}
-      onClick={() => onDayClick?.(date)}
-      sx={{
-        height: 120,
-        p: 1.5,
-        cursor: "pointer",
-        position: "relative",
-        bgcolor: isCurrentDay
-          ? (theme) => alpha(theme.palette.primary.main, 0.08)
-          : "background.paper",
-        opacity: isCurrentMonth ? 1 : 0.4,
-        border: 1,
-        borderColor: isCurrentDay ? "primary.main" : "divider",
-        borderWidth: isCurrentDay ? 2 : 1,
-        transition: "all 0.2s ease-in-out",
-        direction: isRtl ? "rtl" : "ltr",
-        "&:hover": {
-          borderColor: "primary.main",
-          transform: "translateY(-2px)",
-          boxShadow: 2,
-          bgcolor: isCurrentDay
-            ? (theme) => alpha(theme.palette.primary.main, 0.12)
-            : (theme) => alpha(theme.palette.primary.main, 0.04),
-        },
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 1,
-        }}
-      >
-        <Typography
-          variant="body2"
-          sx={{
-            fontWeight: isCurrentDay ? 700 : 500,
-            color: isCurrentDay ? "primary.main" : "text.primary",
-            fontSize: isCurrentDay ? "1rem" : "0.875rem",
-          }}
-        >
-          {format(date, "d")}
-        </Typography>
-        {isCurrentDay && <Today sx={{ fontSize: 16, color: "primary.main" }} />}
-      </Box>
-
-      <Stack spacing={0.5} sx={{ maxHeight: 70, overflow: "hidden" }}>
-        {dayTasks.slice(0, 2).map((task) => (
-          <Tooltip
-            key={task.id}
-            title={
-              <Box>
-                <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                  {task.title}
-                </Typography>
-                <Typography variant="caption" sx={{ opacity: 0.9 }}>
-                  {weddingsDetails[task.weddingId]?.name || "Unknown Wedding"}
-                </Typography>
-              </Box>
-            }
-            placement="top"
-            arrow
-          >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 0.5,
-                px: 0.75,
-                py: 0.25,
-                borderRadius: 1,
-                bgcolor: task.completed
-                  ? (theme) => alpha(theme.palette.success.main, 0.1)
-                  : (theme) => alpha(theme.palette.info.main, 0.1),
-                border: 1,
-                borderColor: stringToColor(task.weddingId),
-                borderWidth: 1.5,
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              {task.completed ? (
-                <CheckCircle
-                  sx={{ fontSize: 10, color: "success.main", ml: 0.5 }}
-                />
-              ) : (
-                <Circle sx={{ fontSize: 8, color: "info.main", ml: 0.5 }} />
-              )}
-              <Typography
-                variant="caption"
-                sx={{
-                  fontSize: "0.7rem",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  textDecoration: task.completed ? "line-through" : "none",
-                  opacity: task.completed ? 0.7 : 1,
-                }}
-              >
-                {task.title}
-              </Typography>
-            </Box>
-          </Tooltip>
-        ))}
-      </Stack>
-
-      {dayTasks.length > 2 && (
-        <Chip
-          label={`+${dayTasks.length - 2}`}
-          size="small"
-          sx={{
-            position: "absolute",
-            bottom: 8,
-            right: isRtl ? "auto" : 8,
-            left: isRtl ? 8 : "auto",
-            height: 20,
-            fontSize: "0.65rem",
-            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
-            color: "primary.main",
-            fontWeight: 600,
-          }}
-        />
-      )}
-
-      {dayTasks.length > 0 && completedCount === dayTasks.length && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: 8,
-            right: isRtl ? "auto" : 8,
-            left: isRtl ? 8 : "auto",
-          }}
-        >
-          <CheckCircle sx={{ fontSize: 16, color: "success.main" }} />
-        </Box>
-      )}
-    </Paper>
-  );
-};
-
 const TasksCalendarView: React.FC = () => {
+  const theme = useTheme();
   const { language, isRtl } = useTranslation();
   const [currentDate, setCurrentDate] = useState(new Date());
   const { filterTasks } = useTasksManagement();
@@ -215,32 +30,64 @@ const TasksCalendarView: React.FC = () => {
   const tasks = filterTasks(notFilteredTasks);
   const { data: weddingsDetails, isLoading: isLoadingWeddings } =
     useWeddingsDetails();
-  const calendarDays = useMemo(() => {
-    const monthStart = startOfMonth(currentDate);
-    const monthEnd = endOfMonth(currentDate);
-    const start = startOfWeek(monthStart, { weekStartsOn: isRtl ? 6 : 0 });
-    const end = endOfWeek(monthEnd, { weekStartsOn: isRtl ? 6 : 0 });
-    return eachDayOfInterval({ start, end });
-  }, [currentDate, isRtl]);
 
   const dateLocale = useMemo(() => (language === "he" ? he : enUS), [language]);
 
-  const weekDays = useMemo(() => {
-    const days = [];
-    const startDay = isRtl ? 6 : 0;
-    for (let i = 0; i < 7; i++) {
-      const dayIndex = (startDay + i) % 7;
-      const date = new Date(2024, 0, dayIndex + 1);
-      days.push(format(date, "EEE", { locale: dateLocale }));
-    }
-    return days;
-  }, [dateLocale, isRtl]);
+  // Configure date-fns localizer
+  const localizer = useMemo(
+    () =>
+      dateFnsLocalizer({
+        format,
+        parse,
+        startOfWeek: () =>
+          startOfWeek(new Date(), { weekStartsOn: isRtl ? 6 : 0 }),
+        getDay,
+        locales: { he, "en-US": enUS },
+      }),
+    [isRtl]
+  );
 
+  // Create weddings lookup map
+  const weddingsMap = useMemo(() => {
+    return (
+      weddingsDetails?.reduce((acc, wedding) => {
+        acc[wedding.id] = wedding;
+        return acc;
+      }, {} as Record<string, Wedding>) ?? {}
+    );
+  }, [weddingsDetails]);
+
+  // Transform tasks into calendar events, excluding completed tasks
+  const events: TaskEvent[] = useMemo(() => {
+    return tasks
+      .filter((task) => task.dueDate && !task.completed)
+      .map((task) => ({
+        title: task.title,
+        start: new Date(task.dueDate!),
+        end: new Date(task.dueDate!),
+        task,
+        weddingId: task.weddingId,
+        weddingName: weddingsMap[task.weddingId]?.name || "Unknown Wedding",
+      }));
+  }, [tasks, weddingsMap]);
+
+  // Calculate task stats for current month
   const taskStats = useMemo(() => {
+    const monthStart = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1
+    );
+    const monthEnd = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
+      0
+    );
+
     const monthTasks = tasks.filter((task) => {
       if (!task.dueDate) return false;
       const taskDate = new Date(task.dueDate);
-      return isSameMonth(taskDate, currentDate);
+      return taskDate >= monthStart && taskDate <= monthEnd;
     });
 
     return {
@@ -248,6 +95,36 @@ const TasksCalendarView: React.FC = () => {
       completed: monthTasks.filter((t) => t.completed).length,
     };
   }, [tasks, currentDate]);
+
+  // Custom event style getter
+  const eventStyleGetter = (event: TaskEvent) => {
+    const weddingColor = stringToColor(event.weddingId);
+    return {
+      style: {
+        backgroundColor: alpha(weddingColor, 0.15),
+        borderLeft: `3px solid ${weddingColor}`,
+        color: theme.palette.text.primary,
+        fontSize: "0.75rem",
+        padding: "2px 4px",
+        borderRadius: "4px",
+      },
+    };
+  };
+
+  // Custom event component
+  const EventComponent = ({ event }: { event: TaskEvent }) => (
+    <Box
+      sx={{
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+        fontSize: "0.7rem",
+        fontWeight: 500,
+      }}
+    >
+      {event.task.title}
+    </Box>
+  );
 
   if (isLoadingTasks || isLoadingWeddings) {
     return (
@@ -266,135 +143,87 @@ const TasksCalendarView: React.FC = () => {
 
   return (
     <Box sx={{ maxWidth: 1400, mx: "auto" }}>
-      <Paper
-        elevation={0}
-        sx={{
-          p: 3,
-          mb: 3,
-          background: (theme) =>
-            `linear-gradient(135deg, ${alpha(
-              theme.palette.primary.main,
-              0.05
-            )} 0%, ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
-          border: 1,
-          borderColor: "divider",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: 2,
-          }}
-        >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <IconButton
-              onClick={() => setCurrentDate(subMonths(currentDate, 1))}
-              sx={{
-                bgcolor: "background.paper",
-                "&:hover": { bgcolor: "action.hover" },
-              }}
-            >
-              {isRtl ? <ChevronRight /> : <ChevronLeft />}
-            </IconButton>
-
-            <Typography variant="h5" sx={{ fontWeight: 600, minWidth: 200 }}>
-              {format(currentDate, "MMMM yyyy", { locale: dateLocale })}
-            </Typography>
-
-            <IconButton
-              onClick={() => setCurrentDate(addMonths(currentDate, 1))}
-              sx={{
-                bgcolor: "background.paper",
-                "&:hover": { bgcolor: "action.hover" },
-              }}
-            >
-              {isRtl ? <ChevronLeft /> : <ChevronRight />}
-            </IconButton>
-
-            <IconButton
-              onClick={() => setCurrentDate(new Date())}
-              sx={{
-                bgcolor: "primary.main",
-                color: "primary.contrastText",
-                "&:hover": { bgcolor: "primary.dark" },
-              }}
-            >
-              <Today />
-            </IconButton>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <Chip
-              label={`${taskStats.total} Tasks`}
-              color="primary"
-              variant="outlined"
-            />
-            <Chip
-              icon={<CheckCircle sx={{ fontSize: 16 }} />}
-              label={`${taskStats.completed} Completed`}
-              color="success"
-              variant="outlined"
-            />
-          </Box>
-        </Box>
-      </Paper>
-
       <Paper elevation={1} sx={{ p: 2, border: 1, borderColor: "divider" }}>
         <Box
           sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(7, 1fr)",
-            gap: 1,
-            mb: 1,
+            height: 700,
+            "& .rbc-calendar": {
+              fontFamily: theme.typography.fontFamily,
+            },
+            "& .rbc-header": {
+              padding: "12px 4px",
+              fontWeight: 700,
+              fontSize: "0.875rem",
+              color: theme.palette.primary.main,
+              backgroundColor: alpha(theme.palette.primary.main, 0.05),
+              borderRadius: "4px",
+              borderBottom: `2px solid ${theme.palette.divider}`,
+            },
+            "& .rbc-today": {
+              backgroundColor: alpha(theme.palette.primary.main, 0.08),
+            },
+            "& .rbc-off-range-bg": {
+              backgroundColor: alpha(theme.palette.action.disabled, 0.05),
+            },
+            "& .rbc-date-cell": {
+              padding: "8px",
+              fontSize: "0.875rem",
+              fontWeight: 500,
+            },
+            "& .rbc-event": {
+              padding: "2px 4px",
+              marginBottom: "2px",
+            },
+            "& .rbc-event-content": {
+              fontSize: "0.7rem",
+            },
+            "& .rbc-month-view": {
+              border: `1px solid ${theme.palette.divider}`,
+              borderRadius: "8px",
+              overflow: "hidden",
+            },
+            "& .rbc-day-bg": {
+              borderColor: theme.palette.divider,
+            },
+            "& .rbc-toolbar": {
+              marginBottom: "16px",
+              padding: "8px",
+              backgroundColor: alpha(theme.palette.primary.main, 0.02),
+              borderRadius: "8px",
+            },
+            "& .rbc-toolbar button": {
+              color: theme.palette.primary.main,
+              borderColor: theme.palette.primary.main,
+              fontWeight: 500,
+              "&:hover": {
+                backgroundColor: alpha(theme.palette.primary.main, 0.08),
+              },
+              "&.rbc-active": {
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+              },
+            },
           }}
         >
-          {weekDays.map((day) => (
-            <Box
-              key={day}
-              sx={{
-                textAlign: "center",
-                py: 1,
-                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.05),
-                borderRadius: 1,
-              }}
-            >
-              <Typography
-                variant="subtitle2"
-                sx={{ fontWeight: 700, color: "primary.main" }}
-              >
-                {day}
-              </Typography>
-            </Box>
-          ))}
-        </Box>
-
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(7, 1fr)",
-            gap: 1,
-          }}
-        >
-          {calendarDays.map((date, index) => (
-            <Fade key={index} in timeout={300 + index * 20}>
-              <Box>
-                <DayTasks
-                  date={date}
-                  tasks={tasks}
-                  weddingsDetails={
-                    weddingsDetails?.reduce((acc, wedding) => {
-                      acc[wedding.id] = wedding;
-                      return acc;
-                    }, {} as Record<string, Wedding>) ?? {}
-                  }
-                  isCurrentMonth={isSameMonth(date, currentDate)}
-                />
-              </Box>
-            </Fade>
-          ))}
+          <Calendar
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: "100%" }}
+            date={currentDate}
+            onNavigate={(newDate) => setCurrentDate(newDate)}
+            eventPropGetter={eventStyleGetter}
+            components={{
+              event: EventComponent,
+            }}
+            culture={language}
+            rtl={isRtl}
+            views={["month"]}
+            defaultView="month"
+            popup
+            popupOffset={{ x: 10, y: 10 }}
+          />
         </Box>
       </Paper>
     </Box>

@@ -1,25 +1,18 @@
 import React from "react";
 import { Button } from "@mui/material";
-import { useNavigate, useLocation } from "react-router";
-import { useCurrentUser } from "../../hooks/auth";
+import { useNavigate } from "react-router";
+import {  useRolePermissions } from "../../hooks/auth";
 import { useTranslation } from "../../localization/LocalizationContext";
 
 const ManageBackButton: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { data: currentUser } = useCurrentUser();
+  const { hasProducerAccess } = useRolePermissions();
   const { t } = useTranslation();
-
-  // Only show if user has more than one wedding
-  const shouldShowBackButton =
-    currentUser?.weddingIds && currentUser.weddingIds.length > 1;
-
   const handleBackClick = () => {
-    // If we're in admin section, go back to main weddings page
     navigate("/weddings/manage");
   };
 
-  if (!shouldShowBackButton) {
+  if (!hasProducerAccess) {
     return null;
   }
 

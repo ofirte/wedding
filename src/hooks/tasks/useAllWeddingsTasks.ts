@@ -9,7 +9,11 @@ const useAllWeddingsTasks = () => {
   return useWeddingsQuery({
     queryKey: ["all-weddings-tasks"],
     queryFn: fetchAllTasks,
-    options: { refetchOnWindowFocus: false }, // Using real-time updates through onSnapshot
+    options: {
+      refetchOnWindowFocus: false, // Using real-time updates through onSnapshot
+      staleTime: 30000, // Consider data fresh for 30 seconds
+      gcTime: 300000, // Keep in cache for 5 minutes
+    },
   });
 };
 
