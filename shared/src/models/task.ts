@@ -10,6 +10,7 @@ export interface Task {
   priority: string;
   completed: boolean;
   createdAt: string;
+  completedAt?: string; // ISO timestamp when task was marked complete
   dueDate?: string;
   assignedTo?: string;
 }
