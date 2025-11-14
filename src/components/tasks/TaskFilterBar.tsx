@@ -24,7 +24,7 @@ import useTasks from "src/hooks/tasks/useTasks";
 
 export interface TaskFilters {
   searchText: string;
-  status: string; // "all" | "unassigned" | "inProgress" | "completed"
+  status: string; // "all" | "open" | "unassigned" | "inProgress" | "completed" | "pastDue"
   priority: string[]; // ["High", "Medium", "Low"]
 }
 
@@ -159,6 +159,11 @@ const TaskFilterBar: React.FC<TaskFilterBarProps> = ({
               label={t("common.allTasks")}
             />
             <FormControlLabel
+              value="open"
+              control={<Radio size="small" />}
+              label={t("tasks.open")}
+            />
+            <FormControlLabel
               value="unassigned"
               control={<Radio size="small" />}
               label={t("tasks.unassigned")}
@@ -172,6 +177,11 @@ const TaskFilterBar: React.FC<TaskFilterBarProps> = ({
               value="completed"
               control={<Radio size="small" />}
               label={t("common.completed")}
+            />
+            <FormControlLabel
+              value="pastDue"
+              control={<Radio size="small" />}
+              label={t("tasks.pastDue")}
             />
           </RadioGroup>
         </Box>

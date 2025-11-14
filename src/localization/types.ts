@@ -508,6 +508,9 @@ export interface Translations {
     weddingTasks: string;
     tasks: string;
     totalTasks: string;
+    openTasks: string;
+    open: string;
+    pastDue: string;
     taskProgress: string;
     tasksCompleted: string;
     taskDescription: string;

@@ -13,6 +13,7 @@ import { useTasksStats } from "src/hooks/tasks/useTasksStats";
 
 interface TaskSummaryProps {
   tasks: Task[];
+  onFilterChange?: (filterType: string) => void;
 }
 
 
@@ -26,6 +27,7 @@ const StatCard = styled(Paper)(({ theme }) => ({
   background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.grey[50]} 100%)`,
   transition: "all 0.3s ease-in-out",
   textAlign: "center",
+  cursor: "pointer",
   "&::before": {
     content: '""',
     position: "absolute",
@@ -55,9 +57,15 @@ const IconWrapper = styled(Box, {
   marginBottom: 8,
 }));
 
-const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks }) => {
+const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks, onFilterChange }) => {
   const { t } = useTranslation();
   const stats = useTasksStats(tasks);
+
+  const handleCardClick = (filterType: string) => {
+    if (onFilterChange) {
+      onFilterChange(filterType);
+    }
+  };
 
   return (
     <Box>
@@ -65,24 +73,24 @@ const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks }) => {
 
       {/* Icon Stat Cards */}
       <Grid container spacing={2}>
-        {/* Total Tasks Card */}
+        {/* Open Tasks Card */}
         <Grid size={{ xs: 6, sm: 3 }}>
-          <StatCard>
+          <StatCard onClick={() => handleCardClick("open")}>
             <IconWrapper bgcolor="rgba(155, 187, 155, 0.15)">
               <TaskIcon sx={{ fontSize: 28, color: "primary.main" }} />
             </IconWrapper>
             <Typography variant="h5" fontWeight={700} color="text.primary">
-              {stats.total}
+              {stats.open}
             </Typography>
             <Typography variant="caption" color="text.secondary" fontWeight={500}>
-              {t("tasks.totalTasks")}
+              {t("tasks.openTasks")}
             </Typography>
           </StatCard>
         </Grid>
 
         {/* Completed Tasks Card */}
         <Grid size={{ xs: 6, sm: 3 }}>
-          <StatCard>
+          <StatCard onClick={() => handleCardClick("completed")}>
             <IconWrapper bgcolor="rgba(109, 169, 122, 0.15)">
               <CompletedIcon sx={{ fontSize: 28, color: "success.main" }} />
             </IconWrapper>
@@ -97,7 +105,7 @@ const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks }) => {
 
         {/* High Priority Card */}
         <Grid size={{ xs: 6, sm: 3 }}>
-          <StatCard>
+          <StatCard onClick={() => handleCardClick("highPriority")}>
             <IconWrapper bgcolor="rgba(212, 185, 87, 0.15)">
               <PriorityIcon sx={{ fontSize: 28, color: "warning.main" }} />
             </IconWrapper>
@@ -110,17 +118,17 @@ const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks }) => {
           </StatCard>
         </Grid>
 
-        {/* Due Soon Card */}
+        {/* Past Due Card */}
         <Grid size={{ xs: 6, sm: 3 }}>
-          <StatCard>
-            <IconWrapper bgcolor="rgba(122, 156, 179, 0.15)">
-              <DateIcon sx={{ fontSize: 28, color: "info.main" }} />
+          <StatCard onClick={() => handleCardClick("pastDue")}>
+            <IconWrapper bgcolor="rgba(211, 47, 47, 0.15)">
+              <DateIcon sx={{ fontSize: 28, color: "error.main" }} />
             </IconWrapper>
-            <Typography variant="h5" fontWeight={700} color="info.dark">
-              {stats.upcomingDueTasks}
+            <Typography variant="h5" fontWeight={700} color="error.main">
+              {stats.pastDue}
             </Typography>
             <Typography variant="caption" color="text.secondary" fontWeight={500}>
-              {t("tasks.dueSoon")}
+              {t("tasks.pastDue")}
             </Typography>
           </StatCard>
         </Grid>

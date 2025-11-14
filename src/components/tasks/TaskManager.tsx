@@ -52,6 +52,19 @@ const TaskManager: React.FC = () => {
     isPendingAssignment ||
     isPendingCompletion;
 
+  // Handle card clicks from TaskSummary
+  const handleFilterChange = (filterType: string) => {
+    if (filterType === "open") {
+      setFilters({ searchText: "", status: "open", priority: [] });
+    } else if (filterType === "completed") {
+      setFilters({ searchText: "", status: "completed", priority: [] });
+    } else if (filterType === "highPriority") {
+      setFilters({ searchText: "", status: "open", priority: ["High"] });
+    } else if (filterType === "pastDue") {
+      setFilters({ searchText: "", status: "pastDue", priority: [] });
+    }
+  };
+
   // Filter tasks based on current filters
   const filteredTasks = useMemo(() => {
     if (!tasks) return [];
@@ -68,12 +81,21 @@ const TaskManager: React.FC = () => {
 
       // Status filter
       if (filters.status !== "all") {
-        if (filters.status === "unassigned") {
+        if (filters.status === "open") {
+          if (task.completed) return false;
+        } else if (filters.status === "unassigned") {
           if (task.assignedTo || task.completed) return false;
         } else if (filters.status === "inProgress") {
           if (!task.assignedTo || task.completed) return false;
         } else if (filters.status === "completed") {
           if (!task.completed) return false;
+        } else if (filters.status === "pastDue") {
+          if (task.completed) return false;
+          if (!task.dueDate) return false;
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const dueDate = new Date(task.dueDate);
+          if (dueDate >= today) return false;
         }
       }
 
@@ -98,7 +120,7 @@ const TaskManager: React.FC = () => {
     <Container maxWidth="xl">
       <Box sx={{ py: 4 }}>
         <Box sx={{ mb: 3 }}>
-          <TaskSummary tasks={tasks ?? []} />
+          <TaskSummary tasks={tasks ?? []} onFilterChange={handleFilterChange} />
         </Box>
 
         <StyledPaper>
