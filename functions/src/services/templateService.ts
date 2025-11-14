@@ -86,6 +86,8 @@ export class TemplateService {
 
       const twilioClient = initializeTwilioClient();
       const createdTemplate = await twilioClient.content.v1.contents.create({
+        //@ts-ignore
+        friendly_name,
         friendlyName: friendly_name,
         language: language,
         variables: variables || {},
