@@ -4,15 +4,11 @@ import {
   TextField,
   IconButton,
   Popover,
-  FormGroup,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Checkbox,
   Typography,
   Button,
   Divider,
   InputAdornment,
+  MenuItem,
 } from "@mui/material";
 import {
   FilterList as FilterIcon,
@@ -25,7 +21,7 @@ import useTasks from "src/hooks/tasks/useTasks";
 export interface TaskFilters {
   searchText: string;
   status: string; // "all" | "open" | "unassigned" | "inProgress" | "completed" | "pastDue"
-  priority: string[]; // ["High", "Medium", "Low"]
+  priority: string; // "" | "High" | "Medium" | "Low"
 }
 
 interface TaskFilterBarProps {
@@ -64,14 +60,10 @@ const TaskFilterBar: React.FC<TaskFilterBarProps> = ({
     });
   };
 
-  const handlePriorityChange = (priority: string) => {
-    const newPriorities = filters.priority.includes(priority)
-      ? filters.priority.filter((p) => p !== priority)
-      : [...filters.priority, priority];
-
+  const handlePriorityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onFiltersChange({
       ...filters,
-      priority: newPriorities,
+      priority: event.target.value,
     });
   };
 
@@ -79,13 +71,13 @@ const TaskFilterBar: React.FC<TaskFilterBarProps> = ({
     onFiltersChange({
       searchText: "",
       status: "all",
-      priority: [],
+      priority: "",
     });
     handleFilterClose();
   };
 
   const hasActiveFilters =
-    filters.status !== "all" || filters.priority.length > 0;
+    filters.status !== "all" || filters.priority !== "";
 
   const open = Boolean(anchorEl);
 
@@ -149,82 +141,40 @@ const TaskFilterBar: React.FC<TaskFilterBarProps> = ({
       >
         {/* Status Filter */}
         <Box sx={{ mb: 2 }}>
-          <Typography variant="subtitle2" fontWeight={600} gutterBottom>
-            {t("tasks.statusFilter")}
-          </Typography>
-          <RadioGroup value={filters.status} onChange={handleStatusChange}>
-            <FormControlLabel
-              value="all"
-              control={<Radio size="small" />}
-              label={t("common.allTasks")}
-            />
-            <FormControlLabel
-              value="open"
-              control={<Radio size="small" />}
-              label={t("tasks.open")}
-            />
-            <FormControlLabel
-              value="unassigned"
-              control={<Radio size="small" />}
-              label={t("tasks.unassigned")}
-            />
-            <FormControlLabel
-              value="inProgress"
-              control={<Radio size="small" />}
-              label={t("tasks.inProgress")}
-            />
-            <FormControlLabel
-              value="completed"
-              control={<Radio size="small" />}
-              label={t("common.completed")}
-            />
-            <FormControlLabel
-              value="pastDue"
-              control={<Radio size="small" />}
-              label={t("tasks.pastDue")}
-            />
-          </RadioGroup>
+          <TextField
+            select
+            fullWidth
+            label={t("tasks.statusFilter")}
+            value={filters.status}
+            onChange={handleStatusChange}
+            size="small"
+          >
+            <MenuItem value="all">{t("common.allTasks")}</MenuItem>
+            <MenuItem value="open">{t("tasks.open")}</MenuItem>
+            <MenuItem value="unassigned">{t("tasks.unassigned")}</MenuItem>
+            <MenuItem value="inProgress">{t("tasks.inProgress")}</MenuItem>
+            <MenuItem value="completed">{t("common.completed")}</MenuItem>
+            <MenuItem value="pastDue">{t("tasks.pastDue")}</MenuItem>
+          </TextField>
         </Box>
 
         <Divider sx={{ my: 2 }} />
 
         {/* Priority Filter */}
         <Box sx={{ mb: 2 }}>
-          <Typography variant="subtitle2" fontWeight={600} gutterBottom>
-            {t("tasks.priorityFilter")}
-          </Typography>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  size="small"
-                  checked={filters.priority.includes("High")}
-                  onChange={() => handlePriorityChange("High")}
-                />
-              }
-              label={t("common.high")}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  size="small"
-                  checked={filters.priority.includes("Medium")}
-                  onChange={() => handlePriorityChange("Medium")}
-                />
-              }
-              label={t("common.medium")}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  size="small"
-                  checked={filters.priority.includes("Low")}
-                  onChange={() => handlePriorityChange("Low")}
-                />
-              }
-              label={t("common.low")}
-            />
-          </FormGroup>
+          <TextField
+            select
+            fullWidth
+            label={t("tasks.priorityFilter")}
+            value={filters.priority}
+            onChange={handlePriorityChange}
+            size="small"
+          >
+            <MenuItem value="">{t("common.all")}</MenuItem>
+            <MenuItem value="High">{t("common.high")}</MenuItem>
+            <MenuItem value="Medium">{t("common.medium")}</MenuItem>
+            <MenuItem value="Low">{t("common.low")}</MenuItem>
+          </TextField>
         </Box>
 
         {/* Clear Filters Button */}

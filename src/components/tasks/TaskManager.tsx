@@ -32,7 +32,7 @@ const TaskManager: React.FC = () => {
   const [filters, setFilters] = useState<TaskFilters>({
     searchText: "",
     status: "all",
-    priority: [],
+    priority: "",
   });
 
   const { data: tasks, isLoading } = useTasks();
@@ -55,13 +55,13 @@ const TaskManager: React.FC = () => {
   // Handle card clicks from TaskSummary
   const handleFilterChange = (filterType: string) => {
     if (filterType === "open") {
-      setFilters({ searchText: "", status: "open", priority: [] });
+      setFilters({ searchText: "", status: "open", priority: "" });
     } else if (filterType === "completed") {
-      setFilters({ searchText: "", status: "completed", priority: [] });
+      setFilters({ searchText: "", status: "completed", priority: "" });
     } else if (filterType === "highPriority") {
-      setFilters({ searchText: "", status: "open", priority: ["High"] });
+      setFilters({ searchText: "", status: "open", priority: "High" });
     } else if (filterType === "pastDue") {
-      setFilters({ searchText: "", status: "pastDue", priority: [] });
+      setFilters({ searchText: "", status: "pastDue", priority: "" });
     }
   };
 
@@ -100,8 +100,8 @@ const TaskManager: React.FC = () => {
       }
 
       // Priority filter
-      if (filters.priority.length > 0) {
-        if (!filters.priority.includes(task.priority)) return false;
+      if (filters.priority !== "") {
+        if (task.priority !== filters.priority) return false;
       }
 
       return true;
