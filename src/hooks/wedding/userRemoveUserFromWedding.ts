@@ -32,7 +32,7 @@ export const useRemoveUserFromWedding = (
     }: RemoveUserFromWeddingVariables) => {
       await removeUserFromWedding(weddingId, userId);
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (data, variables, _onMutateResults, _context) => {
       // Invalidate wedding queries to refresh the data
       queryClient.invalidateQueries({ queryKey: ["weddings"] });
       // Also invalidate the specific wedding if it's cached
@@ -42,7 +42,7 @@ export const useRemoveUserFromWedding = (
       queryClient.invalidateQueries({
         queryKey: ["weddingDetails", variables.weddingId],
       });
-      onSuccess?.(data, variables, undefined);
+      onSuccess?.(data, variables, _onMutateResults ,_context);
     },
     ...restOptions,
   });

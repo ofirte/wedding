@@ -130,6 +130,8 @@ export interface Translations {
     priority: string;
     dueDate: string;
     assignedTo: string;
+    assignTo: string;
+    remaining: string;
     ongoing: string;
     guests: string;
     status: string;
@@ -505,10 +507,14 @@ export interface Translations {
     addTask: string;
     weddingTasks: string;
     tasks: string;
+    totalTasks: string;
     taskProgress: string;
     tasksCompleted: string;
     taskDescription: string;
     tasksCompletedCount: string;
+    progressSummary: string;
+    highPriorityCount: string;
+    dueSoonCount: string;
     upcomingDueTasks: string;
     dueSoon: string;
     searchTasks: string;
@@ -517,6 +523,15 @@ export interface Translations {
     importantTasks: string;
     noCriticalTasks: string;
     allCaughtUp: string;
+    filterTasks: string;
+    clearFilters: string;
+    unassigned: string;
+    inProgress: string;
+    statusFilter: string;
+    priorityFilter: string;
+    assignToName: string;
+    unassign: string;
+    deleteTask: string;
   };
   wedding: {
     title: string;
@@ -574,6 +589,7 @@ export interface Translations {
     exampleWeddingId: string;
     enterInvitationCode: string;
     whatNeedsToBeDone: string;
+    categoryExample: string;
   };
   contacts: {
     matchContacts: string;

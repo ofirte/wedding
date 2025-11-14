@@ -10,6 +10,7 @@ export * from "./invitation";
 export * from "./invitee";
 export * from "./budget";
 export * from "./task";
+export * from "./taskTemplate";
 export * from "./sentMessages";
 export * from "./template";
 export * from "./sendMessagesAutomation";

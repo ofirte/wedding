@@ -39,10 +39,10 @@ export const useUpdateSendAutomation = (
       return updateSendAutomation(id, updates, weddingId);
     },
     options: {
-      onSuccess: (_data, _variables, _context) => {
+      onSuccess: (_data, _variables, _onMutateResults,_context) => {
         // Invalidate send automations query to refresh the data
         queryClient.invalidateQueries({ queryKey: ["sendAutomations"] });
-        options?.onSuccess?.(_data, _variables, _context);
+        options?.onSuccess?.(_data, _variables,_onMutateResults, _context);
         console.log("Send automation updated successfully");
       },
     },

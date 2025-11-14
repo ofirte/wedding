@@ -1,32 +1,12 @@
 import React, { useState } from "react";
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  IconButton,
-  Chip,
-  Menu,
-  MenuItem,
-  Tooltip,
-  Typography,
-  Checkbox,
-  Paper,
-  TextField,
-} from "@mui/material";
-import {
-  Delete as DeleteIcon,
-  Edit as EditIcon,
-  Person as PersonIcon,
-  MoreVert as MoreIcon,
-  Flag as PriorityIcon,
-  CalendarToday as DateIcon,
-} from "@mui/icons-material";
-import TaskEditDialog from "./TaskEditDialog";
+import { Box, List, Typography, Paper } from "@mui/material";
 import { Task } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { useWeddingMembers } from "../../hooks/wedding";
+import { TaskListItem } from "./TaskListItem";
+import { TaskActionsMenu } from "./TaskActionsMenu";
+import TaskEditDialog from "./TaskEditDialog";
+import { sortTasks } from "./taskUtils";
 
 interface TaskListProps {
   tasks: Task[];
@@ -36,19 +16,15 @@ interface TaskListProps {
   onCompleteTask: (id: string, completed: boolean) => void;
 }
 
-const getPriorityColor = (priority: string) => {
-  switch (priority.toLowerCase()) {
-    case "high":
-      return "error";
-    case "medium":
-      return "warning";
-    case "low":
-      return "success";
-    default:
-      return "default";
-  }
-};
-
+/**
+ * TaskList Component
+ *
+ * Orchestrates the display and management of wedding tasks:
+ * 1. Fetches wedding members for assignment
+ * 2. Manages state for menu, edit dialog, and expanded items
+ * 3. Handles user actions (assign, delete, edit, complete, expand)
+ * 4. Renders sorted task items with empty state
+ */
 const TaskList: React.FC<TaskListProps> = ({
   tasks,
   onUpdateTask,
@@ -57,12 +33,16 @@ const TaskList: React.FC<TaskListProps> = ({
   onCompleteTask,
 }) => {
   const { t } = useTranslation();
+  const { data: weddingMembers = [] } = useWeddingMembers();
+
+  // State management
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
 
+  // Menu handlers
   const handleMenuClick = (
     event: React.MouseEvent<HTMLElement>,
     taskId: string
@@ -76,17 +56,11 @@ const TaskList: React.FC<TaskListProps> = ({
     setCurrentTaskId(null);
   };
 
-  const handleAssign = (person: string) => {
+  const handleAssign = (userId: string) => {
     if (currentTaskId) {
-      onAssignTask(currentTaskId, person);
+      onAssignTask(currentTaskId, userId);
       handleMenuClose();
     }
-  };
-
-  const handleEdit = (task: Task) => {
-    setTaskToEdit(task);
-    setEditDialogOpen(true);
-    handleMenuClose();
   };
 
   const handleDelete = () => {
@@ -94,6 +68,12 @@ const TaskList: React.FC<TaskListProps> = ({
       onDeleteTask(currentTaskId);
       handleMenuClose();
     }
+  };
+
+  // Edit dialog handlers
+  const handleEdit = (task: Task) => {
+    setTaskToEdit(task);
+    setEditDialogOpen(true);
   };
 
   const handleEditDialogClose = () => {
@@ -109,181 +89,62 @@ const TaskList: React.FC<TaskListProps> = ({
     }
   };
 
+  // Task interaction handlers
   const handleToggleComplete = (taskId: string, completed: boolean) => {
     onCompleteTask(taskId, !completed);
   };
 
-  const filteredTasks = tasks
-    .filter(
-      (task) =>
-        task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        task.description?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .sort((a, b) => {
-      if (!a.completed && b.completed) return -1;
-      if (a.completed && !b.completed) return 1;
-      if (!a.assignedTo && b.assignedTo) return -1;
-      if (a.assignedTo && !b.assignedTo) return 1;
-      return 0;
-    });
+  const handleToggleExpand = (taskId: string, hasDescription: boolean) => {
+    if (!hasDescription) return;
+    setExpandedTaskId(expandedTaskId === taskId ? null : taskId);
+  };
 
-  if (filteredTasks.length === 0) {
+  // Sort tasks for display
+  const sortedTasks = sortTasks(tasks);
+
+  if (sortedTasks.length === 0) {
     return (
-      <Box>
-        <TextField
-          fullWidth
-          variant="outlined"
-          placeholder="Search tasks..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ mb: 2 }}
-        />
-        <Paper sx={{ p: 3, textAlign: "center" }}>
-          <Typography variant="body1" color="text.secondary">
-            {searchTerm ? "No matching tasks found" : "No tasks available"}
-          </Typography>
-        </Paper>
-      </Box>
+      <Paper
+        sx={{
+          p: 4,
+          textAlign: "center",
+          borderRadius: 2,
+          background: "linear-gradient(135deg, rgba(155, 187, 155, 0.05) 0%, rgba(122, 156, 179, 0.05) 100%)",
+        }}
+      >
+        <Typography variant="body1" color="text.secondary">
+          {t("tasks.allCaughtUp")}
+        </Typography>
+      </Paper>
     );
   }
 
+  // Render the task list
   return (
     <Box>
-      <TextField
-        fullWidth
-        variant="outlined"
-        placeholder={t("tasks.searchTasks")}
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        sx={{ mb: 2 }}
-      />
-
-      <List>
-        {filteredTasks.map((task) => (
-          <ListItem
+      <List sx={{ p: 0 }}>
+        {sortedTasks.map((task) => (
+          <TaskListItem
             key={task.id}
-            sx={{
-              mb: 1,
-              borderRadius: 1,
-              border: "1px solid",
-              borderColor: "divider",
-              bgcolor: task.completed
-                ? "rgba(0, 0, 0, 0.04)"
-                : "background.paper",
-              "&:hover": {
-                bgcolor: "action.hover",
-              },
-            }}
-          >
-            <ListItemIcon>
-              <Checkbox
-                checked={task.completed}
-                onChange={() => handleToggleComplete(task.id, task.completed)}
-                sx={{
-                  "&.Mui-checked": {
-                    color: "success.main",
-                  },
-                }}
-              />
-            </ListItemIcon>
-
-            <ListItemText
-              primary={
-                <Typography
-                  variant="body1"
-                  sx={{
-                    fontWeight: "medium",
-                    textDecoration: task.completed ? "line-through" : "none",
-                    color: task.completed ? "text.secondary" : "text.primary",
-                  }}
-                >
-                  {task.title}
-                </Typography>
-              }
-              secondary={
-                <Box sx={{ mt: 1 }}>
-                  {task.description && (
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      component="div"
-                      sx={{ mb: 1 }}
-                    >
-                      {task.description}
-                    </Typography>
-                  )}
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                    <Chip
-                      size="small"
-                      label={`${t("common.priority")}: ${t(
-                        `common.${task.priority.toLowerCase()}`
-                      )}`}
-                      color={getPriorityColor(task.priority)}
-                      icon={<PriorityIcon />}
-                    />
-                    {task.dueDate && (
-                      <Chip
-                        size="small"
-                        label={`${t("labels.due")}: ${new Date(
-                          task.dueDate
-                        ).toLocaleDateString()}`}
-                        icon={<DateIcon />}
-                        variant="outlined"
-                      />
-                    )}
-                    {task.assignedTo && (
-                      <Chip
-                        size="small"
-                        label={`${t("labels.assigned")}: ${t(
-                          `common.${task.assignedTo.toLowerCase()}`
-                        )}`}
-                        icon={<PersonIcon />}
-                        color="primary"
-                        variant="outlined"
-                      />
-                    )}
-                  </Box>
-                </Box>
-              }
-              secondaryTypographyProps={{ component: "div" }}
-            />
-
-            <ListItemSecondaryAction>
-              <Box sx={{ display: "flex" }}>
-                <Tooltip title="Edit task">
-                  <IconButton edge="end" onClick={() => handleEdit(task)}>
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <IconButton
-                  edge="end"
-                  onClick={(e) => handleMenuClick(e, task.id)}
-                >
-                  <MoreIcon fontSize="small" />
-                </IconButton>
-              </Box>
-            </ListItemSecondaryAction>
-          </ListItem>
+            task={task}
+            isExpanded={expandedTaskId === task.id}
+            onToggleExpand={handleToggleExpand}
+            onToggleComplete={handleToggleComplete}
+            onEdit={handleEdit}
+            onMenuClick={handleMenuClick}
+          />
         ))}
       </List>
 
-      <Menu
+      <TaskActionsMenu
         anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
+        currentTaskId={currentTaskId}
+        tasks={tasks}
+        weddingMembers={weddingMembers}
         onClose={handleMenuClose}
-      >
-        <MenuItem onClick={() => handleAssign("Bride")}>
-          Assign to Bride
-        </MenuItem>
-        <MenuItem onClick={() => handleAssign("Groom")}>
-          Assign to Groom
-        </MenuItem>
-        <MenuItem onClick={() => handleAssign("Both")}>Assign to Both</MenuItem>
-        <MenuItem onClick={() => handleAssign("")}>Unassign</MenuItem>
-        <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
-          <DeleteIcon fontSize="small" sx={{ mr: 1 }} /> Delete
-        </MenuItem>
-      </Menu>
+        onAssign={handleAssign}
+        onDelete={handleDelete}
+      />
 
       {taskToEdit && (
         <TaskEditDialog

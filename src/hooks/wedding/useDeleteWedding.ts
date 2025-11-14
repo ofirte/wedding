@@ -7,8 +7,8 @@ export const useDeleteWedding = (
 ) => {
   return useMutation({
     mutationFn: (weddingId: string) => deleteWedding(weddingId),
-    onSuccess: async (_, variables, context) => {
-      options?.onSuccess?.(undefined, variables, context);
+    onSuccess: async (_, variables,_onMutateResults, context) => {
+      options?.onSuccess?.(undefined, variables, _onMutateResults , context);
     },
   });
 };

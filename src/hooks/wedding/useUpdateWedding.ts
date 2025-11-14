@@ -22,7 +22,7 @@ export const useUpdateWedding = (
   return useMutation({
     mutationFn: ({ weddingId, data }: UpdateWeddingParams) =>
       updateWeddingDetails(weddingId, data),
-    onSuccess: (_, { weddingId, data }) => {
+    onSuccess: (_, { weddingId, data }, _onMutateResults, context) => {
       // Invalidate and refetch wedding details with multiple possible query key patterns
       queryClient.invalidateQueries({
         queryKey: ["wedding", weddingId],
@@ -42,7 +42,7 @@ export const useUpdateWedding = (
         queryKey: ["currentUserWeddingDetails"],
       });
       if (options?.onSuccess) {
-        options.onSuccess(_, { weddingId, data }, undefined);
+        options.onSuccess(_, { weddingId, data }, _onMutateResults, context);
       }
     },
     onError: (error) => {

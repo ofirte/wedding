@@ -385,6 +385,35 @@ class WeddingFirebaseService {
   }
 
   /**
+   * Bulk create multiple documents in a collection
+   * @param collectionName The name of the collection
+   * @param documents Array of document data to create
+   * @param weddingId Optional wedding ID (will attempt to get current user's wedding ID if not provided)
+   */
+  async bulkCreateDocuments<T extends object>(
+    collectionName: string,
+    documents: T[],
+    weddingId?: string
+  ) {
+    const resolvedWeddingId = await this.getWeddingId(weddingId);
+
+    const batch = writeBatch(db);
+    const collectionRef = collection(
+      db,
+      "weddings",
+      resolvedWeddingId,
+      collectionName
+    );
+
+    for (const document of documents) {
+      const docRef = doc(collectionRef);
+      batch.set(docRef, document);
+    }
+
+    return batch.commit();
+  }
+
+  /**
    * Convert Firebase Timestamp values to JavaScript Date objects recursively
    * @param data The document data that may contain Timestamp values
    * @returns The same data structure with Timestamps converted to Dates
@@ -505,6 +534,17 @@ export const createCollectionAPI = <T extends { id?: string }>(
      */
     bulkDelete: (ids: string[], weddingId?: string) =>
       weddingFirebase.bulkDeleteDocuments(collectionName, ids, weddingId),
+
+    /**
+     * Bulk create multiple items
+     */
+    bulkCreate: (items: Omit<T, "id">[], weddingId?: string) =>
+      weddingFirebase.bulkCreateDocuments<Omit<T, "id">>(
+        collectionName,
+        items,
+        weddingId
+      ),
+
     fetchByFilter: async (
       filters: Array<{ field: string; op: WhereFilterOp; value: unknown }>,
       weddingId?: string
@@ -525,3 +565,10 @@ export const createCollectionAPI = <T extends { id?: string }>(
     },
   };
 };
+
+// Export convenience functions for direct use
+export const bulkCreateDocuments = <T extends object>(
+  collectionName: string,
+  documents: T[],
+  weddingId?: string
+) => weddingFirebase.bulkCreateDocuments(collectionName, documents, weddingId);

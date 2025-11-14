@@ -1,11 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Box,
-  Typography,
   Container,
   Paper,
-  Tabs,
-  Tab,
   Divider,
   CircularProgress,
 } from "@mui/material";
@@ -13,24 +10,31 @@ import { styled } from "@mui/material/styles";
 import TaskList from "./TaskList";
 import TaskForm from "./TaskForm";
 import TaskSummary from "./TaskSummary";
+import TaskFilterBar, { TaskFilters } from "./TaskFilterBar";
 import useTasks from "../../hooks/tasks/useTasks";
 import { useCreateTask } from "../../hooks/tasks/useCreateTask";
 import { useUpdateTask } from "../../hooks/tasks/useUpdateTask";
 import { useDeleteTask } from "../../hooks/tasks/useDeleteTask";
 import { useAssignTask } from "../../hooks/tasks/useAssignTask";
 import { useCompleteTask } from "../../hooks/tasks/useCompleteTask";
-import { useTranslation } from "../../localization/LocalizationContext";
+import { Task } from "@wedding-plan/types";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
   marginBottom: theme.spacing(3),
-  borderRadius: theme.shape.borderRadius,
-  boxShadow: theme.shadows[2],
+  borderRadius: 16,
+  border: `1px solid ${theme.palette.divider}`,
+  boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+  background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.grey[50]} 100%)`,
 }));
 
 const TaskManager: React.FC = () => {
-  const [tabValue, setTabValue] = useState(0);
-  const { t } = useTranslation();
+  const [filters, setFilters] = useState<TaskFilters>({
+    searchText: "",
+    status: "all",
+    priority: [],
+  });
+
   const { data: tasks, isLoading } = useTasks();
   const { mutate: createTask, isPending: isPendingCreation } = useCreateTask();
   const { mutate: updateTask, isPending: isPendingUpdate } = useUpdateTask();
@@ -47,9 +51,41 @@ const TaskManager: React.FC = () => {
     isPendingDeletion ||
     isPendingAssignment ||
     isPendingCompletion;
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
-  };
+
+  // Filter tasks based on current filters
+  const filteredTasks = useMemo(() => {
+    if (!tasks) return [];
+
+    return tasks.filter((task) => {
+      // Search filter
+      if (filters.searchText) {
+        const searchLower = filters.searchText.toLowerCase();
+        const matchesSearch =
+          task.title.toLowerCase().includes(searchLower) ||
+          task.description?.toLowerCase().includes(searchLower);
+        if (!matchesSearch) return false;
+      }
+
+      // Status filter
+      if (filters.status !== "all") {
+        if (filters.status === "unassigned") {
+          if (task.assignedTo || task.completed) return false;
+        } else if (filters.status === "inProgress") {
+          if (!task.assignedTo || task.completed) return false;
+        } else if (filters.status === "completed") {
+          if (!task.completed) return false;
+        }
+      }
+
+      // Priority filter
+      if (filters.priority.length > 0) {
+        if (!filters.priority.includes(task.priority)) return false;
+      }
+
+      return true;
+    });
+  }, [tasks, filters]);
+
   if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" my={2}>
@@ -57,61 +93,32 @@ const TaskManager: React.FC = () => {
       </Box>
     );
   }
+
   return (
     <Container maxWidth="xl">
       <Box sx={{ py: 4 }}>
-        <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
-          {t("tasks.weddingTasks")}
-        </Typography>
-        <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-          {t("tasks.taskDescription")}
-        </Typography>
-
-        <Box sx={{ mt: 4, mb: 2 }}>
-          <StyledPaper>
-            <TaskSummary tasks={tasks ?? []} />
-          </StyledPaper>
+        <Box sx={{ mb: 3 }}>
+          <TaskSummary tasks={tasks ?? []} />
         </Box>
 
         <StyledPaper>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <Tabs
-              value={tabValue}
-              onChange={handleTabChange}
-              textColor="primary"
-              indicatorColor="primary"
-              aria-label="task tabs"
-            >
-              <Tab label={t("common.allTasks")} />
-              <Tab label={t("common.toDo")} />
-              <Tab label={t("common.inProgress")} />
-              <Tab label={t("common.completed")} />
-            </Tabs>
-          </Box>
+          <TaskFilterBar filters={filters} onFiltersChange={setFilters} />
 
-          <Divider />
-
-          <Box sx={{ mt: 2 }}>
+          <Divider sx={{ mb: 2 }} />
+          <Box sx={{ mb: 3 }}>
             <TaskForm onAddTask={createTask} isSubmitting={isUpdating} />
           </Box>
 
-          <Box sx={{ mt: 3 }}>
+          <Divider sx={{ mb: 3 }} />
+
+          <Box>
             {isUpdating && (
               <Box display="flex" justifyContent="center" my={2}>
                 <CircularProgress size={24} />
               </Box>
             )}
             <TaskList
-              tasks={
-                tasks?.filter((task) => {
-                  if (tabValue === 0) return true;
-                  if (tabValue === 1)
-                    return !task.assignedTo && !task.completed;
-                  if (tabValue === 2) return task.assignedTo && !task.completed;
-                  if (tabValue === 3) return task.completed;
-                  return true;
-                }) ?? []
-              }
+              tasks={filteredTasks}
               onUpdateTask={(id, data) => updateTask({ id, data })}
               onDeleteTask={(id) => deleteTask(id)}
               onAssignTask={(id, person) => assignTask(id, person)}

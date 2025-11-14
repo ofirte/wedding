@@ -1,145 +1,128 @@
 import React, { useMemo } from "react";
-import { Box, Grid, Typography, LinearProgress, Paper } from "@mui/material";
+import { Box, Typography, LinearProgress, Grid, Paper } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
   Assignment as TaskIcon,
   Flag as PriorityIcon,
+  CalendarToday as DateIcon,
+  CheckCircle as CompletedIcon,
 } from "@mui/icons-material";
 import { Task } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { useTasksStats } from "src/hooks/tasks/useTasksStats";
 
 interface TaskSummaryProps {
   tasks: Task[];
 }
 
+
 const StatCard = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
-  borderRadius: theme.shape.borderRadius,
-  boxShadow: theme.shadows[1],
-  height: "100%",
-  display: "flex",
-  flexDirection: "column",
+  borderRadius: 16,
+  border: `1px solid ${theme.palette.divider}`,
+  elevation: 0,
+  position: "relative",
+  overflow: "hidden",
+  background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.grey[50]} 100%)`,
+  transition: "all 0.3s ease-in-out",
+  textAlign: "center",
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 3,
+    background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+  },
+  "&:hover": {
+    transform: "translateY(-2px)",
+    boxShadow: theme.shadows[4],
+    borderColor: theme.palette.primary.main,
+  },
+}));
+
+const IconWrapper = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "bgcolor",
+})<{ bgcolor: string }>(({ bgcolor }) => ({
+  width: 48,
+  height: 48,
+  borderRadius: "50%",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: bgcolor,
+  marginBottom: 8,
 }));
 
 const TaskSummary: React.FC<TaskSummaryProps> = ({ tasks }) => {
   const { t } = useTranslation();
-  const stats = useMemo(() => {
-    const total = tasks.length;
-    const completed = tasks.filter((task) => task.completed).length;
-    const pending = total - completed;
-    const completionPercentage =
-      total > 0 ? Math.round((completed / total) * 100) : 0;
-
-    const highPriority = tasks.filter(
-      (task) => task.priority.toLowerCase() === "high" && !task.completed
-    ).length;
-
-    const upcomingDueTasks = tasks.filter((task) => {
-      if (!task.dueDate || task.completed) return false;
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const dueDate = new Date(task.dueDate);
-      const timeDiff = dueDate.getTime() - today.getTime();
-      const dayDiff = timeDiff / (1000 * 3600 * 24);
-
-      return dayDiff >= 0 && dayDiff <= 7;
-    }).length;
-
-    return {
-      total,
-      completed,
-      pending,
-      completionPercentage,
-      highPriority,
-      upcomingDueTasks,
-    };
-  }, [tasks]);
+  const stats = useTasksStats(tasks);
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={3} alignItems="stretch">
-        <Grid size={{ xs: 12, md: 8 }}>
-          {/* <StatCard> */}
-          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <TaskIcon color="primary" sx={{ mr: 1 }} />
-              <Typography variant="h6">{t("tasks.taskProgress")}</Typography>
-            </Box>
-            <Typography variant="h6" color="primary" fontWeight="bold">
-              {stats.completionPercentage}%
-            </Typography>
-          </Box>
+    <Box>
 
-          <LinearProgress
-            variant="determinate"
-            value={stats.completionPercentage}
-            sx={{
-              height: 10,
-              borderRadius: 5,
-              mb: 1,
-            }}
-          />
 
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-            <Typography variant="body2" color="text.secondary">
-              {t("tasks.tasksCompletedCount", {
-                completed: stats.completed,
-                total: stats.total,
-              })}
+      {/* Icon Stat Cards */}
+      <Grid container spacing={2}>
+        {/* Total Tasks Card */}
+        <Grid size={{ xs: 6, sm: 3 }}>
+          <StatCard>
+            <IconWrapper bgcolor="rgba(155, 187, 155, 0.15)">
+              <TaskIcon sx={{ fontSize: 28, color: "primary.main" }} />
+            </IconWrapper>
+            <Typography variant="h5" fontWeight={700} color="text.primary">
+              {stats.total}
             </Typography>
-
-            <Typography variant="body2" color="text.secondary">
-              {stats.pending} remaining
+            <Typography variant="caption" color="text.secondary" fontWeight={500}>
+              {t("tasks.totalTasks")}
             </Typography>
-          </Box>
-          {/* </StatCard> */}
+          </StatCard>
         </Grid>
 
-        <Grid size={{ xs: 12, md: 4 }}>
-          <Grid container spacing={2} height="80%">
-            <Grid size={{ xs: 6 }} height="100%">
-              <StatCard sx={{ bgcolor: "warning.light" }}>
-                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                  <PriorityIcon sx={{ color: "warning.dark", mr: 1 }} />
-                  <Typography
-                    variant="body2"
-                    fontWeight="medium"
-                    color="warning.dark"
-                  >
-                    {t("common.highPriority")}
-                  </Typography>
-                </Box>
-                <Typography variant="h4" color="warning.dark" fontWeight="bold">
-                  {stats.highPriority}
-                </Typography>
-                <Typography variant="body2" color="warning.dark">
-                  {t("common.tasksNeedAttention")}
-                </Typography>
-              </StatCard>
-            </Grid>
+        {/* Completed Tasks Card */}
+        <Grid size={{ xs: 6, sm: 3 }}>
+          <StatCard>
+            <IconWrapper bgcolor="rgba(109, 169, 122, 0.15)">
+              <CompletedIcon sx={{ fontSize: 28, color: "success.main" }} />
+            </IconWrapper>
+            <Typography variant="h5" fontWeight={700} color="success.main">
+              {stats.completed}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" fontWeight={500}>
+              {t("common.completed")}
+            </Typography>
+          </StatCard>
+        </Grid>
 
-            <Grid size={{ xs: 6 }} height="100%">
-              <StatCard sx={{ bgcolor: "info.light" }}>
-                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                  {/* <WatchLater sx={{ color: "info.dark", mr: 1 }} /> */}
-                  <Typography
-                    variant="body2"
-                    fontWeight="medium"
-                    color="info.dark"
-                  >
-                    {t("tasks.dueSoon")}
-                  </Typography>
-                </Box>
-                <Typography variant="h4" color="info.dark" fontWeight="bold">
-                  {stats.upcomingDueTasks}
-                </Typography>
-                <Typography variant="body2" color="info.dark">
-                  {t("tasks.upcomingDueTasks")}
-                </Typography>
-              </StatCard>
-            </Grid>
-          </Grid>
+        {/* High Priority Card */}
+        <Grid size={{ xs: 6, sm: 3 }}>
+          <StatCard>
+            <IconWrapper bgcolor="rgba(212, 185, 87, 0.15)">
+              <PriorityIcon sx={{ fontSize: 28, color: "warning.main" }} />
+            </IconWrapper>
+            <Typography variant="h5" fontWeight={700} color="warning.dark">
+              {stats.highPriority}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" fontWeight={500}>
+              {t("common.highPriority")}
+            </Typography>
+          </StatCard>
+        </Grid>
+
+        {/* Due Soon Card */}
+        <Grid size={{ xs: 6, sm: 3 }}>
+          <StatCard>
+            <IconWrapper bgcolor="rgba(122, 156, 179, 0.15)">
+              <DateIcon sx={{ fontSize: 28, color: "info.main" }} />
+            </IconWrapper>
+            <Typography variant="h5" fontWeight={700} color="info.dark">
+              {stats.upcomingDueTasks}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" fontWeight={500}>
+              {t("tasks.dueSoon")}
+            </Typography>
+          </StatCard>
         </Grid>
       </Grid>
     </Box>
