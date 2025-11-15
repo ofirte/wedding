@@ -1791,7 +1791,7 @@ export const englishTranslations: Translations = {
     },
     messages: {
       loadingLeads: "Loading leads...",
-      noLeads: "No leads yet. Add your first lead above!",
+      noLeads: "No leads yet. Add your first lead!",
       errorLoading: "Error loading leads",
       errorAddingNote: "Failed to add note",
       leadCreated: "Lead created successfully",

@@ -1736,7 +1736,7 @@ export const hebrewTranslations: Translations = {
     },
     messages: {
       loadingLeads: "...טוען לידים",
-      noLeads: "!אין לידים עדיין. הוסף את הליד הראשון שלך למעלה",
+      noLeads: "אין לידים עדיין. הוסף את הליד הראשון שלך!",
       errorLoading: "שגיאה בטעינת לידים",
       errorAddingNote: "הוספת הערה נכשלה",
       leadCreated: "ליד נוצר בהצלחה",

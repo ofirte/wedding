@@ -86,12 +86,9 @@ const LeadsTableNew: React.FC<LeadsTableProps> = ({ leads, onRowClick }) => {
           <TableBody>
             {leads.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={10} sx={{ py: 12, textAlign: "center", border: "none" }}>
+                <TableCell colSpan={10} sx={{ py: 12, textAlign: "inlinestart", border: "none", px: 50 }}>
                   <Typography variant="body1" color="text.secondary" sx={{ mb: 1, fontWeight: 500 }}>
                     {t("leads.messages.noLeads")}
-                  </Typography>
-                  <Typography variant="body2" color="text.disabled" sx={{ fontSize: "0.813rem" }}>
-                    Start by adding your first lead in the row below
                   </Typography>
                 </TableCell>
               </TableRow>
