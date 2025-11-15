@@ -10,10 +10,13 @@ export const useDeleteTask = () => {
   const queryClient = useQueryClient();
 
   return useWeddingMutation({
-    mutationFn: deleteTask,
+    mutationFn: (
+      { id }: { id: string; weddingId?: string },
+      weddingId?: string
+    ) => deleteTask(id, weddingId),
     options: {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["tasks"] });
+        queryClient.invalidateQueries({ queryKey: ["all-weddings-tasks"] });
       },
     },
   });

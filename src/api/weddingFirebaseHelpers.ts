@@ -508,7 +508,9 @@ export const createCollectionAPI = <T extends { id?: string }>(
      * Update existing item
      */
     update: (id: string, updates: Partial<T>, weddingId?: string) =>
-      weddingFirebase.updateDocument<T>(collectionName, id, updates, weddingId),
+      {
+        console.log("Updating item in", collectionName, "with ID:", id, "and updates:", updates, weddingId);
+        return weddingFirebase.updateDocument<T>(collectionName, id, updates, weddingId)},
 
     /**
      * Delete item

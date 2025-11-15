@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Box,
   IconButton,
@@ -6,6 +6,7 @@ import {
   Typography,
   Checkbox,
   Collapse,
+  Chip,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -14,6 +15,8 @@ import {
   ExpandLess as ExpandLessIcon,
 } from "@mui/icons-material";
 import { Task } from "@wedding-plan/types";
+import { format } from "date-fns";
+import { he, enUS } from "date-fns/locale";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { TaskBadge } from "./TaskBadge";
 import { TaskAssignedAvatar } from "./TaskAssignedAvatar";
@@ -22,9 +25,12 @@ import {
   getTaskBackgroundTint,
   getPriorityBadgeColor,
 } from "./taskUtils";
+import { useWeddingsDetails } from "../../hooks/wedding/useWeddingsDetails";
+import { stringToColor } from "../../utils/ColorUtils";
+import { useParams } from "react-router";
 
 interface TaskListItemProps {
-  task: Task;
+  task: Task & { weddingId?: string };
   isExpanded: boolean;
   onToggleExpand: (taskId: string, hasDescription: boolean) => void;
   onToggleComplete: (taskId: string, completed: boolean) => void;
@@ -43,9 +49,19 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({
   onEdit,
   onMenuClick,
 }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const {weddingId } = useParams();
+  const weddingIds = useMemo(() => (task.weddingId ? [task.weddingId] : [weddingId || ""]), [task.weddingId, weddingId]);
   const hasDescription = Boolean(task.description);
+  const { data: weddingsDetails } = useWeddingsDetails(
+   weddingIds
+  );
+  const dateLocale = useMemo(() => (language === "he" ? he : enUS), [language]);
 
+  const taskWedding = useMemo(
+    () => weddingsDetails?.find((wedding) => wedding.id === task.weddingId),
+    [weddingsDetails, task.weddingId]
+  );
   return (
     <Box
       sx={{
@@ -118,15 +134,34 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({
             alignItems: "center",
             gap: 0.75,
             flexShrink: 0,
+            flexWrap: "wrap",
           }}
         >
+          {/* Wedding Badge (if multi-wedding context) */}
+          {task.weddingId && taskWedding && (
+            <Chip
+              label={taskWedding.name}
+              size="small"
+              variant="outlined"
+              sx={{
+                height: 22,
+                fontSize: "0.7rem",
+                borderColor: stringToColor(task.weddingId),
+                borderWidth: 2,
+                color: stringToColor(task.weddingId),
+                fontWeight: 600,
+              }}
+            />
+          )}
           <TaskBadge
             label={t(`common.${task.priority.toLowerCase()}`)}
             color={getPriorityBadgeColor(task.priority)}
           />
           {task.dueDate && (
             <TaskBadge
-              label={new Date(task.dueDate).toLocaleDateString()}
+              label={format(new Date(task.dueDate), "PPP", {
+                locale: dateLocale,
+              })}
               color="#7A9CB3"
             />
           )}

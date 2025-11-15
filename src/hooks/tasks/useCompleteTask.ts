@@ -9,9 +9,9 @@ export const useCompleteTask = () => {
 
   return {
     ...updateInfo,
-    mutate: (id: string, completed: boolean) =>
-      mutate({ id, data: { completed } }),
-    mutateAsync: (id: string, completed: boolean) =>
-      mutateAsync({ id, data: { completed } }),
+    mutate: (id: string, completed: boolean, weddingId?: string) =>
+      mutate({ id, data: { completed }, weddingId }),
+    mutateAsync: (id: string, completed: boolean, weddingId?:string) =>
+      mutateAsync({ id, data: { completed }, weddingId }),
   };
 };

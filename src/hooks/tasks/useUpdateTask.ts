@@ -12,12 +12,12 @@ export const useUpdateTask = () => {
 
   return useWeddingMutation({
     mutationFn: (
-      { id, data }: { id: string; data: Partial<Task> },
+      { id, data }: { id: string; data: Partial<Task>; weddingId?: string },
       weddingId?: string
     ) => updateTask(id, data, weddingId),
     options: {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["tasks"] });
+        queryClient.invalidateQueries({ queryKey: ["all-weddings-tasks"] });
       },
     },
   });

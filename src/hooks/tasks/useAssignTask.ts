@@ -5,7 +5,7 @@ export const useAssignTask = () => {
 
   return {
     ...updateInfo,
-    mutate: (id: string, person: string) =>
-      updateTask({ id, data: { assignedTo: person } }),
+    mutate: (id: string, person: string, weddingId?: string) =>
+      updateTask({ id, data: { assignedTo: person }, weddingId }),
   };
 };

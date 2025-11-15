@@ -1,19 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Box, List, Typography, Paper } from "@mui/material";
 import { Task } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { useWeddingMembers } from "../../hooks/wedding";
+import { useWeddingsDetails } from "../../hooks/wedding/useWeddingsDetails";
+import { useUsersByIds } from "../../hooks/auth/useUsersByIds";
 import { TaskListItem } from "./TaskListItem";
 import { TaskActionsMenu } from "./TaskActionsMenu";
 import TaskEditDialog from "./TaskEditDialog";
 import { sortTasks } from "./taskUtils";
 
 interface TaskListProps {
-  tasks: Task[];
-  onUpdateTask: (id: string, task: Partial<Task>) => void;
-  onDeleteTask: (id: string) => void;
-  onAssignTask: (id: string, person: string) => void;
-  onCompleteTask: (id: string, completed: boolean) => void;
+  tasks: (Task & { weddingId?: string })[];
+  onUpdateTask: (id: string, task: Partial<Task>, weddingId: string) => void;
+  onDeleteTask: (id: string, weddingId: string) => void;
+  onAssignTask: (id: string, person: string, weddingId: string) => void;
+  onCompleteTask: (id: string, completed: boolean, weddingId: string) => void;
+  weddingMembers?: any[]; // Optional: pass wedding members for assignment menu
 }
 
 /**
@@ -31,9 +34,65 @@ const TaskList: React.FC<TaskListProps> = ({
   onDeleteTask,
   onAssignTask,
   onCompleteTask,
+  weddingMembers: providedWeddingMembers,
 }) => {
   const { t } = useTranslation();
-  const { data: weddingMembers = [] } = useWeddingMembers();
+  // For single-wedding context (backward compatibility)
+  const { data: fetchedWeddingMembers = [] } = useWeddingMembers();
+  // Extract unique weddingIds from tasks for multi-wedding context
+  const uniqueWeddingIds = useMemo(() => {
+    const ids = tasks
+      .map(task => task.weddingId)
+      .filter((id): id is string => Boolean(id));
+    return Array.from(new Set(ids));
+  }, [tasks]);
+
+  // Fetch all weddings for multi-wedding context
+  const { data: weddings = [] } = useWeddingsDetails(
+    uniqueWeddingIds.length > 0 ? uniqueWeddingIds : undefined
+  );
+
+  // Extract unique user IDs from all wedding members for multi-wedding context
+  const uniqueUserIds = useMemo(() => {
+    const ids = new Set<string>();
+    weddings.forEach(wedding => {
+      if (wedding.members) {
+        Object.keys(wedding.members).forEach(userId => ids.add(userId));
+      }
+    });
+    return Array.from(ids);
+  }, [weddings]);
+
+  // Fetch user details for all members across all weddings
+  const { data: usersDetails = [] } = useUsersByIds(uniqueUserIds);
+
+  // Build a map of weddingId -> members for multi-wedding context
+  const weddingMembersMap = useMemo(() => {
+    const map = new Map<string, typeof fetchedWeddingMembers>();
+
+    weddings.forEach(wedding => {
+      if (wedding.id && wedding.members) {
+        // Convert wedding members to the same format as useWeddingMembers returns
+        const members = Object.entries(wedding.members).map(([userId, memberData]) => {
+          const userInfo = usersDetails.find(u => u.uid === userId);
+          return {
+            userId,
+            role: (memberData as any).role || memberData,
+            displayName: userInfo?.displayName || userInfo?.email || userId,
+            email: userInfo?.email || userId,
+            addedAt: (memberData as any).addedAt || new Date().toISOString(),
+            addedBy: (memberData as any).addedBy || '',
+          };
+        });
+        map.set(wedding.id, members as any);
+      }
+    });
+
+    return map;
+  }, [weddings, usersDetails]);
+
+  // Use provided wedding members if available, otherwise use fetched members
+  const weddingMembers = providedWeddingMembers || fetchedWeddingMembers;
 
   // State management
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -58,14 +117,18 @@ const TaskList: React.FC<TaskListProps> = ({
 
   const handleAssign = (userId: string) => {
     if (currentTaskId) {
-      onAssignTask(currentTaskId, userId);
+      const task = tasks.find(t => t.id === currentTaskId);
+      const weddingId = task?.weddingId || '';
+      onAssignTask(currentTaskId, userId, weddingId);
       handleMenuClose();
     }
   };
 
   const handleDelete = () => {
     if (currentTaskId) {
-      onDeleteTask(currentTaskId);
+      const task = tasks.find(t => t.id === currentTaskId);
+      const weddingId = task?.weddingId || '';
+      onDeleteTask(currentTaskId, weddingId);
       handleMenuClose();
     }
   };
@@ -83,7 +146,9 @@ const TaskList: React.FC<TaskListProps> = ({
 
   const handleEditDialogSave = (editedTask: Task) => {
     if (editedTask.id) {
-      onUpdateTask(editedTask.id, editedTask);
+      const task = tasks.find(t => t.id === editedTask.id);
+      const weddingId = task?.weddingId || '';
+      onUpdateTask(editedTask.id, editedTask, weddingId);
       setEditDialogOpen(false);
       setTaskToEdit(null);
     }
@@ -91,13 +156,25 @@ const TaskList: React.FC<TaskListProps> = ({
 
   // Task interaction handlers
   const handleToggleComplete = (taskId: string, completed: boolean) => {
-    onCompleteTask(taskId, !completed);
+    const task = tasks.find(t => t.id === taskId);
+    const weddingId = task?.weddingId || '';
+    onCompleteTask(taskId, !completed, weddingId);
   };
 
   const handleToggleExpand = (taskId: string, hasDescription: boolean) => {
     if (!hasDescription) return;
     setExpandedTaskId(expandedTaskId === taskId ? null : taskId);
   };
+    // Get current task and its wedding-specific members
+  const currentTask = tasks.find(t => t.id === currentTaskId);
+  const currentTaskWeddingMembers = useMemo(() => {
+    if (!currentTask?.weddingId) {
+      // Fall back to default wedding members for single-wedding context
+      return weddingMembers;
+    }
+    // Get members for the current task's wedding
+    return weddingMembersMap.get(currentTask.weddingId) || [];
+  }, [currentTask, weddingMembers, weddingMembersMap]);
 
   // Sort tasks for display
   const sortedTasks = sortTasks(tasks);
@@ -118,6 +195,8 @@ const TaskList: React.FC<TaskListProps> = ({
       </Paper>
     );
   }
+
+
 
   // Render the task list
   return (
@@ -140,7 +219,7 @@ const TaskList: React.FC<TaskListProps> = ({
         anchorEl={anchorEl}
         currentTaskId={currentTaskId}
         tasks={tasks}
-        weddingMembers={weddingMembers}
+        weddingMembers={currentTaskWeddingMembers}
         onClose={handleMenuClose}
         onAssign={handleAssign}
         onDelete={handleDelete}

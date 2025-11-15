@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { createTask } from "../../api/tasks/tasksApi";
 
 import { useWeddingMutation } from "../common";
+import { Task } from "@wedding-plan/types";
 
 /**
  * Hook to create a task
@@ -11,10 +12,13 @@ export const useCreateTask = () => {
   const queryClient = useQueryClient();
 
   return useWeddingMutation({
-    mutationFn: createTask,
+    mutationFn: (
+      { task }: { task: Omit<Task, "id">; weddingId?: string },
+      weddingId?: string
+    ) => createTask(task, weddingId),
     options: {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["tasks"] });
+        queryClient.invalidateQueries({ queryKey: ["all-weddings-tasks"] });
       },
     },
   });

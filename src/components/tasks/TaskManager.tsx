@@ -65,6 +65,10 @@ const TaskManager: React.FC = () => {
     }
   };
 
+  const handleAddTask = (task: Omit<Task, "id">, weddingId?: string) => {
+    createTask({ task , weddingId });
+  }
+
   // Filter tasks based on current filters
   const filteredTasks = useMemo(() => {
     if (!tasks) return [];
@@ -128,7 +132,7 @@ const TaskManager: React.FC = () => {
 
           <Divider sx={{ mb: 2 }} />
           <Box sx={{ mb: 3 }}>
-            <TaskForm onAddTask={createTask} isSubmitting={isUpdating} />
+            <TaskForm onAddTask={handleAddTask} isSubmitting={isUpdating} />
           </Box>
 
           <Divider sx={{ mb: 3 }} />
@@ -142,7 +146,7 @@ const TaskManager: React.FC = () => {
             <TaskList
               tasks={filteredTasks}
               onUpdateTask={(id, data) => updateTask({ id, data })}
-              onDeleteTask={(id) => deleteTask(id)}
+              onDeleteTask={(id) => deleteTask({id})}
               onAssignTask={(id, person) => assignTask(id, person)}
               onCompleteTask={(id, completed) => completeTask(id, completed)}
             />

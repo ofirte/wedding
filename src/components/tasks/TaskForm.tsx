@@ -30,7 +30,7 @@ import { useTranslation } from "../../localization/LocalizationContext";
 import { useWeddingMembers } from "../../hooks/wedding";
 
 interface TaskFormProps {
-  onAddTask: (task: Omit<Task, "id"> | Task) => void;
+  onAddTask: (task: Omit<Task, "id"> | Task, weddingId?:string) => void;
   isSubmitting?: boolean;
   mode?: "create" | "edit";
   initialTask?: Partial<Task>;
