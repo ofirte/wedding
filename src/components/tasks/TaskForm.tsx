@@ -75,9 +75,15 @@ const TaskForm: React.FC<TaskFormProps> = ({
   useEffect(() => {
     if (mode === "create") {
       const handleClickOutside = (event: MouseEvent) => {
+        const target = event.target as Node;
+
+        // Check if click is inside a MUI Menu/Popover (they render in portals)
+        const isInMuiPopover = (target as Element).closest?.('[role="presentation"], .MuiPopover-root, .MuiMenu-root');
+
         if (
           formRef.current &&
-          !formRef.current.contains(event.target as Node) &&
+          !formRef.current.contains(target) &&
+          !isInMuiPopover &&
           showDetails
         ) {
           setShowDetails(false);
@@ -161,35 +167,34 @@ const TaskForm: React.FC<TaskFormProps> = ({
     >
       <Grid container spacing={2}>
         <Grid size={{ xs: 12 }}>
-          <TextField
-            fullWidth
-            label={t("common.newTask")}
-            variant="outlined"
-            value={title}
-            onChange={(e) => {
-              setTitle(e.target.value);
-              if (e.target.value.trim()) {
-                setTitleError("");
-                setShowDetails(true); // Auto-expand on typing
-              }
-            }}
-            error={!!titleError}
-            helperText={titleError}
-            placeholder={t("placeholders.whatNeedsToBeDone")}
-            InputProps={
-              mode === "create"
-                ? {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={toggleDetails} edge="end">
-                          {showDetails ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }
-                : undefined
-            }
-          />
+          <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start" }}>
+
+            <TextField
+              fullWidth
+              label={t("common.newTask")}
+              variant="outlined"
+              value={title}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                if (e.target.value.trim()) {
+                  setTitleError("");
+                  setShowDetails(true); // Auto-expand on typing
+                }
+              }}
+              error={!!titleError}
+              helperText={titleError}
+              placeholder={t("placeholders.whatNeedsToBeDone")}
+            />
+            {mode === "create" && (
+              <IconButton
+                onClick={toggleDetails}
+                sx={{ mt: 1 }}
+                aria-label={showDetails ? t("common.collapse") : t("common.expand")}
+              >
+                {showDetails ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </IconButton>
+            )}
+          </Box>
         </Grid>
 
         <Grid size={{ xs: 12 }}>

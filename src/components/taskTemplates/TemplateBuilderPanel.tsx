@@ -17,12 +17,13 @@ interface TemplateBuilderPanelProps {
   onSaveAndApply?: () => void;
   onCancel: () => void;
   isSubmitting?: boolean;
+  disableSave?: boolean;
 }
 
 const TemplateBuilderPanel = forwardRef<
   TaskTemplateFormHandle,
   TemplateBuilderPanelProps
->(({ initialData, onSave, onSaveAndApply, onCancel, isSubmitting }, ref) => {
+>(({ initialData, onSave, onSaveAndApply, onCancel, isSubmitting, disableSave }, ref) => {
   return (
     <Paper
       elevation={0}
@@ -49,6 +50,7 @@ const TemplateBuilderPanel = forwardRef<
           onSaveAndApply={onSaveAndApply}
           onCancel={onCancel}
           isSubmitting={isSubmitting}
+          disableSave={disableSave}
         />
       </Box>
     </Paper>

@@ -4,8 +4,8 @@
  * Replaces the dialog-based approach with a two-panel layout
  */
 
-import React, { useState, useMemo, useRef } from "react";
-import { Box, Typography } from "@mui/material";
+import React, { useState, useMemo, useRef, useEffect } from "react";
+import { Box, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Snackbar, Alert } from "@mui/material";
 import { useNavigate, useParams } from "react-router";
 import { useTranslation } from "../../localization/LocalizationContext";
 import {
@@ -68,6 +68,15 @@ const TaskTemplateBuilderPage: React.FC = () => {
   const [applyDialogOpen, setApplyDialogOpen] = useState(false);
   const [savedTemplate, setSavedTemplate] = useState<TaskTemplate | null>(null);
 
+  // State for unsaved changes tracking
+  const [isDirty, setIsDirty] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
+  // State for success feedback
+  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const [showApplySuccessSnackbar, setShowApplySuccessSnackbar] = useState(false);
+  const [applySuccessMessage, setApplySuccessMessage] = useState("");
+
   // Mutations
   const { mutate: createTemplate, isPending: isCreating } =
     useCreateTaskTemplate();
@@ -75,6 +84,31 @@ const TaskTemplateBuilderPage: React.FC = () => {
     useUpdateTaskTemplate();
 
   const isSubmitting = isCreating || isUpdating;
+
+  // Track isDirty state from form
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (formRef.current) {
+        const currentIsDirty = formRef.current.isDirty();
+        setIsDirty(currentIsDirty);
+      }
+    }, 100); // Check every 100ms
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Warn user before leaving page with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isDirty]);
 
   // Handle adding task from library
   const handleAddFromLibrary = (task: TaskLibraryItem) => {
@@ -131,6 +165,11 @@ const TaskTemplateBuilderPage: React.FC = () => {
         },
         {
           onSuccess: () => {
+            // Reset form to clear isDirty state
+            if (formRef.current) {
+              formRef.current.resetForm();
+            }
+
             if (andApply) {
               // Use the existing template with updated data
               setSavedTemplate({
@@ -140,7 +179,8 @@ const TaskTemplateBuilderPage: React.FC = () => {
               });
               setApplyDialogOpen(true);
             } else {
-              navigate("/weddings/task-templates");
+              // Show success message instead of navigating
+              setShowSuccessSnackbar(true);
             }
           },
         }
@@ -151,6 +191,11 @@ const TaskTemplateBuilderPage: React.FC = () => {
         { template: templatePayload },
         {
           onSuccess: (templateId) => {
+            // Reset form to clear isDirty state
+            if (formRef.current) {
+              formRef.current.resetForm();
+            }
+
             if (andApply) {
               // Construct the template object
               setSavedTemplate({
@@ -161,7 +206,8 @@ const TaskTemplateBuilderPage: React.FC = () => {
               } as TaskTemplate);
               setApplyDialogOpen(true);
             } else {
-              navigate("/weddings/task-templates");
+              // Show success message instead of navigating
+              setShowSuccessSnackbar(true);
             }
           },
         }
@@ -176,7 +222,32 @@ const TaskTemplateBuilderPage: React.FC = () => {
 
   // Handle cancel
   const handleCancel = () => {
+    if (isDirty) {
+      setShowCancelConfirm(true);
+    } else {
+      navigate("/weddings/task-templates");
+    }
+  };
+
+  // Handle confirm cancel (discard changes)
+  const handleConfirmCancel = () => {
+    setShowCancelConfirm(false);
     navigate("/weddings/task-templates");
+  };
+
+  // Handle cancel the cancel (continue editing)
+  const handleCancelCancel = () => {
+    setShowCancelConfirm(false);
+  };
+
+  // Handle successful template application
+  const handleApplySuccess = (weddingName: string, taskCount: number) => {
+    const message = t("taskTemplates.appliedSuccessfully", {
+      count: taskCount,
+      weddingName: weddingName
+    });
+    setApplySuccessMessage(message);
+    setShowApplySuccessSnackbar(true);
   };
 
   if (isLoading) {
@@ -216,6 +287,7 @@ const TaskTemplateBuilderPage: React.FC = () => {
             onSaveAndApply={handleSaveAndApply}
             onCancel={handleCancel}
             isSubmitting={isSubmitting}
+            disableSave={!isDirty}
           />
         </Box>
       </Box>
@@ -227,11 +299,61 @@ const TaskTemplateBuilderPage: React.FC = () => {
           onClose={() => {
             setApplyDialogOpen(false);
             setSavedTemplate(null);
-            navigate("/weddings/task-templates");
           }}
+          onSuccess={handleApplySuccess}
           template={savedTemplate}
         />
       )}
+
+      {/* Cancel Confirmation Dialog */}
+      <Dialog open={showCancelConfirm} onClose={handleCancelCancel}>
+        <DialogTitle>{t("common.unsavedChanges")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {t("common.unsavedChangesMessage")}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelCancel}>{t("common.continueEditing")}</Button>
+          <Button onClick={handleConfirmCancel} color="error" variant="contained">
+            {t("common.discardChanges")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Success Snackbar */}
+      <Snackbar
+        open={showSuccessSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setShowSuccessSnackbar(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setShowSuccessSnackbar(false)}
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {t("taskTemplates.savedSuccessfully")}
+        </Alert>
+      </Snackbar>
+
+      {/* Apply Success Snackbar */}
+      <Snackbar
+        open={showApplySuccessSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setShowApplySuccessSnackbar(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setShowApplySuccessSnackbar(false)}
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {applySuccessMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

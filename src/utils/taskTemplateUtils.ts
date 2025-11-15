@@ -85,15 +85,25 @@ export function convertTemplateItemToTask(
  * @param amount The amount (e.g., 30)
  * @param unit The unit (days, weeks, months)
  * @param direction before or after
+ * @param t Translation function
  * @returns Human-readable string (e.g., "30 days before wedding")
  */
 export function formatRelativeDueDate(
   amount: number,
   unit: 'days' | 'weeks' | 'months',
-  direction: 'before' | 'after'
+  direction: 'before' | 'after',
+  t: (key: string) => string
 ): string {
-  const unitLabel = amount === 1 ? unit.slice(0, -1) : unit; // Remove 's' for singular
-  return `${amount} ${unitLabel} ${direction} wedding`;
+  // Get the unit translation (singular or plural)
+  const unitKey = amount === 1
+    ? `taskTemplates.${unit.slice(0, -1)}` // Singular: day, week, month
+    : `taskTemplates.${unit}`; // Plural: days, weeks, months
+
+  const unitLabel = t(unitKey);
+  const directionLabel = t(`taskTemplates.${direction}`);
+  const weddingLabel = t('taskTemplates.wedding');
+
+  return `${amount} ${unitLabel} ${directionLabel} ${weddingLabel}`;
 }
 
 /**

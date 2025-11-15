@@ -14,6 +14,8 @@ import {
   IconButton,
   Chip,
   Tooltip,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -35,6 +37,10 @@ const TaskTemplateManager: React.FC = () => {
   const navigate = useNavigate();
   const [applyDialogOpen, setApplyDialogOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<TaskTemplate | null>(null);
+
+  // State for success feedback
+  const [showApplySuccessSnackbar, setShowApplySuccessSnackbar] = useState(false);
+  const [applySuccessMessage, setApplySuccessMessage] = useState("");
 
   // Fetch templates
   const { data: templates = [], isLoading } = useTaskTemplates();
@@ -67,6 +73,16 @@ const TaskTemplateManager: React.FC = () => {
     setSelectedTemplate(null);
   };
 
+  // Handle successful template application
+  const handleApplySuccess = (weddingName: string, taskCount: number) => {
+    const message = t("taskTemplates.appliedSuccessfully", {
+      count: taskCount,
+      weddingName: weddingName
+    });
+    setApplySuccessMessage(message);
+    setShowApplySuccessSnackbar(true);
+  };
+
   // Table columns
   const columns = [
     {
@@ -88,7 +104,7 @@ const TaskTemplateManager: React.FC = () => {
       hideOnMobile: true,
       render: (template: TaskTemplate) => (
         <Typography variant="body2" color="text.secondary" noWrap>
-          {template.description || "-"}
+          {template.description || t("common.noDescription")}
         </Typography>
       ),
     },
@@ -184,7 +200,7 @@ const TaskTemplateManager: React.FC = () => {
         {/* Floating Action Button for Creating Templates */}
         <Fab
           color="primary"
-          aria-label="create task template"
+          aria-label={t("taskTemplates.createTemplateAriaLabel")}
           sx={{
             position: "fixed",
             bottom: 32,
@@ -200,9 +216,27 @@ const TaskTemplateManager: React.FC = () => {
           <ApplyTaskTemplateDialog
             open={applyDialogOpen}
             onClose={handleCloseApplyDialog}
+            onSuccess={handleApplySuccess}
             template={selectedTemplate}
           />
         )}
+
+        {/* Apply Success Snackbar */}
+        <Snackbar
+          open={showApplySuccessSnackbar}
+          autoHideDuration={6000}
+          onClose={() => setShowApplySuccessSnackbar(false)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert
+            onClose={() => setShowApplySuccessSnackbar(false)}
+            severity="success"
+            variant="filled"
+            sx={{ width: '100%' }}
+          >
+            {applySuccessMessage}
+          </Alert>
+        </Snackbar>
       </Box>
     </Container>
   );

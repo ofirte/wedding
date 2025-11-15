@@ -91,11 +91,13 @@ export interface Translations {
     title: string;
     subtitle: string;
     templateName: string;
+    newTemplate: string;
     description: string;
     numberOfTasks: string;
     tasks: string;
     noTemplates: string;
     createTemplate: string;
+    createTemplateAriaLabel: string;
     editTemplate: string;
     applyTemplate: string;
     applyToWedding: string;
@@ -111,11 +113,15 @@ export interface Translations {
     amount: string;
     unit: string;
     direction: string;
+    day: string;
     days: string;
+    week: string;
     weeks: string;
+    month: string;
     months: string;
     before: string;
     after: string;
+    wedding: string;
     template: string;
     selectWedding: string;
     noWeddingsAvailable: string;
@@ -123,6 +129,7 @@ export interface Translations {
     preview: string;
     apply: string;
     appliedSuccessfully: string;
+    savedSuccessfully: string;
     selectFromPreviousTemplates: string;
     noTasksInLibrary: string;
     createNewTask: string;
@@ -141,7 +148,12 @@ export interface Translations {
     previous: string;
     finish: string;
     save: string;
+    saving: string;
     cancel: string;
+    unsavedChanges: string;
+    unsavedChangesMessage: string;
+    continueEditing: string;
+    discardChanges: string;
     yesNo: string;
     select: string;
     required: string;
@@ -187,6 +199,7 @@ export interface Translations {
     category: string;
     title: string;
     none: string;
+    noDescription: string;
     noDueDate: string;
     createdAt: string;
     expectedPrice: string;

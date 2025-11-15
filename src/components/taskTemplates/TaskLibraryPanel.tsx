@@ -68,7 +68,7 @@ const TaskLibraryPanel: React.FC<TaskLibraryPanelProps> = ({
           {t("taskTemplates.tasks")} {t("common.template")}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {t("taskTemplates.selectFromPreviousTemplates") || "Select from previous templates"}
+          {t("taskTemplates.selectFromPreviousTemplates")}
         </Typography>
       </Box>
 
@@ -99,7 +99,7 @@ const TaskLibraryPanel: React.FC<TaskLibraryPanelProps> = ({
             <Typography variant="body2" color="text.secondary">
               {searchQuery
                 ? t("common.noResultsFound")
-                : t("taskTemplates.noTasksInLibrary") || "No tasks in library yet"}
+                : t("taskTemplates.noTasksInLibrary")}
             </Typography>
           </Box>
         ) : (
@@ -140,14 +140,6 @@ const TaskLibraryPanel: React.FC<TaskLibraryPanelProps> = ({
                       <Typography variant="body2" sx={{ flex: 1 }}>
                         {task.title}
                       </Typography>
-                      {task.usageCount > 1 && (
-                        <Chip
-                          label={`×${task.usageCount}`}
-                          size="small"
-                          variant="outlined"
-                          sx={{ height: 20, fontSize: "0.7rem" }}
-                        />
-                      )}
                     </Box>
                   }
                   secondary={
@@ -165,7 +157,7 @@ const TaskLibraryPanel: React.FC<TaskLibraryPanelProps> = ({
                         />
                       )}
                       <Chip
-                        label={task.priority}
+                        label={t(`common.${task.priority.toLowerCase()}`)}
                         size="small"
                         color={
                           task.priority === "High"

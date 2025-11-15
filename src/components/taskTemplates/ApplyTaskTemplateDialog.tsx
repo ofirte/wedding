@@ -21,7 +21,6 @@ import {
   ListItemText,
   Chip,
   CircularProgress,
-  Snackbar,
 } from "@mui/material";
 import { TaskTemplate } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
@@ -33,17 +32,18 @@ import { previewAbsoluteDueDate, formatRelativeDueDate } from "../../utils/taskT
 interface ApplyTaskTemplateDialogProps {
   open: boolean;
   onClose: () => void;
+  onSuccess?: (weddingName: string, taskCount: number) => void;
   template: TaskTemplate;
 }
 
 const ApplyTaskTemplateDialog: React.FC<ApplyTaskTemplateDialogProps> = ({
   open,
   onClose,
+  onSuccess,
   template,
 }) => {
   const { t } = useTranslation();
   const [selectedWeddingId, setSelectedWeddingId] = useState("");
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   // Fetch user's weddings
   const { data: currentUser } = useCurrentUser();
@@ -77,7 +77,10 @@ const ApplyTaskTemplateDialog: React.FC<ApplyTaskTemplateDialogProps> = ({
 
   // Handle apply
   const handleApply = () => {
-    if (!selectedWeddingId) return;
+    if (!selectedWeddingId || !selectedWedding) return;
+
+    // Save wedding name before resetting state
+    const weddingName = selectedWedding.name;
 
     applyTemplate(
       {
@@ -86,8 +89,12 @@ const ApplyTaskTemplateDialog: React.FC<ApplyTaskTemplateDialogProps> = ({
       },
       {
         onSuccess: () => {
-          setShowSuccessAlert(true);
           setSelectedWeddingId("");
+          // Call parent's onSuccess callback with wedding name and task count
+          if (onSuccess) {
+            onSuccess(weddingName, template.tasks.length);
+          }
+          // Close the dialog
           onClose();
         },
         onError: (error, data) => {
@@ -107,8 +114,7 @@ const ApplyTaskTemplateDialog: React.FC<ApplyTaskTemplateDialogProps> = ({
   };
 
   return (
-    <>
-      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle>{t("taskTemplates.applyTemplate")}</DialogTitle>
 
         <DialogContent>
@@ -195,7 +201,8 @@ const ApplyTaskTemplateDialog: React.FC<ApplyTaskTemplateDialogProps> = ({
                                     ({formatRelativeDueDate(
                                       task.relativeDueDate,
                                       task.relativeDueDateUnit,
-                                      task.relativeDueDateDirection
+                                      task.relativeDueDateDirection,
+                                      t
                                     )})
                                   </Typography>
                                 )}
@@ -238,24 +245,6 @@ const ApplyTaskTemplateDialog: React.FC<ApplyTaskTemplateDialogProps> = ({
         </Button>
         </DialogActions>
       </Dialog>
-
-      {/* Success Snackbar */}
-      <Snackbar
-      open={showSuccessAlert}
-      autoHideDuration={6000}
-      onClose={() => setShowSuccessAlert(false)}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert
-          onClose={() => setShowSuccessAlert(false)}
-          severity="success"
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {t("taskTemplates.appliedSuccessfully", { count: template.tasks.length })}
-        </Alert>
-      </Snackbar>
-    </>
   );
 };
 
