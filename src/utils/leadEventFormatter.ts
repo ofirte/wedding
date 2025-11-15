@@ -1,6 +1,30 @@
 import { LeadEvent } from "@wedding-plan/types";
 
 /**
+ * Translate a field name to its display label
+ * @param fieldName The field name to translate
+ * @param t Translation function
+ * @returns Translated field label
+ */
+const translateFieldName = (fieldName: string, t: (key: string) => string): string => {
+  const fieldMap: Record<string, string> = {
+    name: "leads.columns.name",
+    email: "leads.columns.email",
+    phone: "leads.columns.phone",
+    weddingDate: "leads.columns.weddingDate",
+    budget: "leads.columns.budget",
+    estimatedGuests: "leads.columns.estimatedGuests",
+    status: "leads.columns.status",
+    source: "leads.columns.source",
+    service: "leads.columns.service",
+    followUpDate: "leads.columns.followUp",
+    notes: "leads.columns.notes",
+  };
+
+  return fieldMap[fieldName] ? t(fieldMap[fieldName]) : fieldName;
+};
+
+/**
  * Format a lead event into a translated description
  * @param event The lead event to format
  * @param t Translation function
@@ -29,8 +53,10 @@ export const formatLeadEventDescription = (
 
     case "field_updated":
       if (event.metadata?.fields && Array.isArray(event.metadata.fields)) {
-        const fields = event.metadata.fields.join(", ");
-        return t("leads.events.fieldUpdated").replace("{{fields}}", fields);
+        const translatedFields = event.metadata.fields
+          .map((field) => translateFieldName(field, t))
+          .join(", ");
+        return t("leads.events.fieldUpdated").replace("{{fields}}", translatedFields);
       }
       // Fallback to stored description if metadata is missing
       return event.description;

@@ -1253,6 +1253,7 @@ export interface Translations {
       estimatedGuests: string;
       status: string;
       source: string;
+      service: string;
       followUp: string;
       actions: string;
       notes: string;
@@ -1266,6 +1267,7 @@ export interface Translations {
       signed: string;
       deposit_paid: string;
       active_client: string;
+      done: string;
       lost: string;
     };
     sources: {
@@ -1318,6 +1320,7 @@ export interface Translations {
       loadingLeads: string;
       noLeads: string;
       errorLoading: string;
+      errorAddingNote: string;
       leadCreated: string;
       leadUpdated: string;
       leadDeleted: string;

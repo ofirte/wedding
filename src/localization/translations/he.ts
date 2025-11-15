@@ -1671,6 +1671,7 @@ export const hebrewTranslations: Translations = {
       estimatedGuests: "אומדן אורחים",
       status: "סטטוס",
       source: "מקור",
+      service: "שירות",
       followUp: "תאריך למעקב",
       actions: "פעולות",
       notes: "הערות",
@@ -1684,6 +1685,7 @@ export const hebrewTranslations: Translations = {
       signed: "חתום",
       deposit_paid: "מקדמה שולמה",
       active_client: "לקוח פעיל",
+      done: "הושלם",
       lost: "אבד",
     },
     sources: {
@@ -1736,6 +1738,7 @@ export const hebrewTranslations: Translations = {
       loadingLeads: "...טוען לידים",
       noLeads: "!אין לידים עדיין. הוסף את הליד הראשון שלך למעלה",
       errorLoading: "שגיאה בטעינת לידים",
+      errorAddingNote: "הוספת הערה נכשלה",
       leadCreated: "ליד נוצר בהצלחה",
       leadUpdated: "ליד עודכן בהצלחה",
       leadDeleted: "ליד נמחק בהצלחה",

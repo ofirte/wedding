@@ -15,6 +15,7 @@ export type LeadStatus =
   | "signed"
   | "deposit_paid"
   | "active_client"
+  | "done"
   | "lost";
 
 /**
@@ -55,6 +56,7 @@ export interface Lead {
   estimatedGuests?: number;
   status: LeadStatus;
   source?: LeadSource;
+  service?: string; // Type of service/package (e.g., "Full Wedding Production", "Day of Event Management")
   notes?: string;
   followUpDate?: string; // ISO date string
   createdAt: string; // ISO timestamp
@@ -95,5 +97,6 @@ export const LeadStatusColors: Record<LeadStatus, string> = {
   signed: "#8BC34A", // Light Green
   deposit_paid: "#4CAF50", // Green
   active_client: "#4CAF50", // Green
+  done: "#8BC34A", // Light Green
   lost: "#F44336", // Red
 };

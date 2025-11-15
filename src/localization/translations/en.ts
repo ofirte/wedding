@@ -1726,6 +1726,7 @@ export const englishTranslations: Translations = {
       estimatedGuests: "Est. Guests",
       status: "Status",
       source: "Source",
+      service: "Service",
       followUp: "Follow-up",
       actions: "Actions",
       notes: "Notes",
@@ -1739,6 +1740,7 @@ export const englishTranslations: Translations = {
       signed: "Signed",
       deposit_paid: "Deposit Paid",
       active_client: "Active Client",
+      done: "Done",
       lost: "Lost",
     },
     sources: {
@@ -1791,6 +1793,7 @@ export const englishTranslations: Translations = {
       loadingLeads: "Loading leads...",
       noLeads: "No leads yet. Add your first lead above!",
       errorLoading: "Error loading leads",
+      errorAddingNote: "Failed to add note",
       leadCreated: "Lead created successfully",
       leadUpdated: "Lead updated successfully",
       leadDeleted: "Lead deleted successfully",

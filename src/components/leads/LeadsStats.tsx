@@ -23,7 +23,8 @@ const LeadsStats: React.FC<LeadsStatsProps> = ({ leads }) => {
     (l) =>
       l.status === "signed" ||
       l.status === "deposit_paid" ||
-      l.status === "active_client"
+      l.status === "active_client" ||
+      l.status === "done"
   ).length;
 
   const conversionRate =

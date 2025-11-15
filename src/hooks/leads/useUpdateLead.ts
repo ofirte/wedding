@@ -68,12 +68,38 @@ export const useUpdateLead = () => {
         });
       }
     },
+    // Optimistically update the cache before the mutation runs
+    onMutate: async ({ id, data }) => {
+      // Cancel any outgoing refetches to avoid overwriting our optimistic update
+      await queryClient.cancelQueries({ queryKey: ["leads"] });
+
+      // Snapshot the previous value
+      const previousLeads = queryClient.getQueryData<Lead[]>(["leads"]);
+
+      // Optimistically update the cache
+      if (previousLeads) {
+        queryClient.setQueryData<Lead[]>(
+          ["leads"],
+          previousLeads.map((lead) =>
+            lead.id === id ? { ...lead, ...data, updatedAt: new Date().toISOString() } : lead
+          )
+        );
+      }
+
+      // Return a context object with the snapshotted value
+      return { previousLeads };
+    },
     onSuccess: () => {
       console.log("Lead updated successfully");
+      // Refetch to ensure consistency with the server
       queryClient.invalidateQueries({ queryKey: ["leads"] });
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
       console.error("Error updating lead:", error);
+      // Rollback to the previous value on error
+      if (context?.previousLeads) {
+        queryClient.setQueryData(["leads"], context.previousLeads);
+      }
     },
   });
 };

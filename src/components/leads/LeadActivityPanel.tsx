@@ -63,7 +63,7 @@ const LeadActivityPanel: React.FC<LeadActivityPanelProps> = ({
       refetch();
     } catch (error) {
       console.error("Error adding note:", error);
-      alert("Failed to add note");
+      alert(t("leads.messages.errorAddingNote"));
     } finally {
       setIsAddingNote(false);
     }
@@ -165,6 +165,15 @@ const LeadActivityPanel: React.FC<LeadActivityPanelProps> = ({
                 <Typography variant="body2">
                   {t(`leads.sources.${lead.source}`)}
                 </Typography>
+              </Box>
+            )}
+
+            {lead.service && (
+              <Box>
+                <Typography variant="caption" color="text.secondary">
+                  {t("leads.columns.service")}
+                </Typography>
+                <Typography variant="body2">{lead.service}</Typography>
               </Box>
             )}
 
