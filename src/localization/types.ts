@@ -336,6 +336,7 @@ export interface Translations {
     rsvp: string;
     wedding: string;
     weddings: string;
+    leads: string;
     admin: string;
   };
   manage: {
@@ -1237,6 +1238,91 @@ export interface Translations {
       };
       continueButton: string;
       loading: string;
+    };
+  };
+  leads: {
+    title: string;
+    description: string;
+    subtitle: string;
+    columns: {
+      name: string;
+      email: string;
+      phone: string;
+      weddingDate: string;
+      budget: string;
+      estimatedGuests: string;
+      status: string;
+      source: string;
+      followUp: string;
+      actions: string;
+      notes: string;
+    };
+    statuses: {
+      new: string;
+      initial_contact: string;
+      qualified: string;
+      proposal_sent: string;
+      contract_offered: string;
+      signed: string;
+      deposit_paid: string;
+      active_client: string;
+      lost: string;
+    };
+    sources: {
+      website: string;
+      referral: string;
+      instagram: string;
+      facebook: string;
+      google: string;
+      wedding_fair: string;
+      direct: string;
+      other: string;
+    };
+    stats: {
+      totalLeads: string;
+      newLeads: string;
+      converted: string;
+      conversionRate: string;
+    };
+    activityPanel: {
+      title: string;
+      leadDetails: string;
+      activityTimeline: string;
+      addNote: string;
+      addNotePlaceholder: string;
+      noActivity: string;
+      byUser: string;
+    };
+    events: {
+      created: string;
+      statusChanged: string;
+      fieldUpdated: string;
+      noteAdded: string;
+      followUpSet: string;
+      followUpCompleted: string;
+    };
+    form: {
+      namePlaceholder: string;
+      emailPlaceholder: string;
+      phonePlaceholder: string;
+      budgetPlaceholder: string;
+      guestsPlaceholder: string;
+      addLead: string;
+      cancel: string;
+      save: string;
+      nameRequired: string;
+      emailRequired: string;
+      startTyping: string;
+    };
+    messages: {
+      loadingLeads: string;
+      noLeads: string;
+      errorLoading: string;
+      leadCreated: string;
+      leadUpdated: string;
+      leadDeleted: string;
+      confirmDelete: string;
+      followUpOverdue: string;
     };
   };
 }
