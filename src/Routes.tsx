@@ -23,6 +23,8 @@ import { AdminPage } from "./components/admin";
 import ManageApp from "./components/common/ManageApp";
 import { RsvpManagerContainer } from "./components/rsvp/RsvpManagerContainer";
 import TasksManagementPage from "./components/tasksManagement/TasksManagementPage";
+import TaskTemplateManager from "./components/taskTemplates/TaskTemplateManager";
+import TaskTemplateBuilderPage from "./components/taskTemplates/TaskTemplateBuilderPage";
 import LandingPage from "./components/landing/LandingPage";
 import PrivacyPolicy from "./components/legal/PrivacyPolicy";
 import TermsOfService from "./components/legal/TermsOfService";
@@ -64,6 +66,9 @@ const AppRoutes: FC = () => {
             <Route path="admin" element={<AdminPage />} />
           </Route>
           <Route path="tasks" element={<TasksManagementPage />} />
+          <Route path="task-templates" element={<TaskTemplateManager />} />
+          <Route path="task-templates/create" element={<TaskTemplateBuilderPage />} />
+          <Route path="task-templates/edit/:templateId" element={<TaskTemplateBuilderPage />} />
         </Route>
       </Route>
     </Routes>
