@@ -13,8 +13,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import {
   CheckCircle as CheckCircleIcon,
-  Schedule as ScheduleIcon,
-  CalendarToday as CalendarIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import { useWeddingDetails } from "../../../hooks/wedding/useWeddingDetails";

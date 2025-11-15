@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Box, Typography, LinearProgress, Grid, Paper } from "@mui/material";
+import { Box, Typography, Grid, Paper } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
   Assignment as TaskIcon,

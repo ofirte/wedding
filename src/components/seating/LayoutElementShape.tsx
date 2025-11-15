@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { Group, Rect, Text, Transformer, Circle } from "react-konva";
 import { LayoutElement } from "@wedding-plan/types";
 import Konva from "konva";

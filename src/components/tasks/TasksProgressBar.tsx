@@ -6,7 +6,6 @@ type TasksProgressBarProps = {
   tasks: Task[];
 };
 const TasksProgressBar: React.FC<TasksProgressBarProps> = ({ tasks }) => {
-    const { t } = useTranslation();
     const SingleLineProgress = styled(LinearProgress, {
   shouldForwardProp: (prop) => prop !== "progressColor",
 })<{ progressColor: string }>(({ theme, progressColor }) => ({

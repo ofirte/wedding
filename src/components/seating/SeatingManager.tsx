@@ -6,9 +6,8 @@ import { TouchBackend } from "react-dnd-touch-backend";
 import { Table, LayoutElement } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { useResponsive } from "../../utils/ResponsiveUtils";
-import { useTables, useCreateTable, useUpdateTable, useDeleteTable, useBulkUpdateTables, useLayoutElements, useCreateLayoutElement, useUpdateLayoutElement, useDeleteLayoutElement, useSeatingArrangements } from "../../hooks/seating";
+import { useTables, useCreateTable, useUpdateTable, useDeleteTable, useBulkUpdateTables, useLayoutElements, useCreateLayoutElement, useUpdateLayoutElement, useDeleteLayoutElement } from "../../hooks/seating";
 import { useInvitees } from "../../hooks/invitees";
-import { getUnassignedGuests } from "../../api/seating/seatingApi";
 import { calculateUsedCapacity, getGuestAmount } from "../../utils/seatingUtils";
 import SeatingToolbar from "./SeatingToolbar";
 import SeatingToolsSidebar from "./SeatingToolsSidebar";
@@ -26,7 +25,6 @@ const SeatingManager: React.FC = () => {
   const { data: tables = [], isLoading: isLoadingTables, isError } = useTables();
   const { data: layoutElements = [] } = useLayoutElements();
   const { data: invitees = [] } = useInvitees();
-  const { data: arrangements = [] } = useSeatingArrangements();
 
   // Mutations
   const { mutate: createTable } = useCreateTable();
@@ -157,34 +155,6 @@ const SeatingManager: React.FC = () => {
         assignedGuests: table.assignedGuests.filter((id) => id !== guestId),
       },
     });
-  };
-
-  // Handle auto-assign guests to tables - opens dialog with auto-assigned results
-  const handleAutoArrange = () => {
-    // Get unassigned guests
-    const unassignedGuests = getUnassignedGuests(invitees, tables);
-
-    if (unassignedGuests.length === 0) {
-      alert(t("seating.autoAssignment.noGuestsToAssign") || "All guests are already assigned!");
-      return;
-    }
-
-    // Check if there are tables
-    if (tables.length === 0) {
-      alert(t("seating.autoAssignment.noTablesAvailable"));
-      return;
-    }
-
-    // Open dialog with current assignments (will run auto-assign within dialog)
-    const currentAssignments = new Map<string, string[]>();
-    tables.forEach((table) => {
-      if (table.assignedGuests.length > 0) {
-        currentAssignments.set(table.id, [...table.assignedGuests]);
-      }
-    });
-
-    setAssignmentDialogInitialState(currentAssignments);
-    setIsAssignmentDialogOpen(true);
   };
 
   // Handle manual assignment dialog open

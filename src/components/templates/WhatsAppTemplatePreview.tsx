@@ -24,12 +24,12 @@ const WhatsAppTemplatePreview: React.FC<WhatsAppTemplatePreviewProps> = ({
   automationName,
   showHeader = true,
 }) => {
-  const { t, language } = useTranslation();
+  const { language } = useTranslation();
   const locale = language === "he" ? he : enUS;
   const isRtl = language === "he";
   const templateText = template.types?.["twilio/text"]?.body || "";
   // Get real wedding data but use dummy guest
-  const { data: wedding, isLoading: isLoadingWedding } = useWeddingDetails();
+  const { data: wedding } = useWeddingDetails();
   const dummyWedding: Wedding = {
     id: "dummy-wedding",
     brideName: language === "he" ? "שרה לוי" : "Sarah Levi",

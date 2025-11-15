@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Box, Typography } from "@mui/material";
 import { ScheduleOutlined } from "@mui/icons-material";
 import AutomationsSidebar from "./AutomationsSidebar";
@@ -9,7 +9,7 @@ import { useUpdateRsvpConfig } from "src/hooks/rsvp/useUpdateRsvpConfig";
 import { useParams } from "react-router";
 import { SendMessagesAutomation } from "@shared/dist";
 import AutomationSetupDone from "./AutomationSetupDone";
-import { set } from "lodash";
+
 
 const AutomationMessagesSchedulerContainer: React.FC = () => {
   const { t } = useTranslation();

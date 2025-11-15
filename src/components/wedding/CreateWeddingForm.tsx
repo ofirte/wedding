@@ -49,13 +49,6 @@ export const CreateWeddingForm: React.FC<CreateWeddingFormProps> = ({
   });
   const { t } = useTranslation();
   const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser();
-  const parseTime = (timeString?: string) => {
-    if (!timeString) return null;
-    const [hours, minutes] = timeString.toString().split(":").map(Number);
-    const date = new Date();
-    date.setHours(hours, minutes, 0, 0);
-    return date;
-  };
   if (isLoadingUser) {
     return <LoadingState />;
   }

@@ -1,5 +1,5 @@
 import React from "react";
-import { SendMessagesAutomation } from "@wedding-plan/types";
+
 import ActiveAutomationDetails from "./ActiveAutomationDetails";
 import SetupAutomation from "./SetupAutomation";
 import { useAutomation } from "src/hooks/rsvp";

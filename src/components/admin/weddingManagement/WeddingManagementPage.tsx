@@ -14,7 +14,6 @@ import { WeddingDetailsDialog } from "./WeddingDetailsDialog";
 import { Wedding } from "@wedding-plan/types";
 import { useUpdateUser } from "src/hooks/auth";
 import { arrayUnion } from "firebase/firestore";
-import { set } from "lodash";
 import { WeddingDeleteDialog } from "./WeddingDeleteDialog";
 import { useDeleteWedding } from "src/hooks/wedding/useDeleteWedding";
 

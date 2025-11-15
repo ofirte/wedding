@@ -12,7 +12,6 @@ interface UseGlobalTemplatesOptions {
  * @returns Query result object for combined global templates
  */
 export const useGlobalTemplates = (options: UseGlobalTemplatesOptions = {}) => {
-  const { syncApprovalStatus = false } = options;
 
   const query = useQuery({
     queryKey: ["globalTemplates"],
