@@ -1328,6 +1328,24 @@ export interface Translations {
       followUpOverdue: string;
     };
   };
+  support: {
+    title: string;
+    description: string;
+    nameLabel: string;
+    emailLabel: string;
+    subjectLabel: string;
+    messageLabel: string;
+    messagePlaceholder: string;
+    sendButton: string;
+    successMessage: string;
+    errorMessage: string;
+    fieldRequired: string;
+    invalidEmail: string;
+    subjectTooLong: string;
+    messageTooShort: string;
+    messageTooLong: string;
+    buttonText: string;
+  };
 }
 
 interface SeatingTranslations {
