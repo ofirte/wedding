@@ -20,6 +20,7 @@ import {
   Logout as LogoutIcon,
   Task as TaskIcon,
   ContentCopy as TemplateIcon,
+  ContactMail as LeadsIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router";
 import { useCurrentUser, useSignOut, useIsAdmin } from "../../hooks/auth";
@@ -51,6 +52,7 @@ const ManageSidebar: React.FC<ManageSidebarProps> = ({
       icon: <WeddingsIcon />,
       path: "/weddings/manage",
     },
+    { text: t("nav.leads"), icon: <LeadsIcon />, path: "/weddings/leads" },
     { text: t("nav.tasks"), icon: <TaskIcon />, path: "/weddings/tasks" },
     { text: t("nav.taskTemplates"), icon: <TemplateIcon />, path: "/weddings/task-templates" },
   ];

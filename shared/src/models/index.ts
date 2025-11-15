@@ -17,3 +17,4 @@ export * from "./sendMessagesAutomation";
 export * from "./rsvpConfig";
 export * from "./seating";
 export * from "./payment";
+export * from "./lead";

@@ -26,6 +26,7 @@ import TasksManagementPage from "./components/tasksManagement/TasksManagementPag
 import TaskTemplateManager from "./components/taskTemplates/TaskTemplateManager";
 import TaskTemplateBuilderPage from "./components/taskTemplates/TaskTemplateBuilderPage";
 import LandingPage from "./components/landing/LandingPage";
+import LeadsPage from "./components/leads/LeadsPage";
 import PrivacyPolicy from "./components/legal/PrivacyPolicy";
 import TermsOfService from "./components/legal/TermsOfService";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
@@ -69,6 +70,7 @@ const AppRoutes: FC = () => {
           <Route path="task-templates" element={<TaskTemplateManager />} />
           <Route path="task-templates/create" element={<TaskTemplateBuilderPage />} />
           <Route path="task-templates/edit/:templateId" element={<TaskTemplateBuilderPage />} />
+          <Route path="leads" element={<LeadsPage />} />
         </Route>
       </Route>
     </Routes>
