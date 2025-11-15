@@ -17,7 +17,7 @@ import { useCurrentUser, useUpdateUser } from "../../hooks/auth";
 import { useCreateWedding, useJoinWedding } from "../../hooks/wedding";
 import { Wedding } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { CreateWeddingForm, WeddingFormValues } from "./CreateWeddingForm";
+import { CreateWeddingForm } from "./CreateWeddingForm";
 
 interface TabPanelProps {
   children?: React.ReactNode;

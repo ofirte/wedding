@@ -5,11 +5,11 @@ import {
   Card,
   CardContent,
   Stack,
-  Button,
+
   Chip,
-  Alert,
+
 } from "@mui/material";
-import { Schedule, Group, Stop, AccessTime } from "@mui/icons-material";
+import { Schedule, Group, AccessTime } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import { SendMessagesAutomation } from "@wedding-plan/types";
 import { format } from "date-fns";

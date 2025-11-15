@@ -67,11 +67,7 @@ class MultiWeddingFirebaseService {
       const unsubscribe = onSnapshot(
         subCollectionRef,
         (snapshot) => {
-          const items = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            weddingId,
-            ...generalFirebase.convertTimestampsToDate(doc.data()),
-          })) as T[];
+
 
           // Get data from all weddings
           this.getSubCollectionFromWeddings<T>(weddingIds, subCollectionName)

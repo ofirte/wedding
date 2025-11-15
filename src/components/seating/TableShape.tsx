@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Group, Circle, Rect, Text } from "react-konva";
 import { Table, Invitee } from "@wedding-plan/types";
 import Konva from "konva";

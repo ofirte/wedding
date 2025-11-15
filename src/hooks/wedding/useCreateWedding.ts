@@ -11,8 +11,8 @@ export const useCreateWedding = (
   return useMutation({
     mutationFn: (data: CreateWeddingData) =>
       createWedding(data.weddingData, data.userId),
-    onSuccess: async (weddingId, variables, context) => {
-      options?.onSuccess?.(weddingId, variables, context);
+    onSuccess: async (weddingId, variables,_,  context) => {
+      options?.onSuccess?.(weddingId, variables,_, context);
     },
   });
 };

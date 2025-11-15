@@ -33,14 +33,14 @@ export const useAddUserToWedding = (
     }: AddUserToWeddingVariables) => {
       await addUserToWedding(weddingId, userId, addedBy);
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (data, variables, _,context) => {
       // Invalidate wedding queries to refresh the data
       queryClient.invalidateQueries({ queryKey: ["weddings"] });
       // Also invalidate the specific wedding if it's cached
       queryClient.invalidateQueries({
         queryKey: ["weddingDetails", variables.weddingId],
       });
-      onSuccess?.(data, variables, undefined);
+      onSuccess?.(data, variables, undefined, context);
     },
     ...restOptions,
   });

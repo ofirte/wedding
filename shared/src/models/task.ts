@@ -12,5 +12,6 @@ export interface Task {
   createdAt: string;
   completedAt?: string; // ISO timestamp when task was marked complete
   dueDate?: string;
-  assignedTo?: string;
+  assignedTo?: string; // User ID of wedding member assigned to this task
+  category?: string; // Category label (e.g., "Ongoing", "Personal", "Vendor")
 }

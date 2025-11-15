@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Box, Typography, Paper, Chip, alpha, useTheme } from "@mui/material";
-import { CheckCircle } from "@mui/icons-material";
+import { Box, Typography, Paper, alpha, useTheme } from "@mui/material";
 import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { he, enUS } from "date-fns/locale";
@@ -30,8 +29,6 @@ const TasksCalendarView: React.FC = () => {
   const tasks = filterTasks(notFilteredTasks);
   const { data: weddingsDetails, isLoading: isLoadingWeddings } =
     useWeddingsDetails();
-
-  const dateLocale = useMemo(() => (language === "he" ? he : enUS), [language]);
 
   // Configure date-fns localizer
   const localizer = useMemo(
@@ -70,31 +67,6 @@ const TasksCalendarView: React.FC = () => {
         weddingName: weddingsMap[task.weddingId]?.name || "Unknown Wedding",
       }));
   }, [tasks, weddingsMap]);
-
-  // Calculate task stats for current month
-  const taskStats = useMemo(() => {
-    const monthStart = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      1
-    );
-    const monthEnd = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + 1,
-      0
-    );
-
-    const monthTasks = tasks.filter((task) => {
-      if (!task.dueDate) return false;
-      const taskDate = new Date(task.dueDate);
-      return taskDate >= monthStart && taskDate <= monthEnd;
-    });
-
-    return {
-      total: monthTasks.length,
-      completed: monthTasks.filter((t) => t.completed).length,
-    };
-  }, [tasks, currentDate]);
 
   // Custom event style getter
   const eventStyleGetter = (event: TaskEvent) => {

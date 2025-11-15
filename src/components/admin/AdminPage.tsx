@@ -7,7 +7,6 @@ import UserManagementPage from "./userManagement/UserManagementPage";
 import MigrationManager from "src/migrations/components/MigrationManager";
 import TemplatesManager from "../templates/TemplatesManager";
 import WeddingManagementPage from "./weddingManagement/WeddingManagementPage";
-import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
 
 interface TabPanelProps {
   children?: React.ReactNode;

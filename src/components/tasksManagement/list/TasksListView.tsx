@@ -1,12 +1,24 @@
 import React, { useMemo } from "react";
 import { Box, Typography, Divider, Collapse } from "@mui/material";
-import TaskList from "./TaskList";
+import TaskList from "../../tasks/TaskList";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
 import { Task } from "@wedding-plan/types";
 import { useTasksManagement } from "../TasksManagementContext";
 
-const TasksListView: React.FC = () => {
+interface TasksListViewProps {
+  onUpdateTask: (id: string, task: Partial<Task>, weddingId: string) => void;
+  onDeleteTask: (id: string, weddingId: string) => void;
+  onAssignTask: (id: string, person: string, weddingId: string) => void;
+  onCompleteTask: (id: string, completed: boolean, weddingId: string) => void;
+}
+
+const TasksListView: React.FC<TasksListViewProps> = ({
+  onUpdateTask,
+  onDeleteTask,
+  onAssignTask,
+  onCompleteTask,
+}) => {
   const { t } = useTranslation();
   const { data: tasks = [], isLoading: isLoadingTasks } = useAllWeddingsTasks();
   const { filterTasks, filters } = useTasksManagement();
@@ -51,8 +63,9 @@ const TasksListView: React.FC = () => {
             return acc;
           }
 
-          // Skip tasks without due date for date-based filtering
+          // Tasks without due date go to "later" section
           if (!task.dueDate) {
+            acc.laterTasks.push(task);
             return acc;
           }
 
@@ -105,7 +118,13 @@ const TasksListView: React.FC = () => {
         <Typography variant="h6" gutterBottom>
           {t("tasksManagement.list.completedTitle")}
         </Typography>
-        <TaskList tasks={allCompletedTasks} />
+        <TaskList
+          tasks={allCompletedTasks}
+          onUpdateTask={onUpdateTask}
+          onDeleteTask={onDeleteTask}
+          onAssignTask={onAssignTask}
+          onCompleteTask={onCompleteTask}
+        />
       </Box>
     );
   }
@@ -117,7 +136,13 @@ const TasksListView: React.FC = () => {
         <Typography variant="h6" gutterBottom>
           {t("tasksManagement.list.overdueTitle")}
         </Typography>
-        <TaskList tasks={overdueTasks} />
+        <TaskList
+          tasks={overdueTasks}
+          onUpdateTask={onUpdateTask}
+          onDeleteTask={onDeleteTask}
+          onAssignTask={onAssignTask}
+          onCompleteTask={onCompleteTask}
+        />
       </Box>
 
       <Divider sx={{ my: 3 }} />
@@ -127,7 +152,13 @@ const TasksListView: React.FC = () => {
         <Typography variant="h6" gutterBottom>
           {t("tasksManagement.list.upcomingTitle")}
         </Typography>
-        <TaskList tasks={upcomingTasks} />
+        <TaskList
+          tasks={upcomingTasks}
+          onUpdateTask={onUpdateTask}
+          onDeleteTask={onDeleteTask}
+          onAssignTask={onAssignTask}
+          onCompleteTask={onCompleteTask}
+        />
       </Box>
 
       <Divider sx={{ my: 3 }} />
@@ -137,7 +168,13 @@ const TasksListView: React.FC = () => {
         <Typography variant="h6" gutterBottom>
           {t("tasksManagement.list.laterTitle")}
         </Typography>
-        <TaskList tasks={laterTasks} />
+        <TaskList
+          tasks={laterTasks}
+          onUpdateTask={onUpdateTask}
+          onDeleteTask={onDeleteTask}
+          onAssignTask={onAssignTask}
+          onCompleteTask={onCompleteTask}
+        />
       </Box>
 
       {/* Recently Completed Section */}
@@ -162,7 +199,13 @@ const TasksListView: React.FC = () => {
               </Typography>
             </Typography>
             <Collapse in={showRecentlyCompleted}>
-              <TaskList tasks={sortedRecentlyCompleted} />
+              <TaskList
+                tasks={sortedRecentlyCompleted}
+                onUpdateTask={onUpdateTask}
+                onDeleteTask={onDeleteTask}
+                onAssignTask={onAssignTask}
+                onCompleteTask={onCompleteTask}
+              />
             </Collapse>
           </Box>
         </>

@@ -9,7 +9,7 @@ import {
   Alert,
   Grid,
 } from "@mui/material";
-import { CheckCircle, Group, Send, AccessTime } from "@mui/icons-material";
+import { CheckCircle, Group, Send } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import { SendMessagesAutomation } from "@wedding-plan/types";
 import { format } from "date-fns";

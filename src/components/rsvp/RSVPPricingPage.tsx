@@ -3,7 +3,6 @@ import {
   Box,
   Typography,
   Button,
-  Paper,
   Container,
   Stack,
   Card,
@@ -25,12 +24,11 @@ import {
   CardGiftcard as GiftIcon,
   Favorite as HeartIcon,
   Phone as PhoneIcon,
-  Upgrade as UpgradeIcon,
   Calculate as CalculateIcon,
   Payment as PaymentIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { useAuth, useCurrentUserWeddingId } from "../../hooks/auth";
+import { useAuth } from "../../hooks/auth";
 import { createPayment } from "../../api/firebaseFunctions/payments";
 import { useParams } from "react-router";
 

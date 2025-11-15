@@ -30,12 +30,12 @@ export const useUpdateLayoutElement = (
     mutationFn: ({ id, data }, weddingId) =>
       updateLayoutElement(id, data, weddingId),
     options: {
-      onSuccess: (_, variables, context) => {
+      onSuccess: (_, variables,_onMutateResults, context) => {
         queryClient.invalidateQueries({ queryKey: ["layoutElements"] });
-        options?.onSuccess?.(_, variables, context);
+        options?.onSuccess?.(_, variables,_onMutateResults, context);
       },
-      onError: (error, variables, context) => {
-        options?.onError?.(error, variables, context);
+      onError: (error, variables,_onMutateResults, context) => {
+        options?.onError?.(error, variables, _onMutateResults,context);
       },
       ...options,
     },

@@ -33,8 +33,13 @@ export function useWeddingMutation<
     weddingId: string;
   }>();
   return useMutation({
-    mutationFn: (variables: TVariables) =>
-      mutationFn(variables, paramsWeddingId || undefined),
+    mutationFn: (variables: TVariables) => {
+      const explicitWeddingId = (variables as any)?.weddingId;
+      return mutationFn(
+        variables,
+        explicitWeddingId || paramsWeddingId
+      );
+    },
     ...options,
   });
 }

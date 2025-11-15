@@ -6,3 +6,4 @@ export { useUpdateWedding } from "./useUpdateWedding";
 export { useAllWeddings } from "./useAllWeddings";
 export { useAddUserToWedding } from "./useAddUserToWedding";
 export { useCurrentUserWeddingPlan } from "./useCurrentUserWeddingPlan";
+export { useWeddingMembers } from "./useWeddingMembers";

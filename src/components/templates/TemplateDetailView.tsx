@@ -138,38 +138,7 @@ const TemplateDetailView: React.FC<TemplateDetailViewProps> = ({
     }
   };
 
-  const getTypeIcon = (type: "text" | "media" | "both") => {
-    switch (type) {
-      case "text":
-        return <TextFieldsIcon fontSize="small" />;
-      case "media":
-        return <ImageIcon fontSize="small" />;
-      case "both":
-        return (
-          <Stack direction="row" spacing={0.5}>
-            <TextFieldsIcon fontSize="small" />
-            <ImageIcon fontSize="small" />
-          </Stack>
-        );
-      default:
-        return <TextFieldsIcon fontSize="small" />;
-    }
-  };
 
-  const getStatusColor = (status?: string) => {
-    switch (status) {
-      case "approved":
-        return "success";
-      case "rejected":
-        return "error";
-      case "submitted":
-      case "received":
-        return "info";
-      case "pending":
-      default:
-        return "warning";
-    }
-  };
 
 
   return (
