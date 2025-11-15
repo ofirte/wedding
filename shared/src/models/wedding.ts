@@ -41,6 +41,17 @@ export interface WeddingMembers {
   [userId: string]: WeddingMemberInput;
 }
 
+/**
+ * Tracks when a task template was applied to a wedding
+ * Used for audit trail and potential future features (bulk updates, etc.)
+ */
+export interface AppliedTaskTemplate {
+  templateId: string;
+  templateName: string;
+  appliedAt: string; // ISO timestamp
+  appliedBy: string; // User ID who applied the template
+}
+
 export interface Wedding {
   id: string;
   name: string;
@@ -59,4 +70,6 @@ export interface Wedding {
   plan?: WeddingPlan;
   planActivatedAt?: string;
   paidGuestCount?: number;
+  // Task template tracking
+  appliedTaskTemplates?: AppliedTaskTemplate[];
 }

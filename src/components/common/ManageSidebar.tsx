@@ -19,6 +19,7 @@ import {
   AdminPanelSettings as AdminIcon,
   Logout as LogoutIcon,
   Task as TaskIcon,
+  ContentCopy as TemplateIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router";
 import { useCurrentUser, useSignOut, useIsAdmin } from "../../hooks/auth";
@@ -51,6 +52,7 @@ const ManageSidebar: React.FC<ManageSidebarProps> = ({
       path: "/weddings/manage",
     },
     { text: t("nav.tasks"), icon: <TaskIcon />, path: "/weddings/tasks" },
+    { text: t("nav.taskTemplates"), icon: <TemplateIcon />, path: "/weddings/task-templates" },
   ];
 
   const adminMenuItems = [
