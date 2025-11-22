@@ -57,6 +57,13 @@ export enum PaymentFunctions {
 }
 
 /**
+ * Enum for Support-related Firebase Functions
+ */
+export enum SupportFunctions {
+  SEND_SUPPORT_CONTACT = "sendSupportContact",
+}
+
+/**
  * All Firebase Functions combined
  */
 export const AllFunctions = {
@@ -67,6 +74,7 @@ export const AllFunctions = {
   ...SendAutomationsFunctions,
   ...InvitationsFunctions,
   ...PaymentFunctions,
+  ...SupportFunctions,
 } as const;
 
 /**
@@ -79,4 +87,5 @@ export type FunctionName =
   | UsersFunctions
   | SendAutomationsFunctions
   | InvitationsFunctions
-  | PaymentFunctions;
+  | PaymentFunctions
+  | SupportFunctions;

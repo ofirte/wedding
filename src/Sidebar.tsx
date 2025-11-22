@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Drawer,
   List,
@@ -24,6 +24,7 @@ import {
   AdminPanelSettings as AdminIcon,
   Logout as LogoutIcon,
   Settings as SettingsIcon,
+  HelpOutline as HelpOutlineIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router";
 import {
@@ -36,6 +37,7 @@ import { useTranslation } from "./localization/LocalizationContext";
 import { LanguageSwitcher } from "./components/common/LanguageSwitcher";
 import { useResponsive } from "./utils/ResponsiveUtils";
 import ManageBackButton from "./components/common/ManageBackButton";
+import { SupportContactDialog } from "./components/common/SupportContactDialog";
 
 interface SidebarProps {
   mobileOpen?: boolean;
@@ -55,6 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const { mutate: signOut } = useSignOut();
   const { isAdmin } = useIsAdmin();
   const { t } = useTranslation();
+  const [supportDialogOpen, setSupportDialogOpen] = useState(false);
   const menuItems = [
     { text: t("nav.home"), icon: <HomeIcon />, path: "/home" },
     { text: t("nav.guests"), icon: <ListIcon />, path: "/invite" },
@@ -267,6 +270,15 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         <Button
           variant="outlined"
+          startIcon={<HelpOutlineIcon />}
+          onClick={() => setSupportDialogOpen(true)}
+          fullWidth
+        >
+          {t("support.buttonText")}
+        </Button>
+
+        <Button
+          variant="outlined"
           startIcon={<LogoutIcon />}
           onClick={handleLogout}
           fullWidth
@@ -277,6 +289,11 @@ const Sidebar: React.FC<SidebarProps> = ({
           {t("common.signOut")}
         </Button>
       </Box>
+
+      <SupportContactDialog
+        open={supportDialogOpen}
+        onClose={() => setSupportDialogOpen(false)}
+      />
     </Box>
   );
 

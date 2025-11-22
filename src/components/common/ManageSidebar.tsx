@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Drawer,
   List,
@@ -20,12 +20,15 @@ import {
   Logout as LogoutIcon,
   Task as TaskIcon,
   ContentCopy as TemplateIcon,
+  ContactMail as LeadsIcon,
+  HelpOutline as HelpOutlineIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router";
 import { useCurrentUser, useSignOut, useIsAdmin } from "../../hooks/auth";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useResponsive } from "../../utils/ResponsiveUtils";
+import { SupportContactDialog } from "./SupportContactDialog";
 
 interface ManageSidebarProps {
   mobileOpen?: boolean;
@@ -44,6 +47,7 @@ const ManageSidebar: React.FC<ManageSidebarProps> = ({
   const { mutate: signOut } = useSignOut();
   const { t } = useTranslation();
   const { isAdmin } = useIsAdmin();
+  const [supportDialogOpen, setSupportDialogOpen] = useState(false);
 
   const menuItems = [
     {
@@ -51,6 +55,7 @@ const ManageSidebar: React.FC<ManageSidebarProps> = ({
       icon: <WeddingsIcon />,
       path: "/weddings/manage",
     },
+    { text: t("nav.leads"), icon: <LeadsIcon />, path: "/weddings/leads" },
     { text: t("nav.tasks"), icon: <TaskIcon />, path: "/weddings/tasks" },
     { text: t("nav.taskTemplates"), icon: <TemplateIcon />, path: "/weddings/task-templates" },
   ];
@@ -230,7 +235,16 @@ const ManageSidebar: React.FC<ManageSidebarProps> = ({
       )}
 
       <Divider />
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ p: 2, gap: 2, display: "flex", flexDirection: "column" }}>
+        <Button
+          variant="outlined"
+          startIcon={<HelpOutlineIcon />}
+          onClick={() => setSupportDialogOpen(true)}
+          fullWidth
+        >
+          {t("support.buttonText")}
+        </Button>
+
         <Button
           variant="outlined"
           color="inherit"
@@ -241,6 +255,11 @@ const ManageSidebar: React.FC<ManageSidebarProps> = ({
           {t("common.signOut")}
         </Button>
       </Box>
+
+      <SupportContactDialog
+        open={supportDialogOpen}
+        onClose={() => setSupportDialogOpen(false)}
+      />
     </Box>
   );
 

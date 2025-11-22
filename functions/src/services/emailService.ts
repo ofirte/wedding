@@ -126,3 +126,57 @@ export const sendInvitationReminderEmail = async (
     throw new Error(`Failed to send reminder email: ${error}`);
   }
 };
+
+/**
+ * Send a support contact email from a user
+ */
+export const sendSupportContactEmail = async (
+  userEmail: string,
+  userName: string,
+  subject: string,
+  message: string
+): Promise<void> => {
+  try {
+    initializeSendGrid();
+
+    const msg = {
+      to: "support@weddingplannerstudioapp.com",
+      from: {
+        email: "ofirtene@weddingplannerstudioapp.com",
+        name: "WedOne Support Form",
+      },
+      replyTo: userEmail,
+      subject: `Support Request: ${subject}`,
+      text: `From: ${userName} (${userEmail})\n\nSubject: ${subject}\n\n${message}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #333;">New Support Request</h2>
+          <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <p style="margin: 5px 0;"><strong>From:</strong> ${userName}</p>
+            <p style="margin: 5px 0;"><strong>Email:</strong> ${userEmail}</p>
+            <p style="margin: 5px 0;"><strong>Subject:</strong> ${subject}</p>
+          </div>
+          <div style="background-color: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+            <p style="margin: 0; white-space: pre-wrap;">${message}</p>
+          </div>
+        </div>
+      `,
+    };
+
+    await sgMail.send(msg);
+
+    logger.info("Support contact email sent successfully", {
+      userEmail,
+      userName,
+      subject,
+    });
+  } catch (error) {
+    logger.error("Failed to send support contact email", {
+      userEmail,
+      userName,
+      subject,
+      error,
+    });
+    throw new Error(`Failed to send support contact email: ${error}`);
+  }
+};
