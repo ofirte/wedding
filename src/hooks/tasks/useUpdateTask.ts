@@ -1,7 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { updateTask } from "../../api/tasks/tasksApi";
 import { Task } from "@wedding-plan/types";
-import { useWeddingMutation } from "../common";
+import { useWeddingMutation, useSnackbar } from "../common";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 /**
  * Hook to update a task
@@ -9,6 +10,8 @@ import { useWeddingMutation } from "../common";
  */
 export const useUpdateTask = () => {
   const queryClient = useQueryClient();
+  const { showSnackbar } = useSnackbar();
+  const { t } = useTranslation();
 
   return useWeddingMutation({
     mutationFn: (
@@ -18,6 +21,11 @@ export const useUpdateTask = () => {
     options: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["all-weddings-tasks"] });
+        queryClient.invalidateQueries({ queryKey: ["tasks"] });
+        showSnackbar(t('tasks.messages.updateSuccess'), 'success');
+      },
+      onError: () => {
+        showSnackbar(t('tasks.messages.updateError'), 'error');
       },
     },
   });

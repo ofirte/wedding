@@ -583,6 +583,10 @@ export const englishTranslations: Translations = {
     assignToName: "Assign to {{name}}",
     unassign: "Unassign",
     deleteTask: "Delete",
+    messages: {
+      updateSuccess: "Task updated successfully",
+      updateError: "Failed to update task",
+    },
   },
   wedding: {
     title: "Wedding Details",

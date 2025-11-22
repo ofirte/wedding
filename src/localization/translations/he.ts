@@ -574,6 +574,10 @@ export const hebrewTranslations: Translations = {
     assignToName: "הקצה ל{{name}}",
     unassign: "הסר שיוך",
     deleteTask: "מחק",
+    messages: {
+      updateSuccess: "המשימה עודכנה בהצלחה",
+      updateError: "עדכון המשימה נכשל",
+    },
   },
   wedding: {
     title: "פרטי החתונה",
