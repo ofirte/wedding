@@ -598,6 +598,10 @@ export interface Translations {
     assignToName: string;
     unassign: string;
     deleteTask: string;
+    messages: {
+      updateSuccess: string;
+      updateError: string;
+    };
   };
   wedding: {
     title: string;

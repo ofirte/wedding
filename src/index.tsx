@@ -7,6 +7,8 @@ import AppRoutes from "./Routes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./hooks/auth/AuthContext";
 import { LocalizedThemeProvider } from "./theme/LocalizedThemeProvider";
+import { SnackbarProvider } from "./context/SnackbarContext";
+import { GlobalSnackbar } from "./components/common/GlobalSnackbar";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -19,9 +21,12 @@ root.render(
     <LocalizedThemeProvider>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
+          <SnackbarProvider>
+            <GlobalSnackbar />
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          </SnackbarProvider>
         </AuthProvider>
       </QueryClientProvider>
     </LocalizedThemeProvider>
