@@ -1430,6 +1430,7 @@ interface SeatingTranslations {
     autoArrange: string;
     addGuest: string;
     assignGuests: string;
+    attendanceTracker: string;
   };
   templates: Record<string, any>;
   assignment: {
@@ -1527,6 +1528,41 @@ interface SeatingTranslations {
     deletingTable: string;
     assigningGuest: string;
     removingGuest: string;
+  };
+  attendance: {
+    title: string;
+    subtitle: string;
+    stats: {
+      confirmedGuests: string;
+      checkedIn: string;
+    };
+    columns: {
+      guestName: string;
+      rsvpStatus: string;
+      confirmedAmount: string;
+      actualAmount: string;
+      tableAssignment: string;
+      checkInStatus: string;
+    };
+    rsvpStatus: {
+      confirmed: string;
+      declined: string;
+      notAttending: string;
+      notResponded: string;
+    };
+    checkIn: {
+      checkedIn: string;
+      notCheckedIn: string;
+    };
+    table: {
+      notAssigned: string;
+      tableNumber: string;
+    };
+    filters: {
+      searchPlaceholder: string;
+      showAll: string;
+      showAllExplanation: string;
+    };
   };
 }
 

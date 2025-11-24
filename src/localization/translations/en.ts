@@ -1594,6 +1594,7 @@ export const englishTranslations: Translations = {
       autoArrange: "Auto-Arrange",
       addGuest: "Add Guest",
       assignGuests: "Assign Guests",
+      attendanceTracker: "Attendance Tracker",
     },
     templates: {
       title: "Templates",
@@ -1698,6 +1699,41 @@ export const englishTranslations: Translations = {
       deletingTable: "Error deleting table. Please try again.",
       assigningGuest: "Error assigning guest. Please try again.",
       removingGuest: "Error removing guest. Please try again.",
+    },
+    attendance: {
+      title: "Attendance Tracker",
+      subtitle: "Track guest arrivals and check-in status",
+      stats: {
+        confirmedGuests: "Confirmed Guests",
+        checkedIn: "Checked In",
+      },
+      columns: {
+        guestName: "Guest Name",
+        rsvpStatus: "RSVP Status",
+        confirmedAmount: "Confirmed Amount",
+        actualAmount: "Actual Amount",
+        tableAssignment: "Table",
+        checkInStatus: "Check-In",
+      },
+      rsvpStatus: {
+        confirmed: "Confirmed",
+        declined: "Declined",
+        notAttending: "Not Attending",
+        notResponded: "Not Responded",
+      },
+      checkIn: {
+        checkedIn: "Checked In",
+        notCheckedIn: "Not Checked In",
+      },
+      table: {
+        notAssigned: "Not Assigned",
+        tableNumber: "Table {{number}}",
+      },
+      filters: {
+        searchPlaceholder: "Search by guest name...",
+        showAll: "Show all guests",
+        showAllExplanation: "Include declined and not responded",
+      },
     },
   },
   payment: {

@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Stack, Typography, Button } from "@mui/material";
-import { Download as DownloadIcon, PersonAdd as PersonAddIcon } from "@mui/icons-material";
+import { Download as DownloadIcon, PersonAdd as PersonAddIcon, CheckCircle as CheckCircleIcon } from "@mui/icons-material";
+import { useNavigate, useParams } from "react-router";
 import { Table, Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 import SeatingStats from "./SeatingStats";
@@ -21,6 +22,12 @@ const SeatingToolbar: React.FC<SeatingToolbarProps> = ({
   isSaving = false,
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { weddingId } = useParams<{ weddingId: string }>();
+
+  const handleOpenAttendanceTracker = () => {
+    window.open(`/attendance/${weddingId}`, '_blank');
+  };
 
   return (
     <Box
@@ -56,6 +63,15 @@ const SeatingToolbar: React.FC<SeatingToolbarProps> = ({
           sx={{ borderRadius: 2 }}
         >
           {t("seating.actions.assignGuests")}
+        </Button>
+
+        <Button
+          variant="outlined"
+          startIcon={<CheckCircleIcon />}
+          onClick={handleOpenAttendanceTracker}
+          sx={{ borderRadius: 2 }}
+        >
+          {t("seating.actions.attendanceTracker")}
         </Button>
 
         {onExport && (

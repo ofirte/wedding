@@ -25,5 +25,8 @@ export interface Invitee {
   amountConfirm: number;
   cellphone: string;
   rsvpStatus?: RSVPStatus;
+  actualAttendance?: boolean;
+  actualAmount?: number;
+  checkedInAt?: Date;
 }
 

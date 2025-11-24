@@ -6,7 +6,7 @@ import {
   TableSortLabel,
   Checkbox,
 } from "@mui/material";
-import { Column } from "./DSTable";
+import { Column, VariantConfig } from "./DSTable";
 
 interface TableHeaderProps<T extends { id: string | number }> {
   columns: Column<T>[];
@@ -17,6 +17,7 @@ interface TableHeaderProps<T extends { id: string | number }> {
   isAllSelected?: boolean;
   isIndeterminate?: boolean;
   onSelectAll?: (isSelected: boolean) => void;
+  variantConfig: VariantConfig;
 }
 
 /**
@@ -31,6 +32,7 @@ const TableHeader = <T extends { id: string | number }>({
   isAllSelected = false,
   isIndeterminate = false,
   onSelectAll,
+  variantConfig,
 }: TableHeaderProps<T>) => {
   const createSortHandler = (columnId: string) => () => {
     onRequestSort(columnId);
@@ -44,7 +46,14 @@ const TableHeader = <T extends { id: string | number }>({
     <TableHead>
       <TableRow>
         {showSelectColumn && (
-          <TableCell align="center" sx={{ width: "48px", minWidth: "48px" }}>
+          <TableCell
+            align="center"
+            sx={{
+              width: "48px",
+              minWidth: "48px",
+              py: variantConfig.cellPy,
+            }}
+          >
             <Checkbox
               checked={isAllSelected}
               indeterminate={isIndeterminate}
@@ -56,7 +65,11 @@ const TableHeader = <T extends { id: string | number }>({
         {columns
           .filter((column) => !column.hidden)
           .map((column) => (
-            <TableCell key={column.id} align="center">
+            <TableCell
+              key={column.id}
+              align="center"
+              sx={{ py: variantConfig.cellPy }}
+            >
               {column.sortable ? (
                 <TableSortLabel
                   active={orderBy === column.id}

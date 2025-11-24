@@ -7,6 +7,7 @@ import Home from "./components/home/Home";
 import TaskManager from "./components/tasks/TaskManager";
 import RSVPManager from "./components/rsvp/RSVPManager";
 import SeatingManager from "./components/seating/SeatingManager";
+import AttendanceTracker from "./components/seating/attendance/AttendanceTracker";
 
 import LoginPage from "./components/auth/LoginPage";
 import RegisterPage from "./components/auth/RegisterPage";
@@ -43,6 +44,10 @@ const AppRoutes: FC = () => {
       <Route
         path="/guest-rsvp/:weddingId/:guestId"
         element={<GuestRSVPPage />}
+      />
+      <Route
+        path="/attendance/:weddingId"
+        element={<AttendanceTracker />}
       />
       <Route element={<ProtectedRoute redirectPath="/login" />}>
         <Route path="wedding" element={<WeddingRoute />}>

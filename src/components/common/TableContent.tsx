@@ -1,11 +1,6 @@
 import React from "react";
 import { TableCell, TableRow, Checkbox } from "@mui/material";
-import { Column } from "./DSTable";
-
-interface TableContentProps<T> {
-  columns: Column<T>[];
-  data: T[];
-}
+import { Column, VariantConfig } from "./DSTable";
 
 /**
  * TableContent component - renders table rows based on provided data
@@ -17,6 +12,7 @@ interface TableContentProps<T extends { id: string | number }> {
   selectedRows?: T[];
   onRowSelect?: (row: T, isSelected: boolean) => void;
   onRowClick?: (row: T) => void;
+  variantConfig: VariantConfig;
 }
 
 const TableContent = <T extends { id: string | number }>({
@@ -26,6 +22,7 @@ const TableContent = <T extends { id: string | number }>({
   selectedRows = [],
   onRowSelect,
   onRowClick,
+  variantConfig,
 }: TableContentProps<T>) => {
   if (data.length === 0) {
     const visibleColumnsCount = columns.filter(
@@ -62,7 +59,14 @@ const TableContent = <T extends { id: string | number }>({
           onClick={onRowClick ? () => onRowClick(rowData) : undefined}
         >
           {showSelectColumn && (
-            <TableCell align="center" sx={{ width: "48px", minWidth: "48px" }}>
+            <TableCell
+              align="center"
+              sx={{
+                width: "48px",
+                minWidth: "48px",
+                py: variantConfig.cellPy,
+              }}
+            >
               <Checkbox
                 checked={isRowSelected(rowData)}
                 onChange={handleRowSelectChange(rowData)}
@@ -73,7 +77,11 @@ const TableContent = <T extends { id: string | number }>({
           {columns
             .filter((column) => !column.hidden)
             .map((column) => (
-              <TableCell key={column.id} align="center">
+              <TableCell
+                key={column.id}
+                align="center"
+                sx={{ py: variantConfig.cellPy }}
+              >
                 {column.render(rowData)}
               </TableCell>
             ))}
