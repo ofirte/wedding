@@ -1733,6 +1733,8 @@ export const englishTranslations: Translations = {
         searchPlaceholder: "Search by guest name...",
         showAll: "Show all guests",
         showAllExplanation: "Include declined and not responded",
+        copyLink: "Copy link",
+        copied: "Copied!",
       },
     },
   },

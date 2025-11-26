@@ -1678,6 +1678,8 @@ export const hebrewTranslations: Translations = {
         searchPlaceholder: "חיפוש לפי שם אורח...",
         showAll: "הצג את כל האורחים",
         showAllExplanation: "כולל סירבו ולא הגיבו",
+        copyLink: "העתק קישור",
+        copied: "הועתק!",
       },
     },
   },

@@ -374,7 +374,7 @@ const AttendanceTracker: React.FC = () => {
                 label={t("seating.attendance.filters.showAll")}
               />
             </Tooltip>
-            <Tooltip title={copySuccess ? "Copied!" : "Copy link"}>
+            <Tooltip title={copySuccess ? t("seating.attendance.filters.copied") : t("seating.attendance.filters.copyLink")}>
               <IconButton onClick={handleCopyUrl} color={copySuccess ? "success" : "default"}>
                 <ContentCopyIcon />
               </IconButton>

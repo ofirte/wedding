@@ -1562,6 +1562,8 @@ interface SeatingTranslations {
       searchPlaceholder: string;
       showAll: string;
       showAllExplanation: string;
+      copyLink: string;
+      copied: string;
     };
   };
 }
