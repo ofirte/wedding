@@ -1,5 +1,13 @@
-import React, { useState } from "react";
-import { Box, Container, Paper, Dialog, DialogTitle, DialogContent, Fab } from "@mui/material";
+import React, { useState, useMemo } from "react";
+import {
+  Box,
+  Container,
+  Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Fab,
+} from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -16,46 +24,114 @@ import { useUpdateTask } from "../../hooks/tasks/useUpdateTask";
 import { useDeleteTask } from "../../hooks/tasks/useDeleteTask";
 import { useAssignTask } from "../../hooks/tasks/useAssignTask";
 import { useCompleteTask } from "../../hooks/tasks/useCompleteTask";
-import { Task } from "@wedding-plan/types";
+import { Task, ProducerTask } from "@wedding-plan/types";
 import TaskForm from "../tasks/TaskForm";
 import TaskSummary from "../tasks/TaskSummary";
+import { DisplayTask } from "../tasks/TaskList";
 import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
+import { useTranslation } from "../../localization/LocalizationContext";
+import { useWeddingsDetails } from "../../hooks/wedding/useWeddingsDetails";
+import {
+  useProducerTasks,
+  useCreateProducerTask,
+  useUpdateProducerTask,
+  useDeleteProducerTask,
+  useCompleteProducerTask,
+} from "../../hooks/producerTasks";
 
 const TasksManagementContent: React.FC = () => {
-  const { viewType, setViewType, filters, setFilters, filterTasks } = useTasksManagement();
+  const { viewType, setViewType, filters, setFilters, filterTasks } =
+    useTasksManagement();
+  const { t } = useTranslation();
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
-  // Mutation hooks
-  const { mutate: createTask, isPending: isCreating } = useCreateTask();
+  // Wedding task mutation hooks
+  const { mutate: createTask, isPending: isCreatingTask } = useCreateTask();
   const { mutate: updateTask } = useUpdateTask();
   const { mutate: deleteTask } = useDeleteTask();
   const { mutate: assignTask } = useAssignTask();
   const { mutate: completeTask } = useCompleteTask();
 
-  // Fetch tasks for stats view
-  const { data: tasks = [] } = useAllWeddingsTasks();
-  const filteredTasks = filterTasks(tasks);
+  // Producer task mutation hooks
+  const { mutate: createProducerTask, isPending: isCreatingProducerTask } =
+    useCreateProducerTask();
+  const { mutate: updateProducerTask } = useUpdateProducerTask();
+  const { mutate: deleteProducerTask } = useDeleteProducerTask();
+  const { mutate: completeProducerTask } = useCompleteProducerTask();
 
-  // Handlers
+  // Fetch wedding tasks
+  const { data: weddingTasks = [] } = useAllWeddingsTasks();
+
+  // Fetch producer tasks
+  const { data: producerTasks = [] } = useProducerTasks();
+
+  // Fetch weddings for the form dropdown
+  const { data: weddings = [] } = useWeddingsDetails();
+
+  // Combine wedding tasks and producer tasks for unified display
+  const allTasks: DisplayTask[] = useMemo(() => {
+    const weddingDisplayTasks: DisplayTask[] = weddingTasks.map((task) => ({
+      ...task,
+      taskType: "wedding" as const,
+    }));
+
+    const producerDisplayTasks: DisplayTask[] = producerTasks.map((task) => ({
+      ...task,
+      taskType: "producer" as const,
+      weddingId: undefined,
+    }));
+
+    return [...weddingDisplayTasks, ...producerDisplayTasks];
+  }, [weddingTasks, producerTasks]);
+
+  const filteredTasks = filterTasks(allTasks);
+
+  const isCreating = isCreatingTask || isCreatingProducerTask;
+
+  // Create task handlers
   const handleCreateTask = (task: Omit<Task, "id">, weddingId?: string) => {
-    createTask({ task , weddingId });
+    createTask({ task, weddingId });
     setCreateDialogOpen(false);
   };
 
-  const handleUpdateTask = (id: string, data: Partial<Task>, weddingId: string) => {
-    updateTask({ id, data ,weddingId });
+  const handleCreateProducerTask = (
+    task: Omit<ProducerTask, "id" | "producerIds" | "createdBy" | "createdAt">
+  ) => {
+    createProducerTask(task);
+    setCreateDialogOpen(false);
   };
 
-  const handleDeleteTask = (id: string, weddingId: string) => {
-    deleteTask({ id , weddingId});
+  // Unified handlers that route based on taskType
+  const handleUpdate = (task: DisplayTask, data: Partial<Task>) => {
+    if (task.taskType === "producer") {
+      updateProducerTask({ id: task.id, data });
+    } else {
+      updateTask({ id: task.id, data, weddingId: task.weddingId || "" });
+    }
   };
 
-  const handleAssignTask = (id: string, userId: string, weddingId: string) => {
-    assignTask(id, userId || "", weddingId);
+  const handleDelete = (task: DisplayTask) => {
+    if (task.taskType === "producer") {
+      deleteProducerTask(task.id);
+    } else {
+      deleteTask({ id: task.id, weddingId: task.weddingId || "" });
+    }
   };
 
-  const handleCompleteTask = (id: string, completed: boolean, weddingId: string) => {
-    completeTask(id, completed, weddingId);
+  const handleAssign = (task: DisplayTask, userId: string) => {
+    if (task.taskType === "producer") {
+      // Producer tasks don't have assignTo functionality
+      return;
+    }
+    assignTask(task.id, userId || "", task.weddingId || "");
+  };
+
+  const handleComplete = (task: DisplayTask, completed: boolean) => {
+    if (task.taskType === "producer") {
+      completeProducerTask({ id: task.id, completed });
+    } else {
+      completeTask(task.id, completed, task.weddingId || "");
+    }
   };
 
   return (
@@ -72,10 +148,10 @@ const TasksManagementContent: React.FC = () => {
             <TaskSummary tasks={filteredTasks} />
           ) : (
             <TasksListView
-              onUpdateTask={handleUpdateTask}
-              onDeleteTask={handleDeleteTask}
-              onAssignTask={handleAssignTask}
-              onCompleteTask={handleCompleteTask}
+              onUpdate={handleUpdate}
+              onDelete={handleDelete}
+              onAssign={handleAssign}
+              onComplete={handleComplete}
             />
           )}
         </Box>
@@ -102,14 +178,17 @@ const TasksManagementContent: React.FC = () => {
         maxWidth="md"
         fullWidth
       >
-        <DialogTitle>Create New Task</DialogTitle>
+        <DialogTitle>{t("tasksManagement.createTask")}</DialogTitle>
         <DialogContent>
           <Box sx={{ pt: 1 }}>
             <TaskForm
               onAddTask={handleCreateTask}
+              onAddProducerTask={handleCreateProducerTask}
               isSubmitting={isCreating}
               mode="create"
               onCancel={() => setCreateDialogOpen(false)}
+              context="producer"
+              weddings={weddings}
             />
           </Box>
         </DialogContent>

@@ -145,10 +145,10 @@ const TaskManager: React.FC = () => {
             )}
             <TaskList
               tasks={filteredTasks}
-              onUpdateTask={(id, data) => updateTask({ id, data })}
-              onDeleteTask={(id) => deleteTask({id})}
-              onAssignTask={(id, person) => assignTask(id, person)}
-              onCompleteTask={(id, completed) => completeTask(id, completed)}
+              onUpdate={(task, data) => updateTask({ id: task.id, data })}
+              onDelete={(task) => deleteTask({ id: task.id })}
+              onAssign={(task, userId) => assignTask(task.id, userId)}
+              onComplete={(task, completed) => completeTask(task.id, completed)}
             />
           </Box>
         </StyledPaper>

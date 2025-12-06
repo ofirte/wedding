@@ -4,6 +4,12 @@ export const hebrewTranslations: Translations = {
   tasksManagement: {
     title: "ניהול משימות",
     description: "נהל ועקוב אחר משימות בכל החתונות",
+    createTask: "יצירת משימה חדשה",
+    taskType: "סוג משימה",
+    weddingTask: "משימת חתונה",
+    producerTask: "משימת מפיק",
+    selectWedding: "בחר חתונה",
+    producerTaskDescription: "משימה אישית שלא משויכת לחתונה",
     filters: {
       wedding: "חתונה",
       allWeddings: "כל החתונות",
@@ -571,6 +577,7 @@ export const hebrewTranslations: Translations = {
     importantTasks: "משימות חשובות",
     noCriticalTasks: "אין משימות קריטיות",
     allCaughtUp: "אתם מעודכנים בכל!",
+    personal: "אישי",
     filterTasks: "סנן משימות",
     clearFilters: "נקה סינונים",
     unassigned: "לא משויך",

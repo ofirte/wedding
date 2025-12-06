@@ -80,7 +80,6 @@ const TableContent = <T extends { id: string | number }>({
               <TableCell
                 key={column.id}
                 align="center"
-                onClick={(e) => e.stopPropagation()}
                 sx={{
                   py: variantConfig.cellPy,
                   ...(column.minWidth && { minWidth: column.minWidth }),

@@ -4,6 +4,12 @@ export const englishTranslations: Translations = {
   tasksManagement: {
     title: "Task Management",
     description: "Manage and track tasks across all weddings",
+    createTask: "Create New Task",
+    taskType: "Task Type",
+    weddingTask: "Wedding Task",
+    producerTask: "Producer Task",
+    selectWedding: "Select Wedding",
+    producerTaskDescription: "Personal task not assigned to a wedding",
     filters: {
       wedding: "Wedding",
       allWeddings: "All Weddings",
@@ -580,6 +586,7 @@ export const englishTranslations: Translations = {
     importantTasks: "Important Tasks",
     noCriticalTasks: "No critical tasks",
     allCaughtUp: "You're all caught up!",
+    personal: "Personal",
     filterTasks: "Filter Tasks",
     clearFilters: "Clear Filters",
     unassigned: "Unassigned",

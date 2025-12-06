@@ -31,6 +31,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
         <TaskForm
           mode="edit"
           initialTask={task}
+          taskType={(task as any).taskType}
           onAddTask={handleSave}
           onCancel={onClose}
           isSubmitting={false}
