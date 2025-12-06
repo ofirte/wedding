@@ -2,26 +2,22 @@ import { LeadEvent } from "@wedding-plan/types";
 
 /**
  * Translate a field name to its display label
+ * Uses dynamic key generation based on convention: leads.columns.{fieldName}
  * @param fieldName The field name to translate
  * @param t Translation function
  * @returns Translated field label
  */
 const translateFieldName = (fieldName: string, t: (key: string) => string): string => {
-  const fieldMap: Record<string, string> = {
-    name: "leads.columns.name",
-    email: "leads.columns.email",
-    phone: "leads.columns.phone",
-    weddingDate: "leads.columns.weddingDate",
-    budget: "leads.columns.budget",
-    estimatedGuests: "leads.columns.estimatedGuests",
-    status: "leads.columns.status",
-    source: "leads.columns.source",
-    service: "leads.columns.service",
-    followUpDate: "leads.columns.followUp",
-    notes: "leads.columns.notes",
+  // Special case mappings where field name differs from translation key
+  const specialCases: Record<string, string> = {
+    followUpDate: "followUp",
   };
 
-  return fieldMap[fieldName] ? t(fieldMap[fieldName]) : fieldName;
+  const translationKey = specialCases[fieldName] || fieldName;
+  const translated = t(`leads.columns.${translationKey}`);
+
+  // If translation returns the key itself (missing translation), fall back to field name
+  return translated.startsWith("leads.columns.") ? fieldName : translated;
 };
 
 /**

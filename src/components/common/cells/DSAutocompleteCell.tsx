@@ -1,26 +1,29 @@
 import React from "react";
 import { Box, TextField, Autocomplete, Typography } from "@mui/material";
-import { Lead } from "@wedding-plan/types";
 
-interface ServiceCellProps {
-  lead: Lead;
+interface DSAutocompleteCellProps {
+  value: string | null | undefined;
+  options: string[];
   isEditing: boolean;
   editValue: string;
-  serviceOptions: string[];
-  inputRef: React.RefObject<HTMLInputElement>;
-  onCellClick: (lead: Lead, field: keyof Lead) => void;
+  inputRef?: React.RefObject<HTMLInputElement>;
+  freeSolo?: boolean;
+  placeholder?: string;
+  onStartEdit: () => void;
   onEditValueChange: (value: string) => void;
-  onBlur: (lead: Lead, field: string) => void;
-  onKeyDown: (e: React.KeyboardEvent, lead: Lead, field: string) => void;
+  onBlur: () => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
 }
 
-export const ServiceCell: React.FC<ServiceCellProps> = ({
-  lead,
+export const DSAutocompleteCell: React.FC<DSAutocompleteCellProps> = ({
+  value,
+  options,
   isEditing,
   editValue,
-  serviceOptions,
   inputRef,
-  onCellClick,
+  freeSolo = true,
+  placeholder = "-",
+  onStartEdit,
   onEditValueChange,
   onBlur,
   onKeyDown,
@@ -28,13 +31,13 @@ export const ServiceCell: React.FC<ServiceCellProps> = ({
   if (isEditing) {
     return (
       <Autocomplete
-        freeSolo
-        options={serviceOptions}
+        freeSolo={freeSolo}
+        options={options}
         value={editValue}
         inputValue={editValue}
-        onInputChange={(e, newValue) => onEditValueChange(newValue)}
-        onChange={(e, newValue) => onEditValueChange(newValue || "")}
-        onBlur={() => onBlur(lead, "service")}
+        onInputChange={(_, newValue) => onEditValueChange(newValue)}
+        onChange={(_, newValue) => onEditValueChange(newValue || "")}
+        onBlur={onBlur}
         size="small"
         renderInput={(params) => (
           <TextField
@@ -42,7 +45,7 @@ export const ServiceCell: React.FC<ServiceCellProps> = ({
             inputRef={inputRef}
             variant="standard"
             size="small"
-            onKeyDown={(e) => onKeyDown(e, lead, "service")}
+            onKeyDown={onKeyDown}
             InputProps={{
               ...params.InputProps,
               disableUnderline: true,
@@ -63,7 +66,7 @@ export const ServiceCell: React.FC<ServiceCellProps> = ({
 
   return (
     <Box
-      onClick={() => onCellClick(lead, "service")}
+      onClick={onStartEdit}
       sx={{
         cursor: "text",
         borderRadius: "6px",
@@ -80,10 +83,10 @@ export const ServiceCell: React.FC<ServiceCellProps> = ({
         noWrap
         sx={{
           fontSize: "0.875rem",
-          color: lead.service ? "text.primary" : "text.disabled",
+          color: value ? "text.primary" : "text.disabled",
         }}
       >
-        {lead.service || "-"}
+        {value || placeholder}
       </Typography>
     </Box>
   );

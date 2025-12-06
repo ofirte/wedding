@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { ResolvedFilterConfig, FilterState } from "./DSTableFilters";
+import { useTranslation } from "../../localization/LocalizationContext";
 
 interface FilterPopoverProps {
   open: boolean;
@@ -35,6 +36,8 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
   filterConfigs,
   onFilterChange,
 }) => {
+  const { t } = useTranslation();
+
   const handleFilterChange = (
     filterId: string,
     event: SelectChangeEvent<any>
@@ -77,7 +80,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
       <Stack spacing={2}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="subtitle1" fontWeight="bold">
-            Filters
+            {t("common.filters")}
           </Typography>
           <IconButton size="small" onClick={onClose}>
             <CloseIcon fontSize="small" />
@@ -102,13 +105,13 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                 label={filterConfig.label}
                 renderValue={
                   filterConfig.type === "multiple"
-                    ? (selected) => `${(selected as any[]).length} selected`
+                    ? (selected) => t("common.selected", { count: (selected as any[]).length })
                     : undefined
                 }
               >
                 {filterConfig.type === "single" && (
                   <MenuItem value="">
-                    <em>All</em>
+                    <em>{t("common.all")}</em>
                   </MenuItem>
                 )}
 

@@ -1,7 +1,30 @@
-import { Column } from "./DSTable";
+import { Column, SearchConfig } from "./DSTable";
 import { FilterState } from "./DSTableFilters";
 
 type Order = "asc" | "desc";
+
+/**
+ * Applies search query to the data set based on configured columns
+ */
+export const applySearch = (
+  sourceData: any[],
+  searchQuery: string,
+  searchConfig?: SearchConfig
+): any[] => {
+  if (!searchQuery.trim() || !searchConfig?.columnIds.length) {
+    return sourceData;
+  }
+
+  const query = searchQuery.toLowerCase().trim();
+
+  return sourceData.filter((item) =>
+    searchConfig.columnIds.some((columnId) => {
+      const value = item[columnId];
+      if (value === null || value === undefined) return false;
+      return String(value).toLowerCase().includes(query);
+    })
+  );
+};
 
 /**
  * Applies active filters to the data set

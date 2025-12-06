@@ -10,7 +10,7 @@ import {
 import { useLeads } from "../../hooks/leads";
 import { Lead } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
-import LeadsTableNew from "./LeadsTableNew";
+import LeadsTable from "./LeadsTable";
 import LeadActivityPanel from "./LeadActivityPanel";
 import LeadsStats from "./LeadsStats";
 
@@ -20,7 +20,7 @@ const LeadsPage: React.FC = () => {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [activityPanelOpen, setActivityPanelOpen] = useState(false);
 
-  const handleRowClick = (lead: Lead) => {
+  const handleOpenActivity = (lead: Lead) => {
     setSelectedLead(lead);
     setActivityPanelOpen(true);
   };
@@ -76,9 +76,9 @@ const LeadsPage: React.FC = () => {
         <LeadsStats leads={leads} />
 
         {/* Leads Table */}
-        <Paper sx={{ mt: 2, p: 2 }}>
-          <LeadsTableNew leads={leads} onRowClick={handleRowClick} />
-        </Paper>
+        <Box sx={{ mt: 2}}>
+          <LeadsTable leads={leads} onOpenActivity={handleOpenActivity} />
+        </Box>
 
         {/* Activity Panel */}
         <LeadActivityPanel

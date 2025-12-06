@@ -9,16 +9,21 @@ export const useNewLeadInput = () => {
   const handleNewLeadKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && newLeadName.trim()) {
       e.preventDefault();
+      handleAddLead();
+    } else if (e.key === "Escape") {
+      setNewLeadName("");
+    }
+  };
 
+  const handleAddLead = () => {
+    if (newLeadName.trim()) {
       createLead({
         name: newLeadName.trim(),
         email: "",
         status: "new",
         source: "website",
+        paymentStatus: "awaiting_payment",
       });
-
-      setNewLeadName("");
-    } else if (e.key === "Escape") {
       setNewLeadName("");
     }
   };
@@ -28,5 +33,6 @@ export const useNewLeadInput = () => {
     newLeadInputRef,
     setNewLeadName,
     handleNewLeadKeyDown,
+    handleAddLead,
   };
 };

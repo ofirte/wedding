@@ -2,19 +2,21 @@ import React from "react";
 import { Box, TextField } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 
-interface AddLeadRowProps {
-  newLeadName: string;
-  newLeadInputRef: React.RefObject<HTMLInputElement>;
+interface DSAddRowProps {
+  value: string;
   placeholder: string;
-  onNewLeadNameChange: (value: string) => void;
+  inputRef?: React.RefObject<HTMLInputElement>;
+  onChange: (value: string) => void;
+  onAdd: () => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
 }
 
-export const AddLeadRow: React.FC<AddLeadRowProps> = ({
-  newLeadName,
-  newLeadInputRef,
+export const DSAddRow: React.FC<DSAddRowProps> = ({
+  value,
   placeholder,
-  onNewLeadNameChange,
+  inputRef,
+  onChange,
+  onAdd,
   onKeyDown,
 }) => {
   return (
@@ -33,12 +35,20 @@ export const AddLeadRow: React.FC<AddLeadRowProps> = ({
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <AddIcon sx={{ fontSize: "1.25rem", color: "primary.main" }} />
+        <AddIcon
+          sx={{
+            fontSize: "1.25rem",
+            color: "primary.main",
+            cursor: "pointer",
+            "&:hover": { opacity: 0.7 },
+          }}
+          onClick={onAdd}
+        />
         <TextField
-          ref={newLeadInputRef}
+          inputRef={inputRef}
           placeholder={placeholder}
-          value={newLeadName}
-          onChange={(e) => onNewLeadNameChange(e.target.value)}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
           onKeyDown={onKeyDown}
           size="small"
           variant="standard"
