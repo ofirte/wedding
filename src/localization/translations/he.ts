@@ -910,7 +910,7 @@ export const hebrewTranslations: Translations = {
           icon: "message",
         },
         phoneSupport: {
-          title: "שיחות טלפון למי שלא השיב",
+          title: "שיחת טלפון למי שלא השיב",
           description: "וידוא אישי מול האורחים להבטחת אחוז תגובה גבוה",
           icon: "phone",
         },
@@ -926,13 +926,23 @@ export const hebrewTranslations: Translations = {
         },
         customDesign: {
           title: "עיצוב אישי של ההודעות",
-          description: "התאימו את הנוסח, הצבעים והאייקונים לסגנון שלכם",
+          description: "צבעים ואייקונים מותאמים לסגנון שלכם",
           icon: "settings",
         },
-        transportAndMeal: {
-          title: "בדיקת היענות להסעה והעדפות מזון",
+        transportation: {
+          title: "בדיקת היענות להסעה",
+          description: "ניהול הסעות מסודר ומדויק",
+          icon: "bus",
+        },
+        mealPreferences: {
+          title: "בדיקת העדפות מזון",
           description: "חוסכים הפתעות ביום החתונה",
-          icon: "gift",
+          icon: "utensils",
+        },
+        customMessages: {
+          title: "אפשרות להוסיף הודעות מותאמות",
+          description: "מענה פרטני יינתן לכל בקשה",
+          icon: "edit",
         },
         smartTracking: {
           title: "מעקב חכם ודוחות בזמן אמת",

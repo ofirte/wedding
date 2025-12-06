@@ -937,7 +937,17 @@ export interface Translations {
           description: string;
           icon: string;
         };
-        transportAndMeal: {
+        transportation: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        mealPreferences: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        customMessages: {
           title: string;
           description: string;
           icon: string;
