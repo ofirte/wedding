@@ -32,6 +32,12 @@ export interface Translations {
   tasksManagement: {
     title: string;
     description: string;
+    createTask: string;
+    taskType: string;
+    weddingTask: string;
+    producerTask: string;
+    selectWedding: string;
+    producerTaskDescription: string;
     filters: {
       wedding: string;
       allWeddings: string;
@@ -595,6 +601,7 @@ export interface Translations {
     importantTasks: string;
     noCriticalTasks: string;
     allCaughtUp: string;
+    personal: string;
     filterTasks: string;
     clearFilters: string;
     unassigned: string;

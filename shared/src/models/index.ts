@@ -18,3 +18,4 @@ export * from "./rsvpConfig";
 export * from "./seating";
 export * from "./payment";
 export * from "./lead";
+export * from "./producerTask";

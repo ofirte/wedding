@@ -1,29 +1,59 @@
 import React, { useMemo } from "react";
 import { Box, Typography, Divider, Collapse } from "@mui/material";
-import TaskList from "../../tasks/TaskList";
+import TaskList, { DisplayTask } from "../../tasks/TaskList";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
 import { Task } from "@wedding-plan/types";
 import { useTasksManagement } from "../TasksManagementContext";
+import { useProducerTasks } from "../../../hooks/producerTasks";
 
 interface TasksListViewProps {
-  onUpdateTask: (id: string, task: Partial<Task>, weddingId: string) => void;
-  onDeleteTask: (id: string, weddingId: string) => void;
-  onAssignTask: (id: string, person: string, weddingId: string) => void;
-  onCompleteTask: (id: string, completed: boolean, weddingId: string) => void;
+  // Unified callbacks - routing based on taskType is handled by parent
+  onUpdate: (task: DisplayTask, data: Partial<Task>) => void;
+  onDelete: (task: DisplayTask) => void;
+  onAssign: (task: DisplayTask, userId: string) => void;
+  onComplete: (task: DisplayTask, completed: boolean) => void;
+}
+
+interface TaskGroups {
+    overdueTasks: DisplayTask[];
+    upcomingTasks: DisplayTask[];
+    laterTasks: DisplayTask[];
+    recentlyCompletedTasks: DisplayTask[];
+    allCompletedTasks: DisplayTask[];
 }
 
 const TasksListView: React.FC<TasksListViewProps> = ({
-  onUpdateTask,
-  onDeleteTask,
-  onAssignTask,
-  onCompleteTask,
+  onUpdate,
+  onDelete,
+  onAssign,
+  onComplete,
 }) => {
   const { t } = useTranslation();
-  const { data: tasks = [], isLoading: isLoadingTasks } = useAllWeddingsTasks();
+  const { data: weddingTasks = [], isLoading: isLoadingWeddingTasks } = useAllWeddingsTasks();
+  const { data: producerTasksData = [], isLoading: isLoadingProducerTasks } = useProducerTasks();
   const { filterTasks, filters } = useTasksManagement();
-  const filteredTasks = filterTasks(tasks);
   const [showRecentlyCompleted, setShowRecentlyCompleted] = React.useState(true);
+
+  // Combine wedding tasks and producer tasks for unified display
+  const allTasks: DisplayTask[] = useMemo(() => {
+    const weddingDisplayTasks: DisplayTask[] = weddingTasks.map((task) => ({
+      ...task,
+      taskType: "wedding" as const,
+    }));
+
+    const producerDisplayTasks: DisplayTask[] = producerTasksData.map((task) => ({
+      ...task,
+      taskType: "producer" as const,
+      weddingId: undefined,
+    }));
+
+    return [...weddingDisplayTasks, ...producerDisplayTasks];
+  }, [weddingTasks, producerTasksData]);
+
+  // Cast back to DisplayTask since filterTasks preserves all properties
+  const filteredTasks = filterTasks(allTasks) as DisplayTask[];
+  const isLoadingTasks = isLoadingWeddingTasks || isLoadingProducerTasks;
 
   const now = useMemo(() => new Date(), []); // Memoize current date
   const twoWeeks = useMemo(() => {
@@ -38,13 +68,7 @@ const TasksListView: React.FC<TasksListViewProps> = ({
     return date;
   }, []);
 
-  interface TaskGroups {
-    overdueTasks: (Task & { weddingId: string })[];
-    upcomingTasks: (Task & { weddingId: string })[];
-    laterTasks: (Task & { weddingId: string })[];
-    recentlyCompletedTasks: (Task & { weddingId: string })[];
-    allCompletedTasks: (Task & { weddingId: string })[];
-  }
+
 
   const { overdueTasks, upcomingTasks, laterTasks, recentlyCompletedTasks, allCompletedTasks } =
     useMemo(() => {
@@ -92,15 +116,16 @@ const TasksListView: React.FC<TasksListViewProps> = ({
       );
     }, [filteredTasks, now, twoWeeks, sevenDaysAgo]);
 
-  // Sort recently completed by completedAt (newest first) and limit to 10
-  const sortedRecentlyCompleted = useMemo(() => {
-    return [...recentlyCompletedTasks]
-      .sort((a, b) => {
-        if (!a.completedAt || !b.completedAt) return 0;
-        return new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime();
-      })
-      .slice(0, 10);
-  }, [recentlyCompletedTasks]);
+  const tasksList = [{
+    title: 'tasksManagement.list.overdueTitle',
+    tasks: overdueTasks
+  }, {
+    title: 'tasksManagement.list.upcomingTitle',
+    tasks: upcomingTasks
+  }, {
+    title: 'tasksManagement.list.laterTitle',
+    tasks: laterTasks 
+  }]
 
   if (isLoadingTasks) {
     return (
@@ -120,96 +145,35 @@ const TasksListView: React.FC<TasksListViewProps> = ({
         </Typography>
         <TaskList
           tasks={allCompletedTasks}
-          onUpdateTask={onUpdateTask}
-          onDeleteTask={onDeleteTask}
-          onAssignTask={onAssignTask}
-          onCompleteTask={onCompleteTask}
+          onUpdate={onUpdate}
+          onDelete={onDelete}
+          onAssign={onAssign}
+          onComplete={onComplete}
         />
       </Box>
     );
   }
-
+  console.log(tasksList)
   return (
     <Box>
       {/* Overdue Tasks */}
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          {t("tasksManagement.list.overdueTitle")}
-        </Typography>
-        <TaskList
-          tasks={overdueTasks}
-          onUpdateTask={onUpdateTask}
-          onDeleteTask={onDeleteTask}
-          onAssignTask={onAssignTask}
-          onCompleteTask={onCompleteTask}
-        />
-      </Box>
-
-      <Divider sx={{ my: 3 }} />
-
-      {/* Upcoming Tasks */}
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          {t("tasksManagement.list.upcomingTitle")}
-        </Typography>
-        <TaskList
-          tasks={upcomingTasks}
-          onUpdateTask={onUpdateTask}
-          onDeleteTask={onDeleteTask}
-          onAssignTask={onAssignTask}
-          onCompleteTask={onCompleteTask}
-        />
-      </Box>
-
-      <Divider sx={{ my: 3 }} />
-
-      {/* Later Tasks */}
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          {t("tasksManagement.list.laterTitle")}
-        </Typography>
-        <TaskList
-          tasks={laterTasks}
-          onUpdateTask={onUpdateTask}
-          onDeleteTask={onDeleteTask}
-          onAssignTask={onAssignTask}
-          onCompleteTask={onCompleteTask}
-        />
-      </Box>
-
-      {/* Recently Completed Section */}
-      {sortedRecentlyCompleted.length > 0 && (
+      {tasksList.map(({title, tasks}, index) => tasks.length > 0 && (
         <>
-          <Divider sx={{ my: 3 }} />
-          <Box>
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
-              onClick={() => setShowRecentlyCompleted(!showRecentlyCompleted)}
-            >
-              Recently Completed ({sortedRecentlyCompleted.length})
-              <Typography variant="body2" color="text.secondary">
-                {showRecentlyCompleted ? "▼" : "▶"}
-              </Typography>
-            </Typography>
-            <Collapse in={showRecentlyCompleted}>
-              <TaskList
-                tasks={sortedRecentlyCompleted}
-                onUpdateTask={onUpdateTask}
-                onDeleteTask={onDeleteTask}
-                onAssignTask={onAssignTask}
-                onCompleteTask={onCompleteTask}
-              />
-            </Collapse>
-          </Box>
+        <Box key={title} sx={{ mb: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            {t(title)}
+          </Typography>
+          <TaskList
+            tasks={tasks}
+            onUpdate={onUpdate}
+            onDelete={onDelete}
+            onAssign={onAssign}
+            onComplete={onComplete}
+          />
+        </Box>
+        {index < tasksList.length - 1 && <Divider sx={{ my: 3 }} />}
         </>
-      )}
+      ))}
     </Box>
   );
 };

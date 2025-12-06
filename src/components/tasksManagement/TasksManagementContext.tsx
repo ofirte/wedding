@@ -14,8 +14,8 @@ interface TasksManagementContextType {
   filters: TaskFilter;
   setFilters: (filters: TaskFilter) => void;
   filterTasks: (
-    tasks: (Task & { weddingId: string })[]
-  ) => (Task & { weddingId: string })[];
+    tasks: (Task & { weddingId?: string })[]
+  ) => (Task & { weddingId?: string })[];
 }
 
 const defaultFilters: TaskFilter = {
@@ -39,11 +39,11 @@ export const TasksManagementProvider: React.FC<{ children: ReactNode }> = ({
   const [viewType, setViewType] = useState<ViewType>("list");
   const [filters, setFilters] = useState<TaskFilter>(defaultFilters);
   const filterTasks = useMemo(
-    () => (tasks: (Task & { weddingId: string })[]) => {
-      console.log("Filtering tasks with filters:", tasks);
+    () => (tasks: (Task & { weddingId?: string })[]) => {
       return tasks.filter((task: Task & { weddingId?: string }) => {
-        // Filter by wedding
-        if (filters.wedding && task.weddingId !== filters.wedding) {
+        // Filter by wedding (only apply to tasks that have a weddingId)
+        // Producer tasks (no weddingId) should always pass through
+        if (filters.wedding && task.weddingId && task.weddingId !== filters.wedding) {
           return false;
         }
 

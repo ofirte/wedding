@@ -10,12 +10,19 @@ import { TaskActionsMenu } from "./TaskActionsMenu";
 import TaskEditDialog from "./TaskEditDialog";
 import { sortTasks } from "./taskUtils";
 
+// Extended task type that includes producer tasks for unified display
+export interface DisplayTask extends Task {
+  taskType?: "wedding" | "producer";
+  weddingId?: string;
+}
+
 interface TaskListProps {
-  tasks: (Task & { weddingId?: string })[];
-  onUpdateTask: (id: string, task: Partial<Task>, weddingId: string) => void;
-  onDeleteTask: (id: string, weddingId: string) => void;
-  onAssignTask: (id: string, person: string, weddingId: string) => void;
-  onCompleteTask: (id: string, completed: boolean, weddingId: string) => void;
+  tasks: DisplayTask[];
+  // Unified callbacks - parent handles routing based on task.taskType
+  onUpdate: (task: DisplayTask, data: Partial<Task>) => void;
+  onDelete: (task: DisplayTask) => void;
+  onAssign: (task: DisplayTask, userId: string) => void;
+  onComplete: (task: DisplayTask, completed: boolean) => void;
   weddingMembers?: any[]; // Optional: pass wedding members for assignment menu
 }
 
@@ -30,10 +37,10 @@ interface TaskListProps {
  */
 const TaskList: React.FC<TaskListProps> = ({
   tasks,
-  onUpdateTask,
-  onDeleteTask,
-  onAssignTask,
-  onCompleteTask,
+  onUpdate,
+  onDelete,
+  onAssign,
+  onComplete,
   weddingMembers: providedWeddingMembers,
 }) => {
   const { t } = useTranslation();
@@ -118,8 +125,9 @@ const TaskList: React.FC<TaskListProps> = ({
   const handleAssign = (userId: string) => {
     if (currentTaskId) {
       const task = tasks.find(t => t.id === currentTaskId);
-      const weddingId = task?.weddingId || '';
-      onAssignTask(currentTaskId, userId, weddingId);
+      if (task) {
+        onAssign(task, userId);
+      }
       handleMenuClose();
     }
   };
@@ -127,8 +135,9 @@ const TaskList: React.FC<TaskListProps> = ({
   const handleDelete = () => {
     if (currentTaskId) {
       const task = tasks.find(t => t.id === currentTaskId);
-      const weddingId = task?.weddingId || '';
-      onDeleteTask(currentTaskId, weddingId);
+      if (task) {
+        onDelete(task);
+      }
       handleMenuClose();
     }
   };
@@ -147,8 +156,9 @@ const TaskList: React.FC<TaskListProps> = ({
   const handleEditDialogSave = (editedTask: Task) => {
     if (editedTask.id) {
       const task = tasks.find(t => t.id === editedTask.id);
-      const weddingId = task?.weddingId || '';
-      onUpdateTask(editedTask.id, editedTask, weddingId);
+      if (task) {
+        onUpdate(task, editedTask);
+      }
       setEditDialogOpen(false);
       setTaskToEdit(null);
     }
@@ -157,8 +167,9 @@ const TaskList: React.FC<TaskListProps> = ({
   // Task interaction handlers
   const handleToggleComplete = (taskId: string, completed: boolean) => {
     const task = tasks.find(t => t.id === taskId);
-    const weddingId = task?.weddingId || '';
-    onCompleteTask(taskId, !completed, weddingId);
+    if (task) {
+      onComplete(task, !completed);
+    }
   };
 
   const handleToggleExpand = (taskId: string, hasDescription: boolean) => {

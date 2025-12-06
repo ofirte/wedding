@@ -13,6 +13,7 @@ import {
   MoreVert as MoreIcon,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
+  Person as PersonIcon,
 } from "@mui/icons-material";
 import { Task } from "@wedding-plan/types";
 import { format } from "date-fns";
@@ -30,7 +31,7 @@ import { stringToColor } from "../../utils/ColorUtils";
 import { useParams } from "react-router";
 
 interface TaskListItemProps {
-  task: Task & { weddingId?: string };
+  task: Task & { weddingId?: string; taskType?: "wedding" | "producer" };
   isExpanded: boolean;
   onToggleExpand: (taskId: string, hasDescription: boolean) => void;
   onToggleComplete: (taskId: string, completed: boolean) => void;
@@ -137,8 +138,24 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({
             flexWrap: "wrap",
           }}
         >
-          {/* Wedding Badge (if multi-wedding context) */}
-          {task.weddingId && taskWedding && (
+          {/* Producer Task Badge */}
+          {task.taskType === "producer" && (
+            <Chip
+              label={t("tasks.personal")}
+              size="small"
+              icon={<PersonIcon sx={{ fontSize: 14 }} />}
+              sx={{
+                height: 22,
+                fontSize: "0.7rem",
+                bgcolor: "rgba(156, 39, 176, 0.1)",
+                color: "secondary.main",
+                fontWeight: 600,
+                "& .MuiChip-icon": { color: "secondary.main" },
+              }}
+            />
+          )}
+          {/* Wedding Badge (if wedding task and multi-wedding context) */}
+          {task.taskType !== "producer" && task.weddingId && taskWedding && (
             <Chip
               label={taskWedding.name}
               size="small"
