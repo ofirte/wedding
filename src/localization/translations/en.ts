@@ -334,6 +334,12 @@ export const englishTranslations: Translations = {
       "Error loading user data. Please try refreshing the page.",
     errorLoadingWeddings:
       "Error loading weddings. Please try refreshing the page.",
+    archive: "Archive",
+    archiveTooltip: "Weddings are moved here the day after the event",
+    upcomingWeddings: "Upcoming Weddings",
+    daysLeft: "{{count}} days left",
+    noUpcomingWeddings: "No upcoming weddings",
+    newWedding: "New Wedding",
     emptyState: {
       title: "Ready to Get Started?",
       description: "Create your first wedding event and start managing it with ease.",

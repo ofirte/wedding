@@ -331,6 +331,12 @@ export const hebrewTranslations: Translations = {
     invitationCode: "קוד הזמנה",
     errorLoadingUserData: "שגיאה בטעינת נתוני המשתמש. אנא נסה לרענן את הדף.",
     errorLoadingWeddings: "שגיאה בטעינת החתונות. אנא נסה לרענן את הדף.",
+    archive: "ארכיון",
+    archiveTooltip: "חתונות מועברות לכאן יום אחרי האירוע",
+    upcomingWeddings: "חתונות קרובות",
+    daysLeft: "נותרו {{count}} ימים",
+    noUpcomingWeddings: "אין חתונות קרובות",
+    newWedding: "חתונה חדשה",
     emptyState: {
       title: "מוכנים להתחיל?",
       description: "צרו את החתונה הראשונה שלכם, והתחילו לנהל אירועים בנוחות.",

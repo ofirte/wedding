@@ -360,6 +360,12 @@ export interface Translations {
     invitationCode: string;
     errorLoadingUserData: string;
     errorLoadingWeddings: string;
+    archive: string;
+    archiveTooltip: string;
+    upcomingWeddings: string;
+    daysLeft: string;
+    noUpcomingWeddings: string;
+    newWedding: string;
     emptyState: {
       title: string;
       description: string;
