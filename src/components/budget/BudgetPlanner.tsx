@@ -181,8 +181,25 @@ const BudgetPlanner = () => {
           bgcolor: "background.paper",
           borderRadius: 2,
           boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+          position: "relative",
         }}
       >
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={handleAddNew}
+          disabled={isMutating}
+          color="info"
+          sx={{
+            ...responsivePatterns.responsiveButton,
+            borderRadius: 2,
+            position: "absolute",
+            top: { xs: 8, sm: 16 },
+            right: { xs: 8, sm: 16 },
+          }}
+        >
+          {isCreating ? t("budget.addingBudgetItem") : t("budget.addItem")}
+        </Button>
         <Stack spacing={4}>
           <Box sx={responsivePatterns.flexColumn}>
             <Typography
@@ -192,35 +209,11 @@ const BudgetPlanner = () => {
             >
               {t("budget.planning")}
             </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                gap: { xs: 1, sm: 2 },
-                alignItems: { xs: "stretch", sm: "center" },
-              }}
-            >
-              <TotalBudgetEditor
-                totalBudget={totalBudget?.amount ?? 0}
-                isLoading={isTotalBudgetLoading}
-                onSaveTotalBudget={updateTotalBudget}
-              />
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={handleAddNew}
-                disabled={isMutating}
-                color="info"
-                sx={{
-                  ...responsivePatterns.responsiveButton,
-                  borderRadius: 2,
-                }}
-              >
-                {isCreating
-                  ? t("budget.addingBudgetItem")
-                  : t("budget.addItem")}
-              </Button>
-            </Box>
+            <TotalBudgetEditor
+              totalBudget={totalBudget?.amount ?? 0}
+              isLoading={isTotalBudgetLoading}
+              onSaveTotalBudget={updateTotalBudget}
+            />
           </Box>
 
           <BudgetSummary

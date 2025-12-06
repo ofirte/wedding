@@ -600,6 +600,9 @@ export const englishTranslations: Translations = {
       updateSuccess: "Task updated successfully",
       updateError: "Failed to update task",
     },
+    daysLeft: "{{count}} days left",
+    daysOverdue: "{{count}} days overdue",
+    dueToday: "Due today",
   },
   wedding: {
     title: "Wedding Details",

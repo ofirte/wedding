@@ -615,6 +615,9 @@ export interface Translations {
       updateSuccess: string;
       updateError: string;
     };
+    daysLeft: string;
+    daysOverdue: string;
+    dueToday: string;
   };
   wedding: {
     title: string;
