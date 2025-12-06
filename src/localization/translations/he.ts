@@ -178,8 +178,8 @@ export const hebrewTranslations: Translations = {
     createdAt: "נוצר בתאריך",
     expectedPrice: "מחיר צפוי",
     actualPrice: "מחיר בפועל",
-    downPayment: "מקדמה",
-    balance: "יתרה",
+    downPayment: "שולם עד כה",
+    balance: "נותר לשלם",
     contract: "חוזה",
     contractDocument: "מסמך חוזה",
     uploadContract: "העלה חוזה",
@@ -591,6 +591,9 @@ export const hebrewTranslations: Translations = {
       updateSuccess: "המשימה עודכנה בהצלחה",
       updateError: "עדכון המשימה נכשל",
     },
+    daysLeft: "עוד {{count}} ימים",
+    daysOverdue: "באיחור של {{count}} ימים",
+    dueToday: "היום",
   },
   wedding: {
     title: "פרטי החתונה",
@@ -910,7 +913,7 @@ export const hebrewTranslations: Translations = {
           icon: "message",
         },
         phoneSupport: {
-          title: "שיחות טלפון למי שלא השיב",
+          title: "שיחת טלפון למי שלא השיב",
           description: "וידוא אישי מול האורחים להבטחת אחוז תגובה גבוה",
           icon: "phone",
         },
@@ -926,13 +929,23 @@ export const hebrewTranslations: Translations = {
         },
         customDesign: {
           title: "עיצוב אישי של ההודעות",
-          description: "התאימו את הנוסח, הצבעים והאייקונים לסגנון שלכם",
+          description: "צבעים ואייקונים מותאמים לסגנון שלכם",
           icon: "settings",
         },
-        transportAndMeal: {
-          title: "בדיקת היענות להסעה והעדפות מזון",
+        transportation: {
+          title: "בדיקת היענות להסעה",
+          description: "ניהול הסעות מסודר ומדויק",
+          icon: "bus",
+        },
+        mealPreferences: {
+          title: "בדיקת העדפות מזון",
           description: "חוסכים הפתעות ביום החתונה",
-          icon: "gift",
+          icon: "utensils",
+        },
+        customMessages: {
+          title: "אפשרות להוסיף הודעות מותאמות",
+          description: "מענה פרטני יינתן לכל בקשה",
+          icon: "edit",
         },
         smartTracking: {
           title: "מעקב חכם ודוחות בזמן אמת",

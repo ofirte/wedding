@@ -259,7 +259,9 @@ const RSVPPricingPage: React.FC = () => {
               "eventReminder",
               "thankYou",
               "customDesign",
-              "transportAndMeal",
+              "transportation",
+              "mealPreferences",
+              "customMessages",
               "smartTracking",
             ].map((feature) => (
               <Grid size={{ xs: 12, md: 6, lg: 4 }} key={feature}>

@@ -615,6 +615,9 @@ export interface Translations {
       updateSuccess: string;
       updateError: string;
     };
+    daysLeft: string;
+    daysOverdue: string;
+    dueToday: string;
   };
   wedding: {
     title: string;
@@ -937,7 +940,17 @@ export interface Translations {
           description: string;
           icon: string;
         };
-        transportAndMeal: {
+        transportation: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        mealPreferences: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        customMessages: {
           title: string;
           description: string;
           icon: string;

@@ -600,6 +600,9 @@ export const englishTranslations: Translations = {
       updateSuccess: "Task updated successfully",
       updateError: "Failed to update task",
     },
+    daysLeft: "{{count}} days left",
+    daysOverdue: "{{count}} days overdue",
+    dueToday: "Due today",
   },
   wedding: {
     title: "Wedding Details",
@@ -952,13 +955,23 @@ export const englishTranslations: Translations = {
         },
         customDesign: {
           title: "Custom Message Design",
-          description: "Personalize text, colors, and icons to match your style",
+          description: "Colors and icons customized to match your style",
           icon: "settings",
         },
-        transportAndMeal: {
-          title: "Transportation & Meal Preferences Tracking",
+        transportation: {
+          title: "Transportation Request Tracking",
+          description: "Organized and accurate transportation management",
+          icon: "bus",
+        },
+        mealPreferences: {
+          title: "Meal Preferences Tracking",
           description: "Avoid surprises on your wedding day",
-          icon: "gift",
+          icon: "utensils",
+        },
+        customMessages: {
+          title: "Option to Add Custom Messages",
+          description: "Personalized response provided for each request",
+          icon: "edit",
         },
         smartTracking: {
           title: "Smart Tracking & Real-Time Reports",

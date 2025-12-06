@@ -16,8 +16,7 @@ import {
   Person as PersonIcon,
 } from "@mui/icons-material";
 import { Task } from "@wedding-plan/types";
-import { format } from "date-fns";
-import { he, enUS } from "date-fns/locale";
+import { differenceInDays, startOfDay } from "date-fns";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { TaskBadge } from "./TaskBadge";
 import { TaskAssignedAvatar } from "./TaskAssignedAvatar";
@@ -50,14 +49,28 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({
   onEdit,
   onMenuClick,
 }) => {
-  const { t, language } = useTranslation();
+  const { t } = useTranslation();
   const {weddingId } = useParams();
   const weddingIds = useMemo(() => (task.weddingId ? [task.weddingId] : [weddingId || ""]), [task.weddingId, weddingId]);
   const hasDescription = Boolean(task.description);
   const { data: weddingsDetails } = useWeddingsDetails(
    weddingIds
   );
-  const dateLocale = useMemo(() => (language === "he" ? he : enUS), [language]);
+
+  const getDueDateLabel = useMemo(() => {
+    if (!task.dueDate) return null;
+    const today = startOfDay(new Date());
+    const dueDate = startOfDay(new Date(task.dueDate));
+    const diffDays = differenceInDays(dueDate, today);
+
+    if (diffDays === 0) {
+      return { label: t("tasks.dueToday"), color: "#E57373" };
+    } else if (diffDays > 0) {
+      return { label: t("tasks.daysLeft", { count: diffDays }), color: "#7A9CB3" };
+    } else {
+      return { label: t("tasks.daysOverdue", { count: Math.abs(diffDays) }), color: "#E57373" };
+    }
+  }, [task.dueDate, t]);
 
   const taskWedding = useMemo(
     () => weddingsDetails?.find((wedding) => wedding.id === task.weddingId),
@@ -174,12 +187,10 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({
             label={t(`common.${task.priority.toLowerCase()}`)}
             color={getPriorityBadgeColor(task.priority)}
           />
-          {task.dueDate && (
+          {getDueDateLabel && (
             <TaskBadge
-              label={format(new Date(task.dueDate), "PPP", {
-                locale: dateLocale,
-              })}
-              color="#7A9CB3"
+              label={getDueDateLabel.label}
+              color={getDueDateLabel.color}
             />
           )}
           {task.category && (
