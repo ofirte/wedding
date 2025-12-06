@@ -18,7 +18,7 @@ import {
 } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { responsivePatterns } from "../../utils/ResponsiveUtils";
-import { Column } from "./DSTable";
+import { Column, VariantConfig } from "./DSTable";
 
 export interface MobileTableViewProps<T extends { id: string | number }> {
   data: T[];
@@ -28,6 +28,7 @@ export interface MobileTableViewProps<T extends { id: string | number }> {
   onRowSelect?: (row: T, isSelected: boolean) => void;
   selectedRows?: T[];
   showSelectColumn?: boolean;
+  variantConfig: VariantConfig;
 }
 
 const MobileTableView = <T extends { id: string | number }>({
@@ -38,6 +39,7 @@ const MobileTableView = <T extends { id: string | number }>({
   onRowSelect,
   selectedRows = [],
   showSelectColumn = false,
+  variantConfig,
 }: MobileTableViewProps<T>) => {
   const { t } = useTranslation();
   const [expandedCards, setExpandedCards] = React.useState<
@@ -131,7 +133,7 @@ const MobileTableView = <T extends { id: string | number }>({
           },
         }}
       >
-        <CardContent sx={responsivePatterns.cardPadding}>
+        <CardContent sx={{ p: variantConfig.cardP }}>
           {/* Header with title and selection */}
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
             {showSelectColumn && onRowSelect && (

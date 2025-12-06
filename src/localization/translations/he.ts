@@ -1546,6 +1546,7 @@ export const hebrewTranslations: Translations = {
       autoArrange: "סידור אוטומטי",
       addGuest: "הוסף אורח",
       assignGuests: "הקצה אורחים",
+      attendanceTracker: "מעקב נוכחות",
     },
     templates: {},
     assignment: {
@@ -1643,6 +1644,43 @@ export const hebrewTranslations: Translations = {
       deletingTable: "שגיאה במחיקת שולחן. אנא נסה שנית.",
       assigningGuest: "שגיאה בהקצאת אורח. אנא נסה שנית.",
       removingGuest: "שגיאה בהסרת אורח. אנא נסה שנית.",
+    },
+    attendance: {
+      title: "מעקב נוכחות",
+      subtitle: "מעקב אחר הגעת אורחים וסטטוס צ'ק-אין",
+      stats: {
+        confirmedGuests: "אורחים מאושרים",
+        checkedIn: "עשו צ'ק-אין",
+      },
+      columns: {
+        guestName: "שם האורח",
+        rsvpStatus: "סטטוס RSVP",
+        confirmedAmount: "כמות מאושרת",
+        actualAmount: "כמות בפועל",
+        tableAssignment: "שולחן",
+        checkInStatus: "צ'ק-אין",
+      },
+      rsvpStatus: {
+        confirmed: "מאושר",
+        declined: "סירב",
+        notAttending: "לא מגיע",
+        notResponded: "לא הגיב",
+      },
+      checkIn: {
+        checkedIn: "עשה צ'ק-אין",
+        notCheckedIn: "לא עשה צ'ק-אין",
+      },
+      table: {
+        notAssigned: "לא משוייך",
+        tableNumber: "שולחן {{number}}",
+      },
+      filters: {
+        searchPlaceholder: "חיפוש לפי שם אורח...",
+        showAll: "הצג את כל האורחים",
+        showAllExplanation: "כולל סירבו ולא הגיבו",
+        copyLink: "העתק קישור",
+        copied: "הועתק!",
+      },
     },
   },
   payment: {
