@@ -1260,8 +1260,11 @@ export interface Translations {
       phone: string;
       weddingDate: string;
       budget: string;
+      quotation: string;
+      advanceAmount: string;
       estimatedGuests: string;
       status: string;
+      paymentStatus: string;
       source: string;
       service: string;
       followUp: string;
@@ -1271,14 +1274,15 @@ export interface Translations {
     statuses: {
       new: string;
       initial_contact: string;
-      qualified: string;
-      proposal_sent: string;
-      contract_offered: string;
-      signed: string;
-      deposit_paid: string;
-      active_client: string;
+      contract_suggested: string;
+      contract_signed: string;
       done: string;
       lost: string;
+    };
+    paymentStatuses: {
+      awaiting_payment: string;
+      advance_paid: string;
+      paid_in_full: string;
     };
     sources: {
       website: string;
@@ -1295,6 +1299,8 @@ export interface Translations {
       newLeads: string;
       converted: string;
       conversionRate: string;
+      expectedIncome: string;
+      expectedIncomeTooltip: string;
     };
     activityPanel: {
       title: string;
@@ -1336,6 +1342,9 @@ export interface Translations {
       leadDeleted: string;
       confirmDelete: string;
       followUpOverdue: string;
+    };
+    actions: {
+      viewActivity: string;
     };
   };
   support: {

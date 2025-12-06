@@ -1,31 +1,38 @@
 import React from "react";
 import { Box, TextField, Typography, Tooltip } from "@mui/material";
 import { Warning as WarningIcon } from "@mui/icons-material";
-import { Lead } from "@wedding-plan/types";
 
-interface EditableTextCellProps {
-  lead: Lead;
-  field: keyof Lead;
+export type DSEditableTextCellType = "text" | "number" | "date";
+
+interface DSEditableTextCellProps {
+  value: string | number | null | undefined;
   isEditing: boolean;
   editValue: string;
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef?: React.RefObject<HTMLInputElement>;
+  type?: DSEditableTextCellType;
+  placeholder?: string;
   showWarning?: boolean;
   warningTooltip?: string;
-  onCellClick: (lead: Lead, field: keyof Lead) => void;
+  fontWeight?: number;
+  formatDisplay?: (value: string | number | null | undefined) => string;
+  onStartEdit: () => void;
   onEditValueChange: (value: string) => void;
-  onBlur: (lead: Lead, field: string) => void;
-  onKeyDown: (e: React.KeyboardEvent, lead: Lead, field: string) => void;
+  onBlur: () => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
 }
 
-export const EditableTextCell: React.FC<EditableTextCellProps> = ({
-  lead,
-  field,
+export const DSEditableTextCell: React.FC<DSEditableTextCellProps> = ({
+  value,
   isEditing,
   editValue,
   inputRef,
+  type = "text",
+  placeholder = "-",
   showWarning = false,
   warningTooltip,
-  onCellClick,
+  fontWeight = 400,
+  formatDisplay,
+  onStartEdit,
   onEditValueChange,
   onBlur,
   onKeyDown,
@@ -33,20 +40,14 @@ export const EditableTextCell: React.FC<EditableTextCellProps> = ({
   if (isEditing) {
     return (
       <TextField
-        ref={inputRef}
+        inputRef={inputRef}
         value={editValue}
         onChange={(e) => onEditValueChange(e.target.value)}
-        onBlur={() => onBlur(lead, field)}
-        onKeyDown={(e) => onKeyDown(e, lead, field)}
+        onBlur={onBlur}
+        onKeyDown={onKeyDown}
         size="small"
         variant="standard"
-        type={
-          field === "budget" || field === "estimatedGuests"
-            ? "number"
-            : field === "weddingDate" || field === "followUpDate"
-            ? "date"
-            : "text"
-        }
+        type={type}
         fullWidth
         InputProps={{
           disableUnderline: true,
@@ -62,18 +63,11 @@ export const EditableTextCell: React.FC<EditableTextCellProps> = ({
     );
   }
 
-  const value = lead[field];
-  let displayValue = value;
-
-  if (field === "weddingDate" || field === "followUpDate") {
-    displayValue = value ? new Date(value as string).toLocaleDateString() : "";
-  } else if (field === "budget") {
-    displayValue = value ? `₪${(value as number).toLocaleString()}` : "";
-  }
+  const displayValue = formatDisplay ? formatDisplay(value) : (value ?? "");
 
   return (
     <Box
-      onClick={() => onCellClick(lead, field)}
+      onClick={onStartEdit}
       sx={{
         cursor: "text",
         borderRadius: "6px",
@@ -100,10 +94,10 @@ export const EditableTextCell: React.FC<EditableTextCellProps> = ({
         sx={{
           fontSize: "0.875rem",
           color: displayValue ? "text.primary" : "text.disabled",
-          fontWeight: field === "name" ? 600 : 400,
+          fontWeight,
         }}
       >
-        {displayValue || "-"}
+        {displayValue || placeholder}
       </Typography>
     </Box>
   );

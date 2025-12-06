@@ -5,7 +5,11 @@ import {
   TableContainer,
   Button,
   Box,
+  TextField,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import { Search, Clear } from "@mui/icons-material";
 import { FC, useState, useEffect, useMemo } from "react";
 import {
   ResolvedFilterConfig,
@@ -16,7 +20,7 @@ import DSTableFilters from "./DSTableFilters";
 import TableHeader from "./TableHeader";
 import TableContent from "./TableContent";
 import MobileTableView from "./MobileTableView";
-import { applyFilters, sortData, resolveFilterOptions } from "./DSTableUtils";
+import { applyFilters, applySearch, sortData, resolveFilterOptions } from "./DSTableUtils";
 import { useExcelExport } from "../../utils/ExcelUtils";
 import DownloadIcon from "@mui/icons-material/Download";
 import { useTranslation } from "../../localization/LocalizationContext";
@@ -35,7 +39,17 @@ export type Column<T extends { id: string | number }> = {
   showOnMobileCard?: boolean;
   // Hidden column - only for filtering/sorting, not displayed
   hidden?: boolean;
+  // Sticky column support for horizontal scroll
+  sticky?: boolean;
+  stickyOffset?: number; // Left offset for multiple sticky columns
+  // Column sizing
+  minWidth?: number;
+  width?: number;
 };
+
+export interface SearchConfig {
+  columnIds: string[]; // Which columns to search on
+}
 
 export type ExportColumn<T extends { id: string | number }> = {
   id: keyof T;
@@ -90,6 +104,10 @@ type DSTableProps<T extends { id: string | number }> = {
   mobileCardTitle?: (row: T) => string;
   // Variant for different table densities
   variant?: DSTableVariant;
+  // Add row support - render a custom add row component at the bottom
+  renderAddRow?: () => React.ReactNode;
+  // Search bar configuration
+  searchConfig?: SearchConfig;
 };
 
 type Order = "asc" | "desc";
@@ -108,6 +126,8 @@ const DSTable: FC<DSTableProps<any>> = ({
   renderMobileCard,
   mobileCardTitle,
   variant = 'standard',
+  renderAddRow,
+  searchConfig,
 }) => {
   const variantConfig = VARIANT_CONFIGS[variant];
   const [orderBy, setOrderBy] = useState<string>("");
@@ -115,8 +135,18 @@ const DSTable: FC<DSTableProps<any>> = ({
   const [displayedData, setDisplayedData] = useState<any[]>([]);
   const [filterStates, setFilterStates] = useState<FilterState[]>([]);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const { t } = useTranslation();
   const { isMobile } = useResponsive();
+
+  // Build search placeholder from column labels
+  const searchPlaceholder = useMemo(() => {
+    if (!searchConfig?.columnIds.length) return "";
+    const labels = searchConfig.columnIds
+      .map((id) => columns.find((col) => col.id === id)?.label)
+      .filter(Boolean);
+    return `${t("common.search")} ${labels.join(", ")}...`;
+  }, [searchConfig, columns, t]);
 
   const resolvedFilterConfigs = useMemo(
     () =>
@@ -139,7 +169,11 @@ const DSTable: FC<DSTableProps<any>> = ({
 
   useEffect(() => {
     const onFilterSortChange = () => {
-      const filteredData = applyFilters(data, filterStates);
+      // Apply search first
+      const searchedData = applySearch(data, searchQuery, searchConfig);
+      // Then apply filters
+      const filteredData = applyFilters(searchedData, filterStates);
+      // Then sort
       const sortedFilteredData = sortData(
         filteredData,
         columns,
@@ -151,7 +185,7 @@ const DSTable: FC<DSTableProps<any>> = ({
       onDisplayedDataChange?.(sortedFilteredData);
     };
     onFilterSortChange();
-  }, [filterStates, orderBy, order, data]);
+  }, [filterStates, orderBy, order, data, searchQuery, searchConfig]);
 
   const handleRowSelect = (row: any, isSelected: boolean) => {
     const newSelectedRows = isSelected
@@ -181,9 +215,11 @@ const DSTable: FC<DSTableProps<any>> = ({
     exportData(displayedData, columns, exportAddedColumns);
   };
 
+  const showToolbar = resolvedFilterConfigs.length > 0 || showExport || searchConfig;
+
   return (
     <Box sx={responsivePatterns.containerPadding}>
-      {(resolvedFilterConfigs.length > 0 || showExport) && (
+      {showToolbar && (
         <Box
           sx={{
             display: "flex",
@@ -191,18 +227,44 @@ const DSTable: FC<DSTableProps<any>> = ({
             justifyContent: "space-between",
             mb: 2,
             alignItems: isMobile ? "stretch" : "center",
-            gap: isMobile ? 2 : 0,
+            gap: isMobile ? 2 : 1,
           }}
         >
-          {resolvedFilterConfigs.length > 0 && (
-            <Box sx={{ flex: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, flex: 1, flexWrap: "wrap" }}>
+            {searchConfig && (
+              <TextField
+                size="small"
+
+                placeholder={searchPlaceholder}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                sx={{
+                  width: '70%'
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: searchQuery && (
+                    <InputAdornment position="end">
+                      <IconButton size="small" onClick={() => setSearchQuery("")}>
+                        <Clear fontSize="small" />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
+            {resolvedFilterConfigs.length > 0 && (
               <DSTableFilters
                 filters={filterStates}
                 filterConfigs={resolvedFilterConfigs}
                 setFilterStates={setFilterStates}
               />
-            </Box>
-          )}
+            )}
+          </Box>
           {selectedRows.length > 0 && BulkActions}
           {showExport && (
             <Button
@@ -231,50 +293,56 @@ const DSTable: FC<DSTableProps<any>> = ({
           variantConfig={variantConfig}
         />
       ) : (
-        <TableContainer
-          component={Paper}
-          elevation={2}
+        <Box
           sx={{
-            maxHeight: "60vh",
-            overflowY: "auto",
-            borderRadius: 2,
-            "& .MuiTableCell-head": {
-              bgcolor: "#f5f5f5",
-              fontWeight: "bold",
-            },
-            ...(variantConfig.borderWidth === 0 && {
-              "& .MuiTableCell-root": {
-                borderBottom: "none",
-              },
-            }),
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: "8px",
+            overflow: "auto",
           }}
         >
-          <Table stickyHeader sx={{ tableLayout: "fixed", width: "100%" }}>
-            <TableHeader
-              columns={columns}
-              orderBy={orderBy}
-              order={order}
-              onRequestSort={handleRequestSort}
-              showSelectColumn={showSelectColumn}
-              isAllSelected={isAllSelected}
-              isIndeterminate={isIndeterminate}
-              onSelectAll={handleSelectAll}
-              variantConfig={variantConfig}
-            />
-
-            <TableBody>
-              <TableContent
+          <TableContainer
+            sx={{
+              maxHeight: "60vh",
+              "& .MuiTableCell-head": {
+                bgcolor: "#f5f5f5",
+                fontWeight: "bold",
+              },
+              ...(variantConfig.borderWidth === 0 && {
+                "& .MuiTableCell-root": {
+                  borderBottom: "none",
+                },
+              }),
+            }}
+          >
+            <Table stickyHeader sx={{ minWidth: "max-content" }}>
+              <TableHeader
                 columns={columns}
-                data={displayedData}
+                orderBy={orderBy}
+                order={order}
+                onRequestSort={handleRequestSort}
                 showSelectColumn={showSelectColumn}
-                selectedRows={selectedRows}
-                onRowSelect={handleRowSelect}
-                onRowClick={onRowClick}
+                isAllSelected={isAllSelected}
+                isIndeterminate={isIndeterminate}
+                onSelectAll={handleSelectAll}
                 variantConfig={variantConfig}
               />
-            </TableBody>
-          </Table>
-        </TableContainer>
+
+              <TableBody>
+                <TableContent
+                  columns={columns}
+                  data={displayedData}
+                  showSelectColumn={showSelectColumn}
+                  selectedRows={selectedRows}
+                  onRowSelect={handleRowSelect}
+                  onRowClick={onRowClick}
+                  variantConfig={variantConfig}
+                />
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {renderAddRow && renderAddRow()}
+        </Box>
       )}
     </Box>
   );
