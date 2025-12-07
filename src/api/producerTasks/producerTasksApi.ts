@@ -5,6 +5,13 @@ import { auth } from "../firebaseConfig";
 // Create basic CRUD operations for producer tasks using the general collection API
 const producerTasksAPI = createGeneralCollectionAPI<ProducerTask>("producerTasks");
 
+// Helper to remove undefined values (Firestore doesn't accept undefined)
+const removeUndefined = <T extends object>(obj: T): T => {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([_, value]) => value !== undefined)
+  ) as T;
+};
+
 /**
  * Get the current producer's user ID
  */
@@ -54,13 +61,13 @@ export const createProducerTask = async (
   const producerId = getCurrentProducerId();
   const now = new Date().toISOString();
 
-  const newTask: Omit<ProducerTask, "id"> = {
+  const newTask: Omit<ProducerTask, "id"> = removeUndefined({
     ...taskData,
     producerIds: [producerId], // Start with just the creator
     createdBy: producerId,
     createdAt: now,
     completed: false,
-  };
+  });
 
   return producerTasksAPI.create(newTask);
 };
