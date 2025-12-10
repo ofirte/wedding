@@ -406,8 +406,9 @@ class WeddingFirebaseService {
     );
 
     for (const document of documents) {
+      const updated_doc = removeUndefined( document)
       const docRef = doc(collectionRef);
-      batch.set(docRef, document);
+      batch.set(docRef, updated_doc);
     }
 
     return batch.commit();
@@ -498,7 +499,8 @@ export const createCollectionAPI = <T extends { id?: string }>(
      */
     create: (item: Omit<T, "id">, weddingId?: string) => {
       console.log("Creating item in", collectionName, "with data:", item);
-      const val = weddingFirebase.addDocument(collectionName, item, weddingId);
+      const updatedItem = removeUndefined(item)
+      const val = weddingFirebase.addDocument(collectionName, updatedItem, weddingId);
       console.log("Created item:", val);
       return val;
     },
@@ -574,3 +576,9 @@ export const bulkCreateDocuments = <T extends object>(
   documents: T[],
   weddingId?: string
 ) => weddingFirebase.bulkCreateDocuments(collectionName, documents, weddingId);
+
+const removeUndefined = <T extends object>(obj: T): T => {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([_, value]) => value !== undefined)
+  ) as T;
+};

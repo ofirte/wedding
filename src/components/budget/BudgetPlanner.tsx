@@ -1,13 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useCallback } from "react";
 import {
   Box,
   Typography,
-  Button,
   CircularProgress,
   useTheme,
   Stack,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import { useBudgetItems } from "../../hooks/budget/useBudgetItems";
 import { useTotalBudget } from "../../hooks/budget/useTotalBudget";
 import { useCreateBudgetItem } from "../../hooks/budget/useCreateBudgetItem";
@@ -15,7 +13,6 @@ import { useUpdateBudgetItem } from "../../hooks/budget/useUpdateBudgetItem";
 import { useDeleteBudgetItem } from "../../hooks/budget/useDeleteBudgetItem";
 import BudgetSummary from "./BudgetSummary";
 import BudgetTable from "./BudgetTable";
-import BudgetItemDialog from "./BudgetItemDialog";
 import TotalBudgetEditor from "./TotalBudgetEditor";
 import { useUpdateTotalBudget } from "../../hooks/budget/useUpdateTotalBudget";
 import { useTranslation } from "../../localization/LocalizationContext";
@@ -26,32 +23,6 @@ const BudgetPlanner = () => {
   const theme = useTheme();
   const { t } = useTranslation();
 
-  const budgetGroups = [
-    "Venue",
-    "Catering",
-    "Attire",
-    "Photography",
-    "Music",
-    "Decor",
-    "Flowers",
-    "Transportation",
-    "Stationery",
-    "Gifts",
-    "Beauty",
-    "Other",
-  ];
-
-  const [open, setOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<BudgetItem | null>(null);
-  const [newItem, setNewItem] = useState({
-    name: "",
-    group: "",
-    expectedPrice: 0,
-    actualPrice: 0,
-    downPayment: 0,
-    contractsUrls: [] as string[],
-  });
-
   // Fetch budget items using TanStack Query
   const { data: budgetItems, isLoading, isError } = useBudgetItems();
 
@@ -59,96 +30,38 @@ const BudgetPlanner = () => {
     useTotalBudget();
   const { mutate: updateTotalBudget } = useUpdateTotalBudget();
 
-  // Budget mutations for create, update, and delete operations with loading states
-  const { mutate: createBudgetItem, isPending: isCreating } =
-    useCreateBudgetItem();
-  const { mutate: updateBudgetItem, isPending: isUpdating } =
-    useUpdateBudgetItem();
-  const { mutate: deleteBudgetItem, isPending: isDeleting } =
-    useDeleteBudgetItem();
+  // Budget mutations for create, update, and delete operations
+  const { mutate: createBudgetItem } = useCreateBudgetItem();
+  const { mutate: updateBudgetItem } = useUpdateBudgetItem();
+  const { mutate: deleteBudgetItem } = useDeleteBudgetItem();
 
-  // Combined loading state for any mutation in progress
-  const isMutating = isCreating || isUpdating || isDeleting;
-
-  // Open dialog for adding a new item
-  const handleAddNew = () => {
-    setEditingItem(null);
-    setNewItem({
-      name: "",
-      group: "",
-      expectedPrice: 0,
-      actualPrice: 0,
-      downPayment: 0,
-      contractsUrls: [],
-    });
-    setOpen(true);
-  };
-
-  // Open dialog for editing an existing item
-  const handleEdit = (item: BudgetItem) => {
-    setEditingItem(item);
-    setNewItem({
-      name: item.name,
-      group: item.group,
-      expectedPrice: item.expectedPrice,
-      actualPrice: item.actualPrice,
-      downPayment: item.downPayment,
-      contractsUrls: item.contractsUrls || [],
-    });
-    setOpen(true);
-  };
-
-  // Handle input changes in the dialog form
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    // Handle text fields
-    if (name === "name" || name === "group") {
-      setNewItem({
-        ...newItem,
-        [name]: value,
-      });
-    } else {
-      // Handle numeric fields
-      setNewItem({
-        ...newItem,
-        [name]: Number(value),
-      });
-    }
-  };
-
-  // Save the new or edited item
-  const handleSave = () => {
-    if (editingItem) {
-      // Update existing item using the hook
+  // Handle inline cell updates
+  const handleCellUpdate = useCallback(
+    (rowId: string | number, field: string, value: any, row: BudgetItem) => {
       updateBudgetItem({
-        id: editingItem.id,
+        id: String(rowId),
         data: {
-          name: newItem.name,
-          group: newItem.group,
-          expectedPrice: newItem.expectedPrice,
-          actualPrice: newItem.actualPrice,
-          downPayment: newItem.downPayment,
-          contractsUrls: newItem.contractsUrls,
+          [field]: value,
         },
       });
-      setOpen(false);
-    } else {
-      // Add new item using the hook
+    },
+    [updateBudgetItem]
+  );
+
+  // Handle inline add
+  const handleAddRow = useCallback(
+    (newRow: Omit<BudgetItem, "id">) => {
       createBudgetItem({
-        name: newItem.name,
-        group: newItem.group,
-        expectedPrice: newItem.expectedPrice,
-        actualPrice: newItem.actualPrice,
-        downPayment: newItem.downPayment,
-        contractsUrls: newItem.contractsUrls,
+        name: newRow.name,
+        group: newRow.group,
+        expectedPrice: newRow.expectedPrice,
+        actualPrice: newRow.actualPrice,
+        downPayment: newRow.downPayment,
+        contractsUrls: newRow.contractsUrls || [],
       });
-      setOpen(false);
-    }
-  };
+    },
+    [createBudgetItem]
+  );
 
   const totals = useMemo(() => {
     const calculateTotals = () => {
@@ -181,25 +94,8 @@ const BudgetPlanner = () => {
           bgcolor: "background.paper",
           borderRadius: 2,
           boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-          position: "relative",
         }}
       >
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleAddNew}
-          disabled={isMutating}
-          color="info"
-          sx={{
-            ...responsivePatterns.responsiveButton,
-            borderRadius: 2,
-            position: "absolute",
-            top: { xs: 8, sm: 16 },
-            right: { xs: 8, sm: 16 },
-          }}
-        >
-          {isCreating ? t("budget.addingBudgetItem") : t("budget.addItem")}
-        </Button>
         <Stack spacing={4}>
           <Box sx={responsivePatterns.flexColumn}>
             <Typography
@@ -232,33 +128,13 @@ const BudgetPlanner = () => {
           ) : (
             <BudgetTable
               items={budgetItems || []}
-              onEdit={handleEdit}
+              onCellUpdate={handleCellUpdate}
               onDelete={deleteBudgetItem}
+              onAddRow={handleAddRow}
             />
           )}
         </Stack>
       </Box>
-      <BudgetItemDialog
-        open={open}
-        onClose={() => setOpen(false)}
-        editingItem={editingItem}
-        newItem={newItem}
-        budgetGroups={budgetGroups}
-        onInputChange={handleInputChange}
-        onSave={handleSave}
-        onFileAdded={(url: string) => {
-          setNewItem((prev) => ({
-            ...prev,
-            contractsUrls: [...prev.contractsUrls, url],
-          }));
-        }}
-        onFileDeleted={(url: string) => {
-          setNewItem((prev) => ({
-            ...prev,
-            contractsUrls: prev.contractsUrls.filter((u) => u !== url),
-          }));
-        }}
-      />
     </Box>
   );
 };
