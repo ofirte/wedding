@@ -19,6 +19,7 @@ export const useCreateTask = () => {
     options: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["all-weddings-tasks"] });
+        queryClient.invalidateQueries({ queryKey: ["tasks"] });
       },
     },
   });

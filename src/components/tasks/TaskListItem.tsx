@@ -13,10 +13,10 @@ import {
   MoreVert as MoreIcon,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
+  Person as PersonIcon,
 } from "@mui/icons-material";
 import { Task } from "@wedding-plan/types";
-import { format } from "date-fns";
-import { he, enUS } from "date-fns/locale";
+import { differenceInDays, startOfDay } from "date-fns";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { TaskBadge } from "./TaskBadge";
 import { TaskAssignedAvatar } from "./TaskAssignedAvatar";
@@ -30,7 +30,7 @@ import { stringToColor } from "../../utils/ColorUtils";
 import { useParams } from "react-router";
 
 interface TaskListItemProps {
-  task: Task & { weddingId?: string };
+  task: Task & { weddingId?: string; taskType?: "wedding" | "producer" };
   isExpanded: boolean;
   onToggleExpand: (taskId: string, hasDescription: boolean) => void;
   onToggleComplete: (taskId: string, completed: boolean) => void;
@@ -49,14 +49,28 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({
   onEdit,
   onMenuClick,
 }) => {
-  const { t, language } = useTranslation();
+  const { t } = useTranslation();
   const {weddingId } = useParams();
   const weddingIds = useMemo(() => (task.weddingId ? [task.weddingId] : [weddingId || ""]), [task.weddingId, weddingId]);
   const hasDescription = Boolean(task.description);
   const { data: weddingsDetails } = useWeddingsDetails(
    weddingIds
   );
-  const dateLocale = useMemo(() => (language === "he" ? he : enUS), [language]);
+
+  const getDueDateLabel = useMemo(() => {
+    if (!task.dueDate) return null;
+    const today = startOfDay(new Date());
+    const dueDate = startOfDay(new Date(task.dueDate));
+    const diffDays = differenceInDays(dueDate, today);
+
+    if (diffDays === 0) {
+      return { label: t("tasks.dueToday"), color: "#E57373" };
+    } else if (diffDays > 0) {
+      return { label: t("tasks.daysLeft", { count: diffDays }), color: "#7A9CB3" };
+    } else {
+      return { label: t("tasks.daysOverdue", { count: Math.abs(diffDays) }), color: "#E57373" };
+    }
+  }, [task.dueDate, t]);
 
   const taskWedding = useMemo(
     () => weddingsDetails?.find((wedding) => wedding.id === task.weddingId),
@@ -137,8 +151,24 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({
             flexWrap: "wrap",
           }}
         >
-          {/* Wedding Badge (if multi-wedding context) */}
-          {task.weddingId && taskWedding && (
+          {/* Producer Task Badge */}
+          {task.taskType === "producer" && (
+            <Chip
+              label={t("tasks.personal")}
+              size="small"
+              icon={<PersonIcon sx={{ fontSize: 14 }} />}
+              sx={{
+                height: 22,
+                fontSize: "0.7rem",
+                bgcolor: "rgba(156, 39, 176, 0.1)",
+                color: "secondary.main",
+                fontWeight: 600,
+                "& .MuiChip-icon": { color: "secondary.main" },
+              }}
+            />
+          )}
+          {/* Wedding Badge (if wedding task and multi-wedding context) */}
+          {task.taskType !== "producer" && task.weddingId && taskWedding && (
             <Chip
               label={taskWedding.name}
               size="small"
@@ -157,12 +187,10 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({
             label={t(`common.${task.priority.toLowerCase()}`)}
             color={getPriorityBadgeColor(task.priority)}
           />
-          {task.dueDate && (
+          {getDueDateLabel && (
             <TaskBadge
-              label={format(new Date(task.dueDate), "PPP", {
-                locale: dateLocale,
-              })}
-              color="#7A9CB3"
+              label={getDueDateLabel.label}
+              color={getDueDateLabel.color}
             />
           )}
           {task.category && (

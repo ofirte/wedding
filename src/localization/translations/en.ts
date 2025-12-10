@@ -4,6 +4,12 @@ export const englishTranslations: Translations = {
   tasksManagement: {
     title: "Task Management",
     description: "Manage and track tasks across all weddings",
+    createTask: "Create New Task",
+    taskType: "Task Type",
+    weddingTask: "Wedding Task",
+    producerTask: "Producer Task",
+    selectWedding: "Select Wedding",
+    producerTaskDescription: "Personal task not assigned to a wedding",
     filters: {
       wedding: "Wedding",
       allWeddings: "All Weddings",
@@ -334,6 +340,12 @@ export const englishTranslations: Translations = {
       "Error loading user data. Please try refreshing the page.",
     errorLoadingWeddings:
       "Error loading weddings. Please try refreshing the page.",
+    archive: "Archive",
+    archiveTooltip: "Weddings are moved here the day after the event",
+    upcomingWeddings: "Upcoming Weddings",
+    daysLeft: "{{count}} days left",
+    noUpcomingWeddings: "No upcoming weddings",
+    newWedding: "New Wedding",
     emptyState: {
       title: "Ready to Get Started?",
       description: "Create your first wedding event and start managing it with ease.",
@@ -574,6 +586,7 @@ export const englishTranslations: Translations = {
     importantTasks: "Important Tasks",
     noCriticalTasks: "No critical tasks",
     allCaughtUp: "You're all caught up!",
+    personal: "Personal",
     filterTasks: "Filter Tasks",
     clearFilters: "Clear Filters",
     unassigned: "Unassigned",
@@ -587,6 +600,9 @@ export const englishTranslations: Translations = {
       updateSuccess: "Task updated successfully",
       updateError: "Failed to update task",
     },
+    daysLeft: "{{count}} days left",
+    daysOverdue: "{{count}} days overdue",
+    dueToday: "Due today",
   },
   wedding: {
     title: "Wedding Details",
@@ -939,13 +955,23 @@ export const englishTranslations: Translations = {
         },
         customDesign: {
           title: "Custom Message Design",
-          description: "Personalize text, colors, and icons to match your style",
+          description: "Colors and icons customized to match your style",
           icon: "settings",
         },
-        transportAndMeal: {
-          title: "Transportation & Meal Preferences Tracking",
+        transportation: {
+          title: "Transportation Request Tracking",
+          description: "Organized and accurate transportation management",
+          icon: "bus",
+        },
+        mealPreferences: {
+          title: "Meal Preferences Tracking",
           description: "Avoid surprises on your wedding day",
-          icon: "gift",
+          icon: "utensils",
+        },
+        customMessages: {
+          title: "Option to Add Custom Messages",
+          description: "Personalized response provided for each request",
+          icon: "edit",
         },
         smartTracking: {
           title: "Smart Tracking & Real-Time Reports",
@@ -1764,9 +1790,12 @@ export const englishTranslations: Translations = {
       email: "Email",
       phone: "Phone",
       weddingDate: "Wedding Date",
-      budget: "Budget",
+      budget: "Couples Budget",
+      quotation: "Quotation",
+      advanceAmount: "Advance Paid",
       estimatedGuests: "Est. Guests",
       status: "Status",
+      paymentStatus: "Payment Status",
       source: "Source",
       service: "Service",
       followUp: "Follow-up",
@@ -1776,14 +1805,15 @@ export const englishTranslations: Translations = {
     statuses: {
       new: "New Lead",
       initial_contact: "Initial Contact",
-      qualified: "Qualified",
-      proposal_sent: "Proposal Sent",
-      contract_offered: "Contract Offered",
-      signed: "Signed",
-      deposit_paid: "Deposit Paid",
-      active_client: "Active Client",
+      contract_suggested: "Contract Suggested",
+      contract_signed: "Contract Signed",
       done: "Done",
       lost: "Lost",
+    },
+    paymentStatuses: {
+      awaiting_payment: "Awaiting Payment",
+      advance_paid: "Advance Paid",
+      paid_in_full: "Paid in Full",
     },
     sources: {
       website: "Website",
@@ -1800,6 +1830,8 @@ export const englishTranslations: Translations = {
       newLeads: "New Leads",
       converted: "Converted",
       conversionRate: "Conversion Rate",
+      expectedIncome: "Expected Income",
+      expectedIncomeTooltip: "Remaining balance = Quotation - Advance Paid",
     },
     activityPanel: {
       title: "Activity",
@@ -1841,6 +1873,9 @@ export const englishTranslations: Translations = {
       leadDeleted: "Lead deleted successfully",
       confirmDelete: "Are you sure you want to delete this lead?",
       followUpOverdue: "Follow-up overdue!",
+    },
+    actions: {
+      viewActivity: "View Activity",
     },
   },
   support: {

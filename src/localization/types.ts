@@ -32,6 +32,12 @@ export interface Translations {
   tasksManagement: {
     title: string;
     description: string;
+    createTask: string;
+    taskType: string;
+    weddingTask: string;
+    producerTask: string;
+    selectWedding: string;
+    producerTaskDescription: string;
     filters: {
       wedding: string;
       allWeddings: string;
@@ -360,6 +366,12 @@ export interface Translations {
     invitationCode: string;
     errorLoadingUserData: string;
     errorLoadingWeddings: string;
+    archive: string;
+    archiveTooltip: string;
+    upcomingWeddings: string;
+    daysLeft: string;
+    noUpcomingWeddings: string;
+    newWedding: string;
     emptyState: {
       title: string;
       description: string;
@@ -589,6 +601,7 @@ export interface Translations {
     importantTasks: string;
     noCriticalTasks: string;
     allCaughtUp: string;
+    personal: string;
     filterTasks: string;
     clearFilters: string;
     unassigned: string;
@@ -602,6 +615,9 @@ export interface Translations {
       updateSuccess: string;
       updateError: string;
     };
+    daysLeft: string;
+    daysOverdue: string;
+    dueToday: string;
   };
   wedding: {
     title: string;
@@ -924,7 +940,17 @@ export interface Translations {
           description: string;
           icon: string;
         };
-        transportAndMeal: {
+        transportation: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        mealPreferences: {
+          title: string;
+          description: string;
+          icon: string;
+        };
+        customMessages: {
           title: string;
           description: string;
           icon: string;
@@ -1254,8 +1280,11 @@ export interface Translations {
       phone: string;
       weddingDate: string;
       budget: string;
+      quotation: string;
+      advanceAmount: string;
       estimatedGuests: string;
       status: string;
+      paymentStatus: string;
       source: string;
       service: string;
       followUp: string;
@@ -1265,14 +1294,15 @@ export interface Translations {
     statuses: {
       new: string;
       initial_contact: string;
-      qualified: string;
-      proposal_sent: string;
-      contract_offered: string;
-      signed: string;
-      deposit_paid: string;
-      active_client: string;
+      contract_suggested: string;
+      contract_signed: string;
       done: string;
       lost: string;
+    };
+    paymentStatuses: {
+      awaiting_payment: string;
+      advance_paid: string;
+      paid_in_full: string;
     };
     sources: {
       website: string;
@@ -1289,6 +1319,8 @@ export interface Translations {
       newLeads: string;
       converted: string;
       conversionRate: string;
+      expectedIncome: string;
+      expectedIncomeTooltip: string;
     };
     activityPanel: {
       title: string;
@@ -1330,6 +1362,9 @@ export interface Translations {
       leadDeleted: string;
       confirmDelete: string;
       followUpOverdue: string;
+    };
+    actions: {
+      viewActivity: string;
     };
   };
   support: {

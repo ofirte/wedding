@@ -13,8 +13,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 // Custom event interface extending Task with wedding info
 interface TaskEvent extends Event {
-  task: Task;
-  weddingId: string;
+  task: Task & { weddingId?: string };
+  weddingId?: string;
   weddingName: string;
 }
 
@@ -64,13 +64,15 @@ const TasksCalendarView: React.FC = () => {
         end: new Date(task.dueDate!),
         task,
         weddingId: task.weddingId,
-        weddingName: weddingsMap[task.weddingId]?.name || "Unknown Wedding",
+        weddingName: task.weddingId
+          ? weddingsMap[task.weddingId]?.name || "Unknown Wedding"
+          : "Producer Task",
       }));
   }, [tasks, weddingsMap]);
 
   // Custom event style getter
   const eventStyleGetter = (event: TaskEvent) => {
-    const weddingColor = stringToColor(event.weddingId);
+    const weddingColor = stringToColor(event.weddingId || "producer-task");
     return {
       style: {
         backgroundColor: alpha(weddingColor, 0.15),

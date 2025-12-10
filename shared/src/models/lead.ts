@@ -9,14 +9,18 @@
 export type LeadStatus =
   | "new"
   | "initial_contact"
-  | "qualified"
-  | "proposal_sent"
-  | "contract_offered"
-  | "signed"
-  | "deposit_paid"
-  | "active_client"
+  | "contract_suggested"
+  | "contract_signed"
   | "done"
   | "lost";
+
+/**
+ * Payment status for leads with signed contracts
+ */
+export type LeadPaymentStatus =
+  | "awaiting_payment"
+  | "advance_paid"
+  | "paid_in_full";
 
 /**
  * Source of the lead (how they found you)
@@ -53,8 +57,11 @@ export interface Lead {
   phone?: string;
   weddingDate?: string; // ISO date string
   budget?: number;
+  quotation?: number; // Quoted price for the service
+  advanceAmount?: number; // Amount paid as advance payment
   estimatedGuests?: number;
   status: LeadStatus;
+  paymentStatus?: LeadPaymentStatus;
   source?: LeadSource;
   service?: string; // Type of service/package (e.g., "Full Wedding Production", "Day of Event Management")
   notes?: string;
@@ -84,19 +91,3 @@ export interface LeadEvent {
   };
 }
 
-/**
- * Color coding for lead statuses (for UI badges)
- * Note: Labels are handled by i18n translations (leads.statuses.* and leads.sources.*)
- */
-export const LeadStatusColors: Record<LeadStatus, string> = {
-  new: "#9E9E9E", // Grey
-  initial_contact: "#2196F3", // Blue
-  qualified: "#4CAF50", // Green
-  proposal_sent: "#FF9800", // Orange
-  contract_offered: "#FF9800", // Orange
-  signed: "#8BC34A", // Light Green
-  deposit_paid: "#4CAF50", // Green
-  active_client: "#4CAF50", // Green
-  done: "#8BC34A", // Light Green
-  lost: "#F44336", // Red
-};

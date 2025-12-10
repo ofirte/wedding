@@ -18,10 +18,8 @@ import {
   Close as CloseIcon,
   Add as AddIcon,
 } from "@mui/icons-material";
-import {
-  Lead,
-  LeadStatusColors,
-} from "@wedding-plan/types";
+import { Lead } from "@wedding-plan/types";
+import { LeadStatusColors } from "./leadsUtils";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { useLeadEvents } from "../../hooks/leads";
 import { createLeadEvent } from "../../api/leads/leadsApi";
@@ -33,6 +31,30 @@ interface LeadActivityPanelProps {
   open: boolean;
   onClose: () => void;
 }
+
+type FieldFormat = "text" | "date" | "currency" | "translated";
+
+interface LeadFieldConfig {
+  key: keyof Lead;
+  translationKey?: string;
+  format?: FieldFormat;
+  translatePrefix?: string;
+}
+
+const LEAD_INFO_FIELDS: LeadFieldConfig[] = [
+  { key: "email" },
+  { key: "phone" },
+  { key: "weddingDate", format: "date" },
+  { key: "budget", format: "currency" },
+  { key: "quotation", format: "currency" },
+  { key: "advanceAmount", format: "currency" },
+  { key: "paymentStatus", format: "translated", translatePrefix: "leads.paymentStatuses" },
+  { key: "estimatedGuests" },
+  { key: "source", format: "translated", translatePrefix: "leads.sources" },
+  { key: "service" },
+  { key: "followUpDate", translationKey: "leads.columns.followUp", format: "date" },
+  { key: "notes" },
+];
 
 const LeadActivityPanel: React.FC<LeadActivityPanelProps> = ({
   lead,
@@ -110,92 +132,32 @@ const LeadActivityPanel: React.FC<LeadActivityPanelProps> = ({
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            <Box>
-              <Typography variant="caption" color="text.secondary">
-                {t("leads.columns.email")}
-              </Typography>
-              <Typography variant="body2">{lead.email}</Typography>
-            </Box>
+            {LEAD_INFO_FIELDS.map((field) => {
+              const value = lead[field.key];
+              if (!value) return null;
 
-            {lead.phone && (
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  {t("leads.columns.phone")}
-                </Typography>
-                <Typography variant="body2">{lead.phone}</Typography>
-              </Box>
-            )}
+              const renderValue = () => {
+                switch (field.format) {
+                  case "date":
+                    return new Date(value as string).toLocaleDateString();
+                  case "currency":
+                    return `₪${(value as number).toLocaleString()}`;
+                  case "translated":
+                    return t(`${field.translatePrefix}.${value}`);
+                  default:
+                    return String(value);
+                }
+              };
 
-            {lead.weddingDate && (
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  {t("leads.columns.weddingDate")}
-                </Typography>
-                <Typography variant="body2">
-                  {new Date(lead.weddingDate).toLocaleDateString()}
-                </Typography>
-              </Box>
-            )}
-
-            {lead.budget && (
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  {t("leads.columns.budget")}
-                </Typography>
-                <Typography variant="body2">
-                  ${lead.budget.toLocaleString()}
-                </Typography>
-              </Box>
-            )}
-
-            {lead.estimatedGuests && (
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  {t("leads.columns.estimatedGuests")}
-                </Typography>
-                <Typography variant="body2">{lead.estimatedGuests}</Typography>
-              </Box>
-            )}
-
-            {lead.source && (
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  {t("leads.columns.source")}
-                </Typography>
-                <Typography variant="body2">
-                  {t(`leads.sources.${lead.source}`)}
-                </Typography>
-              </Box>
-            )}
-
-            {lead.service && (
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  {t("leads.columns.service")}
-                </Typography>
-                <Typography variant="body2">{lead.service}</Typography>
-              </Box>
-            )}
-
-            {lead.followUpDate && (
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  {t("leads.columns.followUp")}
-                </Typography>
-                <Typography variant="body2">
-                  {new Date(lead.followUpDate).toLocaleDateString()}
-                </Typography>
-              </Box>
-            )}
-
-            {lead.notes && (
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  {t("leads.columns.notes")}
-                </Typography>
-                <Typography variant="body2">{lead.notes}</Typography>
-              </Box>
-            )}
+              return (
+                <Box key={field.key}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t(field.translationKey || `leads.columns.${field.key}`)}
+                  </Typography>
+                  <Typography variant="body2">{renderValue()}</Typography>
+                </Box>
+              );
+            })}
           </Box>
         </Box>
 

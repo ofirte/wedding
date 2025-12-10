@@ -68,7 +68,20 @@ const TableHeader = <T extends { id: string | number }>({
             <TableCell
               key={column.id}
               align="center"
-              sx={{ py: variantConfig.cellPy }}
+              sx={{
+                py: variantConfig.cellPy,
+                ...(column.minWidth && { minWidth: column.minWidth }),
+                ...(column.width && { width: column.width }),
+                ...(column.sticky && {
+                  position: "sticky",
+                  left: column.stickyOffset ?? 0,
+                  zIndex: 3,
+                  backgroundColor: "#f5f5f5",
+                  borderRight: "2px solid",
+                  borderRightColor: "divider",
+                  boxShadow: "2px 0 4px rgba(0, 0, 0, 0.05)",
+                }),
+              }}
             >
               {column.sortable ? (
                 <TableSortLabel

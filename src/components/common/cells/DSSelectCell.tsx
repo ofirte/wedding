@@ -1,33 +1,35 @@
 import React from "react";
 import { Select, MenuItem, Chip } from "@mui/material";
-import { Lead, LeadStatus, LeadStatusColors } from "@wedding-plan/types";
-import { useTranslation } from "../../../localization/LocalizationContext";
 
-interface StatusCellProps {
-  lead: Lead;
-  onStatusChange: (lead: Lead, newStatus: LeadStatus) => void;
+export interface DSSelectOption<T extends string> {
+  value: T;
+  label: string;
+  color?: string;
 }
 
-const ALL_STATUSES: LeadStatus[] = [
-  "new",
-  "initial_contact",
-  "qualified",
-  "proposal_sent",
-  "contract_offered",
-  "signed",
-  "deposit_paid",
-  "active_client",
-  "done",
-  "lost",
-];
+interface DSSelectCellProps<T extends string> {
+  value: T;
+  options: DSSelectOption<T>[];
+  colorMap?: Record<T, string>;
+  onChange: (newValue: T) => void;
+}
 
-export const StatusCell: React.FC<StatusCellProps> = ({ lead, onStatusChange }) => {
-  const { t } = useTranslation();
+export const DSSelectCell = <T extends string>({
+  value,
+  options,
+  colorMap,
+  onChange,
+}: DSSelectCellProps<T>) => {
+  const getColor = (val: T): string => {
+    if (colorMap) return colorMap[val];
+    const option = options.find((o) => o.value === val);
+    return option?.color ?? "#9E9E9E";
+  };
 
   return (
     <Select
-      value={lead.status}
-      onChange={(e) => onStatusChange(lead, e.target.value as LeadStatus)}
+      value={value}
+      onChange={(e) => onChange(e.target.value as T)}
       size="small"
       variant="standard"
       disableUnderline
@@ -36,7 +38,7 @@ export const StatusCell: React.FC<StatusCellProps> = ({ lead, onStatusChange }) 
         "& .MuiSelect-select": {
           py: 0.5,
           px: 1.5,
-          backgroundColor: LeadStatusColors[lead.status],
+          backgroundColor: getColor(value),
           color: "white",
           borderRadius: "6px",
           fontWeight: 600,
@@ -49,20 +51,20 @@ export const StatusCell: React.FC<StatusCellProps> = ({ lead, onStatusChange }) 
       }}
       onClick={(e) => e.stopPropagation()}
     >
-      {ALL_STATUSES.map((status) => (
+      {options.map((option) => (
         <MenuItem
-          key={status}
-          value={status}
+          key={option.value}
+          value={option.value}
           sx={{
             fontSize: "0.875rem",
             fontWeight: 500,
           }}
         >
           <Chip
-            label={t(`leads.statuses.${status}`)}
+            label={option.label}
             size="small"
             sx={{
-              backgroundColor: LeadStatusColors[status],
+              backgroundColor: option.color ?? colorMap?.[option.value] ?? "#9E9E9E",
               color: "white",
               fontWeight: 600,
               fontSize: "0.75rem",
