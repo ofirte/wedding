@@ -167,6 +167,7 @@ export interface Translations {
     delete: string;
     edit: string;
     add: string;
+    addNew: string;
     create: string;
     loading: string;
     applying: string;
@@ -524,11 +525,13 @@ export interface Translations {
     untilSpecialDay: string;
   };
   budget: {
+    noBudgetItems: string;
     title: string;
     totalBudget: string;
     spent: string;
     remaining: string;
     addItem: string;
+    addNewItem: string;
     planning: string;
     errorLoadingBudget: string;
     addingBudgetItem: string;
@@ -538,6 +541,23 @@ export interface Translations {
     paidSoFar: string;
     actualTotal: string;
     expectedTotal: string;
+    manageContracts: string;
+    noContracts: string;
+    addContract: string;
+    categories: {
+      venue: string;
+      catering: string;
+      attire: string;
+      photography: string;
+      music: string;
+      decor: string;
+      flowers: string;
+      transportation: string;
+      stationery: string;
+      gifts: string;
+      beauty: string;
+      other: string;
+    };
   };
   guests: {
     title: string;
