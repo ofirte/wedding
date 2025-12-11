@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import { useRSVPConfig } from "../../../hooks/rsvp";
 import AutomationSetupDone from "./AutomationSetupDone";
 import AutomationTimelineReview from "./AutomationTimelineReview";
-import AutomationsDashboard from "./AutomationsDashboard";
+import AutomationsDashboard from "./AutomationsDashboard/AutomationsDashboard";
 
 const AutomationMessagesSchedulerContainer: React.FC = () => {
   const { data: rsvpConfig, isLoading: isLoadingRsvpConfig } = useRSVPConfig();

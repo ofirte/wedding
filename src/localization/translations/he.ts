@@ -852,6 +852,9 @@ export const hebrewTranslations: Translations = {
     hideMessage: "הסתר הודעה",
     deliveryStats: "סטטיסטיקות משלוח",
     successful: "הצליחו",
+    allMessagesSentSuccessfully: "כל ההודעות נשלחו בהצלחה",
+    outOf: "מתוך",
+    messagesSentSuccessfully: "הודעות נשלחו בהצלחה",
     sentAt: "נשלח ב",
     // Automation Info Dialog
     automationDetails: "פרטי האוטומציה",

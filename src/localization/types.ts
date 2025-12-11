@@ -877,6 +877,9 @@ export interface Translations {
     hideMessage: string;
     deliveryStats: string;
     successful: string;
+    allMessagesSentSuccessfully: string;
+    outOf: string;
+    messagesSentSuccessfully: string;
     sentAt: string;
     // Automation Info Dialog
     automationDetails: string;

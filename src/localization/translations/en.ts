@@ -863,6 +863,9 @@ export const englishTranslations: Translations = {
     hideMessage: "Hide Message",
     deliveryStats: "Delivery Statistics",
     successful: "successful",
+    allMessagesSentSuccessfully: "All messages sent successfully",
+    outOf: "out of",
+    messagesSentSuccessfully: "messages sent successfully",
     sentAt: "Sent At",
     // Automation Info Dialog
     automationDetails: "Automation Details",
