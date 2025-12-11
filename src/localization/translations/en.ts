@@ -786,9 +786,9 @@ export const englishTranslations: Translations = {
       step1Title: "Create Your RSVP Form",
       step1Description:
         "Design custom questions to collect the information you need from your guests, from meal preferences to plus-ones.",
-      step2Title: "Set Up Two Types of Messages",
+      step2Title: "Approve the Message Timeline",
       step2Description:
-        "RSVP invitations with form links for collecting responses, plus reminders and thank you messages for attending guests.",
+        "Set when to automatically send invitations, reminders, and thank you messages to your guests.",
       getStarted: "Get Started",
       creating: "Setting up your RSVP...",
     },

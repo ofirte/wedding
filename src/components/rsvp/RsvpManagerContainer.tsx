@@ -6,18 +6,17 @@ import { RSVPSetupSteps } from "./rsvpSetup/RsvpSetupSteps";
 import RSVPWelcomePage from "./RSVPWelcomePage";
 import RSVPPricingPage from "./RSVPPricingPage";
 import { useCurrentUserWeddingPlan } from "../../hooks/wedding/useCurrentUserWeddingPlan";
-import { WeddingPlans } from "@wedding-plan/types";
 
 export const RsvpManagerContainer: React.FC = () => {
   const { data: rsvpConfig, isLoading: isLoadingRsvpConfig } = useRSVPConfig();
-  const currentUserPlan = useCurrentUserWeddingPlan();
+  const { isPaid } = useCurrentUserWeddingPlan();
 
   if (isLoadingRsvpConfig) {
     return <LoadingState />;
   }
 
   // Show pricing page for free users
-  if (currentUserPlan === WeddingPlans.FREE) {
+  if (!isPaid) {
     return <RSVPPricingPage />;
   }
 
