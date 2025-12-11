@@ -2,7 +2,6 @@ import React from "react";
 import { Invitee } from "@wedding-plan/types";
 import Typography from "@mui/material/Typography";
 import { Column } from "../common/DSTable";
-import InviteeListActionCell from "./InviteeListActionCell";
 
 export const createColumns = (
   t: (key: string) => string
@@ -13,53 +12,8 @@ export const createColumns = (
     sortable: true,
     render: (invitee: Invitee) => invitee.name,
   },
-  {
-    id: "rsvp",
-    label: t("guests.rsvpStatus"),
-    sortable: true,
-    render: (invitee: Invitee) => (
-      <Typography
-        sx={{
-          color:
-            invitee.rsvp === "Confirmed"
-              ? "success.main"
-              : invitee.rsvp === "Pending"
-              ? "warning.main"
-              : "error.main",
-          fontWeight: "medium",
-        }}
-      >
-        {invitee.rsvp ? t(`guests.${invitee.rsvp.toLowerCase()}`) : ""}
-      </Typography>
-    ),
-    filterConfig: {
-      id: "rsvp",
-      label: t("guests.rsvpStatus"),
-      type: "single",
-      options: [
-        { value: "Confirmed", label: t("guests.confirmed") },
-        { value: "Pending", label: t("guests.pending") },
-        { value: "Declined", label: t("guests.declined") },
-      ],
-    },
-  },
-  {
-    id: "percentage",
-    label: t("guests.attendance"),
-    sortable: true,
-    render: (invitee: Invitee) => `${invitee.percentage}%`,
-    filterConfig: {
-      id: "percentage",
-      label: t("guests.attendance"),
-      type: "single",
-      options: [
-        { value: "25", label: "≤ 25%" },
-        { value: "50", label: "≤ 50%" },
-        { value: "75", label: "≤ 75%" },
-        { value: "100", label: "≤ 100%" },
-      ],
-    },
-  },
+
+
   {
     id: "side",
     label: t("guests.side"),
@@ -102,28 +56,12 @@ export const createColumns = (
     sortable: true,
     render: (invitee: Invitee) => invitee.amount,
   },
-  {
-    id: "amountConfirm",
-    label: t("guests.amountConfirm"),
-    sortable: true,
-    render: (invitee: Invitee) =>
-      invitee.rsvpStatus?.attendance
-        ? invitee.rsvpStatus?.amount
-        : invitee.rsvpStatus?.attendance === false
-        ? 0
-        : "-",
-  },
+
   {
     id: "cellphone",
     label: t("guests.cellphone"),
     sortable: true,
     render: (invitee: Invitee) => invitee.cellphone,
-  },
-  {
-    id: "actions",
-    label: t("common.actions"),
-    sortable: false,
-    render: (invitee: Invitee) => <InviteeListActionCell invitee={invitee} />,
   },
 ];
 

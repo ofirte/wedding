@@ -9,7 +9,7 @@ import {
 import { useBudgetItems } from "../../hooks/budget/useBudgetItems";
 import { useTotalBudget } from "../../hooks/budget/useTotalBudget";
 import { useCreateBudgetItem } from "../../hooks/budget/useCreateBudgetItem";
-import { useUpdateBudgetItem } from "../../hooks/budget/useUpdateBudgetItem";
+import { useUpdateBudgetItemOptimistic } from "../../hooks/budget/useUpdateBudgetItemOptimistic";
 import { useDeleteBudgetItem } from "../../hooks/budget/useDeleteBudgetItem";
 import BudgetSummary from "./BudgetSummary";
 import BudgetTable from "./BudgetTable";
@@ -32,33 +32,44 @@ const BudgetPlanner = () => {
 
   // Budget mutations for create, update, and delete operations
   const { mutate: createBudgetItem } = useCreateBudgetItem();
-  const { mutate: updateBudgetItem } = useUpdateBudgetItem();
+  const { mutateAsync: updateBudgetItemOptimistic } = useUpdateBudgetItemOptimistic();
   const { mutate: deleteBudgetItem } = useDeleteBudgetItem();
 
-  // Handle inline cell updates
+  // Handle inline cell updates - use optimistic for instant feedback
+  // Returns Promise so Tab navigation can await completion
   const handleCellUpdate = useCallback(
-    (rowId: string | number, field: string, value: any, row: BudgetItem) => {
-      updateBudgetItem({
+    async (rowId: string | number, field: string, value: any, _row: BudgetItem) => {
+      await updateBudgetItemOptimistic({
         id: String(rowId),
         data: {
           [field]: value,
         },
       });
     },
-    [updateBudgetItem]
+    [updateBudgetItemOptimistic]
   );
 
   // Handle inline add
   const handleAddRow = useCallback(
-    (newRow: Omit<BudgetItem, "id">) => {
-      createBudgetItem({
-        name: newRow.name,
-        group: newRow.group,
-        expectedPrice: newRow.expectedPrice,
-        actualPrice: newRow.actualPrice,
-        downPayment: newRow.downPayment,
-        contractsUrls: newRow.contractsUrls || [],
-      });
+    (newRow: Omit<BudgetItem, "id">, onSuccess?: (newRowId: string | number) => void) => {
+      createBudgetItem(
+        {
+          name: newRow.name,
+          group: newRow.group,
+          expectedPrice: newRow.expectedPrice,
+          actualPrice: newRow.actualPrice,
+          downPayment: newRow.downPayment,
+          contractsUrls: newRow.contractsUrls || [],
+          createdAt: new Date().toISOString(),
+        },
+        {
+          onSuccess: (data) => {
+            if (onSuccess && data?.id) {
+              onSuccess(data.id);
+            }
+          },
+        }
+      );
     },
     [createBudgetItem]
   );

@@ -142,6 +142,7 @@ export interface Translations {
   };
   common: {
     noResultsFound: string;
+    rowsPerPage: string;
     search: string;
     approved: string;
     approve: string;
@@ -156,6 +157,8 @@ export interface Translations {
     save: string;
     saving: string;
     cancel: string;
+    clear: string;
+    apply: string;
     unsavedChanges: string;
     unsavedChangesMessage: string;
     continueEditing: string;
@@ -300,6 +303,13 @@ export interface Translations {
     update: string;
     clearAll: string;
     all: string;
+    filter: string;
+    clearFilters: string;
+    min: string;
+    max: string;
+    from: string;
+    to: string;
+    selectedCount: string;
     item: string;
     noDataAvailable: string;
     noDataDescription: string;
@@ -593,6 +603,8 @@ export interface Translations {
     totalExpectedGuests: string;
     withPhoneNumbers: string;
     missingPhoneNumbers: string;
+    noGuests: string;
+    addGuestPlaceholder: string;
   };
   tasks: {
     title: string;

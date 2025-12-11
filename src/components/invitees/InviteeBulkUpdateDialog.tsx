@@ -9,6 +9,7 @@ import {
   Typography,
   Button,
   Stack,
+  Autocomplete,
 } from "@mui/material";
 import { Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
@@ -16,6 +17,7 @@ import { useTranslation } from "../../localization/LocalizationContext";
 interface InviteeBulkUpdateDialogProps {
   open: boolean;
   selectedRows: Invitee[];
+  relationOptions: string[];
   onClose: () => void;
   onConfirm: (updates: Partial<Invitee>) => void;
 }
@@ -23,6 +25,7 @@ interface InviteeBulkUpdateDialogProps {
 const InviteeBulkUpdateDialog: React.FC<InviteeBulkUpdateDialogProps> = ({
   open,
   selectedRows,
+  relationOptions,
   onClose,
   onConfirm,
 }) => {
@@ -53,40 +56,6 @@ const InviteeBulkUpdateDialog: React.FC<InviteeBulkUpdateDialogProps> = ({
         <Stack spacing={2}>
           <TextField
             select
-            label={t("guests.rsvpStatus")}
-            value={bulkUpdateData.rsvp ?? ""}
-            onChange={(e) => handleBulkUpdateChange("rsvp", e.target.value)}
-            fullWidth
-            size="small"
-          >
-            <MenuItem value="">{t("common.noChange")}</MenuItem>
-            <MenuItem value="Pending">{t("guests.pending")}</MenuItem>
-            <MenuItem value="Confirmed">{t("guests.confirmed")}</MenuItem>
-            <MenuItem value="Declined">{t("guests.declined")}</MenuItem>
-          </TextField>
-
-          <TextField
-            type="number"
-            label={t("guests.attendance")}
-            value={
-              bulkUpdateData.percentage !== undefined
-                ? bulkUpdateData.percentage
-                : ""
-            }
-            onChange={(e) =>
-              handleBulkUpdateChange(
-                "percentage",
-                e.target.value === "" ? undefined : Number(e.target.value)
-              )
-            }
-            fullWidth
-            size="small"
-            inputProps={{ min: 0, max: 100 }}
-            helperText={t("guests.attendanceHelper")}
-          />
-
-          <TextField
-            select
             label={t("guests.side")}
             value={bulkUpdateData.side ?? ""}
             onChange={(e) => handleBulkUpdateChange("side", e.target.value)}
@@ -98,22 +67,25 @@ const InviteeBulkUpdateDialog: React.FC<InviteeBulkUpdateDialogProps> = ({
             <MenuItem value="כלה">{t("guests.bride")}</MenuItem>
           </TextField>
 
-          <TextField
-            type="number"
-            label={t("guests.amountConfirm")}
-            value={
-              bulkUpdateData.amountConfirm !== undefined
-                ? bulkUpdateData.amountConfirm
-                : ""
+          <Autocomplete
+            freeSolo
+            options={relationOptions}
+            value={bulkUpdateData.relation ?? ""}
+            onChange={(_e, newValue) =>
+              handleBulkUpdateChange("relation", newValue || "")
             }
-            onChange={(e) =>
-              handleBulkUpdateChange(
-                "amountConfirm",
-                e.target.value === "" ? undefined : Number(e.target.value)
-              )
+            onInputChange={(_e, newValue) =>
+              handleBulkUpdateChange("relation", newValue || "")
             }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={t("guests.relation")}
+                size="small"
+                placeholder={t("common.noChange")}
+              />
+            )}
             fullWidth
-            size="small"
           />
         </Stack>
       </DialogContent>

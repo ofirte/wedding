@@ -11,6 +11,7 @@ export interface BudgetItem {
   actualPrice: number;
   downPayment: number;
   contractsUrls?: string[];
+  createdAt?: string; // ISO timestamp for ordering
 }
 
 // Total budget document interface

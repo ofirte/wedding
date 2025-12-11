@@ -1,43 +1,29 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useCallback } from "react";
 import { Box, Button, Typography, Stack } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import SummaryInfo from "./SummaryInfo";
-import { createColumns } from "./InviteListColumns";
 import AddGuestsDialog from "./AddGuestsDialog";
 import ContactMatcher from "../contacts/ContactMatcher";
 import CSVUploadDialog from "./CSVUploadDialog";
 import { useInvitees } from "../../hooks/invitees/useInvitees";
 import { useCreateInvitee } from "../../hooks/invitees/useCreateInvitee";
 import { useUpdateInvitee } from "../../hooks/invitees/useUpdateInvitee";
+import { useUpdateInviteeOptimistic } from "../../hooks/invitees/useUpdateInviteeOptimistic";
 import { useDeleteInvitee } from "../../hooks/invitees/useDeleteInvitee";
 import { useBulkUpdateInvitees } from "../../hooks/invitees/useBulkUpdateInvitees";
 import { useBulkDeleteInvitees } from "../../hooks/invitees/useBulkDeleteInvitees";
 import InviteeTable from "./InviteeTable";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { isGoogleContactsConfigured } from "../../api/contacts/googleContactsApi";
-import { isNil } from "lodash";
 import { Invitee } from "@wedding-plan/types";
 
 const WeddingInviteTable = () => {
-  const columns = createColumns(useTranslation().t);
+  // Use raw invitees directly - no transformation to maintain stable object references
+  // Sorting by createdAt is handled by DSInlineTable via defaultSortField prop
   const { data: invitees = [] } = useInvitees();
 
-  // Use denormalized RSVP data directly from invitees
-  const inviteesWithRSVP = useMemo(() => {
-    return invitees.map((invitee) => ({
-      ...invitee,
-      amountConfirm: Number(invitee.rsvpStatus?.amount || 0),
-      rsvp: (invitee.rsvpStatus?.attendance === true
-        ? "Confirmed"
-        : isNil(invitee.rsvpStatus?.attendance)
-        ? "Pending"
-        : "Declined") as "Confirmed" | "Pending" | "Declined",
-    }));
-  }, [invitees]);
-
-  const [displayedInvitees, setDisplayedInvitees] = useState<Invitee[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingInvitee, setEditingInvitee] = useState<Invitee | null>(null);
   const [isContactMatcherOpen, setIsContactMatcherOpen] = useState(false);
@@ -47,9 +33,22 @@ const WeddingInviteTable = () => {
   // Use the mutation hooks
   const { mutate: createInvitee } = useCreateInvitee();
   const { mutate: updateInvitee } = useUpdateInvitee();
+  const { mutateAsync: updateInviteeOptimistic } = useUpdateInviteeOptimistic();
   const { mutate: deleteInvitee } = useDeleteInvitee();
   const { mutate: bulkUpdateInvitees } = useBulkUpdateInvitees();
   const { mutate: bulkDeleteInvitees } = useBulkDeleteInvitees();
+
+  // Handle inline cell updates - use optimistic for instant feedback
+  // Returns Promise so Tab navigation can await completion
+  const handleCellUpdate = useCallback(
+    async (rowId: string | number, field: string, value: any) => {
+      await updateInviteeOptimistic({
+        id: rowId as string,
+        data: { [field]: value },
+      });
+    },
+    [updateInviteeOptimistic]
+  );
 
   const handleDialogOpen = () => {
     setEditingInvitee(null);
@@ -104,23 +103,46 @@ const WeddingInviteTable = () => {
   };
 
   const existingRelations = Array.from(
-    new Set(inviteesWithRSVP.map((invitee) => invitee.relation))
-  ).filter(Boolean);
+    new Set(invitees.map((invitee: Invitee) => invitee.relation))
+  ).filter(Boolean) as string[];
 
-  const handleDelete = async (invitee: Invitee) => {
-    try {
-      // Delete invitee using the hook
-      deleteInvitee(invitee.id);
-    } catch (error) {
-      console.error("Error deleting invitee: ", error);
-    }
-  };
+  const handleDelete = useCallback(
+    (id: string) => {
+      deleteInvitee(id);
+    },
+    [deleteInvitee]
+  );
 
-  const handleBulkUpdate = async (
-    invitees: Invitee[],
-    updates: Partial<Invitee>
-  ) => {
-    try {
+  // Handle inline add row
+  const handleAddInvitee = useCallback(
+    (newRow: Omit<Invitee, "id">, onSuccess?: (newRowId: string | number) => void) => {
+      createInvitee(
+        {
+          name: newRow.name,
+          side: newRow.side || "חתן",
+          relation: newRow.relation || "",
+          amount: newRow.amount || 1,
+          cellphone: newRow.cellphone || "",
+          rsvp: newRow.rsvp || "",
+          percentage: newRow.percentage || 100,
+          amountConfirm: newRow.amountConfirm || 0,
+          createdAt: new Date().toISOString(),
+        },
+        {
+          onSuccess: (data) => {
+            // data is a DocumentReference with the new ID
+            if (onSuccess && data?.id) {
+              onSuccess(data.id);
+            }
+          },
+        }
+      );
+    },
+    [createInvitee]
+  );
+
+  const handleBulkUpdate = useCallback(
+    (invitees: Invitee[], updates: Partial<Invitee>) => {
       const cleanUpdates = Object.fromEntries(
         Object.entries(updates).filter(
           ([_, value]) => value !== "" && value !== null && value !== undefined
@@ -130,22 +152,18 @@ const WeddingInviteTable = () => {
         id: invitee.id,
         data: cleanUpdates,
       }));
-
       bulkUpdateInvitees(bulkUpdates);
-    } catch (error) {
-      console.error("Error updating invitees in bulk: ", error);
-    }
-  };
+    },
+    [bulkUpdateInvitees]
+  );
 
-  const handleBulkDelete = async (invitees: Invitee[]) => {
-    try {
-      // Use the bulk delete hook with proper batch operations
+  const handleBulkDelete = useCallback(
+    (invitees: Invitee[]) => {
       const inviteeIds = invitees.map((invitee) => invitee.id);
       bulkDeleteInvitees(inviteeIds);
-    } catch (error) {
-      console.error("Error deleting invitees in bulk: ", error);
-    }
-  };
+    },
+    [bulkDeleteInvitees]
+  );
 
   const handleContactMatcherOpen = () => {
     setIsContactMatcherOpen(true);
@@ -169,8 +187,8 @@ const WeddingInviteTable = () => {
   };
 
   // Count invitees without phone numbers
-  const inviteesNeedingPhones = inviteesWithRSVP.filter(
-    (invitee) => !invitee.cellphone || invitee.cellphone.trim() === ""
+  const inviteesNeedingPhones = invitees.filter(
+    (invitee: Invitee) => !invitee.cellphone || invitee.cellphone.trim() === ""
   ).length;
 
   return (
@@ -245,18 +263,14 @@ const WeddingInviteTable = () => {
               </Button>
             </Stack>
           </Box>
-          <SummaryInfo invitees={displayedInvitees} />
+          <SummaryInfo invitees={invitees} />
           <InviteeTable
-            columns={columns}
-            invitees={inviteesWithRSVP}
+            invitees={invitees}
+            onCellUpdate={handleCellUpdate}
             onDeleteInvitee={handleDelete}
-            onEditInvitee={handleEditStart}
+            onAddInvitee={handleAddInvitee}
             onBulkUpdate={handleBulkUpdate}
             onBulkDelete={handleBulkDelete}
-            showExport={true}
-            onDisplayDataChange={(data: Invitee[]) =>
-              setDisplayedInvitees(data)
-            }
           />
         </Stack>
       </Box>
@@ -270,13 +284,13 @@ const WeddingInviteTable = () => {
       <ContactMatcher
         open={isContactMatcherOpen}
         onClose={handleContactMatcherClose}
-        invitees={inviteesWithRSVP}
+        invitees={invitees}
         onComplete={handleContactMatcherComplete}
       />
       <CSVUploadDialog
         open={isCSVUploadOpen}
         onClose={handleCSVUploadClose}
-        existingInvitees={inviteesWithRSVP}
+        existingInvitees={invitees}
       />
     </Box>
   );
