@@ -23,16 +23,10 @@ const WeddingInviteTable = () => {
   // Use raw invitees directly - no transformation to maintain stable object references
   // Sorting by createdAt is handled by DSInlineTable via defaultSortField prop
   const { data: invitees = [] } = useInvitees();
-
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingInvitee, setEditingInvitee] = useState<Invitee | null>(null);
   const [isContactMatcherOpen, setIsContactMatcherOpen] = useState(false);
   const [isCSVUploadOpen, setIsCSVUploadOpen] = useState(false);
   const { t } = useTranslation();
-
-  // Use the mutation hooks
   const { mutate: createInvitee } = useCreateInvitee();
-  const { mutate: updateInvitee } = useUpdateInvitee();
   const { mutateAsync: updateInviteeOptimistic } = useUpdateInviteeOptimistic();
   const { mutate: deleteInvitee } = useDeleteInvitee();
   const { mutate: bulkUpdateInvitees } = useBulkUpdateInvitees();
@@ -49,62 +43,6 @@ const WeddingInviteTable = () => {
     },
     [updateInviteeOptimistic]
   );
-
-  const handleDialogOpen = () => {
-    setEditingInvitee(null);
-    setIsDialogOpen(true);
-  };
-
-  const handleDialogClose = () => {
-    setIsDialogOpen(false);
-    setEditingInvitee(null);
-  };
-
-  const handleEditStart = (invitee: Invitee) => {
-    setEditingInvitee(invitee);
-    setIsDialogOpen(true);
-  };
-
-  const handleSaveInvitee = async (invitee: Invitee) => {
-    try {
-      if (editingInvitee) {
-        // Update existing invitee using the hook
-        updateInvitee({
-          id: editingInvitee.id,
-          data: {
-            name: invitee.name,
-            rsvp: invitee.rsvp,
-            percentage: invitee.percentage,
-            side: invitee.side,
-            relation: invitee.relation,
-            amount: invitee.amount,
-            amountConfirm: invitee.amountConfirm,
-            cellphone: invitee.cellphone,
-          },
-        });
-      } else {
-        console.log("Creating new invitee: ", invitee);
-        createInvitee({
-          name: invitee.name,
-          rsvp: invitee.rsvp,
-          percentage: invitee.percentage,
-          side: invitee.side,
-          relation: invitee.relation,
-          amount: invitee.amount,
-          amountConfirm: invitee.amountConfirm,
-          cellphone: invitee.cellphone,
-        });
-      }
-      setIsDialogOpen(false);
-      setEditingInvitee(null);
-    } catch (error) {
-      console.error("Error saving invitee: ", error);
-    }
-  };
-
-  const existingRelations = Array.from(
-    new Set(invitees.map((invitee: Invitee) => invitee.relation))
-  ).filter(Boolean) as string[];
 
   const handleDelete = useCallback(
     (id: string) => {
@@ -195,8 +133,6 @@ const WeddingInviteTable = () => {
     <Box
       sx={{
         minHeight: "100vh",
-
-        py: 4,
         px: { xs: 2, md: 4 },
       }}
     >
@@ -204,13 +140,13 @@ const WeddingInviteTable = () => {
         sx={{
           maxWidth: 1200,
           mx: "auto",
-          p: 3,
+          p: 4,
           bgcolor: "background.paper",
           borderRadius: 2,
           boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
         }}
       >
-        <Stack spacing={4}>
+        <Stack spacing={2}>
           <Box
             sx={{
               display: "flex",
@@ -248,18 +184,7 @@ const WeddingInviteTable = () => {
                   borderRadius: 2,
                 }}
               >
-                Upload CSV
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={<PersonAddIcon />}
-                onClick={handleDialogOpen}
-                color="info"
-                sx={{
-                  borderRadius: 2,
-                }}
-              >
-                {t("guests.addGuest")}
+                {t("guests.uploadCSV")}
               </Button>
             </Stack>
           </Box>
@@ -274,13 +199,6 @@ const WeddingInviteTable = () => {
           />
         </Stack>
       </Box>
-      <AddGuestsDialog
-        open={isDialogOpen}
-        onClose={handleDialogClose}
-        onSave={handleSaveInvitee}
-        relationOptions={existingRelations}
-        editInvitee={editingInvitee}
-      />
       <ContactMatcher
         open={isContactMatcherOpen}
         onClose={handleContactMatcherClose}

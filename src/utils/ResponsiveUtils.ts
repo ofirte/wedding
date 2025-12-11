@@ -51,7 +51,7 @@ export const responsivePatterns = {
   // Padding patterns
   containerPadding: {
     px: { xs: 1, sm: 2, md: 3 },
-    py: { xs: 2, sm: 3, md: 4 },
+    py: { xs: 1, sm: 2, md: 3 },
   },
 
   cardPadding: {

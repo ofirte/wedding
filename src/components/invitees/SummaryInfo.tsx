@@ -50,11 +50,11 @@ const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
         <Card elevation={2}>
           <CardContent>
             <Stack spacing={1} alignItems="center">
-              <GroupIcon sx={{ fontSize: 40, color: "success.main" }} />
-              <Typography variant="h5" component="div">
+              <GroupIcon sx={{ fontSize: 20, color: "success.main" }} />
+              <Typography variant="h6" component="div">
                 {guestStats.totalExpectedGuests}
               </Typography>
-              <Typography color="text.secondary">
+              <Typography variant="body2" color="text.secondary">
                 {t("guests.totalExpectedGuests")}
               </Typography>
             </Stack>
@@ -65,11 +65,11 @@ const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
         <Card elevation={2}>
           <CardContent>
             <Stack spacing={1} alignItems="center">
-              <PeopleIcon sx={{ fontSize: 40, color: "primary.main" }} />
-              <Typography variant="h5" component="div">
+              <PeopleIcon sx={{ fontSize: 20, color: "primary.main" }} />
+              <Typography variant="h6" component="div">
                 {guestStats.totalInviteeRecords}
               </Typography>
-              <Typography color="text.secondary">
+              <Typography variant="body2" color="text.secondary">
                 {t("guests.inviteeRecords")}
               </Typography>
             </Stack>
@@ -83,12 +83,12 @@ const SummaryInfo: React.FC<SummaryInfoProps> = ({ invitees }) => {
             <CardContent>
               <Stack spacing={1} alignItems="center">
                 <PhoneDisabledIcon
-                  sx={{ fontSize: 40, color: "warning.main" }}
+                  sx={{ fontSize: 20, color: "warning.main" }}
                 />
-                <Typography variant="h5" component="div">
+                <Typography variant="h6" component="div">
                   {guestStats.missingPhoneNumbers}
                 </Typography>
-                <Typography color="text.secondary">
+                <Typography variant="body2" color="text.secondary">
                   {t("guests.missingPhoneNumbers")}
                 </Typography>
               </Stack>

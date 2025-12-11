@@ -20,9 +20,24 @@ import {
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-// import { useTranslation } from "../../localization/LocalizationContext";
+import DownloadIcon from "@mui/icons-material/Download";
+import * as XLSX from "xlsx";
+import { useTranslation } from "../../localization/LocalizationContext";
 import { useBulkUpdateInvitees } from "../../hooks/invitees/useBulkUpdateInvitees";
 import { useCreateInvitee } from "../../hooks/invitees/useCreateInvitee";
+
+// Column mapping for bilingual support
+const COLUMN_MAPPINGS: Record<
+  string,
+  { en: string; he: string; required: boolean }
+> = {
+  name: { en: "name", he: "שם", required: true },
+  cellphone: { en: "cellphone", he: "נייד", required: true },
+  rsvp: { en: "rsvp", he: "סטטוס", required: false },
+  side: { en: "side", he: "צד", required: false },
+  relation: { en: "relation", he: "קרבה", required: false },
+  amount: { en: "amount", he: "כמות", required: false },
+};
 
 interface CSVRow {
   name: string;
@@ -53,7 +68,7 @@ const CSVUploadDialog: React.FC<CSVUploadDialogProps> = ({
   onClose,
   existingInvitees,
 }) => {
-  // const { t } = useTranslation(); // Uncomment when adding translations
+  const { t, language } = useTranslation();
   const [csvData, setCsvData] = useState<ParsedData | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadComplete, setUploadComplete] = useState(false);
@@ -63,98 +78,163 @@ const CSVUploadDialog: React.FC<CSVUploadDialogProps> = ({
   const { mutateAsync: createInvitee } = useCreateInvitee();
 
   const validatePhoneNumber = (phone: string): boolean => {
-    // Basic phone validation - adjust regex as needed
-    const phoneRegex = /^[+]?[\d\s\-()]{10,}$/;
-    return phoneRegex.test(phone.trim());
+    // Clean the phone number - remove all non-digit characters except +
+    const cleaned = phone.trim().replace(/[^\d+]/g, "");
+    // Israeli numbers: at least 9 digits (e.g., 0501234567 or +972501234567)
+    // Allow numbers with 9-15 digits
+    const phoneRegex = /^[+]?\d{9,15}$/;
+    return phoneRegex.test(cleaned);
   };
 
-  const parseCSV = useCallback((text: string): ParsedData => {
-    const lines = text.split("\n").filter((line) => line.trim());
-    if (lines.length === 0) {
-      return { validRows: [], errors: [], preview: [] };
+  // Fix phone number - add leading 0 if it was stripped (Israeli numbers)
+  const normalizePhoneNumber = (phone: string): string => {
+    const cleaned = phone.trim().replace(/[^\d+]/g, "");
+    // If it's 9 digits and doesn't start with 0 or +, add leading 0
+    // (Israeli mobile numbers are 10 digits starting with 05)
+    if (/^\d{9}$/.test(cleaned) && !cleaned.startsWith("0")) {
+      return "0" + cleaned;
     }
+    return cleaned;
+  };
 
-    // Parse header
-    const headers = lines[0].split(",").map((h) => h.trim().replace(/"/g, ""));
+  // Map header to internal field name (supports both languages)
+  const mapHeaderToField = (header: string): string | null => {
+    const normalizedHeader = header.toLowerCase().trim();
 
-    // Validate required headers
-    const requiredHeaders = ["name", "cellphone"];
-    const missingHeaders = requiredHeaders.filter(
-      (h) => !headers.some((header) => header.toLowerCase() === h.toLowerCase())
-    );
-
-    if (missingHeaders.length > 0) {
-      return {
-        validRows: [],
-        errors: [
-          {
-            row: 0,
-            field: "headers",
-            message: `Missing required columns: ${missingHeaders.join(", ")}`,
-          },
-        ],
-        preview: [],
-      };
+    for (const [fieldName, mapping] of Object.entries(COLUMN_MAPPINGS)) {
+      if (
+        normalizedHeader === mapping.en.toLowerCase() ||
+        normalizedHeader === mapping.he
+      ) {
+        return fieldName;
+      }
     }
+    return null; // Unknown column - will be ignored
+  };
 
-    const validRows: CSVRow[] = [];
-    const errors: ValidationError[] = [];
+  const parseFileData = useCallback(
+    (data: any[][]): ParsedData => {
+      if (data.length === 0) {
+        return { validRows: [], errors: [], preview: [] };
+      }
 
-    // Parse data rows
-    for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(",").map((v) => v.trim().replace(/"/g, ""));
-      const row: any = {};
+      // Parse header row
+      const rawHeaders = data[0].map((h) =>
+        String(h || "")
+          .trim()
+          .replace(/"/g, "")
+      );
 
-      // Map headers to values
-      headers.forEach((header, index) => {
-        row[header.toLowerCase()] = values[index] || "";
+      // Map headers to internal field names
+      const headerMapping: { index: number; fieldName: string }[] = [];
+      rawHeaders.forEach((header, index) => {
+        const fieldName = mapHeaderToField(header);
+        if (fieldName) {
+          headerMapping.push({ index, fieldName });
+        }
       });
 
-      // Validate required fields
-      if (!row.name || row.name.trim() === "") {
-        errors.push({
-          row: i + 1,
-          field: "name",
-          message: "Name is required",
-        });
-        continue;
+      // Check for required headers
+      const requiredFields = Object.entries(COLUMN_MAPPINGS)
+        .filter(([_, mapping]) => mapping.required)
+        .map(([fieldName, _]) => fieldName);
+
+      const mappedFields = headerMapping.map((h) => h.fieldName);
+      const missingRequired = requiredFields.filter(
+        (f) => !mappedFields.includes(f)
+      );
+
+      if (missingRequired.length > 0) {
+        const missingColumnsDisplay = missingRequired
+          .map((f) => {
+            const mapping = COLUMN_MAPPINGS[f];
+            return language === "he" ? mapping.he : mapping.en;
+          })
+          .join(", ");
+
+        return {
+          validRows: [],
+          errors: [
+            {
+              row: 0,
+              field: "headers",
+              message: t("csvUpload.missingColumns", {
+                columns: missingColumnsDisplay,
+              }),
+            },
+          ],
+          preview: [],
+        };
       }
 
-      if (!row.cellphone || row.cellphone.trim() === "") {
-        errors.push({
-          row: i + 1,
-          field: "cellphone",
-          message: "Cellphone is required",
+      const validRows: CSVRow[] = [];
+      const errors: ValidationError[] = [];
+
+      // Parse data rows (skip header)
+      for (let i = 1; i < data.length; i++) {
+        const rowData = data[i];
+        if (!rowData || rowData.every((cell) => !cell)) continue; // Skip empty rows
+
+        const row: any = {};
+
+        // Map values to field names
+        headerMapping.forEach(({ index, fieldName }) => {
+          const value = rowData[index];
+          row[fieldName] =
+            value !== undefined && value !== null ? String(value).trim() : "";
         });
-        continue;
+
+        // Validate required fields
+        if (!row.name || row.name.trim() === "") {
+          errors.push({
+            row: i + 1,
+            field: "name",
+            message: t("csvUpload.errors.nameRequired"),
+          });
+          continue;
+        }
+
+        if (!row.cellphone || row.cellphone.trim() === "") {
+          errors.push({
+            row: i + 1,
+            field: "cellphone",
+            message: t("csvUpload.errors.cellphoneRequired"),
+          });
+          continue;
+        }
+
+        if (!validatePhoneNumber(row.cellphone)) {
+          errors.push({
+            row: i + 1,
+            field: "cellphone",
+            message: t("csvUpload.errors.invalidPhone"),
+          });
+          continue;
+        }
+
+        validRows.push(row as CSVRow);
       }
 
-      if (!validatePhoneNumber(row.cellphone)) {
-        errors.push({
-          row: i + 1,
-          field: "cellphone",
-          message: "Invalid phone number format",
-        });
-        continue;
-      }
-
-      validRows.push(row as CSVRow);
-    }
-
-    return {
-      validRows,
-      errors,
-      preview: validRows.slice(0, 5), // Show first 5 rows as preview
-    };
-  }, []);
+      return {
+        validRows,
+        errors,
+        preview: validRows.slice(0, 5), // Show first 5 rows as preview
+      };
+    },
+    [language, t]
+  );
 
   const handleFileSelect = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const selectedFile = event.target.files?.[0];
       if (!selectedFile) return;
 
-      if (!selectedFile.name.toLowerCase().endsWith(".csv")) {
-        alert("Please select a CSV file");
+      const fileName = selectedFile.name.toLowerCase();
+      const isCSV = fileName.endsWith(".csv");
+      const isXLSX = fileName.endsWith(".xlsx") || fileName.endsWith(".xls");
+
+      if (!isCSV && !isXLSX) {
+        alert(t("csvUpload.invalidFormat"));
         return;
       }
 
@@ -162,14 +242,58 @@ const CSVUploadDialog: React.FC<CSVUploadDialogProps> = ({
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        const text = e.target?.result as string;
-        const parsed = parseCSV(text);
-        setCsvData(parsed);
+        try {
+          const arrayBuffer = e.target?.result as ArrayBuffer;
+          const workbook = XLSX.read(arrayBuffer, { type: "array" });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const data = XLSX.utils.sheet_to_json(worksheet, {
+            header: 1,
+          }) as any[][];
+
+          const parsed = parseFileData(data);
+          setCsvData(parsed);
+        } catch (error) {
+          console.error("Error parsing file:", error);
+          alert(t("csvUpload.uploadError"));
+        }
       };
-      reader.readAsText(selectedFile);
+      reader.readAsArrayBuffer(selectedFile);
     },
-    [parseCSV]
+    [parseFileData, t]
   );
+
+  const handleDownloadTemplate = useCallback(() => {
+    // Get headers in current language
+    const columnKeys = Object.keys(COLUMN_MAPPINGS);
+    const headers = Object.entries(COLUMN_MAPPINGS).map(([_, mapping]) =>
+      language === "he" ? mapping.he : mapping.en
+    );
+
+    // Create worksheet with headers only
+    const ws = XLSX.utils.aoa_to_sheet([headers]);
+
+    // Set column widths for better readability
+    ws["!cols"] = headers.map(() => ({ wch: 15 }));
+
+    // Find cellphone column index and set the entire column to text format
+    const cellphoneIndex = columnKeys.indexOf("cellphone");
+    if (cellphoneIndex !== -1) {
+      // Set format for cellphone column (up to 1000 rows) to preserve leading zeros
+      const colLetter = String.fromCharCode(65 + cellphoneIndex); // A, B, C...
+      for (let row = 2; row <= 1000; row++) {
+        const cellRef = `${colLetter}${row}`;
+        if (!ws[cellRef]) {
+          ws[cellRef] = { t: "s", v: "" };
+        }
+        ws[cellRef].z = "@"; // Text format
+      }
+    }
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Invitees");
+    XLSX.writeFile(wb, `invitees_template.xlsx`);
+  }, [language]);
 
   const handleUpload = async () => {
     if (!csvData || csvData.validRows.length === 0) return;
@@ -184,13 +308,13 @@ const CSVUploadDialog: React.FC<CSVUploadDialogProps> = ({
 
         const inviteeData = {
           name: row.name,
-          cellphone: row.cellphone,
+          cellphone: normalizePhoneNumber(row.cellphone),
           rsvp: String(row.rsvp || "Pending"),
-          percentage: row.percentage ? Number(row.percentage) : 100,
+          percentage: 100,
           side: String(row.side || ""),
           relation: String(row.relation || ""),
           amount: row.amount ? Number(row.amount) : 1,
-          amountConfirm: row.amountconfirm ? Number(row.amountconfirm) : 0,
+          amountConfirm: 0,
         };
 
         // Create new invitee
@@ -208,8 +332,8 @@ const CSVUploadDialog: React.FC<CSVUploadDialogProps> = ({
 
       setUploadComplete(true);
     } catch (error) {
-      console.error("Error uploading CSV:", error);
-      alert("Error uploading CSV data. Please try again.");
+      console.error("Error uploading file:", error);
+      alert(t("csvUpload.uploadError"));
     } finally {
       setUploading(false);
     }
@@ -223,21 +347,41 @@ const CSVUploadDialog: React.FC<CSVUploadDialogProps> = ({
     onClose();
   };
 
+  // Get localized column names for display
+  const getColumnLabel = (fieldName: string): string => {
+    const key = `csvUpload.columns.${fieldName}` as const;
+    return t(key as any) || fieldName;
+  };
+
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle>Upload Invitees CSV</DialogTitle>
+      <DialogTitle>{t("csvUpload.dialogTitle")}</DialogTitle>
 
       <DialogContent>
         {!csvData && (
           <Box>
             <Typography variant="body2" sx={{ mb: 2 }}>
-              Upload a CSV file with invitee data. Required columns:{" "}
-              <strong>name, cellphone</strong>
+              {t("csvUpload.acceptedFormats")}
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              <strong>{t("csvUpload.requiredColumns")}:</strong>{" "}
+              {getColumnLabel("name")}, {getColumnLabel("cellphone")}
             </Typography>
             <Typography variant="body2" sx={{ mb: 3, color: "text.secondary" }}>
-              Optional columns: rsvp, percentage, side, relation, amount,
-              amountConfirm
+              <strong>{t("csvUpload.optionalColumns")}:</strong>{" "}
+              {getColumnLabel("rsvp")}, {getColumnLabel("side")},{" "}
+              {getColumnLabel("relation")}, {getColumnLabel("amount")}
             </Typography>
+
+            <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+              <Button
+                variant="outlined"
+                startIcon={<DownloadIcon />}
+                onClick={handleDownloadTemplate}
+              >
+                {t("csvUpload.downloadTemplate")}
+              </Button>
+            </Box>
 
             <Button
               variant="contained"
@@ -246,18 +390,18 @@ const CSVUploadDialog: React.FC<CSVUploadDialogProps> = ({
               fullWidth
               sx={{ mb: 2 }}
             >
-              Select CSV File
+              {t("csvUpload.selectFile")}
               <input
                 type="file"
                 hidden
-                accept=".csv"
+                accept=".csv,.xlsx,.xls"
                 onChange={handleFileSelect}
               />
             </Button>
 
             {file && (
               <Alert severity="info" sx={{ mt: 2 }}>
-                Selected file: {file.name}
+                {t("csvUpload.selectedFile", { filename: file.name })}
               </Alert>
             )}
           </Box>
@@ -268,16 +412,21 @@ const CSVUploadDialog: React.FC<CSVUploadDialogProps> = ({
             {csvData.errors.length > 0 && (
               <Alert severity="error" sx={{ mb: 2 }}>
                 <Typography variant="subtitle2" gutterBottom>
-                  Found {csvData.errors.length} errors:
+                  {t("csvUpload.errors.foundErrors", {
+                    count: csvData.errors.length,
+                  })}
                 </Typography>
                 {csvData.errors.slice(0, 5).map((error, index) => (
                   <Typography key={index} variant="body2">
-                    Row {error.row}, {error.field}: {error.message}
+                    {t("csvUpload.errors.row", { row: error.row })},{" "}
+                    {error.field}: {error.message}
                   </Typography>
                 ))}
                 {csvData.errors.length > 5 && (
                   <Typography variant="body2" sx={{ mt: 1 }}>
-                    ... and {csvData.errors.length - 5} more errors
+                    {t("csvUpload.errors.moreErrors", {
+                      count: csvData.errors.length - 5,
+                    })}
                   </Typography>
                 )}
               </Alert>
@@ -290,23 +439,25 @@ const CSVUploadDialog: React.FC<CSVUploadDialogProps> = ({
                 >
                   <CheckCircleIcon color="success" />
                   <Typography variant="subtitle1">
-                    {csvData.validRows.length} valid records found
+                    {t("csvUpload.validRecords", {
+                      count: csvData.validRows.length,
+                    })}
                   </Typography>
                 </Box>
 
                 <Typography variant="subtitle2" gutterBottom>
-                  Preview (first 5 records):
+                  {t("csvUpload.preview")}
                 </Typography>
                 <TableContainer component={Paper} sx={{ maxHeight: 300 }}>
                   <Table size="small">
                     <TableHead>
                       <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Cellphone</TableCell>
-                        <TableCell>RSVP</TableCell>
-                        <TableCell>Side</TableCell>
-                        <TableCell>Relation</TableCell>
-                        <TableCell>Status</TableCell>
+                        <TableCell>{getColumnLabel("name")}</TableCell>
+                        <TableCell>{getColumnLabel("cellphone")}</TableCell>
+                        <TableCell>{getColumnLabel("rsvp")}</TableCell>
+                        <TableCell>{getColumnLabel("side")}</TableCell>
+                        <TableCell>{getColumnLabel("relation")}</TableCell>
+                        <TableCell>{t("common.status")}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -326,7 +477,11 @@ const CSVUploadDialog: React.FC<CSVUploadDialogProps> = ({
                             <TableCell>{row.relation || "-"}</TableCell>
                             <TableCell>
                               <Chip
-                                label={existingInvitee ? "Update" : "New"}
+                                label={
+                                  existingInvitee
+                                    ? t("csvUpload.status.update")
+                                    : t("csvUpload.status.new")
+                                }
                                 color={existingInvitee ? "warning" : "success"}
                                 size="small"
                               />
@@ -343,7 +498,7 @@ const CSVUploadDialog: React.FC<CSVUploadDialogProps> = ({
             {uploading && (
               <Box sx={{ mt: 2 }}>
                 <Typography variant="body2" gutterBottom>
-                  Uploading invitees...
+                  {t("csvUpload.uploading")}
                 </Typography>
                 <LinearProgress />
               </Box>
@@ -352,7 +507,9 @@ const CSVUploadDialog: React.FC<CSVUploadDialogProps> = ({
             {uploadComplete && (
               <Alert severity="success" sx={{ mt: 2 }}>
                 <Typography variant="subtitle2">
-                  Successfully uploaded {csvData.validRows.length} invitees!
+                  {t("csvUpload.uploadSuccess", {
+                    count: csvData.validRows.length,
+                  })}
                 </Typography>
               </Alert>
             )}
@@ -362,7 +519,7 @@ const CSVUploadDialog: React.FC<CSVUploadDialogProps> = ({
 
       <DialogActions>
         <Button onClick={handleClose}>
-          {uploadComplete ? "Close" : "Cancel"}
+          {uploadComplete ? t("csvUpload.close") : t("csvUpload.cancel")}
         </Button>
         {csvData && csvData.validRows.length > 0 && !uploadComplete && (
           <Button
@@ -372,8 +529,8 @@ const CSVUploadDialog: React.FC<CSVUploadDialogProps> = ({
             startIcon={uploading ? <LinearProgress /> : <CloudUploadIcon />}
           >
             {uploading
-              ? "Uploading..."
-              : `Upload ${csvData.validRows.length} Records`}
+              ? t("csvUpload.uploading")
+              : t("csvUpload.uploadRecords", { count: csvData.validRows.length })}
           </Button>
         )}
       </DialogActions>

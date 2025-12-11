@@ -219,10 +219,18 @@ const DSInlineTable = <T extends { id: string | number }>({
                 />
               ),
               TableHead: forwardRef<HTMLTableSectionElement>((props, ref) => (
-                <TableHead ref={ref} {...props} />
+                <TableHead
+                  ref={ref}
+                  {...props}
+                  sx={{ position: "relative", zIndex: 10 }}
+                />
               )),
               TableBody: forwardRef<HTMLTableSectionElement>((props, ref) => (
-                <TableBody ref={ref} {...props} />
+                <TableBody
+                  ref={ref}
+                  {...props}
+                  sx={{ position: "relative", zIndex: 1 }}
+                />
               )),
             }}
             itemContent={(_index, row) => (
@@ -230,7 +238,22 @@ const DSInlineTable = <T extends { id: string | number }>({
                 {showSelectColumn && (
                   <TableCell
                     padding="checkbox"
-                    sx={{ bgcolor: "background.paper" }}
+                    sx={{
+                      bgcolor: "background.paper",
+                      width: 48,
+                      minWidth: 48,
+                      maxWidth: 48,
+                      boxSizing: "border-box",
+                      position: "sticky",
+                      left: 0,
+                      zIndex: 2,
+                      ...(columns.some((c) => c.sticky)
+                        ? {}
+                        : {
+                            borderRight: "2px solid",
+                            borderRightColor: "divider",
+                          }),
+                    }}
                   >
                     <Checkbox
                       checked={selectedIdSet.has(row.id)}
@@ -249,7 +272,9 @@ const DSInlineTable = <T extends { id: string | number }>({
                       ...(column.editable && { cursor: "text" }),
                       ...(column.sticky && {
                         position: "sticky",
-                        left: column.stickyOffset ?? 0,
+                        left: showSelectColumn
+                          ? 48 + (column.stickyOffset ?? 0)
+                          : (column.stickyOffset ?? 0),
                         zIndex: 1,
                         backgroundColor: "background.paper",
                         borderRight: "2px solid",
@@ -272,6 +297,20 @@ const DSInlineTable = <T extends { id: string | number }>({
                       bgcolor: "#f5f5f5",
                       fontWeight: "bold",
                       width: 48,
+                      minWidth: 48,
+                      maxWidth: 48,
+                      boxSizing: "border-box",
+                      position: "sticky",
+                      left: 0,
+                      top: 0,
+                      zIndex: 5,
+                      ...(columns.some((c) => c.sticky)
+                        ? {}
+                        : {
+                            borderRight: "2px solid",
+                            borderRightColor: "divider",
+                            boxShadow: "2px 0 4px rgba(0, 0, 0, 0.05)",
+                          }),
                     }}
                   >
                     <Checkbox
@@ -297,7 +336,9 @@ const DSInlineTable = <T extends { id: string | number }>({
                         ...(column.width && { width: column.width }),
                         ...(column.sticky && {
                           position: "sticky",
-                          left: column.stickyOffset ?? 0,
+                          left: showSelectColumn
+                            ? 48 + (column.stickyOffset ?? 0)
+                            : (column.stickyOffset ?? 0),
                           zIndex: 3,
                           borderRight: "2px solid",
                           borderRightColor: "divider",

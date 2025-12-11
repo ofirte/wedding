@@ -570,6 +570,7 @@ export interface Translations {
     };
   };
   guests: {
+    uploadCSV: string;
     title: string;
     totalGuests: string;
     confirmed: string;
@@ -1416,6 +1417,47 @@ export interface Translations {
     messageTooShort: string;
     messageTooLong: string;
     buttonText: string;
+  };
+  csvUpload: {
+    dialogTitle: string;
+    downloadTemplate: string;
+    selectFile: string;
+    acceptedFormats: string;
+    requiredColumns: string;
+    optionalColumns: string;
+    validRecords: string;
+    preview: string;
+    uploading: string;
+    uploadSuccess: string;
+    uploadError: string;
+    invalidFormat: string;
+    missingColumns: string;
+    errors: {
+      nameRequired: string;
+      cellphoneRequired: string;
+      invalidPhone: string;
+      row: string;
+      foundErrors: string;
+      moreErrors: string;
+    };
+    columns: {
+      name: string;
+      cellphone: string;
+      rsvp: string;
+      percentage: string;
+      side: string;
+      relation: string;
+      amount: string;
+      amountConfirm: string;
+    };
+    status: {
+      new: string;
+      update: string;
+    };
+    uploadRecords: string;
+    close: string;
+    cancel: string;
+    selectedFile: string;
   };
 }
 
