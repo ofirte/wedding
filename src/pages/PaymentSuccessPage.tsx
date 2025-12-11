@@ -1,16 +1,30 @@
 import React from "react";
-import { Box, Typography, Button, Container, Stack, Paper } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Container,
+  Stack,
+  Paper,
+  CircularProgress,
+} from "@mui/material";
 import { CheckCircle as CheckCircleIcon } from "@mui/icons-material";
 import { useTranslation } from "../localization/LocalizationContext";
 import { useParams, useNavigate } from "react-router";
+import { useCurrentUserWeddingPlan } from "../hooks/wedding/useCurrentUserWeddingPlan";
 
 const PaymentSuccessPage: React.FC = () => {
   const { t } = useTranslation();
   const { weddingId } = useParams<{ weddingId: string }>();
   const navigate = useNavigate();
 
+  const { isPaid, isLoading } = useCurrentUserWeddingPlan({
+    refetchUntilPaid: 2000,
+  });
+  const isButtonLoading = isLoading || !isPaid;
+
   const handleContinue = () => {
-    if (weddingId) {
+    if (weddingId && isPaid) {
       navigate(`/wedding/${weddingId}/rsvp`);
     }
   };
@@ -83,6 +97,7 @@ const PaymentSuccessPage: React.FC = () => {
               variant="contained"
               size="large"
               onClick={handleContinue}
+              disabled={isButtonLoading}
               sx={{
                 mt: 2,
                 px: 5,
@@ -93,7 +108,11 @@ const PaymentSuccessPage: React.FC = () => {
                 textTransform: "none",
               }}
             >
-              {t("payment.success.continueButton")}
+              {isButtonLoading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                t("payment.success.continueButton")
+              )}
             </Button>
           </Stack>
         </Paper>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, Paper } from "@mui/material";
+import { Box, Button, Paper, Tooltip } from "@mui/material";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import {
   LoadingState,
@@ -115,17 +115,28 @@ export const RSVPSetupSteps: React.FC = () => {
           onStepClick={setActiveStep}
           compact
         />
-        <Button
-          onClick={handleNext}
-          disabled={!canGoNext}
-          endIcon={<LocalizedArrowIcon direction="next" />}
-          variant="contained"
-          sx={{ height: 40, alignSelf: "center" }}
+        <Tooltip
+          title={
+            !canGoNext && activeStep === steps.length - 1
+              ? t("rsvp.automationsNeedApproval")
+              : ""
+          }
+          arrow
         >
-          {activeStep === steps.length - 1
-            ? t("common.finish")
-            : t("common.next")}
-        </Button>
+          <span>
+            <Button
+              onClick={handleNext}
+              disabled={!canGoNext}
+              endIcon={<LocalizedArrowIcon direction="next" />}
+              variant="contained"
+              sx={{ height: 40, alignSelf: "center" }}
+            >
+              {activeStep === steps.length - 1
+                ? t("common.finish")
+                : t("common.next")}
+            </Button>
+          </span>
+        </Tooltip>
       </Box>
     </Paper>
   );
