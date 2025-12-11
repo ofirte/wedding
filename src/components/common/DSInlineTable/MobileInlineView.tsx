@@ -570,9 +570,15 @@ const MobileInlineView = <T extends { id: string | number }>({
         onClose={handleCloseEdit}
         fullWidth
         maxWidth="sm"
+        sx={{
+          "& .MuiDialog-container": {
+            alignItems: "flex-start",
+          },
+        }}
         PaperProps={{
           sx: {
             m: 2,
+            mt: 4,
             width: "calc(100% - 32px)",
             maxWidth: "400px",
           },
@@ -602,9 +608,15 @@ const MobileInlineView = <T extends { id: string | number }>({
         onClose={handleCloseAdd}
         fullWidth
         maxWidth="sm"
+        sx={{
+          "& .MuiDialog-container": {
+            alignItems: "flex-start",
+          },
+        }}
         PaperProps={{
           sx: {
             m: 2,
+            mt: 4,
             width: "calc(100% - 32px)",
             maxWidth: "400px",
           },
