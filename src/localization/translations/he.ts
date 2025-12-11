@@ -543,9 +543,10 @@ export const hebrewTranslations: Translations = {
       beauty: "יופי",
       other: "אחר",
     },
+    budgetExportFilename: "תקציב",
   },
   guests: {
-    uploadCSV: "העלה קובץ אקסל",
+    uploadCSV: "העלה קובץ Excel",
     title: "רשימת אורחים",
     totalGuests: "סך האורחים",
     confirmed: "אישרו הגעה",
@@ -582,6 +583,7 @@ export const hebrewTranslations: Translations = {
     missingPhoneNumbers: "ללא מספר טלפון",
     noGuests: "אין אורחים עדיין. הוסף את האורח הראשון!",
     addGuestPlaceholder: "הוסף אורח חדש...",
+    inviteesExportFilename: "רשימת מוזמנים",
   },
   tasks: {
     title: "משימות חתונה",

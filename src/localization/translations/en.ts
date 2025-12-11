@@ -552,6 +552,7 @@ export const englishTranslations: Translations = {
       beauty: "Beauty",
       other: "Other",
     },
+    budgetExportFilename: "budget-export",
   },
   guests: {
     uploadCSV: "Upload Excel",
@@ -591,6 +592,7 @@ export const englishTranslations: Translations = {
     missingPhoneNumbers: "Missing Phone Numbers",
     noGuests: "No guests yet. Add your first guest!",
     addGuestPlaceholder: "Add new guest...",
+    inviteesExportFilename: "invitees-export",
   },
   tasks: {
     title: "Wedding Tasks",

@@ -132,6 +132,8 @@ const InviteeTable: React.FC<InviteeTableProps> = ({
         defaultNewRow={{  amount: 1 }}
         onAddRow={onAddInvitee}
         mobileCardTitle={(row) => row.name}
+        showExport={true}
+        exportFilename={t("guests.inviteesExportFilename")}
 
       />
 

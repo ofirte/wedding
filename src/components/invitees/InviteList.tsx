@@ -196,6 +196,7 @@ const WeddingInviteTable = () => {
             onAddInvitee={handleAddInvitee}
             onBulkUpdate={handleBulkUpdate}
             onBulkDelete={handleBulkDelete}
+            
           />
         </Stack>
       </Box>

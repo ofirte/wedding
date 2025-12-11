@@ -135,6 +135,10 @@ export const createBudgetInlineColumns = (
     editOptions: createBudgetGroupOptions(t),
     editColorMap: BUDGET_GROUP_COLORS,
     minWidth: 130,
+    filterConfig: {
+      type: "select",
+      options: createBudgetGroupOptions(t),
+    },
   },
   {
     id: "expectedPrice",
@@ -143,6 +147,9 @@ export const createBudgetInlineColumns = (
     editable: true,
     editType: "number",
     minWidth: 120,
+    filterConfig: {
+      type: "number-range",
+    },
   },
   {
     id: "actualPrice",
@@ -151,6 +158,9 @@ export const createBudgetInlineColumns = (
     editable: true,
     editType: "number",
     minWidth: 120,
+    filterConfig: {
+      type: "number-range",
+    },
   },
   {
     id: "downPayment",
@@ -159,6 +169,9 @@ export const createBudgetInlineColumns = (
     editable: true,
     editType: "number",
     minWidth: 120,
+    filterConfig: {
+      type: "number-range",
+    },
   },
   {
     id: "balance",
@@ -171,6 +184,9 @@ export const createBudgetInlineColumns = (
         sign: "₪",
       }),
     minWidth: 100,
+    filterConfig: {
+      type: "number-range",
+    },
   },
   {
     id: "contract",

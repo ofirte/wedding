@@ -13,7 +13,7 @@ import {
   Checkbox,
   Button,
 } from "@mui/material";
-import { Search, Clear, FilterListOff } from "@mui/icons-material";
+import { Search, Clear, FilterListOff, Download } from "@mui/icons-material";
 import { TableVirtuoso, TableVirtuosoHandle } from "react-virtuoso";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import { useResponsive } from "../../../utils/ResponsiveUtils";
@@ -24,6 +24,7 @@ import { useTableSelection } from "./hooks/useTableSelection";
 import { useTableFiltering } from "./hooks/useTableFiltering";
 import { renderCellContent } from "./renderCellContent";
 import AddRowFooter from "./AddRowFooter";
+import { useInlineTableExcelExport } from "../../../utils/ExcelUtils";
 import ColumnHeaderCell from "./ColumnHeaderCell";
 import { TabNavigationProvider, TabNavigationRef } from "./TabNavigationContext";
 import MobileInlineView from "./MobileInlineView";
@@ -46,9 +47,12 @@ const DSInlineTable = <T extends { id: string | number }>({
   defaultNewRow = {},
   onAddRow,
   mobileCardTitle,
+  showExport = false,
+  exportFilename = "export",
 }: DSInlineTableProps<T>) => {
   const { t } = useTranslation();
   const { isMobile } = useResponsive();
+  const { exportData } = useInlineTableExcelExport(exportFilename);
 
   const virtuosoRef = useRef<TableVirtuosoHandle>(null);
   const tabNavRef = useRef<TabNavigationRef>(null);
@@ -126,6 +130,11 @@ const DSInlineTable = <T extends { id: string | number }>({
     onAddRow(newRow as Omit<T, "id">, handleNewRowAdded);
   }, [onAddRow, defaultNewRow, columns, addRowField, handleNewRowAdded]);
 
+  // Handle export - exports the currently displayed (filtered/sorted) data
+  const handleExport = useCallback(() => {
+    exportData(sortedData, columns);
+  }, [exportData, sortedData, columns]);
+
   const totalColumns = showSelectColumn ? columns.length + 1 : columns.length;
 
   // Mobile cell update handler - wraps the original to work with mobile view
@@ -188,30 +197,43 @@ const DSInlineTable = <T extends { id: string | number }>({
           </Box>
         )}
 
-        {/* Mobile Search */}
-        {showSearch && searchFields.length > 0 && (
-          <Box sx={{ mb: 2, px: 1 }}>
-            <TextField
-              size="small"
-              placeholder={searchPlaceholder}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search fontSize="small" />
-                  </InputAdornment>
-                ),
-                endAdornment: searchQuery && (
-                  <InputAdornment position="end">
-                    <IconButton size="small" onClick={() => setSearchQuery("")}>
-                      <Clear fontSize="small" />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+        {/* Mobile Search and Export */}
+        {(showSearch || showExport) && (
+          <Box sx={{ mb: 2, px: 1, display: "flex", flexDirection: "column", gap: 1 }}>
+            {showSearch && searchFields.length > 0 && (
+              <TextField
+                size="small"
+                placeholder={searchPlaceholder}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: searchQuery && (
+                    <InputAdornment position="end">
+                      <IconButton size="small" onClick={() => setSearchQuery("")}>
+                        <Clear fontSize="small" />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
+            {showExport && (
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<Download />}
+                onClick={handleExport}
+                fullWidth
+              >
+                {t("common.exportToExcel")}
+              </Button>
+            )}
           </Box>
         )}
 
@@ -258,29 +280,31 @@ const DSInlineTable = <T extends { id: string | number }>({
         </Box>
       )}
 
-      {showSearch && searchFields.length > 0 && (
+      {(showSearch || showExport) && (
         <Box sx={{ mb: 2, display: "flex", gap: 1, alignItems: "center" }}>
-          <TextField
-            size="small"
-            placeholder={searchPlaceholder}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search fontSize="small" />
-                </InputAdornment>
-              ),
-              endAdornment: searchQuery && (
-                <InputAdornment position="end">
-                  <IconButton size="small" onClick={() => setSearchQuery("")}>
-                    <Clear fontSize="small" />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
+          {showSearch && searchFields.length > 0 && (
+            <TextField
+              size="small"
+              placeholder={searchPlaceholder}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              sx={{ flexGrow: 1 }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search fontSize="small" />
+                  </InputAdornment>
+                ),
+                endAdornment: searchQuery && (
+                  <InputAdornment position="end">
+                    <IconButton size="small" onClick={() => setSearchQuery("")}>
+                      <Clear fontSize="small" />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          )}
           {hasActiveFilters && (
             <Button
               size="small"
@@ -289,6 +313,17 @@ const DSInlineTable = <T extends { id: string | number }>({
               sx={{ flexShrink: 0, whiteSpace: "nowrap" }}
             >
               {t("common.clearFilters")}
+            </Button>
+          )}
+          {showExport && (
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<Download />}
+              onClick={handleExport}
+              sx={{ flexShrink: 0, whiteSpace: "nowrap", ml: "auto" }}
+            >
+              {t("common.exportToExcel")}
             </Button>
           )}
         </Box>

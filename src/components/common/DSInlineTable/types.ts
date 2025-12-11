@@ -115,6 +115,9 @@ export interface DSInlineTableProps<T extends { id: string | number }> {
   onAddRow?: (newRow: Omit<T, "id">, onSuccess?: (newRowId: string | number) => void) => void;
   // Mobile view props
   mobileCardTitle?: (row: T) => string; // Function to generate card title on mobile
+  // Export props
+  showExport?: boolean;
+  exportFilename?: string;
 }
 
 export type Order = "asc" | "desc";

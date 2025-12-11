@@ -64,6 +64,8 @@ const BudgetTable: React.FC<BudgetTableProps> = ({
       onAddRow={onAddRow}
       emptyMessage={t("budget.noExpenses")}
       mobileCardTitle={(row) => row.name}
+      showExport={true}
+      exportFilename={t("budget.budgetExportFilename")}
     />
   );
 };

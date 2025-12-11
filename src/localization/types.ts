@@ -568,6 +568,7 @@ export interface Translations {
       beauty: string;
       other: string;
     };
+    budgetExportFilename: string;
   };
   guests: {
     uploadCSV: string;
@@ -606,6 +607,7 @@ export interface Translations {
     missingPhoneNumbers: string;
     noGuests: string;
     addGuestPlaceholder: string;
+    inviteesExportFilename: string;
   };
   tasks: {
     title: string;
