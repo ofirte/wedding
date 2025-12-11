@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Chip, Stack } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 
@@ -15,27 +15,23 @@ const InviteeBulkActions: React.FC<InviteeBulkActionsProps> = ({
   onBulkDelete,
 }) => {
   const { t } = useTranslation();
+
+  if (selectedRows.length === 0) return null;
+
   return (
-    <Box sx={{ borderRadius: 1 }}>
-      <Stack direction="row" spacing={2} alignItems="center">
-        <Button variant="outlined" size="small" onClick={onBulkUpdate}>
-          {t("guests.bulkUpdate")}
-        </Button>
-        <Button
-          variant="outlined"
-          color="error"
-          size="small"
-          onClick={onBulkDelete}
-        >
-          {t("guests.bulkDelete")}
-        </Button>
-        <Chip
-          label={t("common.selected", { count: selectedRows.length })}
-          color="primary"
-          variant="outlined"
-        />
-      </Stack>
-    </Box>
+    <Stack direction="row" spacing={2} alignItems="center">
+      <Button variant="outlined" size="small" onClick={onBulkUpdate}>
+        {t("guests.bulkUpdate")}
+      </Button>
+      <Button
+        variant="outlined"
+        color="error"
+        size="small"
+        onClick={onBulkDelete}
+      >
+        {t("guests.bulkDelete")}
+      </Button>
+    </Stack>
   );
 };
 

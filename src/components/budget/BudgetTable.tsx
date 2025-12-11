@@ -8,7 +8,7 @@ interface BudgetTableProps {
   items: BudgetItem[];
   onCellUpdate: (rowId: string | number, field: string, value: any, row: BudgetItem) => void;
   onDelete: (id: string) => void;
-  onAddRow: (newRow: Omit<BudgetItem, "id">) => void;
+  onAddRow: (newRow: Omit<BudgetItem, "id">, onSuccess?: (newRowId: string | number) => void) => void;
 }
 
 const BudgetTable: React.FC<BudgetTableProps> = ({
@@ -50,12 +50,13 @@ const BudgetTable: React.FC<BudgetTableProps> = ({
 
   return (
     <DSInlineTable
-    
       columns={columns}
       data={items}
       onCellUpdate={onCellUpdate}
       showSearch
-      searchFields={["name", "group"]}
+      searchFields={["name"]}
+      defaultSortField="createdAt"
+
       enableInlineAdd
       addRowPlaceholder={t("budget.addNewItem")}
       addRowField="name"

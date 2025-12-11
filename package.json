@@ -38,6 +38,7 @@
     "react-konva": "^19.2.0",
     "react-router": "^7.2.0",
     "react-scripts": "5.0.1",
+    "react-virtuoso": "^4.17.0",
     "stylis-plugin-rtl": "^2.1.1",
     "twilio": "^5.7.3",
     "uuid": "^11.1.0",

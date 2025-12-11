@@ -28,5 +28,6 @@ export interface Invitee {
   actualAttendance?: boolean;
   actualAmount?: number;
   checkedInAt?: Date;
+  createdAt?: string; // ISO timestamp for ordering
 }
 

@@ -1,104 +1,153 @@
-import React, { useState } from "react";
+import React, { useMemo, useState, useCallback, useEffect } from "react";
 import { Invitee } from "@wedding-plan/types";
-import DSTable from "../common/DSTable";
-import { Column } from "../common/DSTable";
-import InviteeListActionCell from "./InviteeListActionCell";
+import DSInlineTable from "../common/DSInlineTable";
+import { createInviteeInlineColumns } from "./InviteeInlineColumns";
+import { useTranslation } from "../../localization/LocalizationContext";
 import InviteeBulkActions from "./InviteeBulkActions";
 import InviteeBulkUpdateDialog from "./InviteeBulkUpdateDialog";
 import InviteeBulkDeleteDialog from "./InviteeBulkDeleteDialog";
-import { useAuth } from "../../hooks/auth/AuthContext";
 
 interface InviteeTableProps {
-  columns: Column<Invitee>[];
   invitees: Invitee[];
-  onEditInvitee?: (invitee: Invitee) => void;
-  onDeleteInvitee?: (invitee: Invitee) => void;
-  onDisplayDataChange?: (invitees: Invitee[]) => void;
+  onCellUpdate: (
+    rowId: string | number,
+    field: string,
+    value: any,
+    row: Invitee
+  ) => void;
+  onDeleteInvitee: (id: string) => void;
+  onAddInvitee?: (newRow: Omit<Invitee, "id">, onSuccess?: (newRowId: string | number) => void) => void;
   onBulkUpdate?: (invitees: Invitee[], updates: Partial<Invitee>) => void;
   onBulkDelete?: (invitees: Invitee[]) => void;
-  showExport: boolean;
 }
 
 const InviteeTable: React.FC<InviteeTableProps> = ({
-  columns,
   invitees,
-  onEditInvitee,
+  onCellUpdate,
   onDeleteInvitee,
-  onDisplayDataChange,
+  onAddInvitee,
   onBulkUpdate,
   onBulkDelete,
-  showExport,
 }) => {
+  const { t } = useTranslation();
   const [selectedRows, setSelectedRows] = useState<Invitee[]>([]);
-  const [bulkActionDialog, setBulkActionDialog] = useState<string | null>(null);
-  const { userClaims } = useAuth();
-  console.log("User role:", userClaims?.role);
-  const handleSelectionChange = (selected: Invitee[]) => {
-    setSelectedRows(selected);
-  };
+  const [isBulkUpdateOpen, setIsBulkUpdateOpen] = useState(false);
+  const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
 
-  const handleBulkAction = (action: string) => {
-    setBulkActionDialog(action);
-  };
+  // Relation options state - only updates when new relations are added
+  const [relationOptions, setRelationOptions] = useState<string[]>([]);
 
-  const handleBulkActionClose = () => {
-    setBulkActionDialog(null);
-  };
+  // Update relation options only when new relations appear (not on every data change)
+  useEffect(() => {
+    const newRelations = Array.from(
+      new Set(invitees.map((inv) => inv.relation))
+    ).filter(Boolean) as string[];
 
-  const handleBulkUpdateConfirm = (updates: Partial<Invitee>) => {
-    onBulkUpdate?.(selectedRows, updates);
-    handleBulkActionClose();
-  };
+    // Only update if the relations actually changed
+    setRelationOptions((prev) => {
+      const hasNewRelations = newRelations.some((r) => !prev.includes(r));
+      const hasRemovedRelations = prev.some((r) => !newRelations.includes(r));
+      if (hasNewRelations || hasRemovedRelations || (prev.length === 0 && newRelations.length > 0)) {
+        return newRelations;
+      }
+      return prev; // Return same reference to avoid re-render
+    });
+  }, [invitees]);
 
-  const handleBulkDeleteConfirm = () => {
-    onBulkDelete?.(selectedRows);
-    handleBulkActionClose();
-  };
+  // Create columns - re-creates when relationOptions change
+  const columns = useMemo(() => {
+    return createInviteeInlineColumns(onDeleteInvitee, t, relationOptions);
+  }, [onDeleteInvitee, t, relationOptions]);
+
+  // Selection change handler
+  const handleSelectionChange = useCallback((rows: Invitee[]) => {
+    setSelectedRows(rows);
+  }, []);
+
+  // Bulk action handlers
+  const handleBulkUpdateOpen = useCallback(() => {
+    setIsBulkUpdateOpen(true);
+  }, []);
+
+  const handleBulkUpdateClose = useCallback(() => {
+    setIsBulkUpdateOpen(false);
+  }, []);
+
+  const handleBulkUpdateConfirm = useCallback(
+    (updates: Partial<Invitee>) => {
+      if (onBulkUpdate) {
+        onBulkUpdate(selectedRows, updates);
+      }
+      setSelectedRows([]);
+      setIsBulkUpdateOpen(false);
+    },
+    [onBulkUpdate, selectedRows]
+  );
+
+  const handleBulkDeleteOpen = useCallback(() => {
+    setIsBulkDeleteOpen(true);
+  }, []);
+
+  const handleBulkDeleteClose = useCallback(() => {
+    setIsBulkDeleteOpen(false);
+  }, []);
+
+  const handleBulkDeleteConfirm = useCallback(() => {
+    if (onBulkDelete) {
+      onBulkDelete(selectedRows);
+    }
+    setSelectedRows([]);
+    setIsBulkDeleteOpen(false);
+  }, [onBulkDelete, selectedRows]);
+
+  // Bulk actions component
+  const bulkActionsComponent = useMemo(
+    () => (
+      <InviteeBulkActions
+        selectedRows={selectedRows}
+        onBulkUpdate={handleBulkUpdateOpen}
+        onBulkDelete={handleBulkDeleteOpen}
+      />
+    ),
+    [selectedRows, handleBulkUpdateOpen, handleBulkDeleteOpen]
+  );
 
   return (
     <>
-      <DSTable
-        columns={columns.map((col) =>
-          col.id === "actions"
-            ? {
-                ...col,
-                render: (invitee: Invitee) => (
-                  <InviteeListActionCell
-                    invitee={invitee}
-                    onEditInvitee={onEditInvitee}
-                    onDeleteInvitee={onDeleteInvitee}
-                  />
-                ),
-              }
-            : col
-        )}
+      <DSInlineTable
+        columns={columns}
         data={invitees}
-        onDisplayedDataChange={onDisplayDataChange}
-        showExport={showExport}
-        showSelectColumn={true}
+        onCellUpdate={onCellUpdate}
+        showSearch
+        searchFields={["name", "cellphone", "relation"]}
+        defaultSortField="createdAt"
+        showSelectColumn={!!onBulkUpdate || !!onBulkDelete}
+        selectedRows={selectedRows}
         onSelectionChange={handleSelectionChange}
-        BulkActions={
-          <InviteeBulkActions
-            selectedRows={selectedRows}
-            onBulkUpdate={() => handleBulkAction("update")}
-            onBulkDelete={() => handleBulkAction("delete")}
-          />
-        }
-        mobileCardTitle={(row) => `${row.firstName} ${row.lastName}`}
+        BulkActions={bulkActionsComponent}
+        emptyMessage={t("guests.noGuests")}
+        enableInlineAdd={!!onAddInvitee}
+        addRowPlaceholder={t("guests.addGuestPlaceholder")}
+        addRowField="name"
+        defaultNewRow={{  amount: 1 }}
+        onAddRow={onAddInvitee}
       />
 
+      {/* Bulk Update Dialog */}
       <InviteeBulkUpdateDialog
-        open={bulkActionDialog === "update"}
-        selectedRows={selectedRows}
-        onClose={handleBulkActionClose}
+        open={isBulkUpdateOpen}
+        onClose={handleBulkUpdateClose}
         onConfirm={handleBulkUpdateConfirm}
+        selectedRows={selectedRows}
+        relationOptions={relationOptions}
       />
 
+      {/* Bulk Delete Dialog */}
       <InviteeBulkDeleteDialog
-        open={bulkActionDialog === "delete"}
-        selectedRows={selectedRows}
-        onClose={handleBulkActionClose}
+        open={isBulkDeleteOpen}
+        onClose={handleBulkDeleteClose}
         onConfirm={handleBulkDeleteConfirm}
+        selectedRows={selectedRows}
       />
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -7,7 +7,6 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import { createColumns } from "./InviteListColumns";
 import { Invitee } from "@wedding-plan/types";
 import InviteeForm from "./InviteeForm";
 import InviteeTable from "./InviteeTable";
@@ -45,8 +44,17 @@ const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
   const [editingInviteeId, setEditingInviteeId] = useState<string | null>(null);
   const [draftInvitee, setDraftInvitee] = useState<Invitee>(defaultInvitee);
 
-  // Create columns with translations
-  const columns = createColumns(t);
+  // Handle inline cell updates for local state
+  const handleCellUpdate = useCallback(
+    (rowId: string | number, field: string, value: any) => {
+      setNewInvitees((prev) =>
+        prev.map((inv) =>
+          inv.id === rowId ? { ...inv, [field]: value } : inv
+        )
+      );
+    },
+    []
+  );
 
   useEffect(() => {
     if (editInvitee) {
@@ -106,9 +114,12 @@ const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
     setDraftInvitee(defaultInvitee);
   };
 
-  const handleDeleteInvitee = (invitee: Invitee) => {
-    setNewInvitees(newInvitees.filter((inv) => inv.id !== invitee.id));
-  };
+  const handleDeleteInvitee = useCallback(
+    (id: string) => {
+      setNewInvitees((prev) => prev.filter((inv) => inv.id !== id));
+    },
+    []
+  );
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -131,11 +142,10 @@ const AddGuestsDialog: React.FC<AddGuestsDialogProps> = ({
           />
         </Box>
         {/* Only show table when not editing an existing invitee */}
-        {!editInvitee && (
+        {!editInvitee && newInvitees.length > 0 && (
           <InviteeTable
-            columns={columns}
             invitees={newInvitees}
-            showExport={false}
+            onCellUpdate={handleCellUpdate}
             onDeleteInvitee={handleDeleteInvitee}
           />
         )}
