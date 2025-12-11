@@ -44,7 +44,8 @@ export const useUpdateInviteeOptimistic = () => {
 
         return { previousInvitees };
       },
-      // Rollback on error
+      // Note: No invalidateQueries here - optimistic update keeps UI in sync
+      // and invalidation would interfere with Tab navigation between cells
       onError: (_err, _variables, context) => {
         if (context?.previousInvitees) {
           queryClient.setQueryData(
@@ -52,10 +53,6 @@ export const useUpdateInviteeOptimistic = () => {
             context.previousInvitees
           );
         }
-      },
-      // Refetch after mutation to ensure sync with server
-      onSettled: () => {
-        queryClient.invalidateQueries({ queryKey: ["invitees", weddingId] });
       },
     },
   });
