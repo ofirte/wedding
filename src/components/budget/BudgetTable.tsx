@@ -63,6 +63,7 @@ const BudgetTable: React.FC<BudgetTableProps> = ({
       defaultNewRow={defaultNewRow}
       onAddRow={onAddRow}
       emptyMessage={t("budget.noExpenses")}
+      mobileCardTitle={(row) => row.name}
     />
   );
 };

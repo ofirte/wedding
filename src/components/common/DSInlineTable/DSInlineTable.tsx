@@ -16,6 +16,7 @@ import {
 import { Search, Clear, FilterListOff } from "@mui/icons-material";
 import { TableVirtuoso, TableVirtuosoHandle } from "react-virtuoso";
 import { useTranslation } from "../../../localization/LocalizationContext";
+import { useResponsive } from "../../../utils/ResponsiveUtils";
 import { DSInlineTableProps } from "./types";
 import { useTableSearch } from "./hooks/useTableSearch";
 import { useTableSorting } from "./hooks/useTableSorting";
@@ -25,6 +26,7 @@ import { renderCellContent } from "./renderCellContent";
 import AddRowFooter from "./AddRowFooter";
 import ColumnHeaderCell from "./ColumnHeaderCell";
 import { TabNavigationProvider, TabNavigationRef } from "./TabNavigationContext";
+import MobileInlineView from "./MobileInlineView";
 
 const DSInlineTable = <T extends { id: string | number }>({
   columns,
@@ -43,8 +45,10 @@ const DSInlineTable = <T extends { id: string | number }>({
   addRowField = "name",
   defaultNewRow = {},
   onAddRow,
+  mobileCardTitle,
 }: DSInlineTableProps<T>) => {
   const { t } = useTranslation();
+  const { isMobile } = useResponsive();
 
   const virtuosoRef = useRef<TableVirtuosoHandle>(null);
   const tabNavRef = useRef<TabNavigationRef>(null);
@@ -123,6 +127,110 @@ const DSInlineTable = <T extends { id: string | number }>({
   }, [onAddRow, defaultNewRow, columns, addRowField, handleNewRowAdded]);
 
   const totalColumns = showSelectColumn ? columns.length + 1 : columns.length;
+
+  // Mobile cell update handler - wraps the original to work with mobile view
+  const handleMobileCellUpdate = useCallback(
+    async (rowId: string | number, columnId: string, value: any) => {
+      const row = dataRef.current.find((r) => r.id === rowId);
+      if (row) {
+        await onCellUpdateRef.current(rowId, columnId, value, row);
+      }
+    },
+    []
+  );
+
+  // Mobile add row handler
+  const handleMobileAddRow = useCallback(
+    (value: string) => {
+      handleAddRow(value);
+    },
+    [handleAddRow]
+  );
+
+  // Mobile row selection handler
+  const handleMobileRowSelect = useCallback(
+    (row: T, isSelected: boolean) => {
+      if (!onSelectionChange) return;
+      if (isSelected) {
+        onSelectionChange([...selectedRows, row]);
+      } else {
+        onSelectionChange(selectedRows.filter((r) => r.id !== row.id));
+      }
+    },
+    [selectedRows, onSelectionChange]
+  );
+
+  // Render mobile view
+  if (isMobile) {
+    return (
+      <Box>
+        {/* Bulk Actions Bar for Mobile */}
+        {showSelectColumn && selectedRows.length > 0 && BulkActions && (
+          <Box
+            sx={{
+              mb: 2,
+              p: 1.5,
+              bgcolor: "primary.light",
+              borderRadius: 1,
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              flexWrap: "wrap",
+            }}
+          >
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: 500, color: "primary.contrastText" }}
+            >
+              {t("common.selected", { count: selectedRows.length })}
+            </Typography>
+            {BulkActions}
+          </Box>
+        )}
+
+        {/* Mobile Search */}
+        {showSearch && searchFields.length > 0 && (
+          <Box sx={{ mb: 2, px: 1 }}>
+            <TextField
+              size="small"
+              placeholder={searchPlaceholder}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search fontSize="small" />
+                  </InputAdornment>
+                ),
+                endAdornment: searchQuery && (
+                  <InputAdornment position="end">
+                    <IconButton size="small" onClick={() => setSearchQuery("")}>
+                      <Clear fontSize="small" />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
+        )}
+
+        <MobileInlineView
+          data={sortedData}
+          columns={columns}
+          onCellUpdate={handleMobileCellUpdate}
+          mobileCardTitle={mobileCardTitle}
+          onRowSelect={showSelectColumn ? handleMobileRowSelect : undefined}
+          selectedRows={selectedRows}
+          showSelectColumn={showSelectColumn}
+          emptyMessage={emptyMessage}
+          enableInlineAdd={enableInlineAdd}
+          addRowPlaceholder={addRowPlaceholder}
+          onAddRow={enableInlineAdd ? handleMobileAddRow : undefined}
+        />
+      </Box>
+    );
+  }
 
   return (
     <TabNavigationProvider ref={tabNavRef} columns={columns}>

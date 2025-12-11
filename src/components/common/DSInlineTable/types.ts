@@ -113,6 +113,8 @@ export interface DSInlineTableProps<T extends { id: string | number }> {
   addRowField?: string; // The main field for add input (e.g., "name")
   defaultNewRow?: Partial<Omit<T, "id">>;
   onAddRow?: (newRow: Omit<T, "id">, onSuccess?: (newRowId: string | number) => void) => void;
+  // Mobile view props
+  mobileCardTitle?: (row: T) => string; // Function to generate card title on mobile
 }
 
 export type Order = "asc" | "desc";

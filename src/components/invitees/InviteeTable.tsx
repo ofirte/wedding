@@ -131,6 +131,8 @@ const InviteeTable: React.FC<InviteeTableProps> = ({
         addRowField="name"
         defaultNewRow={{  amount: 1 }}
         onAddRow={onAddInvitee}
+        mobileCardTitle={(row) => row.name}
+
       />
 
       {/* Bulk Update Dialog */}
