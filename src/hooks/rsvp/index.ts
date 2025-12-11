@@ -19,6 +19,7 @@ export { useDeleteSendAutomation } from "./useDeleteSendAutomation";
 export { useManualRunAutomations } from "./useManualRunAutomations";
 export { useManualUpdateAutomationStatuses } from "./useManualUpdateAutomationStatuses";
 export { useCreateInitialAutomations } from "./useCreateInitialAutomations";
+export { useApproveAllAutomations } from "./useApproveAllAutomations";
 
 // RSVP Configuration hooks
 export { useRSVPConfig } from "./useRSVPConfig";

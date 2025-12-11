@@ -43,16 +43,9 @@ const getRSVPTabs = (isAdmin: boolean) =>
       isHidden: false,
     },
     {
-      value: TabValue.TEMPLATES,
-      icon: <DescriptionIcon />,
-      labelKey: "rsvp.templates",
-      isHidden: false,
-    },
-    {
       value: TabValue.SEND_AUTOMATION,
       icon: <ScheduleIcon />,
       labelKey: "rsvp.sendAutomations",
-
       isHidden: false,
     },
     {
@@ -143,7 +136,6 @@ const RSVPManager: FC = () => {
         {activeTab === TabValue.RSVP_STATUS && <RSVPStatusTab />}
 
         {activeTab === TabValue.QUESTIONS && <RsvpFormManagementContainer />}
-        {activeTab === TabValue.TEMPLATES && <TemplatesManager />}
         {activeTab === TabValue.SEND_AUTOMATION && (
           <AutomationMessagesSchedulerContainer />
         )}

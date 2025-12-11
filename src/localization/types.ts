@@ -859,6 +859,25 @@ export interface Translations {
     noAutomationsTitle: string;
     noAutomationsDescription: string;
     createFirstAutomation: string;
+    // Timeline Review
+    reviewMessageTimeline: string;
+    reviewTimelineDescription: string;
+    approve: string;
+    noTemplateAssigned: string;
+    changeTemplate: string;
+    automationsNeedApproval: string;
+    // Dashboard
+    scheduledMessages: string;
+    scheduledMessagesDescription: string;
+    automationScheduled: string;
+    automationSending: string;
+    saveChanges: string;
+    unsavedChanges: string;
+    viewMessage: string;
+    hideMessage: string;
+    deliveryStats: string;
+    successful: string;
+    sentAt: string;
     // Automation Info Dialog
     automationDetails: string;
     basicInformation: string;

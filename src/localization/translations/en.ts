@@ -844,6 +844,26 @@ export const englishTranslations: Translations = {
     noAutomationsDescription:
       "Create automated message campaigns to send RSVP requests and reminders to your guests.",
     createFirstAutomation: "Create First Automation",
+    // Timeline Review
+    reviewMessageTimeline: "Review Your Message Timeline",
+    reviewTimelineDescription:
+      "Review the scheduled messages for your guests. You can adjust the timing if needed.",
+    approve: "Approve",
+    noTemplateAssigned: "No template assigned",
+    changeTemplate: "Change Template",
+    automationsNeedApproval: "Please approve the automations first",
+    // Dashboard
+    scheduledMessages: "Scheduled Messages",
+    scheduledMessagesDescription: "View and manage your scheduled automated messages.",
+    automationScheduled: "Scheduled",
+    automationSending: "Sending...",
+    saveChanges: "Save Changes",
+    unsavedChanges: "You have unsaved changes",
+    viewMessage: "View Message",
+    hideMessage: "Hide Message",
+    deliveryStats: "Delivery Statistics",
+    successful: "successful",
+    sentAt: "Sent At",
     // Automation Info Dialog
     automationDetails: "Automation Details",
     basicInformation: "Basic Information",

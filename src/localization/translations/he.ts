@@ -833,6 +833,26 @@ export const hebrewTranslations: Translations = {
     noAutomationsDescription:
       "צור קמפיינים אוטומטיים של הודעות לשליחת בקשות אישור הגעה ותזכורות לאורחים שלך.",
     createFirstAutomation: "צור אוטומציה ראשונה",
+    // Timeline Review
+    reviewMessageTimeline: "סקרו את לוח הזמנים להודעות",
+    reviewTimelineDescription:
+      "סקרו את ההודעות המתוזמנות לאורחים. ניתן לשנות את התזמון במידת הצורך.",
+    approve: "אישור",
+    noTemplateAssigned: "לא הוגדרה תבנית",
+    changeTemplate: "שנה תבנית",
+    automationsNeedApproval: "יש לאשר את האוטומציות קודם",
+    // Dashboard
+    scheduledMessages: "הודעות מתוזמנות",
+    scheduledMessagesDescription: "צפו ונהלו את ההודעות האוטומטיות המתוזמנות שלכם.",
+    automationScheduled: "מתוזמן",
+    automationSending: "שולח...",
+    saveChanges: "שמור שינויים",
+    unsavedChanges: "יש לכם שינויים שלא נשמרו",
+    viewMessage: "צפה בהודעה",
+    hideMessage: "הסתר הודעה",
+    deliveryStats: "סטטיסטיקות משלוח",
+    successful: "הצליחו",
+    sentAt: "נשלח ב",
     // Automation Info Dialog
     automationDetails: "פרטי האוטומציה",
     basicInformation: "מידע בסיסי",
@@ -1299,12 +1319,12 @@ export const hebrewTranslations: Translations = {
     loadError: "נכשל בטעינת תבניות גלובליות",
     created: "נוצר",
     categories: {
-      initialRsvp: "הזמנת RSVP ראשונית",
-      initialRsvpDescription: "הודעה ראשונה הנשלחת לאורחים בבקשה לתגובת RSVP",
-      secondRsvp: "תזכורת RSVP שנייה",
+      initialRsvp: "אישור הגעה - הודעה ראשונה",
+      initialRsvpDescription: "הודעה ראשונה הנשלחת לאורחים בבקשה לאישור הגעה ",
+      secondRsvp: "אישור הגעה - הודעה שנייה",
       secondRsvpDescription: "תזכורת המשך לאורחים שעדיין לא הגיבו",
-      finalRsvp: "הודעת RSVP אחרונה",
-      finalRsvpDescription: "תזכורת אחרונה לפני סגירת מועד תגובת RSVP",
+      finalRsvp: "אישור הגעה - הודעה אחרונה",
+      finalRsvpDescription: "תזכורת אחרונה לבקשת אישורי הגעה בהודעות",
       dayBefore: "תזכורת יום לפני",
       dayBeforeDescription: "תזכורת פרטי האירוע הנשלחת יום לפני החתונה",
       dayAfterThankyou: "הודעת תודה",
@@ -1453,19 +1473,19 @@ export const hebrewTranslations: Translations = {
       description:
         "בחר תבניות עבור 5 ההודעות האוטומטיות שלך כדי ליצור זרימת תקשורת מלאה",
       initialRsvp: {
-        title: "הזמנת RSVP ראשונית",
+        title: "אישור הגעה - הודעה ראשונה",
         description: "הודעה ראשונה הנשלחת לאורחים בבקשה לתגובת RSVP",
       },
       secondRsvp: {
-        title: "תזכורת RSVP שנייה",
+        title: "אישור הגעה - הודעה שנייה",
         description: "תזכורת המשך לאורחים שעדיין לא הגיבו",
       },
       finalRsvp: {
-        title: "הודעת RSVP אחרונה",
+        title: "אישור הגעה - הודעה אחרונה",
         description: "תזכורת אחרונה לפני סגירת מועד תגובת RSVP",
       },
       dayBefore: {
-        title: "תזכורת יום לפני",
+        title: "תזכורת יום לפני האירוע",
         description: "תזכורת פרטי האירוע הנשלחת יום לפני החתונה",
       },
       dayAfterThankyou: {
