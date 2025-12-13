@@ -1,19 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Typography,
-  Button,
   Container,
   Stack,
   Card,
   CardContent,
   Grid,
-  Divider,
   Avatar,
-  TextField,
-  InputAdornment,
-  Alert,
-  CircularProgress,
 } from "@mui/material";
 import {
   Settings as SettingsIcon,
@@ -24,85 +18,14 @@ import {
   CardGiftcard as GiftIcon,
   Favorite as HeartIcon,
   Phone as PhoneIcon,
-  Calculate as CalculateIcon,
-  Payment as PaymentIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { useAuth } from "../../hooks/auth";
-import { createPayment } from "../../api/firebaseFunctions/payments";
 import { useParams } from "react-router";
+import { PaymentCard } from "./PaymentCard";
 
 const RSVPPricingPage: React.FC = () => {
   const { t } = useTranslation();
-  const { currentUser } = useAuth();
   const { weddingId } = useParams<string>();
-  const [guestCount, setGuestCount] = useState<string>("250");
-  const [isCreatingPayment, setIsCreatingPayment] = useState(false);
-  const [paymentError, setPaymentError] = useState<string | null>(null);
-
-  // Payment handler
-  const handlePayment = async () => {
-    if (!currentUser || !weddingId) {
-      setPaymentError("Please sign in and select a wedding to continue");
-      return;
-    }
-
-    const count = parseInt(guestCount);
-    if (!count || count < 50) {
-      setPaymentError("Please enter at least 50 guests");
-      return;
-    }
-
-    setIsCreatingPayment(true);
-    setPaymentError(null);
-
-    try {
-      const result = await createPayment({
-        weddingId,
-        guestCount: count,
-      });
-
-      if (result.data.success) {
-        // Redirect to AllPay payment page
-        window.location.href = result.data.paymentUrl;
-      } else {
-        setPaymentError("Failed to create payment. Please try again.");
-      }
-    } catch (error: any) {
-      console.error("Payment error:", error);
-      setPaymentError(
-        error.message || "An error occurred. Please try again later."
-      );
-      setIsCreatingPayment(false);
-    }
-  };
-
-  // Flat-rate pricing logic based on guest count ranges
-  const calculatePrice = (count: number): { price: number; rate: string } => {
-    if (count < 50) return { price: 0, rate: "0" };
-    if (count < 100) return { price: 150, rate: "1.5" };
-    if (count < 150) return { price: 225, rate: "1.5-2.3" };
-    if (count < 200) return { price: 300, rate: "1.5-2.0" };
-    if (count < 250) return { price: 375, rate: "1.5-1.9" };
-    if (count < 300) return { price: 450, rate: "1.5-1.8" };
-    if (count < 350) return { price: 525, rate: "1.5-1.8" };
-    if (count < 400) return { price: 600, rate: "1.5-1.7" };
-    if (count < 450) return { price: 675, rate: "1.5-1.7" };
-    if (count < 500) return { price: 750, rate: "1.5-1.7" };
-    if (count < 550) return { price: 825, rate: "1.5-1.7" };
-    if (count < 600) return { price: 900, rate: "1.5-1.6" };
-    if (count < 650) return { price: 975, rate: "1.5-1.6" };
-    if (count < 700) return { price: 1050, rate: "1.5-1.6" };
-    if (count < 750) return { price: 1125, rate: "1.5-1.6" };
-    if (count < 800) return { price: 1200, rate: "1.5-1.6" };
-    if (count < 850) return { price: 1275, rate: "1.5-1.6" };
-    if (count < 900) return { price: 1350, rate: "1.5-1.6" };
-    if (count < 950) return { price: 1425, rate: "1.5-1.6" };
-    if (count < 1000) return { price: 1500, rate: "1.5-1.6" };
-    return { price: 0, rate: "0" }; // Contact for custom pricing
-  };
-
-  const pricing = calculatePrice(parseInt(guestCount) || 0);
 
   const getStepIcon = (iconName: string) => {
     const icons = {
@@ -353,159 +276,8 @@ const RSVPPricingPage: React.FC = () => {
             </Typography>
           </Box>
 
-          {/* Calculator and Examples */}
-          {/* Calculator Card */}
-
-          <Card
-            elevation={4}
-            sx={{
-              height: "100%",
-              border: "3px solid",
-              borderColor: "primary.main",
-              borderRadius: 4,
-              background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
-            }}
-          >
-            <CardContent sx={{ p: 4 }}>
-              <Stack spacing={3} alignItems="center">
-                <Box
-                  sx={{
-                    width: 64,
-                    height: 64,
-                    borderRadius: "50%",
-                    background:
-                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <CalculateIcon sx={{ fontSize: 32, color: "white" }} />
-                </Box>
-                <Typography
-                  variant="h5"
-                  fontWeight="bold"
-                  color="text.primary"
-                  textAlign="center"
-                >
-                  {t("rsvp.premiumPricing.pricing.calculator.title")}
-                </Typography>
-
-                <TextField
-                  fullWidth
-                  type="number"
-                  label={t("rsvp.premiumPricing.pricing.calculator.inputLabel")}
-                  placeholder={t(
-                    "rsvp.premiumPricing.pricing.calculator.inputPlaceholder"
-                  )}
-                  value={guestCount}
-                  onChange={(e) => setGuestCount(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">#</InputAdornment>
-                    ),
-                  }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      fontSize: "1.2rem",
-                      fontWeight: "600",
-                    },
-                  }}
-                />
-
-                {parseInt(guestCount) >= 50 && pricing.price > 0 ? (
-                  <>
-                    <Box
-                      sx={{
-                        width: "100%",
-                        textAlign: "center",
-                        py: 3,
-                        px: 2,
-                        borderRadius: 3,
-                        background:
-                          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                        color: "white",
-                      }}
-                    >
-                      <Typography variant="body2" sx={{ mb: 1, opacity: 0.9 }}>
-                        {t("rsvp.premiumPricing.pricing.calculator.priceLabel")}
-                      </Typography>
-                      <Typography variant="h2" fontWeight="bold" sx={{ mb: 1 }}>
-                        ₪{pricing.price}
-                      </Typography>
-                    </Box>
-
-                    {/* CTA Section */}
-                    <Divider sx={{ width: "100%", my: 1 }} />
-
-                    {paymentError && (
-                      <Alert severity="error" sx={{ width: "100%" }}>
-                        {paymentError}
-                      </Alert>
-                    )}
-
-                    <Typography
-                      variant="body1"
-                      color="text.secondary"
-                      textAlign="center"
-                      sx={{ px: 2 }}
-                    >
-                      {t("rsvp.premiumPricing.cta.description")}
-                    </Typography>
-
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      size="large"
-                      onClick={handlePayment}
-                      disabled={isCreatingPayment || !currentUser || !weddingId}
-                      startIcon={
-                        isCreatingPayment ? (
-                          <CircularProgress
-                            size={20}
-                            sx={{ color: "inherit" }}
-                          />
-                        ) : (
-                          <PaymentIcon />
-                        )
-                      }
-                      sx={{
-                        py: 2,
-                        fontSize: "1.1rem",
-                        fontWeight: "600",
-                        borderRadius: 2,
-                        textTransform: "none",
-                        "&:disabled": {
-                          opacity: 0.6,
-                        },
-                      }}
-                    >
-                      {isCreatingPayment
-                        ? "Processing..."
-                        : t("rsvp.premiumPricing.cta.upgradeButton")}
-                    </Button>
-
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      textAlign="center"
-                      sx={{ opacity: 0.8 }}
-                    >
-                      {t("rsvp.premiumPricing.cta.guarantee")}
-                    </Typography>
-                  </>
-                ) : parseInt(guestCount) > 0 && parseInt(guestCount) < 50 ? (
-                  <Typography
-                    variant="body1"
-                    color="warning.main"
-                    textAlign="center"
-                  >
-                    {t("rsvp.premiumPricing.pricing.calculator.minRecords")}
-                  </Typography>
-                ) : null}
-              </Stack>
-            </CardContent>
-          </Card>
+          {/* Payment Card */}
+          <PaymentCard weddingId={weddingId || ""} />
         </Box>
 
         {/* Testimonials Section */}

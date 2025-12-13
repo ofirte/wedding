@@ -1067,6 +1067,21 @@ export interface Translations {
         contactUs: string;
         guarantee: string;
       };
+      payment: {
+        chooseYourPlan: string;
+        subtitle: string;
+        presetOptions: string;
+        customAmount: string;
+        records: string;
+        perRecord: string;
+        mostPopular: string;
+        savings: string;
+        total: string;
+        proceedToPayment: string;
+        processing: string;
+        minRecords: string;
+        maxRecords: string;
+      };
     };
   };
   automation: {
