@@ -26,6 +26,7 @@ export interface UsePaymentCardLogicReturn {
   isCustomMode: boolean;
   isProcessing: boolean;
   error: string | null;
+  termsDialogOpen: boolean;
 
   // Computed
   presetTiers: PricingTier[];
@@ -38,6 +39,8 @@ export interface UsePaymentCardLogicReturn {
   setIsCustomMode: (isCustom: boolean) => void;
   incrementQuantity: () => void;
   decrementQuantity: () => void;
-  handlePayment: () => Promise<void>;
+  handlePayment: () => void;
+  handleTermsAccepted: () => Promise<void>;
+  closeTermsDialog: () => void;
   clearError: () => void;
 }

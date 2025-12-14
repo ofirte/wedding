@@ -17,6 +17,7 @@ import { usePaymentCardLogic } from "./usePaymentCardLogic";
 import PricingTierSelector from "./PricingTierSelector";
 import CustomQuantityInput from "./CustomQuantityInput";
 import PricingBreakdown from "./PricingBreakdown";
+import TermsDialog from "./TermsDialog";
 import type { PaymentCardProps } from "./PaymentCard.types";
 
 const PaymentCard: React.FC<PaymentCardProps> = ({
@@ -32,6 +33,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
     isCustomMode,
     isProcessing,
     error,
+    termsDialogOpen,
     presetTiers,
     currentPricing,
     isValid,
@@ -41,6 +43,8 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
     incrementQuantity,
     decrementQuantity,
     handlePayment,
+    handleTermsAccepted,
+    closeTermsDialog,
     clearError,
   } = usePaymentCardLogic(weddingId, onPaymentInitiated, onPaymentError);
 
@@ -177,6 +181,14 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
           </Typography>
         </Stack>
       </CardContent>
+
+      {/* Terms Dialog */}
+      <TermsDialog
+        open={termsDialogOpen}
+        onClose={closeTermsDialog}
+        onAccept={handleTermsAccepted}
+        isProcessing={isProcessing}
+      />
     </Card>
   );
 };

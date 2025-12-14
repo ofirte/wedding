@@ -59,6 +59,7 @@ export const usePaymentCardLogic = (
   const [isCustomMode, setIsCustomMode] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [termsDialogOpen, setTermsDialogOpen] = useState<boolean>(false);
 
   // Computed: current pricing based on mode
   const currentPricing = useMemo((): PricingBreakdownData | null => {
@@ -111,7 +112,12 @@ export const usePaymentCardLogic = (
     setError(null);
   }, []);
 
-  const handlePayment = useCallback(async () => {
+  const closeTermsDialog = useCallback(() => {
+    setTermsDialogOpen(false);
+  }, []);
+
+  // Opens the terms dialog (called when user clicks payment button)
+  const handlePayment = useCallback(() => {
     if (!currentUser || !weddingId) {
       setError("Please sign in and select a wedding to continue");
       onPaymentError?.("Please sign in and select a wedding to continue");
@@ -127,6 +133,23 @@ export const usePaymentCardLogic = (
       onPaymentError?.("Please select at least 50 records");
       return;
     }
+
+    // Open terms dialog instead of processing payment directly
+    setTermsDialogOpen(true);
+  }, [
+    currentUser,
+    weddingId,
+    isCustomMode,
+    customQuantity,
+    selectedTierIndex,
+    onPaymentError,
+  ]);
+
+  // Processes the actual payment (called after terms accepted)
+  const handleTermsAccepted = useCallback(async () => {
+    const count = isCustomMode
+      ? parseInt(customQuantity)
+      : PRESET_TIERS[selectedTierIndex!]?.records;
 
     setIsProcessing(true);
     setError(null);
@@ -145,6 +168,7 @@ export const usePaymentCardLogic = (
         setError("Failed to create payment. Please try again.");
         onPaymentError?.("Failed to create payment. Please try again.");
         setIsProcessing(false);
+        setTermsDialogOpen(false);
       }
     } catch (err: unknown) {
       console.error("Payment error:", err);
@@ -155,9 +179,9 @@ export const usePaymentCardLogic = (
       setError(errorMessage);
       onPaymentError?.(errorMessage);
       setIsProcessing(false);
+      setTermsDialogOpen(false);
     }
   }, [
-    currentUser,
     weddingId,
     isCustomMode,
     customQuantity,
@@ -173,6 +197,7 @@ export const usePaymentCardLogic = (
     isCustomMode,
     isProcessing,
     error,
+    termsDialogOpen,
 
     // Computed
     presetTiers: PRESET_TIERS,
@@ -186,6 +211,8 @@ export const usePaymentCardLogic = (
     incrementQuantity,
     decrementQuantity,
     handlePayment,
+    handleTermsAccepted,
+    closeTermsDialog,
     clearError,
   };
 };

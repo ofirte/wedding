@@ -1082,6 +1082,76 @@ export interface Translations {
         minRecords: string;
         maxRecords: string;
       };
+      termsDialog: {
+        title: string;
+        scrollToAccept: string;
+        acceptCheckbox: string;
+        cancel: string;
+        proceed: string;
+        processing: string;
+        summary: {
+          title: string;
+          consent: string;
+          serviceDescription: string;
+          dataStorage: string;
+        };
+        terms: {
+          title: string;
+          intro: string;
+          section1: { title: string; content: string };
+          section2: {
+            title: string;
+            intro: string;
+            item1: string;
+            item2: string;
+            item3: string;
+            item4: string;
+          };
+          section3: { title: string; content: string };
+          section4: {
+            title: string;
+            intro: string;
+            item1: string;
+            item2: string;
+            item3: string;
+            item4: string;
+          };
+          section5: { title: string; content: string };
+          section6: { title: string; content: string };
+          section7: { title: string; content: string };
+          section8: { title: string; content: string };
+          section9: { title: string; content: string };
+          section10: { title: string; content: string };
+        };
+        privacy: {
+          title: string;
+          intro: string;
+          section1: {
+            title: string;
+            intro: string;
+            item1: string;
+            item2: string;
+            item3: string;
+            item4: string;
+            item5: string;
+          };
+          section2: {
+            title: string;
+            intro: string;
+            item1: string;
+            item2: string;
+            item3: string;
+            item4: string;
+            item5: string;
+            noAds: string;
+          };
+          section3: { title: string; content: string };
+          section4: { title: string; content: string };
+          section5: { title: string; content: string };
+          section6: { title: string; content: string };
+          section7: { title: string; content: string };
+        };
+      };
     };
   };
   automation: {

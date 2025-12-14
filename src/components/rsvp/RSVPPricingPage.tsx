@@ -355,6 +355,34 @@ const RSVPPricingPage: React.FC = () => {
             ))}
           </Grid>
         </Box>
+
+        {/* Footer Disclaimer */}
+        <Box
+          sx={{
+            mt: 8,
+            pt: 4,
+            pb: 4,
+            borderTop: "1px solid",
+            borderColor: "divider",
+            textAlign: "center",
+          }}
+        >
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ maxWidth: 600, mx: "auto" }}
+          >
+            השירות מספק שליחת הודעות ושיחות לצורך איסוף אישורי הגעה. אין התחייבות
+            לשיעור תגובה.
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ maxWidth: 600, mx: "auto", mt: 1 }}
+          >
+            אנו שומרים על פרטיות המוזמנים ומשתמשים במידע לצורך תפעול השירות בלבד.
+          </Typography>
+        </Box>
       </Stack>
     </Container>
   );
