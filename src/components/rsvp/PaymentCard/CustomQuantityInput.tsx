@@ -4,7 +4,6 @@ import {
   TextField,
   IconButton,
   Typography,
-  InputAdornment,
 } from "@mui/material";
 import { Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
