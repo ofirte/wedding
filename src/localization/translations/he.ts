@@ -1062,8 +1062,6 @@ export const hebrewTranslations: Translations = {
         contactUs: "יש שאלות? צור קשר",
         guarantee: "אחריות החזר כספי ל-30 יום",
       },
-<<<<<<< Updated upstream
-=======
       payment: {
         chooseYourPlan: "בחרו את התוכנית שלכם",
         subtitle: "רכישת שירות אישורי הגעה לחתונה שלכם",
@@ -1207,7 +1205,6 @@ export const hebrewTranslations: Translations = {
           },
         },
       },
->>>>>>> Stashed changes
     },
   },
   rsvpEmptyState: {

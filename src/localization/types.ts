@@ -1067,8 +1067,6 @@ export interface Translations {
         contactUs: string;
         guarantee: string;
       };
-<<<<<<< Updated upstream
-=======
       payment: {
         chooseYourPlan: string;
         subtitle: string;
@@ -1154,7 +1152,6 @@ export interface Translations {
           section7: { title: string; content: string };
         };
       };
->>>>>>> Stashed changes
     };
   };
   automation: {

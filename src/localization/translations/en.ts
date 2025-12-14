@@ -1090,8 +1090,6 @@ export const englishTranslations: Translations = {
         contactUs: "Have questions? Contact us",
         guarantee: "30-day money-back guarantee",
       },
-<<<<<<< Updated upstream
-=======
       payment: {
         chooseYourPlan: "Choose Your Plan",
         subtitle: "Purchase RSVP records for your wedding",
@@ -1235,7 +1233,6 @@ export const englishTranslations: Translations = {
           },
         },
       },
->>>>>>> Stashed changes
     },
   },
   rsvpEmptyState: {
