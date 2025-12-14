@@ -1090,6 +1090,152 @@ export const englishTranslations: Translations = {
         contactUs: "Have questions? Contact us",
         guarantee: "30-day money-back guarantee",
       },
+<<<<<<< Updated upstream
+=======
+      payment: {
+        chooseYourPlan: "Choose Your Plan",
+        subtitle: "Purchase RSVP records for your wedding",
+        presetOptions: "Preset Options",
+        customAmount: "Custom Amount",
+        records: "records",
+        perRecord: "per record",
+        mostPopular: "Most Popular",
+        savings: "savings",
+        total: "Total",
+        proceedToPayment: "Proceed to Payment",
+        processing: "Processing...",
+        minRecords: "Minimum 50 records",
+        maxRecords: "Maximum 999 records",
+      },
+      termsDialog: {
+        title: "Terms of Service & Privacy Policy",
+        scrollToAccept: "Please scroll to the bottom to accept",
+        acceptCheckbox: "I have read and agree to the Terms of Service and Privacy Policy",
+        cancel: "Cancel",
+        proceed: "Proceed to Payment",
+        processing: "Processing...",
+        summary: {
+          title: "RSVP Service",
+          consent:
+            'By clicking "Proceed to Payment" you confirm that you have read and agreed to the Terms of Service and Privacy Policy.',
+          serviceDescription:
+            "The service includes sending messages and calls according to the list you provided, but does not guarantee response rate or message delivery when dependent on external factors.",
+          dataStorage: "Data will be stored for service operation only.",
+        },
+        terms: {
+          title: "Terms of Service",
+          intro:
+            "Welcome to WedOne. Use of the website and its services is subject to the terms of use detailed below. By using the website, you confirm that you have read, understood and agreed to these terms.",
+          section1: {
+            title: "1. Service Description",
+            content:
+              "The website allows sending WhatsApp/SMS messages, making phone calls to invitees and consolidating RSVP results for users (the couple). The service includes sending, mailing, calls and documentation of response status according to the guest list provided by the user.",
+          },
+          section2: {
+            title: "2. Service Operation Responsibility",
+            intro:
+              "We commit to sending messages and calls according to the data provided by the user. However:",
+            item1:
+              "The system sends all messages and calls in full. There may be rare cases where message delivery depends on external factors beyond our control (such as WhatsApp or cellular network)",
+            item2: "We do not guarantee any response rate",
+            item3:
+              "Failures due to cellular companies, WhatsApp or third-party providers are beyond our control",
+            item4: 'The service is provided "as-is"',
+          },
+          section3: {
+            title: "3. Message Content",
+            content:
+              "The user may use a suggested message format or provide their own. The user is responsible for ensuring the content complies with communication laws, copyright, anti-spam laws, and any relevant law. The company is not responsible for any claim arising from the content of the message sent.",
+          },
+          section4: {
+            title: "4. User Responsibility",
+            intro: "The user declares that:",
+            item1: "They have the authority to contact invitees according to law",
+            item2: "Every phone number provided is valid and reliable",
+            item3: "There is no legal impediment to sending messages to invitees",
+            item4: "The user is responsible for any incorrect or illegal use of the service",
+          },
+          section5: {
+            title: "5. Personal Information Use",
+            content:
+              "For service operation, details such as invitee names, phone numbers and attendance status are collected. The information is stored for service provision only, is not sold or transferred to third parties not part of the service operation (such as Twilio), and is stored under reasonable security measures. We cannot guarantee complete protection against external events.",
+          },
+          section6: {
+            title: "6. Payment and Refunds",
+            content:
+              "Payment for the service is one-time and based on the number of records. After sending messages/calls, payment is non-refundable.",
+          },
+          section7: {
+            title: "7. Limitation of Liability",
+            content:
+              "We will not be liable for any indirect, consequential damage, loss of revenue, delays or disruptions arising from use of the website. In any case, our total liability is limited to the amount actually paid by the user.",
+          },
+          section8: {
+            title: "8. Support",
+            content:
+              "Support is available through the contact channels detailed on the website. We will try to assist quickly, but do not guarantee continuous availability.",
+          },
+          section9: {
+            title: "9. Changes to Website and Terms",
+            content:
+              "The company may change the service, content or terms of use from time to time. Continued use of the website constitutes agreement to the updated terms.",
+          },
+          section10: {
+            title: "10. Law and Jurisdiction",
+            content:
+              "The applicable law is Israeli law, and jurisdiction is given to the courts in the Tel Aviv district.",
+          },
+        },
+        privacy: {
+          title: "Privacy Policy",
+          intro:
+            "This policy is intended to clarify how we collect, use and store information provided by users and their invitees.",
+          section1: {
+            title: "1. Types of Information Collected",
+            intro: "We collect the following information:",
+            item1: "Invitee names",
+            item2: "Phone numbers",
+            item3: "Response status (attending/not attending/no response)",
+            item4: "User details (name, phone, email) for communication",
+            item5: "Technical information required for system operation",
+          },
+          section2: {
+            title: "2. Purposes of Information Use",
+            intro: "The information is used for:",
+            item1: "Sending messages and calls for RSVPs",
+            item2: "Status documentation for the user",
+            item3: "Service improvement",
+            item4: "Technical support",
+            item5: "Operation through third-party services (such as Twilio)",
+            noAds: "Information is not used for advertising purposes.",
+          },
+          section3: {
+            title: "3. Information Sharing with Third Parties",
+            content:
+              "Information may only be transferred to entities required for service operation, such as Twilio (message sending) and communication providers. We do not sell or transfer information to any other party.",
+          },
+          section4: {
+            title: "4. Information Security",
+            content:
+              "We take standard security measures to protect the information. However, we cannot guarantee complete protection against cyber events beyond our control.",
+          },
+          section5: {
+            title: "5. User Rights",
+            content:
+              "The user may request data deletion, request data updates, and contact with any question regarding privacy and information storage.",
+          },
+          section6: {
+            title: "6. Information Retention Period",
+            content:
+              "Information is stored until end of service use, and thereafter may be retained partially/anonymously for technical purposes.",
+          },
+          section7: {
+            title: "7. Policy Changes",
+            content: "If material changes are made to the policy, we will update this page.",
+          },
+        },
+      },
+>>>>>>> Stashed changes
     },
   },
   rsvpEmptyState: {
