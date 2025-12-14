@@ -101,6 +101,61 @@ const CustomQuestionsStats: React.FC<CustomQuestionsStatsProps> = ({
     return result;
   }, [inviteesWithRSVP, filteredCustomQuestions, customQuestions]);
 
+  // Calculate number question stats (sum of all values)
+  const numberStats = useMemo(() => {
+    const result: Array<{
+      id: string;
+      title: string;
+      value: number;
+      icon: React.ReactElement;
+      color: string;
+      filterType: string;
+      filterValue: any;
+    }> = [];
+
+    const attendanceQuestion = customQuestions.find(
+      (q) => q.id === "attendance"
+    );
+
+    filteredCustomQuestions.forEach((question) => {
+      if (question.type === "number") {
+        let totalSum = 0;
+
+        inviteesWithRSVP.forEach((invitee) => {
+          const rsvpStatus = invitee.rsvpStatus;
+          // Only count if attending (if attendance question exists)
+          if (attendanceQuestion && rsvpStatus?.attendance !== true) return;
+
+          const numberValue = rsvpStatus?.[question.id];
+          if (numberValue) {
+            const numericValue =
+              typeof numberValue === "string"
+                ? parseInt(numberValue) || 0
+                : typeof numberValue === "number"
+                ? numberValue
+                : 0;
+            totalSum += numericValue;
+          }
+        });
+
+        // Only show if there's a value
+        if (totalSum > 0) {
+          result.push({
+            id: question.id,
+            title: question.displayName || question.questionText,
+            value: totalSum,
+            icon: <PeopleIcon />,
+            color: "success",
+            filterType: question.id,
+            filterValue: "number",
+          });
+        }
+      }
+    });
+
+    return result;
+  }, [inviteesWithRSVP, filteredCustomQuestions, customQuestions]);
+
   // Calculate select question stats
   const selectStats = useMemo(() => {
     const selectQuestions = filteredCustomQuestions.filter(
@@ -176,7 +231,7 @@ const CustomQuestionsStats: React.FC<CustomQuestionsStatsProps> = ({
 
   // Calculate total number of cards (attendance + custom)
   const totalCards =
-    attendanceStats.length + booleanStats.length + selectStats.length;
+    attendanceStats.length + booleanStats.length + numberStats.length + selectStats.length;
 
   // Don't render anything if no cards at all
   if (totalCards === 0) {
@@ -214,6 +269,22 @@ const CustomQuestionsStats: React.FC<CustomQuestionsStatsProps> = ({
 
       {/* Boolean Stats Cards */}
       {booleanStats.map((stat) => (
+        <YesNoStatsCard
+          key={stat.id}
+          title={stat.title}
+          value={stat.value}
+          icon={stat.icon}
+          color={stat.color}
+          onClick={() => onFilterClick?.(stat.filterType, stat.filterValue)}
+          isActive={
+            activeFilter?.type === stat.filterType &&
+            activeFilter?.value === stat.filterValue
+          }
+        />
+      ))}
+
+      {/* Number Stats Cards (summed values) */}
+      {numberStats.map((stat) => (
         <YesNoStatsCard
           key={stat.id}
           title={stat.title}

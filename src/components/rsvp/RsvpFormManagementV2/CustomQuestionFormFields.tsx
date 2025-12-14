@@ -23,11 +23,14 @@ import { useTranslation } from "../../../localization/LocalizationContext";
 export interface CustomQuestionData {
   text: string;
   displayName: string;
-  type: "boolean" | "select";
+  type: "boolean" | "select" | "number";
   options: string[];
   booleanOptions: {
     trueOption: string;
     falseOption: string;
+  };
+  numberOptions: {
+    zeroText: string;
   };
 }
 
@@ -145,7 +148,7 @@ const CustomQuestionFormFields: React.FC<CustomQuestionFormFieldsProps> = ({
           gutterBottom
           sx={{ display: "flex", alignItems: "center", gap: 1 }}
         >
-          🏷️ Table Display Name
+          🏷️ {t("rsvpQuestionManager.displayNameTitle")}
         </Typography>
         <TextField
           fullWidth
@@ -157,7 +160,6 @@ const CustomQuestionFormFields: React.FC<CustomQuestionFormFieldsProps> = ({
               displayName: e.target.value,
             }))
           }
-          helperText={t("rsvpQuestionManager.displayNameHelper")}
           variant="outlined"
           sx={{
             mb: 2,
@@ -212,7 +214,7 @@ const CustomQuestionFormFields: React.FC<CustomQuestionFormFieldsProps> = ({
             onChange={(e) =>
               setQuestion((prev) => ({
                 ...prev,
-                type: e.target.value as "boolean" | "select",
+                type: e.target.value as "boolean" | "select" | "number",
               }))
             }
             sx={{ mt: 1 }}
@@ -226,7 +228,7 @@ const CustomQuestionFormFields: React.FC<CustomQuestionFormFieldsProps> = ({
                     {t("rsvpQuestionManager.yesNoQuestion")}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    Radio buttons for true/false choices
+                    {t("rsvpQuestionManager.yesNoQuestionHelper")}
                   </Typography>
                 </Box>
               }
@@ -240,7 +242,21 @@ const CustomQuestionFormFields: React.FC<CustomQuestionFormFieldsProps> = ({
                     {t("rsvpQuestionManager.multipleChoiceQuestion")}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    Dropdown menu with multiple options
+                    {t("rsvpQuestionManager.multipleChoiceQuestionHelper")}
+                  </Typography>
+                </Box>
+              }
+            />
+            <FormControlLabel
+              value="number"
+              control={<Radio />}
+              label={
+                <Box>
+                  <Typography variant="body2" fontWeight={500}>
+                    {t("rsvpQuestionManager.numberQuestion")}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {t("rsvpQuestionManager.numberQuestionHelper")}
                   </Typography>
                 </Box>
               }
@@ -355,7 +371,7 @@ const CustomQuestionFormFields: React.FC<CustomQuestionFormFieldsProps> = ({
                   fullWidth
                   value={option}
                   onChange={(e) => updateOption(index, e.target.value)}
-                  placeholder={`Option ${index + 1}`}
+                  placeholder={t("userRsvp.form.option", {number: index + 1})}
                   size="small"
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -395,6 +411,109 @@ const CustomQuestionFormFields: React.FC<CustomQuestionFormFieldsProps> = ({
             >
               {t("rsvpQuestionManager.addOption")}
             </Button>
+          </Box>
+        </Paper>
+      )}
+
+      {/* Number Options */}
+      {question.type === "number" && (
+        <Paper
+          variant="outlined"
+          sx={{
+            p: 3,
+            borderRadius: 3,
+            bgcolor: "success.50",
+            border: "1px solid",
+            borderColor: "success.200",
+          }}
+        >
+          <Typography
+            variant="subtitle2"
+            fontWeight={600}
+            color="success.main"
+            gutterBottom
+            sx={{ display: "flex", alignItems: "center", gap: 1 }}
+          >
+            <IconButton size="small" disabled>
+              🔢
+            </IconButton>
+            {t("rsvpQuestionManager.numberOptions")}
+          </Typography>
+          <Box display="flex" flexDirection="column" gap={2}>
+            <TextField
+              fullWidth
+              label={t("rsvpQuestionManager.zeroTextLabel")}
+              value={question.numberOptions?.zeroText ?? ""}
+              onChange={(e) =>
+                setQuestion((prev) => ({
+                  ...prev,
+                  numberOptions: {
+                    zeroText: e.target.value,
+                  },
+                }))
+              }
+              placeholder={t("rsvpQuestionManager.zeroTextPlaceholder")}
+              size="small"
+              helperText={t("rsvpQuestionManager.zeroTextHelper")}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2,
+                  bgcolor: "background.paper",
+                },
+              }}
+            />
+            <Alert
+              severity="info"
+              sx={{
+                borderRadius: 2,
+                "& .MuiAlert-message": {
+                  width: "100%",
+                },
+              }}
+            >
+              <Typography variant="body2" gutterBottom>
+                {t("rsvpQuestionManager.numberPreviewHelper")}
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 0.5,
+                  mt: 1,
+                  flexWrap: "wrap",
+                }}
+              >
+                <Box
+                  sx={{
+                    px: 1.5,
+                    py: 0.5,
+                    borderRadius: 1,
+                    bgcolor: "background.paper",
+                    border: "1px solid",
+                    borderColor: "success.300",
+                    fontSize: "0.875rem",
+                    fontWeight: 500,
+                  }}
+                >
+                  {question.numberOptions?.zeroText || "0"}
+                </Box>
+                {Array.from({ length: 10 }, (_, i) => (
+                  <Box
+                    key={i}
+                    sx={{
+                      px: 1.5,
+                      py: 0.5,
+                      borderRadius: 1,
+                      bgcolor: "background.paper",
+                      border: "1px solid",
+                      borderColor: "success.300",
+                      fontSize: "0.875rem",
+                    }}
+                  >
+                    {i + 1}
+                  </Box>
+                ))}
+              </Box>
+            </Alert>
           </Box>
         </Paper>
       )}

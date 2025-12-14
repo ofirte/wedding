@@ -21,8 +21,8 @@ import {
   RadioButtonChecked as BooleanIcon,
   List as SelectIcon,
 } from "@mui/icons-material";
-import { RSVPQuestion } from "src/api/rsvp/rsvpQuestionsTypes";
 import { useTranslation } from "src/localization/LocalizationContext";
+import { RSVPQuestion } from "@wedding-plan/types";
 
 interface QuestionBankDialogProps {
   open: boolean;

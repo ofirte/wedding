@@ -1,6 +1,9 @@
 // RSVP Question System Types
 
-import { WeddingRSVPConfig } from "@wedding-plan/types";
+import { RSVPQuestion, WeddingRSVPConfig } from "@wedding-plan/types";
+
+// Re-export RSVPQuestion for consumers
+export type { RSVPQuestion };
 
 // For boolean questions, defines custom text and which option maps to true/false
 export interface BooleanOptions {
@@ -8,17 +11,11 @@ export interface BooleanOptions {
   falseOption: string; // Text for the "false" choice
 }
 
-export interface RSVPQuestion {
-  id: string; // Unique ID / field name in RSVP data
-  questionText: string; // Display text for the question
-  displayName?: string; // Short name for table headers (custom questions only)
-  type: "boolean" | "select"; // Two simple types only
-  options?: string[]; // Only for select type
-  booleanOptions?: BooleanOptions; // Custom yes/no text for boolean questions
-  required: boolean; // Is this question required?
-  isCustom: boolean; // true for user-created, false for predefined
-  order?: number; // Display order
+// For number questions, defines custom text for zero option
+export interface NumberOptions {
+  zeroText: string; // Custom text for the "0" choice (e.g., "No vegetarian dishes")
 }
+
 
 // Helper function to generate translated predefined questions
 export const getPredefinedQuestions = (

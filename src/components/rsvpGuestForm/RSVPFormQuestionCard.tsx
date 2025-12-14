@@ -40,6 +40,10 @@ const RSVPFormQuestionCard: React.FC<RSVPFormQuestionCardProps> = ({
       return value ? trueOption : falseOption;
     }
 
+    if (question.type === "number" && value === "0") {
+      return question.numberOptions?.zeroText || "0";
+    }
+
     return value?.toString();
   };
 
@@ -71,6 +75,29 @@ const RSVPFormQuestionCard: React.FC<RSVPFormQuestionCardProps> = ({
           question={question}
           value={value}
           onValueChange={handleValueChange}
+        />
+      );
+    }
+
+    if (question.type === "number") {
+      // Number questions use 0-10 dropdown with optional custom zero text
+      const zeroText = question.numberOptions?.zeroText || "0";
+      const numberQuestion = {
+        ...question,
+        options: [zeroText, ...Array.from({ length: 10 }, (_, i) => (i + 1).toString())],
+      };
+      return (
+        <SelectQuestion
+          question={numberQuestion}
+          value={value}
+          onValueChange={(newValue) => {
+            // Convert custom zero text back to "0" for storage
+            if (newValue === zeroText && zeroText !== "0") {
+              handleValueChange("0");
+            } else {
+              handleValueChange(newValue);
+            }
+          }}
         />
       );
     }
