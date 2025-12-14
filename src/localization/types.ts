@@ -672,6 +672,7 @@ export interface Translations {
     groomName: string;
     venueName: string;
     venueLink: string;
+    navigationLink: string;
     weddingDate: string;
     startTime: string;
     invitationPhoto: string;
@@ -698,6 +699,7 @@ export interface Translations {
     groomNamePlaceholder: string;
     venueNamePlaceholder: string;
     venueLinkPlaceholder: string;
+    navigationLinkPlaceholder: string;
   };
   labels: {
     due: string;

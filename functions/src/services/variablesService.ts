@@ -82,6 +82,7 @@ export const populateContentVariables = (
       rsvpLink: generateRSVPLink(wedding.id, invitee.id),
       paymentLink: generatePaymentLink(wedding.id, invitee.id),
       giftLink: `https://registry.example.com/${wedding.id}`, // Placeholder
+      navigationLink: wedding.navigationLink || "",
       // Legacy variables for backward compatibility
       guestId: invitee.id,
       weddingId: wedding.id,
@@ -109,6 +110,7 @@ export const populateContentVariables = (
       rsvpLink: generateRSVPLink(wedding.id, invitee.id),
       paymentLink: generatePaymentLink(wedding.id, invitee.id),
       giftLink: "",
+      navigationLink: wedding.navigationLink || "",
       guestId: invitee.id,
       weddingId: wedding.id,
     };

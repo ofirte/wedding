@@ -63,6 +63,7 @@ export interface Wedding {
   groomName?: string;
   venueName?: string;
   venueLink?: string;
+  navigationLink?: string; // Google Maps/Waze link for navigation
   startTime?: string;
   invitationPhoto?: string;
   invitationCode?: string;

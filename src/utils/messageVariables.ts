@@ -79,6 +79,12 @@ export const getPredefinedVariables = (
     placeholder: "https://registry.link/...",
     description: "Link to wedding registry or gift list",
   },
+  {
+    key: "navigationLink",
+    label: "Navigation Link",
+    placeholder: "https://maps.google.com/...",
+    description: "Google Maps or Waze link for navigation to the venue",
+  },
 ];
 
 /**
@@ -182,6 +188,7 @@ export const populateVariables = (
     rsvpLink: generateRSVPLink(wedding.id, guest.id),
     paymentLink: generatePaymentLink(wedding.id, guest.id),
     giftLink: `https://registry.example.com/${wedding.id}`, // Placeholder for now
+    navigationLink: wedding.navigationLink || "",
     // Legacy variables for backward compatibility
     guestId: guest.id,
     weddingId: wedding.id,

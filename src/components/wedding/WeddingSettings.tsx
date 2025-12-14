@@ -37,6 +37,7 @@ const WeddingSettings: React.FC = () => {
     groomName: "",
     venueName: "",
     venueLink: "",
+    navigationLink: "",
     date: null as Date | null,
     startTime: null as Date | null,
     invitationPhoto: "",
@@ -61,6 +62,7 @@ const WeddingSettings: React.FC = () => {
         groomName: weddingDetails.groomName || "",
         venueName: weddingDetails.venueName || "",
         venueLink: weddingDetails.venueLink || "",
+        navigationLink: weddingDetails.navigationLink || "",
         date: weddingDetails.date ? weddingDetails.date : null,
         startTime: parseTime(weddingDetails.startTime),
         invitationPhoto: weddingDetails.invitationPhoto || "",
@@ -100,6 +102,7 @@ const WeddingSettings: React.FC = () => {
         groomName: formData.groomName.trim() || undefined,
         venueName: formData.venueName.trim() || undefined,
         venueLink: formData.venueLink.trim() || undefined,
+        navigationLink: formData.navigationLink.trim() || undefined,
       };
 
       if (formData.date) {
@@ -280,6 +283,19 @@ const WeddingSettings: React.FC = () => {
                     handleFormDataChange("venueLink", e.target.value)
                   }
                   placeholder={t("weddingSettings.venueLinkPlaceholder")}
+                  type="url"
+                />
+
+                {/* Navigation Link (Google Maps/Waze) */}
+                <TextField
+                  fullWidth
+                  id="navigationLink"
+                  label={t("weddingSettings.navigationLink")}
+                  value={formData.navigationLink}
+                  onChange={(e) =>
+                    handleFormDataChange("navigationLink", e.target.value)
+                  }
+                  placeholder={t("weddingSettings.navigationLinkPlaceholder")}
                   type="url"
                 />
 
