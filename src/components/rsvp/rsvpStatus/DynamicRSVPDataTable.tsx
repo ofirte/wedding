@@ -25,6 +25,7 @@ interface DynamicRSVPDataTableProps {
   isLoading?: boolean;
   showSelectColumn?: boolean;
   showExport?: boolean;
+  isAdmin?: boolean;
 }
 
 /**
@@ -50,6 +51,7 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
   isLoading = false,
   showSelectColumn = true,
   showExport = true,
+  isAdmin = false,
 }) => {
   // Helper to get sent messages info for an invitee
   const getInviteeSentMessagesInfo = useCallback(
@@ -166,6 +168,7 @@ const DynamicRSVPDataTable: React.FC<DynamicRSVPDataTableProps> = ({
           onSendMessage={onSendMessage}
           templates={templates}
           isLoading={isLoading}
+          isAdmin={isAdmin}
         />
         <Box
           sx={{

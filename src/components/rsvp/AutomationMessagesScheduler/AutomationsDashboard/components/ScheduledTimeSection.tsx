@@ -22,6 +22,9 @@ export const ScheduledTimeSection: React.FC<ScheduledTimeSectionProps> = ({
   locale,
   t,
 }) => {
+  // Use 24-hour format for Hebrew, 12-hour (AM/PM) for English
+  const ampm = locale === enUS;
+
   return (
     <Box sx={{ mb: 2 }}>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
@@ -35,6 +38,7 @@ export const ScheduledTimeSection: React.FC<ScheduledTimeSectionProps> = ({
           value={effectiveTime}
           onChange={onTimeChange}
           minDateTime={new Date()}
+          ampm={ampm}
           sx={{
             width: "100%",
             "& .MuiInputBase-root": {

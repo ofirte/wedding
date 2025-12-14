@@ -1,11 +1,10 @@
 import { createCollectionAPI } from "../weddingFirebaseHelpers";
 import {
-  RSVPQuestion,
   CreateCustomQuestionRequest,
   PREDEFINED_QUESTIONS,
   generateCustomQuestionId,
 } from "./rsvpQuestionsTypes";
-import { TemplatesCategories, SelectedTemplate } from "@wedding-plan/types";
+import { TemplatesCategories, SelectedTemplate, RSVPQuestion } from "@wedding-plan/types";
 import { WeddingRSVPConfig } from "@wedding-plan/types";
 
 const RSVP_CONFIG_COLLECTION = "rsvpConfigs";

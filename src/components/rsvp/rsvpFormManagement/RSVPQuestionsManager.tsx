@@ -47,11 +47,14 @@ const RSVPQuestionsManager: React.FC = () => {
   const [newQuestion, setNewQuestion] = useState({
     text: "",
     displayName: "",
-    type: "boolean" as "boolean" | "select",
+    type: "boolean" as "boolean" | "select" | "number",
     options: ["", ""],
     booleanOptions: {
       trueOption: "",
       falseOption: "",
+    },
+    numberOptions: {
+      zeroText: "",
     },
   });
 
@@ -144,6 +147,9 @@ const RSVPQuestionsManager: React.FC = () => {
         booleanOptions: {
           trueOption: "",
           falseOption: "",
+        },
+        numberOptions: {
+          zeroText: "",
         },
       });
       setIsCustomFormOpen(false);

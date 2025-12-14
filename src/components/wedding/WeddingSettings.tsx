@@ -26,7 +26,7 @@ import { useTranslation } from "../../localization/LocalizationContext";
 import CurrentWeddingInfo from "./CurrentWeddingInfo";
 
 const WeddingSettings: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { data: weddingDetails, isLoading } = useWeddingDetails();
   const { mutate: updateWedding, isPending: isUpdating } = useUpdateWedding();
 
@@ -304,6 +304,7 @@ const WeddingSettings: React.FC = () => {
                       onChange={(time) =>
                         handleFormDataChange("startTime", time)
                       }
+                      ampm={language === "en"}
                       slotProps={{
                         textField: {
                           fullWidth: true,

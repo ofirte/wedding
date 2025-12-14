@@ -26,6 +26,7 @@ export type InviteeWithDynamicRSVP = Invitee & {
 interface UseDynamicRSVPTableColumnsProps {
   selectedTemplate: string | undefined;
   sentMessages: any[];
+  isAdmin?: boolean;
 }
 
 /**
@@ -37,6 +38,7 @@ interface UseDynamicRSVPTableColumnsProps {
 export const useDynamicRSVPTableColumns = ({
   selectedTemplate,
   sentMessages,
+  isAdmin,
 }: UseDynamicRSVPTableColumnsProps): Column<InviteeWithDynamicRSVP>[] => {
   const { t } = useTranslation();
   const { data: wedding } = useWeddingDetails();
@@ -425,9 +427,12 @@ export const useDynamicRSVPTableColumns = ({
             />
           );
         },
-      },
+      }
+    );
 
-      {
+    // Only show sent status column for admins
+    if (isAdmin) {
+      columns.push({
         id: "templateSent",
         label: t("rsvpStatusTab.sent"),
         sortable: true,
@@ -549,9 +554,9 @@ export const useDynamicRSVPTableColumns = ({
             );
           }
         },
-      }
-    );
+      });
+    }
 
     return columns;
-  }, [t, questions, selectedTemplate, wedding?.id]);
+  }, [t, questions, selectedTemplate, wedding?.id, isAdmin]);
 };

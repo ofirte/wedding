@@ -201,6 +201,7 @@ const AutomationTimelineReview: React.FC<AutomationTimelineReviewProps> = ({
                   });
                 }}
                 locale={locale}
+                ampm={language === "en"}
                 t={t}
               />
             );
@@ -258,6 +259,7 @@ interface AutomationCardProps {
   onTimeChange: (newTime: Date | null) => void;
   onTemplateChange: (templateId: string) => void;
   locale: typeof enUS | typeof he;
+  ampm: boolean;
   t: (key: string) => string;
 }
 
@@ -268,6 +270,7 @@ const AutomationCard: React.FC<AutomationCardProps> = ({
   offsetText,
   onTimeChange,
   onTemplateChange,
+  ampm,
   t,
 }) => {
   const scheduledTime = new Date(automation.scheduledTime);
@@ -424,6 +427,7 @@ const AutomationCard: React.FC<AutomationCardProps> = ({
               value={scheduledTime}
               onChange={onTimeChange}
               minDateTime={new Date()}
+              ampm={ampm}
               sx={{
                 width: "100%",
                 "& .MuiInputBase-root": {

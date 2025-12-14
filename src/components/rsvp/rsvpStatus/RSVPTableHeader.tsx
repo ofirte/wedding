@@ -16,6 +16,7 @@ interface RSVPTableHeaderProps {
   onSendMessage: () => void;
   templates?: MessageTemplate[];
   isLoading?: boolean;
+  isAdmin?: boolean;
 }
 
 /**
@@ -34,6 +35,7 @@ const RSVPTableHeader: React.FC<RSVPTableHeaderProps> = ({
   onSendMessage,
   templates = [],
   isLoading = false,
+  isAdmin = false,
 }) => {
   const { t } = useTranslation();
 
@@ -58,43 +60,47 @@ const RSVPTableHeader: React.FC<RSVPTableHeaderProps> = ({
         <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
           {t("rsvpStatusTab.rsvpList")}
         </Typography>
-        <MessageTemplateSelector
-          selectedTemplate={selectedTemplate}
-          onSelectionChange={onTemplateSelectionChange}
-          templates={templates}
-          disabled={isLoading}
-        />
+        {isAdmin && (
+          <MessageTemplateSelector
+            selectedTemplate={selectedTemplate}
+            onSelectionChange={onTemplateSelectionChange}
+            templates={templates}
+            disabled={isLoading}
+          />
+        )}
       </Box>
-      <Tooltip
-        title={
-          selectedGuestsCount === 0
-            ? t("rsvpStatusTab.selectGuestsFirst")
-            : !selectedTemplate
-            ? t("rsvpStatusTab.selectTemplateFirst")
-            : isLoading
-            ? t("common.loading")
-            : ""
-        }
-        disableHoverListener={
-          selectedGuestsCount > 0 && !!selectedTemplate && !isLoading
-        }
-      >
-        <span>
-          <Button
-            variant="contained"
-            startIcon={<SendIcon />}
-            onClick={onSendMessage}
-            color="primary"
-            disabled={
-              selectedGuestsCount === 0 || !selectedTemplate || isLoading
-            }
-            sx={{ whiteSpace: "nowrap" }}
-          >
-            {t("rsvp.sendMessage")}{" "}
-            {selectedGuestsCount > 0 && `(${selectedGuestsCount})`}
-          </Button>
-        </span>
-      </Tooltip>
+      {isAdmin && (
+        <Tooltip
+          title={
+            selectedGuestsCount === 0
+              ? t("rsvpStatusTab.selectGuestsFirst")
+              : !selectedTemplate
+              ? t("rsvpStatusTab.selectTemplateFirst")
+              : isLoading
+              ? t("common.loading")
+              : ""
+          }
+          disableHoverListener={
+            selectedGuestsCount > 0 && !!selectedTemplate && !isLoading
+          }
+        >
+          <span>
+            <Button
+              variant="contained"
+              startIcon={<SendIcon />}
+              onClick={onSendMessage}
+              color="primary"
+              disabled={
+                selectedGuestsCount === 0 || !selectedTemplate || isLoading
+              }
+              sx={{ whiteSpace: "nowrap" }}
+            >
+              {t("rsvp.sendMessage")}{" "}
+              {selectedGuestsCount > 0 && `(${selectedGuestsCount})`}
+            </Button>
+          </span>
+        </Tooltip>
+      )}
     </Box>
   );
 };
