@@ -26,7 +26,7 @@ import { useTranslation } from "../../localization/LocalizationContext";
 import CurrentWeddingInfo from "./CurrentWeddingInfo";
 
 const WeddingSettings: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { data: weddingDetails, isLoading } = useWeddingDetails();
   const { mutate: updateWedding, isPending: isUpdating } = useUpdateWedding();
 
@@ -37,6 +37,7 @@ const WeddingSettings: React.FC = () => {
     groomName: "",
     venueName: "",
     venueLink: "",
+    navigationLink: "",
     date: null as Date | null,
     startTime: null as Date | null,
     invitationPhoto: "",
@@ -61,6 +62,7 @@ const WeddingSettings: React.FC = () => {
         groomName: weddingDetails.groomName || "",
         venueName: weddingDetails.venueName || "",
         venueLink: weddingDetails.venueLink || "",
+        navigationLink: weddingDetails.navigationLink || "",
         date: weddingDetails.date ? weddingDetails.date : null,
         startTime: parseTime(weddingDetails.startTime),
         invitationPhoto: weddingDetails.invitationPhoto || "",
@@ -100,6 +102,7 @@ const WeddingSettings: React.FC = () => {
         groomName: formData.groomName.trim() || undefined,
         venueName: formData.venueName.trim() || undefined,
         venueLink: formData.venueLink.trim() || undefined,
+        navigationLink: formData.navigationLink.trim() || undefined,
       };
 
       if (formData.date) {
@@ -283,6 +286,19 @@ const WeddingSettings: React.FC = () => {
                   type="url"
                 />
 
+                {/* Navigation Link (Google Maps/Waze) */}
+                <TextField
+                  fullWidth
+                  id="navigationLink"
+                  label={t("weddingSettings.navigationLink")}
+                  value={formData.navigationLink}
+                  onChange={(e) =>
+                    handleFormDataChange("navigationLink", e.target.value)
+                  }
+                  placeholder={t("weddingSettings.navigationLinkPlaceholder")}
+                  type="url"
+                />
+
                 {/* Wedding Date and Time */}
                 <Grid container spacing={2}>
                   <Grid size={{ xs: 12, md: 8 }}>
@@ -304,6 +320,7 @@ const WeddingSettings: React.FC = () => {
                       onChange={(time) =>
                         handleFormDataChange("startTime", time)
                       }
+                      ampm={language === "en"}
                       slotProps={{
                         textField: {
                           fullWidth: true,

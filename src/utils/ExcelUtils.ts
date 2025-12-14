@@ -1,5 +1,6 @@
 import * as XLSX from "xlsx";
 import { Column, ExportColumn } from "../components/common/DSTable";
+import { InlineColumn } from "../components/common/DSInlineTable/types";
 
 /**
  * Exports data to an Excel file
@@ -80,6 +81,72 @@ export const useExcelExport = (filename: string = "export") => {
     exportAddedColumns: ExportColumn<T>[] = []
   ) => {
     exportToExcel(data, columns, exportAddedColumns, filename);
+  };
+
+  return { exportData };
+};
+
+/**
+ * Exports inline table data to an Excel file
+ * Works with InlineColumn type which uses getValue instead of render
+ * @param data The data to export
+ * @param columns The InlineColumn configuration
+ * @param filename The name of the file to be downloaded
+ */
+export const exportInlineTableToExcel = <T extends { id: string | number }>(
+  data: T[],
+  columns: InlineColumn<T>[],
+  filename: string = "export"
+): void => {
+  const headers = columns.map((col) => col.label);
+
+  const worksheetData = [
+    headers,
+    ...data.map((row) =>
+      columns.map((col) => {
+        // Use getValue if available, otherwise direct property access
+        const value = col.getValue
+          ? col.getValue(row)
+          : row[col.id as keyof T];
+
+        if (value === null || value === undefined) {
+          return "";
+        }
+
+        // Handle Date objects
+        if (value instanceof Date) {
+          return value.toLocaleDateString();
+        }
+
+        return value.toString();
+      })
+    ),
+  ];
+
+  // Create worksheet and workbook
+  const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+
+  // Generate file name with timestamp
+  const dateStr = new Date().toISOString().slice(0, 10);
+  const fullFilename = `${filename} ${dateStr}.xlsx`;
+
+  // Write and download
+  XLSX.writeFile(workbook, fullFilename);
+};
+
+/**
+ * React hook for exporting inline table data to Excel
+ * @param filename Base filename for the Excel export
+ * @returns An object with the exportData function
+ */
+export const useInlineTableExcelExport = (filename: string = "export") => {
+  const exportData = <T extends { id: string | number }>(
+    data: T[],
+    columns: InlineColumn<T>[]
+  ) => {
+    exportInlineTableToExcel(data, columns, filename);
   };
 
   return { exportData };

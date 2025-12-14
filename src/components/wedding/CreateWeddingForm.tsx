@@ -47,7 +47,7 @@ export const CreateWeddingForm: React.FC<CreateWeddingFormProps> = ({
       date: null,
     },
   });
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser();
   if (isLoadingUser) {
     return <LoadingState />;
@@ -104,6 +104,7 @@ export const CreateWeddingForm: React.FC<CreateWeddingFormProps> = ({
                     label={t("weddingSettings.startTime")}
                     value={field.value ?? null}
                     onChange={field.onChange}
+                    ampm={language === "en"}
                     slotProps={{
                       textField: {
                         fullWidth: true,

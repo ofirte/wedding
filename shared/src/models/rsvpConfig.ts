@@ -8,13 +8,19 @@ export interface BooleanOptions {
   falseOption: string; // Text for the "false" choice
 }
 
+// For number questions, defines custom text for the zero option
+export interface NumberOptions {
+  zeroText: string; // Text for the "0" option (e.g., "No vegetarian dishes needed")
+}
+
 export interface RSVPQuestion {
   id: string; // Unique ID / field name in RSVP data
   questionText: string; // Display text for the question
   displayName?: string; // Short name for table headers (custom questions only)
-  type: "boolean" | "select"; // Two simple types only
+  type: "boolean" | "select" | "number"; // Three simple types
   options?: string[]; // Only for select type
   booleanOptions?: BooleanOptions; // Custom yes/no text for boolean questions
+  numberOptions?: NumberOptions; // Custom zero text for number questions
   required: boolean; // Is this question required?
   isCustom: boolean; // true for user-created, false for predefined
   order?: number; // Display order

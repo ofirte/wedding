@@ -114,6 +114,7 @@ export const englishTranslations: Translations = {
   },
   common: {
     noResultsFound: "No results found",
+    rowsPerPage: "Rows per page",
     search: "Search",
     approve: "Approve",
     approved: "Approved",
@@ -125,6 +126,8 @@ export const englishTranslations: Translations = {
     save: "Save",
     saving: "Saving...",
     cancel: "Cancel",
+    clear: "Clear",
+    apply: "Apply",
     unsavedChanges: "Unsaved Changes",
     unsavedChangesMessage: "You have unsaved changes. Are you sure you want to discard them?",
     continueEditing: "Continue Editing",
@@ -136,6 +139,7 @@ export const englishTranslations: Translations = {
     delete: "Delete",
     edit: "Edit",
     add: "Add",
+    addNew: "Add New",
     create: "Create",
     loading: "Loading...",
     applying: "Applying...",
@@ -273,6 +277,13 @@ export const englishTranslations: Translations = {
     update: "Update",
     clearAll: "Clear All",
     all: "All",
+    filter: "Filter",
+    clearFilters: "Clear Filters",
+    min: "Min",
+    max: "Max",
+    from: "From",
+    to: "To",
+    selectedCount: "{{count}} selected",
     item: "Item",
     noDataAvailable: "No data available",
     noDataDescription: "There are no items to display at the moment",
@@ -508,11 +519,13 @@ export const englishTranslations: Translations = {
     untilSpecialDay: "until your special day",
   },
   budget: {
+    noBudgetItems: "No budget items yet. Add an item to start tracking your expenses.",
     title: "Budget Planning",
     totalBudget: "Total Budget",
     spent: "Spent",
     remaining: "Remaining",
     addItem: "Add Budget Item",
+    addNewItem: "Start typing to add new budget item...",
     planning: "Budget Planning",
     errorLoadingBudget: "Error loading budget data. Please try again.",
     addingBudgetItem: "Adding Budget Item",
@@ -522,8 +535,27 @@ export const englishTranslations: Translations = {
     paidSoFar: "Paid so far",
     actualTotal: "Actual total",
     expectedTotal: "Expected total",
+    manageContracts: "Manage Contracts",
+    noContracts: "No contracts uploaded",
+    addContract: "Add Contract",
+    categories: {
+      venue: "Venue",
+      catering: "Catering",
+      attire: "Attire",
+      photography: "Photography",
+      music: "Music",
+      decor: "Decor",
+      flowers: "Flowers",
+      transportation: "Transportation",
+      stationery: "Stationery",
+      gifts: "Gifts",
+      beauty: "Beauty",
+      other: "Other",
+    },
+    budgetExportFilename: "budget-export",
   },
   guests: {
+    uploadCSV: "Upload Excel",
     title: "Guest List",
     totalGuests: "Total Guests",
     confirmed: "Confirmed",
@@ -558,6 +590,9 @@ export const englishTranslations: Translations = {
     totalExpectedGuests: "Total Expected Guests",
     withPhoneNumbers: "With Phone Numbers",
     missingPhoneNumbers: "Missing Phone Numbers",
+    noGuests: "No guests yet. Add your first guest!",
+    addGuestPlaceholder: "Add new guest...",
+    inviteesExportFilename: "invitees-export",
   },
   tasks: {
     title: "Wedding Tasks",
@@ -621,7 +656,8 @@ export const englishTranslations: Translations = {
     brideName: "Bride Name",
     groomName: "Groom Name",
     venueName: "Venue Name",
-    venueLink: "Venue Link",
+    venueLink: "Venue Website",
+    navigationLink: "Navigation Link (Waze/Maps)",
     weddingDate: "Wedding Date",
     startTime: "Start Time",
     invitationPhoto: "Invitation Photo",
@@ -648,7 +684,8 @@ export const englishTranslations: Translations = {
     brideNamePlaceholder: "Enter bride name",
     groomNamePlaceholder: "Enter groom name",
     venueNamePlaceholder: "Enter venue name",
-    venueLinkPlaceholder: "Enter venue link (optional)",
+    venueLinkPlaceholder: "Enter venue website URL (optional)",
+    navigationLinkPlaceholder: "Enter Waze or Google Maps link (optional)",
   },
   labels: {
     due: "Due",
@@ -751,9 +788,9 @@ export const englishTranslations: Translations = {
       step1Title: "Create Your RSVP Form",
       step1Description:
         "Design custom questions to collect the information you need from your guests, from meal preferences to plus-ones.",
-      step2Title: "Set Up Two Types of Messages",
+      step2Title: "Approve the Message Timeline",
       step2Description:
-        "RSVP invitations with form links for collecting responses, plus reminders and thank you messages for attending guests.",
+        "Set when to automatically send invitations, reminders, and thank you messages to your guests.",
       getStarted: "Get Started",
       creating: "Setting up your RSVP...",
     },
@@ -809,6 +846,29 @@ export const englishTranslations: Translations = {
     noAutomationsDescription:
       "Create automated message campaigns to send RSVP requests and reminders to your guests.",
     createFirstAutomation: "Create First Automation",
+    // Timeline Review
+    reviewMessageTimeline: "Review Your Message Timeline",
+    reviewTimelineDescription:
+      "Review the scheduled messages for your guests. You can adjust the timing if needed.",
+    approve: "Approve",
+    noTemplateAssigned: "No template assigned",
+    changeTemplate: "Change Template",
+    automationsNeedApproval: "Please approve the automations first",
+    // Dashboard
+    scheduledMessages: "Scheduled Messages",
+    scheduledMessagesDescription: "View and manage your scheduled automated messages.",
+    automationScheduled: "Scheduled",
+    automationSending: "Sending...",
+    saveChanges: "Save Changes",
+    unsavedChanges: "You have unsaved changes",
+    viewMessage: "View Message",
+    hideMessage: "Hide Message",
+    deliveryStats: "Delivery Statistics",
+    successful: "successful",
+    allMessagesSentSuccessfully: "All messages sent successfully",
+    outOf: "out of",
+    messagesSentSuccessfully: "messages sent successfully",
+    sentAt: "Sent At",
     // Automation Info Dialog
     automationDetails: "Automation Details",
     basicInformation: "Basic Information",
@@ -1032,6 +1092,149 @@ export const englishTranslations: Translations = {
         contactUs: "Have questions? Contact us",
         guarantee: "30-day money-back guarantee",
       },
+      payment: {
+        chooseYourPlan: "Choose Your Plan",
+        subtitle: "Purchase RSVP records for your wedding",
+        presetOptions: "Preset Options",
+        customAmount: "Custom Amount",
+        records: "records",
+        perRecord: "per record",
+        mostPopular: "Most Popular",
+        savings: "savings",
+        total: "Total",
+        proceedToPayment: "Proceed to Payment",
+        processing: "Processing...",
+        minRecords: "Minimum 50 records",
+        maxRecords: "Maximum 999 records",
+      },
+      termsDialog: {
+        title: "Terms of Service & Privacy Policy",
+        scrollToAccept: "Please scroll to the bottom to accept",
+        acceptCheckbox: "I have read and agree to the Terms of Service and Privacy Policy",
+        cancel: "Cancel",
+        proceed: "Proceed to Payment",
+        processing: "Processing...",
+        summary: {
+          title: "RSVP Service",
+          consent:
+            'By clicking "Proceed to Payment" you confirm that you have read and agreed to the Terms of Service and Privacy Policy.',
+          serviceDescription:
+            "The service includes sending messages and calls according to the list you provided, but does not guarantee response rate or message delivery when dependent on external factors.",
+          dataStorage: "Data will be stored for service operation only.",
+        },
+        terms: {
+          title: "Terms of Service",
+          intro:
+            "Welcome to WedOne. Use of the website and its services is subject to the terms of use detailed below. By using the website, you confirm that you have read, understood and agreed to these terms.",
+          section1: {
+            title: "1. Service Description",
+            content:
+              "The website allows sending WhatsApp/SMS messages, making phone calls to invitees and consolidating RSVP results for users (the couple). The service includes sending, mailing, calls and documentation of response status according to the guest list provided by the user.",
+          },
+          section2: {
+            title: "2. Service Operation Responsibility",
+            intro:
+              "We commit to sending messages and calls according to the data provided by the user. However:",
+            item1:
+              "The system sends all messages and calls in full. There may be rare cases where message delivery depends on external factors beyond our control (such as WhatsApp or cellular network)",
+            item2: "We do not guarantee any response rate",
+            item3:
+              "Failures due to cellular companies, WhatsApp or third-party providers are beyond our control",
+            item4: 'The service is provided "as-is"',
+          },
+          section3: {
+            title: "3. Message Content",
+            content:
+              "The user may use a suggested message format or provide their own. The user is responsible for ensuring the content complies with communication laws, copyright, anti-spam laws, and any relevant law. The company is not responsible for any claim arising from the content of the message sent.",
+          },
+          section4: {
+            title: "4. User Responsibility",
+            intro: "The user declares that:",
+            item1: "They have the authority to contact invitees according to law",
+            item2: "Every phone number provided is valid and reliable",
+            item3: "There is no legal impediment to sending messages to invitees",
+            item4: "The user is responsible for any incorrect or illegal use of the service",
+          },
+          section5: {
+            title: "5. Personal Information Use",
+            content:
+              "For service operation, details such as invitee names, phone numbers and attendance status are collected. The information is stored for service provision only, is not sold or transferred to third parties not part of the service operation (such as Twilio), and is stored under reasonable security measures. We cannot guarantee complete protection against external events.",
+          },
+          section6: {
+            title: "6. Payment and Refunds",
+            content:
+              "Payment for the service is one-time and based on the number of records. After sending messages/calls, payment is non-refundable.",
+          },
+          section7: {
+            title: "7. Limitation of Liability",
+            content:
+              "We will not be liable for any indirect, consequential damage, loss of revenue, delays or disruptions arising from use of the website. In any case, our total liability is limited to the amount actually paid by the user.",
+          },
+          section8: {
+            title: "8. Support",
+            content:
+              "Support is available through the contact channels detailed on the website. We will try to assist quickly, but do not guarantee continuous availability.",
+          },
+          section9: {
+            title: "9. Changes to Website and Terms",
+            content:
+              "The company may change the service, content or terms of use from time to time. Continued use of the website constitutes agreement to the updated terms.",
+          },
+          section10: {
+            title: "10. Law and Jurisdiction",
+            content:
+              "The applicable law is Israeli law, and jurisdiction is given to the courts in the Tel Aviv district.",
+          },
+        },
+        privacy: {
+          title: "Privacy Policy",
+          intro:
+            "This policy is intended to clarify how we collect, use and store information provided by users and their invitees.",
+          section1: {
+            title: "1. Types of Information Collected",
+            intro: "We collect the following information:",
+            item1: "Invitee names",
+            item2: "Phone numbers",
+            item3: "Response status (attending/not attending/no response)",
+            item4: "User details (name, phone, email) for communication",
+            item5: "Technical information required for system operation",
+          },
+          section2: {
+            title: "2. Purposes of Information Use",
+            intro: "The information is used for:",
+            item1: "Sending messages and calls for RSVPs",
+            item2: "Status documentation for the user",
+            item3: "Service improvement",
+            item4: "Technical support",
+            item5: "Operation through third-party services (such as Twilio)",
+            noAds: "Information is not used for advertising purposes.",
+          },
+          section3: {
+            title: "3. Information Sharing with Third Parties",
+            content:
+              "Information may only be transferred to entities required for service operation, such as Twilio (message sending) and communication providers. We do not sell or transfer information to any other party.",
+          },
+          section4: {
+            title: "4. Information Security",
+            content:
+              "We take standard security measures to protect the information. However, we cannot guarantee complete protection against cyber events beyond our control.",
+          },
+          section5: {
+            title: "5. User Rights",
+            content:
+              "The user may request data deletion, request data updates, and contact with any question regarding privacy and information storage.",
+          },
+          section6: {
+            title: "6. Information Retention Period",
+            content:
+              "Information is stored until end of service use, and thereafter may be retained partially/anonymously for technical purposes.",
+          },
+          section7: {
+            title: "7. Policy Changes",
+            content: "If material changes are made to the policy, we will update this page.",
+          },
+        },
+      },
     },
   },
   rsvpEmptyState: {
@@ -1059,12 +1262,23 @@ export const englishTranslations: Translations = {
     add: "Add",
     close: "Close",
     questionText: "Question Text",
+    displayNameTitle: "Table Display Name",
     displayNameLabel: "Display Name (for table header)",
     displayNameHelper:
       "Short, unique name that will appear in the RSVP status table header",
     questionType: "Question Type",
     yesNoQuestion: "Yes/No Question",
+    yesNoQuestionHelper: "Radio buttons for true/false choices",
     multipleChoiceQuestion: "Multiple Choice Question",
+    multipleChoiceQuestionHelper: "Dropdown menu with multiple options",
+    numberQuestion: "Number Question",
+    numberQuestionHelper: "Dropdown with 0-10 options, values are summed",
+    numberOptions: "Number Options",
+    numberPreviewHelper:
+      "Guests will choose a number from 0-10. Values are summed in your statistics.",
+    zeroTextLabel: "Text for 'None' option",
+    zeroTextPlaceholder: "e.g., No vegetarian dishes needed",
+    zeroTextHelper: "Custom text shown instead of '0' (leave empty to show '0')",
     answerOptions: "Answer Options",
     addOption: "Add Option",
     cancel: "Cancel",
@@ -1895,5 +2109,46 @@ export const englishTranslations: Translations = {
     messageTooShort: "Message is too short (min 10 characters)",
     messageTooLong: "Message is too long (max 1000 characters)",
     buttonText: "Support",
+  },
+  csvUpload: {
+    dialogTitle: "Upload Invitees",
+    downloadTemplate: "Download Template",
+    selectFile: "Select File",
+    acceptedFormats: "Accepted formats: CSV, XLSX",
+    requiredColumns: "Required columns",
+    optionalColumns: "Optional columns",
+    validRecords: "{{count}} valid records found",
+    preview: "Preview (first 5 records)",
+    uploading: "Uploading invitees...",
+    uploadSuccess: "Successfully uploaded {{count}} invitees!",
+    uploadError: "Error uploading file. Please try again.",
+    invalidFormat: "Please select a CSV or XLSX file",
+    missingColumns: "Missing required columns: {{columns}}",
+    errors: {
+      nameRequired: "Name is required",
+      cellphoneRequired: "Cellphone is required",
+      invalidPhone: "Invalid phone number format",
+      row: "Row {{row}}",
+      foundErrors: "Found {{count}} errors:",
+      moreErrors: "... and {{count}} more errors",
+    },
+    columns: {
+      name: "Name",
+      cellphone: "Cellphone",
+      rsvp: "RSVP Status",
+      percentage: "Attendance %",
+      side: "Side",
+      relation: "Relation",
+      amount: "Amount",
+      amountConfirm: "Confirmed Amount",
+    },
+    status: {
+      new: "New",
+      update: "Update",
+    },
+    uploadRecords: "Upload {{count}} Records",
+    close: "Close",
+    cancel: "Cancel",
+    selectedFile: "Selected file: {{filename}}",
   },
 };

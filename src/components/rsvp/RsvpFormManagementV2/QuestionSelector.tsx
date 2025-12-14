@@ -30,6 +30,9 @@ const QuestionSelector: React.FC<QuestionSelectorProps> = () => {
       trueOption: "",
       falseOption: "",
     },
+    numberOptions: {
+      zeroText: "",
+    },
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -73,11 +76,17 @@ const QuestionSelector: React.FC<QuestionSelectorProps> = () => {
       displayName: customQuestion.displayName.trim(),
       type: customQuestion.type,
       required: false, // Custom questions are not required by default
-      ...(customQuestion.type === "boolean" 
+      ...(customQuestion.type === "boolean"
         ? {
             booleanOptions: {
               trueOption: customQuestion.booleanOptions.trueOption.trim(),
               falseOption: customQuestion.booleanOptions.falseOption.trim(),
+            }
+          }
+        : customQuestion.type === "number"
+        ? {
+            numberOptions: {
+              zeroText: customQuestion.numberOptions.zeroText.trim(),
             }
           }
         : {
@@ -109,6 +118,9 @@ const QuestionSelector: React.FC<QuestionSelectorProps> = () => {
                     trueOption: "",
                     falseOption: "",
                   },
+                  numberOptions: {
+                    zeroText: "",
+                  },
                 });
             },
             onError: (error) => {
@@ -134,6 +146,9 @@ const QuestionSelector: React.FC<QuestionSelectorProps> = () => {
       booleanOptions: {
         trueOption: "",
         falseOption: "",
+      },
+      numberOptions: {
+        zeroText: "",
       },
     });
   };

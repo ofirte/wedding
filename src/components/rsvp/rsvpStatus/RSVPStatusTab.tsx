@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { Box, Typography } from "@mui/material";
 import { useInvitees } from "../../../hooks/invitees/useInvitees";
 import { useSentMessages } from "../../../hooks/rsvp/useSentMessages";
+import { useIsAdmin } from "../../../hooks/auth";
 
 import { Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../../localization/LocalizationContext";
@@ -29,6 +30,7 @@ import { useAllWeddingAvailableTemplates } from "src/hooks/templates/useAllWeddi
  */
 const RSVPStatusTab: React.FC = () => {
   const { t } = useTranslation();
+  const { isAdmin } = useIsAdmin();
 
   // Data Management
   const { data: invitees, isLoading: isLoadingInvitees } = useInvitees();
@@ -67,6 +69,7 @@ const RSVPStatusTab: React.FC = () => {
   const columns = useDynamicRSVPTableColumns({
     selectedTemplate,
     sentMessages,
+    isAdmin,
   });
 
   // Apply dynamic filtering based on any question
@@ -141,6 +144,7 @@ const RSVPStatusTab: React.FC = () => {
         isLoading={isLoadingInvitees}
         showSelectColumn={true}
         showExport={true}
+        isAdmin={isAdmin}
       />
 
       <SendMessageDialog

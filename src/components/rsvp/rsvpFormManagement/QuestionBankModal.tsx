@@ -19,8 +19,9 @@ import {
   RadioButtonChecked as BooleanIcon,
   List as SelectIcon,
 } from "@mui/icons-material";
-import { RSVPQuestion } from "src/api/rsvp/rsvpQuestionsTypes";
+import { RSVPQuestion } from "@wedding-plan/types";
 import CustomQuestionForm from "./CustomQuestionForm";
+import { CustomQuestionData } from "../RsvpFormManagementV2/CustomQuestionFormFields";
 
 
 interface QuestionBankModalProps {
@@ -33,16 +34,7 @@ interface QuestionBankModalProps {
   // Custom question form props
   isCustomFormOpen: boolean;
   setIsCustomFormOpen: (open: boolean) => void;
-  newQuestion: {
-    text: string;
-    displayName: string;
-    type: "boolean" | "select";
-    options: string[];
-    booleanOptions: {
-      trueOption: string;
-      falseOption: string;
-    };
-  };
+  newQuestion: CustomQuestionData;
   setNewQuestion: React.Dispatch<React.SetStateAction<any>>;
   addOption: () => void;
   updateOption: (index: number, value: string) => void;

@@ -142,6 +142,7 @@ export interface Translations {
   };
   common: {
     noResultsFound: string;
+    rowsPerPage: string;
     search: string;
     approved: string;
     approve: string;
@@ -156,6 +157,8 @@ export interface Translations {
     save: string;
     saving: string;
     cancel: string;
+    clear: string;
+    apply: string;
     unsavedChanges: string;
     unsavedChangesMessage: string;
     continueEditing: string;
@@ -167,6 +170,7 @@ export interface Translations {
     delete: string;
     edit: string;
     add: string;
+    addNew: string;
     create: string;
     loading: string;
     applying: string;
@@ -299,6 +303,13 @@ export interface Translations {
     update: string;
     clearAll: string;
     all: string;
+    filter: string;
+    clearFilters: string;
+    min: string;
+    max: string;
+    from: string;
+    to: string;
+    selectedCount: string;
     item: string;
     noDataAvailable: string;
     noDataDescription: string;
@@ -524,11 +535,13 @@ export interface Translations {
     untilSpecialDay: string;
   };
   budget: {
+    noBudgetItems: string;
     title: string;
     totalBudget: string;
     spent: string;
     remaining: string;
     addItem: string;
+    addNewItem: string;
     planning: string;
     errorLoadingBudget: string;
     addingBudgetItem: string;
@@ -538,8 +551,27 @@ export interface Translations {
     paidSoFar: string;
     actualTotal: string;
     expectedTotal: string;
+    manageContracts: string;
+    noContracts: string;
+    addContract: string;
+    categories: {
+      venue: string;
+      catering: string;
+      attire: string;
+      photography: string;
+      music: string;
+      decor: string;
+      flowers: string;
+      transportation: string;
+      stationery: string;
+      gifts: string;
+      beauty: string;
+      other: string;
+    };
+    budgetExportFilename: string;
   };
   guests: {
+    uploadCSV: string;
     title: string;
     totalGuests: string;
     confirmed: string;
@@ -573,6 +605,9 @@ export interface Translations {
     totalExpectedGuests: string;
     withPhoneNumbers: string;
     missingPhoneNumbers: string;
+    noGuests: string;
+    addGuestPlaceholder: string;
+    inviteesExportFilename: string;
   };
   tasks: {
     title: string;
@@ -637,6 +672,7 @@ export interface Translations {
     groomName: string;
     venueName: string;
     venueLink: string;
+    navigationLink: string;
     weddingDate: string;
     startTime: string;
     invitationPhoto: string;
@@ -663,6 +699,7 @@ export interface Translations {
     groomNamePlaceholder: string;
     venueNamePlaceholder: string;
     venueLinkPlaceholder: string;
+    navigationLinkPlaceholder: string;
   };
   labels: {
     due: string;
@@ -824,6 +861,28 @@ export interface Translations {
     noAutomationsTitle: string;
     noAutomationsDescription: string;
     createFirstAutomation: string;
+    // Timeline Review
+    reviewMessageTimeline: string;
+    reviewTimelineDescription: string;
+    approve: string;
+    noTemplateAssigned: string;
+    changeTemplate: string;
+    automationsNeedApproval: string;
+    // Dashboard
+    scheduledMessages: string;
+    scheduledMessagesDescription: string;
+    automationScheduled: string;
+    automationSending: string;
+    saveChanges: string;
+    unsavedChanges: string;
+    viewMessage: string;
+    hideMessage: string;
+    deliveryStats: string;
+    successful: string;
+    allMessagesSentSuccessfully: string;
+    outOf: string;
+    messagesSentSuccessfully: string;
+    sentAt: string;
     // Automation Info Dialog
     automationDetails: string;
     basicInformation: string;
@@ -1010,6 +1069,91 @@ export interface Translations {
         contactUs: string;
         guarantee: string;
       };
+      payment: {
+        chooseYourPlan: string;
+        subtitle: string;
+        presetOptions: string;
+        customAmount: string;
+        records: string;
+        perRecord: string;
+        mostPopular: string;
+        savings: string;
+        total: string;
+        proceedToPayment: string;
+        processing: string;
+        minRecords: string;
+        maxRecords: string;
+      };
+      termsDialog: {
+        title: string;
+        scrollToAccept: string;
+        acceptCheckbox: string;
+        cancel: string;
+        proceed: string;
+        processing: string;
+        summary: {
+          title: string;
+          consent: string;
+          serviceDescription: string;
+          dataStorage: string;
+        };
+        terms: {
+          title: string;
+          intro: string;
+          section1: { title: string; content: string };
+          section2: {
+            title: string;
+            intro: string;
+            item1: string;
+            item2: string;
+            item3: string;
+            item4: string;
+          };
+          section3: { title: string; content: string };
+          section4: {
+            title: string;
+            intro: string;
+            item1: string;
+            item2: string;
+            item3: string;
+            item4: string;
+          };
+          section5: { title: string; content: string };
+          section6: { title: string; content: string };
+          section7: { title: string; content: string };
+          section8: { title: string; content: string };
+          section9: { title: string; content: string };
+          section10: { title: string; content: string };
+        };
+        privacy: {
+          title: string;
+          intro: string;
+          section1: {
+            title: string;
+            intro: string;
+            item1: string;
+            item2: string;
+            item3: string;
+            item4: string;
+            item5: string;
+          };
+          section2: {
+            title: string;
+            intro: string;
+            item1: string;
+            item2: string;
+            item3: string;
+            item4: string;
+            item5: string;
+            noAds: string;
+          };
+          section3: { title: string; content: string };
+          section4: { title: string; content: string };
+          section5: { title: string; content: string };
+          section6: { title: string; content: string };
+          section7: { title: string; content: string };
+        };
+      };
     };
   };
   automation: {
@@ -1049,11 +1193,21 @@ export interface Translations {
     add: string;
     close: string;
     questionText: string;
+    displayNameTitle: string;
     displayNameLabel: string;
     displayNameHelper: string;
     questionType: string;
     yesNoQuestion: string;
+    yesNoQuestionHelper: string;
     multipleChoiceQuestion: string;
+    multipleChoiceQuestionHelper: string;
+    numberQuestion: string;
+    numberQuestionHelper: string;
+    numberOptions: string;
+    numberPreviewHelper: string;
+    zeroTextLabel: string;
+    zeroTextPlaceholder: string;
+    zeroTextHelper: string;
     answerOptions: string;
     addOption: string;
     cancel: string;
@@ -1384,6 +1538,47 @@ export interface Translations {
     messageTooShort: string;
     messageTooLong: string;
     buttonText: string;
+  };
+  csvUpload: {
+    dialogTitle: string;
+    downloadTemplate: string;
+    selectFile: string;
+    acceptedFormats: string;
+    requiredColumns: string;
+    optionalColumns: string;
+    validRecords: string;
+    preview: string;
+    uploading: string;
+    uploadSuccess: string;
+    uploadError: string;
+    invalidFormat: string;
+    missingColumns: string;
+    errors: {
+      nameRequired: string;
+      cellphoneRequired: string;
+      invalidPhone: string;
+      row: string;
+      foundErrors: string;
+      moreErrors: string;
+    };
+    columns: {
+      name: string;
+      cellphone: string;
+      rsvp: string;
+      percentage: string;
+      side: string;
+      relation: string;
+      amount: string;
+      amountConfirm: string;
+    };
+    status: {
+      new: string;
+      update: string;
+    };
+    uploadRecords: string;
+    close: string;
+    cancel: string;
+    selectedFile: string;
   };
 }
 

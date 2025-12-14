@@ -320,45 +320,46 @@ export class PaymentService {
   } {
     let amount: number;
 
+    // Use <= to match frontend pricing logic (package includes up to cutoff)
     if (guestCount < 50) {
       throw new HttpsError("invalid-argument", "Minimum 50 guests required");
-    } else if (guestCount < 100) {
+    } else if (guestCount <= 100) {
       amount = 150;
-    } else if (guestCount < 150) {
+    } else if (guestCount <= 150) {
       amount = 225;
-    } else if (guestCount < 200) {
+    } else if (guestCount <= 200) {
       amount = 300;
-    } else if (guestCount < 250) {
+    } else if (guestCount <= 250) {
       amount = 375;
-    } else if (guestCount < 300) {
+    } else if (guestCount <= 300) {
       amount = 450;
-    } else if (guestCount < 350) {
+    } else if (guestCount <= 350) {
       amount = 525;
-    } else if (guestCount < 400) {
+    } else if (guestCount <= 400) {
       amount = 600;
-    } else if (guestCount < 450) {
+    } else if (guestCount <= 450) {
       amount = 675;
-    } else if (guestCount < 500) {
+    } else if (guestCount <= 500) {
       amount = 750;
-    } else if (guestCount < 550) {
+    } else if (guestCount <= 550) {
       amount = 825;
-    } else if (guestCount < 600) {
+    } else if (guestCount <= 600) {
       amount = 900;
-    } else if (guestCount < 650) {
+    } else if (guestCount <= 650) {
       amount = 975;
-    } else if (guestCount < 700) {
+    } else if (guestCount <= 700) {
       amount = 1050;
-    } else if (guestCount < 750) {
+    } else if (guestCount <= 750) {
       amount = 1125;
-    } else if (guestCount < 800) {
+    } else if (guestCount <= 800) {
       amount = 1200;
-    } else if (guestCount < 850) {
+    } else if (guestCount <= 850) {
       amount = 1275;
-    } else if (guestCount < 900) {
+    } else if (guestCount <= 900) {
       amount = 1350;
-    } else if (guestCount < 950) {
+    } else if (guestCount <= 950) {
       amount = 1425;
-    } else if (guestCount < 1000) {
+    } else if (guestCount <= 1000) {
       amount = 1500;
     } else {
       throw new HttpsError(
