@@ -169,16 +169,6 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
               ? t("rsvp.premiumPricing.payment.processing")
               : t("rsvp.premiumPricing.payment.proceedToPayment")}
           </Button>
-
-          {/* Security Note */}
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            textAlign="center"
-            sx={{ opacity: 0.8 }}
-          >
-            {t("rsvp.premiumPricing.cta.guarantee")}
-          </Typography>
         </Stack>
       </CardContent>
 
