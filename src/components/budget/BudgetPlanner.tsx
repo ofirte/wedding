@@ -94,6 +94,15 @@ const BudgetPlanner = () => {
     return calculateTotals();
   }, [budgetItems]);
 
+  // Extract unique paidBy values for autocomplete suggestions
+  const paidByOptions = useMemo(() => {
+    if (!budgetItems) return [];
+    const values = budgetItems
+      .map((item) => item.paidBy)
+      .filter((v): v is string => !!v);
+    return Array.from(new Set(values));
+  }, [budgetItems]);
+
   // Render loading, error, or content
   return (
     <Box sx={responsivePatterns.containerPadding}>
@@ -142,6 +151,7 @@ const BudgetPlanner = () => {
               onCellUpdate={handleCellUpdate}
               onDelete={deleteBudgetItem}
               onAddRow={handleAddRow}
+              paidByOptions={paidByOptions}
             />
           )}
         </Stack>

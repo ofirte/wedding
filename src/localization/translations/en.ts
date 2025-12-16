@@ -535,6 +535,7 @@ export const englishTranslations: Translations = {
     paidSoFar: "Paid so far",
     actualTotal: "Actual total",
     expectedTotal: "Expected total",
+    paidBy: "Paid By",
     manageContracts: "Manage Contracts",
     noContracts: "No contracts uploaded",
     addContract: "Add Contract",

@@ -10,6 +10,7 @@ export interface BudgetItem {
   expectedPrice: number;
   actualPrice: number;
   downPayment: number;
+  paidBy?: string; // Who paid for this expense
   contractsUrls?: string[];
   createdAt?: string; // ISO timestamp for ordering
 }

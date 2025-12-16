@@ -1,7 +1,6 @@
 import React, { FC, useEffect } from "react";
 import { Box, Tabs, Tab } from "@mui/material";
 import {
-  Description as DescriptionIcon,
   History as HistoryIcon,
   Assessment as AssessmentIcon,
   Settings as SettingsIcon,
@@ -9,7 +8,6 @@ import {
 } from "@mui/icons-material";
 import { useSearchParams } from "react-router";
 import { useTranslation } from "../../localization/LocalizationContext";
-import TemplatesManager from "../templates/TemplatesManager";
 import MessagesLogTab from "./MessagesLogTab";
 import RSVPStatusTab from "./rsvpStatus/RSVPStatusTab";
 import { useRSVPConfig } from "../../hooks/rsvp/useRSVPConfig";

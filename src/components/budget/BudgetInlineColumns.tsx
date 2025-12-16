@@ -115,7 +115,8 @@ export const createBudgetGroupOptions = (
 export const createBudgetInlineColumns = (
   onDelete: (id: string) => void,
   onContractChange: (itemId: string, contracts: string[]) => void,
-  t: (key: string) => string
+  t: (key: string) => string,
+  paidByOptions: string[] = []
 ): InlineColumn<BudgetItem>[] => [
   {
     id: "name",
@@ -172,6 +173,15 @@ export const createBudgetInlineColumns = (
     filterConfig: {
       type: "number-range",
     },
+  },
+  {
+    id: "paidBy",
+    label: t("budget.paidBy"),
+    sortable: true,
+    editable: true,
+    editType: "autocomplete",
+    autocompleteOptions: paidByOptions,
+    minWidth: 120,
   },
   {
     id: "balance",

@@ -551,6 +551,7 @@ export interface Translations {
     paidSoFar: string;
     actualTotal: string;
     expectedTotal: string;
+    paidBy: string;
     manageContracts: string;
     noContracts: string;
     addContract: string;

@@ -35,8 +35,6 @@ import { useTranslation } from "../../localization/LocalizationContext";
 import { useWeddingMembers } from "../../hooks/wedding";
 import { useCurrentUser } from "src/hooks/auth";
 
-type TaskType = "wedding" | "producer";
-
 interface TaskFormData {
   title: string;
   description: string;
