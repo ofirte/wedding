@@ -9,6 +9,7 @@ interface BudgetTableProps {
   onCellUpdate: (rowId: string | number, field: string, value: any, row: BudgetItem) => void;
   onDelete: (id: string) => void;
   onAddRow: (newRow: Omit<BudgetItem, "id">, onSuccess?: (newRowId: string | number) => void) => void;
+  paidByOptions: string[];
 }
 
 const BudgetTable: React.FC<BudgetTableProps> = ({
@@ -16,6 +17,7 @@ const BudgetTable: React.FC<BudgetTableProps> = ({
   onCellUpdate,
   onDelete,
   onAddRow,
+  paidByOptions,
 }) => {
   const { t } = useTranslation();
 
@@ -32,8 +34,8 @@ const BudgetTable: React.FC<BudgetTableProps> = ({
 
   // Column definitions
   const columns = useMemo(
-    () => createBudgetInlineColumns(onDelete, handleContractChange, t),
-    [onDelete, handleContractChange, t]
+    () => createBudgetInlineColumns(onDelete, handleContractChange, t, paidByOptions),
+    [onDelete, handleContractChange, t, paidByOptions]
   );
 
   // Default values for new budget items

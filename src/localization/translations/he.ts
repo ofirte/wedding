@@ -526,6 +526,7 @@ export const hebrewTranslations: Translations = {
     paidSoFar: "שולם עד כה",
     actualTotal: "סכום בפועל",
     expectedTotal: "סכום צפוי",
+    paidBy: "שולם ע״י",
     manageContracts: "ניהול חוזים",
     noContracts: "לא הועלו חוזים",
     addContract: "הוסף חוזה",

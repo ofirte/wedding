@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Box, Typography, Divider, Collapse } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import TaskList, { DisplayTask } from "../../tasks/TaskList";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
@@ -33,7 +33,6 @@ const TasksListView: React.FC<TasksListViewProps> = ({
   const { data: weddingTasks = [], isLoading: isLoadingWeddingTasks } = useAllWeddingsTasks();
   const { data: producerTasksData = [], isLoading: isLoadingProducerTasks } = useProducerTasks();
   const { filterTasks, filters } = useTasksManagement();
-  const [showRecentlyCompleted, setShowRecentlyCompleted] = React.useState(true);
 
   // Combine wedding tasks and producer tasks for unified display
   const allTasks: DisplayTask[] = useMemo(() => {
@@ -70,7 +69,7 @@ const TasksListView: React.FC<TasksListViewProps> = ({
 
 
 
-  const { overdueTasks, upcomingTasks, laterTasks, recentlyCompletedTasks, allCompletedTasks } =
+  const { overdueTasks, upcomingTasks, laterTasks, allCompletedTasks } =
     useMemo(() => {
       return filteredTasks.reduce<TaskGroups>(
         (acc, task) => {
