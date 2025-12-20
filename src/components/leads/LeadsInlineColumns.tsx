@@ -6,6 +6,7 @@ import { LeadStatusColors, LeadPaymentStatusColors, LeadSourceColors } from "./l
 import { IconButton, Tooltip, Box } from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { MemoizedNotesCell } from "../common/DSInlineTable/cells";
 
 // Status options
 const ALL_STATUSES: LeadStatus[] = [
@@ -64,6 +65,7 @@ export const createSourceOptions = (
 export const createLeadsInlineColumns = (
   serviceOptions: string[],
   onOpenActivity: (lead: Lead) => void,
+  onOpenNotes: (lead: Lead) => void,
   onDelete: (id: string) => void,
   t: (key: string) => string
 ): InlineColumn<Lead>[] => [
@@ -196,6 +198,21 @@ export const createLeadsInlineColumns = (
     editable: true,
     editType: "date",
     minWidth: 150,
+  },
+  {
+    id: "notes",
+    label: t("leads.columns.notes"),
+    sortable: false,
+    editable: false,
+    minWidth: 180,
+    render: (lead) => (
+      <MemoizedNotesCell
+        value={lead.notes}
+        onOpenEditor={() => onOpenNotes(lead)}
+        addTooltip={t("leads.notesDrawer.addNotes")}
+        editTooltip={t("leads.notesDrawer.editNotes")}
+      />
+    ),
   },
   {
     id: "actions",

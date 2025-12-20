@@ -2092,6 +2092,11 @@ export const englishTranslations: Translations = {
     actions: {
       viewActivity: "View Activity",
     },
+    notesDrawer: {
+      placeholder: "Add notes about this lead...",
+      addNotes: "Add Notes",
+      editNotes: "Edit Notes",
+    },
   },
   support: {
     title: "Contact Support",

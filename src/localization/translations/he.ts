@@ -2037,6 +2037,11 @@ export const hebrewTranslations: Translations = {
     actions: {
       viewActivity: "צפה בפעילות",
     },
+    notesDrawer: {
+      placeholder: "הוסף הערות על ליד זה...",
+      addNotes: "הוסף הערות",
+      editNotes: "ערוך הערות",
+    },
   },
   support: {
     title: "צור קשר עם התמיכה",
