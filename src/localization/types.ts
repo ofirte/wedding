@@ -1521,6 +1521,11 @@ export interface Translations {
     actions: {
       viewActivity: string;
     };
+    notesDrawer: {
+      placeholder: string;
+      addNotes: string;
+      editNotes: string;
+    };
   };
   support: {
     title: string;
