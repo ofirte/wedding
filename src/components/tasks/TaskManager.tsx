@@ -3,21 +3,28 @@ import {
   Box,
   Container,
   Paper,
-  Divider,
   CircularProgress,
+  ToggleButtonGroup,
+  ToggleButton,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { TableRows, List } from "@mui/icons-material";
 import TaskList from "./TaskList";
-import TaskForm from "./TaskForm";
 import TaskSummary from "./TaskSummary";
-import TaskFilterBar, { TaskFilters } from "./TaskFilterBar";
+import { TaskInlineTable, DisplayTask } from "./TaskInlineTable";
 import useTasks from "../../hooks/tasks/useTasks";
 import { useCreateTask } from "../../hooks/tasks/useCreateTask";
 import { useUpdateTask } from "../../hooks/tasks/useUpdateTask";
+import { useUpdateTaskOptimistic } from "../../hooks/tasks/useUpdateTaskOptimistic";
 import { useDeleteTask } from "../../hooks/tasks/useDeleteTask";
 import { useAssignTask } from "../../hooks/tasks/useAssignTask";
 import { useCompleteTask } from "../../hooks/tasks/useCompleteTask";
+import { useWeddingMembers } from "../../hooks/wedding";
 import { Task } from "@wedding-plan/types";
+import { useTranslation } from "../../localization/LocalizationContext";
+
+type ViewType = "table" | "list";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -29,15 +36,14 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const TaskManager: React.FC = () => {
-  const [filters, setFilters] = useState<TaskFilters>({
-    searchText: "",
-    status: "all",
-    priority: "",
-  });
+  const { t } = useTranslation();
+  const [viewType, setViewType] = useState<ViewType>("table");
 
   const { data: tasks, isLoading } = useTasks();
+  const { data: weddingMembers = [] } = useWeddingMembers();
   const { mutate: createTask, isPending: isPendingCreation } = useCreateTask();
   const { mutate: updateTask, isPending: isPendingUpdate } = useUpdateTask();
+  const { mutateAsync: updateTaskOptimistic } = useUpdateTaskOptimistic();
   const { mutate: deleteTask, isPending: isPendingDeletion } = useDeleteTask();
   const { mutate: assignTask, isPending: isPendingAssignment } =
     useAssignTask();
@@ -53,64 +59,84 @@ const TaskManager: React.FC = () => {
     isPendingCompletion;
 
   // Handle card clicks from TaskSummary
-  const handleFilterChange = (filterType: string) => {
-    if (filterType === "open") {
-      setFilters({ searchText: "", status: "open", priority: "" });
-    } else if (filterType === "completed") {
-      setFilters({ searchText: "", status: "completed", priority: "" });
-    } else if (filterType === "highPriority") {
-      setFilters({ searchText: "", status: "open", priority: "High" });
-    } else if (filterType === "pastDue") {
-      setFilters({ searchText: "", status: "pastDue", priority: "" });
+  const handleFilterChange = (_filterType: string) => {
+    // For now, clicking summary cards just switches to list view
+    // The inline table handles its own filtering
+    setViewType("list");
+  };
+
+  // Convert tasks to DisplayTask format
+  const displayTasks: DisplayTask[] = useMemo(() => {
+    return (tasks ?? []).map((task) => ({
+      ...task,
+      taskType: "wedding" as const,
+    }));
+  }, [tasks]);
+
+  // Handle view change
+  const handleViewChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    newView: ViewType | null
+  ) => {
+    if (newView !== null) {
+      setViewType(newView);
     }
   };
 
-  const handleAddTask = (task: Omit<Task, "id">, weddingId?: string) => {
-    createTask({ task , weddingId });
-  }
+  // Handlers for TaskInlineTable - uses optimistic update for instant feedback
+  const handleCellUpdate = async (
+    _rowId: string | number,
+    field: string,
+    value: any,
+    row: DisplayTask
+  ) => {
+    await updateTaskOptimistic({ id: row.id, data: { [field]: value } });
+  };
 
-  // Filter tasks based on current filters
-  const filteredTasks = useMemo(() => {
-    if (!tasks) return [];
-
-    return tasks.filter((task) => {
-      // Search filter
-      if (filters.searchText) {
-        const searchLower = filters.searchText.toLowerCase();
-        const matchesSearch =
-          task.title.toLowerCase().includes(searchLower) ||
-          task.description?.toLowerCase().includes(searchLower);
-        if (!matchesSearch) return false;
+  const handleAddRow = (
+    newRow: Omit<Task, "id">,
+    onSuccess?: (newRowId: string | number) => void
+  ) => {
+    createTask(
+      { task: newRow },
+      {
+        onSuccess: (docRef) => {
+          if (onSuccess && docRef?.id) {
+            onSuccess(docRef.id);
+          }
+        },
       }
+    );
+  };
 
-      // Status filter
-      if (filters.status !== "all") {
-        if (filters.status === "open") {
-          if (task.completed) return false;
-        } else if (filters.status === "unassigned") {
-          if (task.assignedTo || task.completed) return false;
-        } else if (filters.status === "inProgress") {
-          if (!task.assignedTo || task.completed) return false;
-        } else if (filters.status === "completed") {
-          if (!task.completed) return false;
-        } else if (filters.status === "pastDue") {
-          if (task.completed) return false;
-          if (!task.dueDate) return false;
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-          const dueDate = new Date(task.dueDate);
-          if (dueDate >= today) return false;
-        }
-      }
+  const handleDelete = (task: DisplayTask) => {
+    deleteTask({ id: task.id });
+  };
 
-      // Priority filter
-      if (filters.priority !== "") {
-        if (task.priority !== filters.priority) return false;
-      }
+  const handleComplete = (task: DisplayTask, completed: boolean) => {
+    completeTask(task.id, completed);
+  };
 
-      return true;
+  const handleBulkComplete = (tasksToComplete: DisplayTask[]) => {
+    tasksToComplete.forEach((task) => {
+      completeTask(task.id, true);
     });
-  }, [tasks, filters]);
+  };
+
+  const handleBulkDelete = (tasksToDelete: DisplayTask[]) => {
+    tasksToDelete.forEach((task) => {
+      deleteTask({ id: task.id });
+    });
+  };
+
+  // Legacy handlers for TaskList
+  const handleUpdate = (task: DisplayTask, data: Partial<Task>) => {
+    updateTask({ id: task.id, data });
+  };
+
+  const handleAssign = (task: DisplayTask, userId: string) => {
+    assignTask(task.id, userId);
+  };
 
   if (isLoading) {
     return (
@@ -128,28 +154,58 @@ const TaskManager: React.FC = () => {
         </Box>
 
         <StyledPaper>
-          <TaskFilterBar filters={filters} onFiltersChange={setFilters} />
-
-          <Divider sx={{ mb: 2 }} />
-          <Box sx={{ mb: 3 }}>
-            <TaskForm onAddTask={handleAddTask} isSubmitting={isUpdating} />
+          {/* Header with view switcher */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
+            <Typography variant="h6">{t("tasks.title")}</Typography>
+            <ToggleButtonGroup
+              value={viewType}
+              exclusive
+              onChange={handleViewChange}
+              size="small"
+            >
+              <ToggleButton value="table" aria-label="table view">
+                <TableRows fontSize="small" />
+              </ToggleButton>
+              <ToggleButton value="list" aria-label="list view">
+                <List fontSize="small" />
+              </ToggleButton>
+            </ToggleButtonGroup>
           </Box>
 
-          <Divider sx={{ mb: 3 }} />
-
+          {/* Content based on view type */}
           <Box>
-            {isUpdating && (
+            {isUpdating && viewType === "list" && (
               <Box display="flex" justifyContent="center" my={2}>
                 <CircularProgress size={24} />
               </Box>
             )}
-            <TaskList
-              tasks={filteredTasks}
-              onUpdate={(task, data) => updateTask({ id: task.id, data })}
-              onDelete={(task) => deleteTask({ id: task.id })}
-              onAssign={(task, userId) => assignTask(task.id, userId)}
-              onComplete={(task, completed) => completeTask(task.id, completed)}
-            />
+
+            {viewType === "table" ? (
+              <TaskInlineTable
+                tasks={displayTasks}
+                onCellUpdate={handleCellUpdate}
+                onAddRow={handleAddRow}
+                onDelete={handleDelete}
+                onBulkComplete={handleBulkComplete}
+                onBulkDelete={handleBulkDelete}
+                weddingMembers={weddingMembers}
+              />
+            ) : (
+              <TaskList
+                tasks={displayTasks}
+                onUpdate={handleUpdate}
+                onDelete={handleDelete}
+                onAssign={handleAssign}
+                onComplete={handleComplete}
+              />
+            )}
           </Box>
         </StyledPaper>
       </Box>

@@ -60,6 +60,7 @@ const AddRowFooter = memo(({ totalColumns, placeholder, onAddRow }: AddRowFooter
           }}
         >
           <Add
+            data-add-row-button="true"
             sx={{
               fontSize: "1.25rem",
               color: "primary.main",

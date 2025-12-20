@@ -139,8 +139,8 @@ export function previewAbsoluteDueDate(
  * @param task The task template item to clean
  * @returns Cleaned task object without undefined fields
  */
-export function cleanTaskTemplateItem(task: TaskTemplateItem): Partial<TaskTemplateItem> {
-  const cleanedTask: any = {
+export function cleanTaskTemplateItem(task: TaskTemplateItem): TaskTemplateItem {
+  const cleanedTask: TaskTemplateItem = {
     title: task.title.trim(),
     priority: task.priority,
   };

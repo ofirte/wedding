@@ -1,4 +1,4 @@
-export type ViewType = "calendar" | "list" | "stats";
+export type ViewType = "table" | "calendar" | "list" | "stats";
 
 export interface TaskFilter {
   wedding: string | null;

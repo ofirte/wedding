@@ -36,7 +36,7 @@ const TasksManagementContext = createContext<
 export const TasksManagementProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [viewType, setViewType] = useState<ViewType>("list");
+  const [viewType, setViewType] = useState<ViewType>("table");
   const [filters, setFilters] = useState<TaskFilter>(defaultFilters);
   const filterTasks = useMemo(
     () => (tasks: (Task & { weddingId?: string })[]) => {

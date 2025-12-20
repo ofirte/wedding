@@ -92,7 +92,7 @@ const DSInlineTable = <T extends { id: string | number }>({
     useTableSearch(filterOutputData, searchFields, columns, t);
 
   const { orderBy, order, sortedData, handleRequestSort } =
-    useTableSorting(filteredData, defaultSortField, "desc");
+    useTableSorting(filteredData, columns, defaultSortField, "desc");
 
   const { selectedIdSet, allSelected, someSelected, handleRowSelect, handleSelectAll } =
     useTableSelection(sortedData, selectedRows, onSelectionChange);
@@ -410,8 +410,11 @@ const DSInlineTable = <T extends { id: string | number }>({
                     align={column.align || "center"}
                     sx={{
                       py: 1,
+                      boxSizing: "border-box",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
                       ...(column.minWidth && { minWidth: column.minWidth }),
-                      ...(column.width && { width: column.width }),
+                      ...(column.width && { width: column.width, maxWidth: column.width }),
                       ...(column.editable && { cursor: "text" }),
                       ...(column.sticky && {
                         position: "sticky",
@@ -475,8 +478,11 @@ const DSInlineTable = <T extends { id: string | number }>({
                       sx={{
                         bgcolor: "#f5f5f5",
                         fontWeight: "bold",
+                        boxSizing: "border-box",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                         ...(column.minWidth && { minWidth: column.minWidth }),
-                        ...(column.width && { width: column.width }),
+                        ...(column.width && { width: column.width, maxWidth: column.width }),
                         ...(column.sticky && {
                           position: "sticky",
                           left: showSelectColumn

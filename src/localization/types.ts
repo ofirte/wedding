@@ -37,6 +37,7 @@ export interface Translations {
     weddingTask: string;
     producerTask: string;
     selectWedding: string;
+    selectTaskType: string;
     producerTaskDescription: string;
     filters: {
       wedding: string;
@@ -128,6 +129,7 @@ export interface Translations {
     before: string;
     after: string;
     wedding: string;
+    weddingDate: string;
     template: string;
     selectWedding: string;
     noWeddingsAvailable: string;
@@ -137,6 +139,8 @@ export interface Translations {
     appliedSuccessfully: string;
     savedSuccessfully: string;
     selectFromPreviousTemplates: string;
+    templateDetails: string;
+    descriptionPlaceholder: string;
     noTasksInLibrary: string;
     createNewTask: string;
   };
@@ -207,6 +211,7 @@ export interface Translations {
     groom: string;
     both: string;
     category: string;
+    wedding: string;
     title: string;
     none: string;
     noDescription: string;
@@ -654,6 +659,39 @@ export interface Translations {
     daysLeft: string;
     daysOverdue: string;
     dueToday: string;
+    // Inline table additions
+    addTaskPlaceholder: string;
+    exportFilename: string;
+    noTasks: string;
+    bulkComplete: string;
+    bulkDelete: string;
+    bulkAssign: string;
+    "bulkComplete.title": string;
+    "bulkComplete.message": string;
+    "bulkComplete.confirm": string;
+    "bulkDelete.title": string;
+    "bulkDelete.message": string;
+    "bulkDelete.confirm": string;
+    addDescription: string;
+    editDescription: string;
+    descriptionPlaceholder: string;
+    priority: {
+      high: string;
+      medium: string;
+      low: string;
+    };
+    status: {
+      notStarted: string;
+      inProgress: string;
+      completed: string;
+    };
+    views: {
+      label: string;
+      table: string;
+      grouped: string;
+      calendar: string;
+      stats: string;
+    };
   };
   wedding: {
     title: string;

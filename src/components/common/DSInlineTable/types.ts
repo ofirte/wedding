@@ -79,6 +79,7 @@ export interface InlineColumn<T extends { id: string | number }> {
   editColorMap?: Record<string, string>; // Color map for select options
   autocompleteOptions?: string[]; // For autocomplete type - existing values to suggest
   getValue?: (row: T) => any; // Get raw value for editing
+  getSortValue?: (row: T) => any; // Get value for sorting (e.g., numeric index for status)
   render?: (row: T) => React.ReactNode; // Custom render for non-editable or display
   width?: number;
   minWidth?: number;

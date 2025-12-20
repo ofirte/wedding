@@ -8,7 +8,7 @@ import {
   alpha,
 } from "@mui/material";
 import { ViewType } from "../types";
-import { CalendarMonth, List, Insights } from "@mui/icons-material";
+import { CalendarMonth, List, Insights, TableRows } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
 
@@ -137,11 +137,14 @@ const TasksHeader: React.FC<TasksHeaderProps> = ({
         onChange={handleViewChange}
         aria-label="view selector"
       >
-        <ToggleButton value="calendar" aria-label="calendar view">
-          <CalendarMonth />
+        <ToggleButton value="table" aria-label="table view">
+          <TableRows />
         </ToggleButton>
         <ToggleButton value="list" aria-label="list view">
           <List />
+        </ToggleButton>
+        <ToggleButton value="calendar" aria-label="calendar view">
+          <CalendarMonth />
         </ToggleButton>
         <ToggleButton value="stats" aria-label="stats view">
           <Insights />
