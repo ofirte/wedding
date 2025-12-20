@@ -125,6 +125,7 @@ const NotesEditorDrawer: React.FC<NotesEditorDrawerProps> = ({
             onChange={handleContentChange}
             placeholder={t("leads.notesDrawer.placeholder")}
             minHeight={300}
+            autoFocus
           />
         </Box>
 

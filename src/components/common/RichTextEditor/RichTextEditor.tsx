@@ -17,6 +17,7 @@ interface RichTextEditorProps {
   placeholder?: string;
   minHeight?: number;
   editable?: boolean;
+  autoFocus?: boolean;
 }
 
 interface ToolbarButtonProps {
@@ -55,6 +56,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   placeholder = "Start typing...",
   minHeight = 200,
   editable = true,
+  autoFocus = false,
 }) => {
   const editor = useEditor({
     extensions: [
@@ -72,6 +74,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     ],
     content,
     editable,
+    autofocus: autoFocus ? "end" : false,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
