@@ -369,6 +369,10 @@ export const hebrewTranslations: Translations = {
       description: "צרו את החתונה הראשונה שלכם, והתחילו לנהל אירועים בנוחות.",
       createButton: "צור חתונה",
     },
+    deleteWedding: "מחק חתונה",
+    deleteConfirmTitle: "מחיקת חתונה",
+    deleteConfirmMessage: "האם אתה בטוח שברצונך למחוק את \"{{weddingName}}\"? פעולה זו לא ניתנת לביטול וכל נתוני החתונה יימחקו לצמיתות.",
+    deleteSuccess: "החתונה נמחקה בהצלחה",
   },
   userManagement: {
     deleteUser: "מחק משתמש",

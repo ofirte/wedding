@@ -372,6 +372,10 @@ export const englishTranslations: Translations = {
       description: "Create your first wedding event and start managing it with ease.",
       createButton: "Create Wedding",
     },
+    deleteWedding: "Delete Wedding",
+    deleteConfirmTitle: "Delete Wedding",
+    deleteConfirmMessage: "Are you sure you want to delete \"{{weddingName}}\"? This action cannot be undone and all wedding data will be permanently removed.",
+    deleteSuccess: "Wedding deleted successfully",
   },
   userManagement: {
     deleteUser: "Delete User",
