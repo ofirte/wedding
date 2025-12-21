@@ -1,8 +1,8 @@
 import React from "react";
-import { Lead, LeadStatus, LeadPaymentStatus, LeadSource } from "@wedding-plan/types";
+import { Lead, LeadStatus, LeadSource } from "@wedding-plan/types";
 import { InlineColumn } from "../common/DSInlineTable";
 import { DSSelectOption } from "../common/cells/DSSelectCell";
-import { LeadStatusColors, LeadPaymentStatusColors, LeadSourceColors } from "./leadsUtils";
+import { LeadStatusColors, LeadSourceColors } from "./leadsUtils";
 import { IconButton, Tooltip, Box } from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -16,13 +16,6 @@ const ALL_STATUSES: LeadStatus[] = [
   "contract_signed",
   "done",
   "lost",
-];
-
-// Payment status options
-const ALL_PAYMENT_STATUSES: LeadPaymentStatus[] = [
-  "awaiting_payment",
-  "advance_paid",
-  "paid_in_full",
 ];
 
 // Source options
@@ -44,14 +37,6 @@ export const createStatusOptions = (
   ALL_STATUSES.map((status) => ({
     value: status,
     label: t(`leads.statuses.${status}`),
-  }));
-
-export const createPaymentStatusOptions = (
-  t: (key: string) => string
-): DSSelectOption<string>[] =>
-  ALL_PAYMENT_STATUSES.map((status) => ({
-    value: status,
-    label: t(`leads.paymentStatuses.${status}`),
   }));
 
 export const createSourceOptions = (
@@ -78,6 +63,7 @@ export const createLeadsInlineColumns = (
     editType: "text",
     minWidth: 200,
   },
+
   {
     id: "email",
     label: t("leads.columns.email"),
@@ -102,7 +88,7 @@ export const createLeadsInlineColumns = (
     editType: "date",
     minWidth: 150,
   },
-  {
+    {
     id: "status",
     label: t("leads.columns.status"),
     sortable: true,
@@ -116,44 +102,7 @@ export const createLeadsInlineColumns = (
       options: createStatusOptions(t),
     },
   },
-  {
-    id: "paymentStatus",
-    label: t("leads.columns.paymentStatus"),
-    sortable: true,
-    editable: true,
-    editType: "select",
-    editOptions: createPaymentStatusOptions(t),
-    editColorMap: LeadPaymentStatusColors,
-    getValue: (lead) => lead.paymentStatus || "awaiting_payment",
-    minWidth: 150,
-    filterConfig: {
-      type: "multiselect",
-      options: createPaymentStatusOptions(t),
-    },
-  },
-  {
-    id: "source",
-    label: t("leads.columns.source"),
-    sortable: true,
-    editable: true,
-    editType: "select",
-    editOptions: createSourceOptions(t),
-    editColorMap: LeadSourceColors,
-    getValue: (lead) => lead.source || "website",
-    minWidth: 150,
-    filterConfig: {
-      type: "multiselect",
-      options: createSourceOptions(t),
-    },
-  },
-  {
-    id: "budget",
-    label: t("leads.columns.budget"),
-    sortable: true,
-    editable: true,
-    editType: "number",
-    minWidth: 130,
-  },
+
   {
     id: "quotation",
     label: t("leads.columns.quotation"),
@@ -170,7 +119,7 @@ export const createLeadsInlineColumns = (
     editType: "number",
     minWidth: 130,
   },
-  {
+    {
     id: "service",
     label: t("leads.columns.service"),
     sortable: true,
@@ -198,6 +147,21 @@ export const createLeadsInlineColumns = (
     editable: true,
     editType: "date",
     minWidth: 150,
+  },
+  {
+    id: "source",
+    label: t("leads.columns.source"),
+    sortable: true,
+    editable: true,
+    editType: "select",
+    editOptions: createSourceOptions(t),
+    editColorMap: LeadSourceColors,
+    getValue: (lead) => lead.source || "website",
+    minWidth: 150,
+    filterConfig: {
+      type: "multiselect",
+      options: createSourceOptions(t),
+    },
   },
   {
     id: "notes",

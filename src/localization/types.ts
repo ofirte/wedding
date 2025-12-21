@@ -314,6 +314,7 @@ export interface Translations {
     all: string;
     filter: string;
     clearFilters: string;
+    records: string;
     min: string;
     max: string;
     from: string;
@@ -1520,8 +1521,10 @@ export interface Translations {
       newLeads: string;
       converted: string;
       conversionRate: string;
+      paymentsReceived: string;
       expectedIncome: string;
       expectedIncomeTooltip: string;
+      sourceDistribution: string;
     };
     activityPanel: {
       title: string;

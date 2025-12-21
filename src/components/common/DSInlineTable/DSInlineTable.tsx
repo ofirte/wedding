@@ -316,17 +316,19 @@ const DSInlineTable = <T extends { id: string | number }>({
               {t("common.clearFilters")}
             </Button>
           )}
-          {showExport && (
-            <Button
-              variant="outlined"
-              size="small"
-              startIcon={<Download />}
-              onClick={handleExport}
-              sx={{ flexShrink: 0, whiteSpace: "nowrap", ml: "auto" }}
-            >
-              {t("common.exportToExcel")}
-            </Button>
-          )}
+          <Box sx={{ ml: "auto", display: "flex", gap: 1, alignItems: "center" }}>
+            {showExport && (
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<Download />}
+                onClick={handleExport}
+                sx={{ flexShrink: 0, whiteSpace: "nowrap" }}
+              >
+                {t("common.exportToExcel")}
+              </Button>
+            )}
+          </Box>
         </Box>
       )}
 

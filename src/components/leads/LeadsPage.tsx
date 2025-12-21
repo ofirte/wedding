@@ -60,14 +60,11 @@ const LeadsPage: React.FC = () => {
 
   return (
     <Container maxWidth="xl">
-      <Box sx={{ py: 4 }}>
+      <Box >
         {/* Header */}
         <Box sx={{ mb: 3 }}>
           <Typography variant="h4" component="h1" gutterBottom>
             {t("leads.title")}
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            {t("leads.description")}
           </Typography>
         </Box>
 

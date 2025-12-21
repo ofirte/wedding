@@ -5,10 +5,10 @@ import { useTranslation } from "../../localization/LocalizationContext";
 import {
   People,
   ContactPhone,
-  CheckCircle,
   TrendingUp,
   AttachMoney,
 } from "@mui/icons-material";
+import { LeadSourceColors } from "./leadsUtils";
 
 interface LeadsStatsProps {
   leads: Lead[];
@@ -19,7 +19,6 @@ const LeadsStats: React.FC<LeadsStatsProps> = ({ leads }) => {
   const totalLeads = leads.length;
   const newLeads = leads.filter((l) => l.status === "new").length;
 
-  // Count all successfully converted leads (contract signed and beyond)
   const convertedLeads = leads.filter(
     (l) => l.status === "contract_signed" || l.status === "done"
   ).length;
@@ -27,10 +26,22 @@ const LeadsStats: React.FC<LeadsStatsProps> = ({ leads }) => {
   const conversionRate =
     totalLeads > 0 ? Math.round((convertedLeads / totalLeads) * 100) : 0;
 
-  // Expected income from signed contracts (remaining balance = quotation - advance paid)
+  // Payments received from signed/completed contracts
+  const paymentsReceived = leads
+    .filter((l) => l.status === "contract_signed" || l.status === "done")
+    .reduce((sum, l) => sum + (l.advanceAmount || 0), 0);
+
+  // Expected income from signed/completed contracts (remaining balance = quotation - paid so far)
   const expectedIncome = leads
-    .filter((l) => l.status === "contract_signed" && l.paymentStatus !== "paid_in_full")
+    .filter((l) => l.status === "contract_signed" || l.status === "done")
     .reduce((sum, l) => sum + ((l.quotation || 0) - (l.advanceAmount || 0)), 0);
+
+  // Count leads by source
+  const sourceDistribution = leads.reduce((acc, lead) => {
+    const source = lead.source || "other";
+    acc[source] = (acc[source] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
 
   const stats = [
     {
@@ -46,16 +57,16 @@ const LeadsStats: React.FC<LeadsStatsProps> = ({ leads }) => {
       color: "#9E9E9E",
     },
     {
-      title: t("leads.stats.converted"),
-      value: convertedLeads,
-      icon: <CheckCircle />,
-      color: "#4CAF50",
-    },
-    {
       title: t("leads.stats.conversionRate"),
       value: `${conversionRate}%`,
       icon: <TrendingUp />,
       color: "#FF9800",
+    },
+    {
+      title: t("leads.stats.paymentsReceived"),
+      value: `₪${paymentsReceived.toLocaleString()}`,
+      icon: <AttachMoney />,
+      color: "#4CAF50",
     },
     {
       title: t("leads.stats.expectedIncome"),
@@ -67,8 +78,8 @@ const LeadsStats: React.FC<LeadsStatsProps> = ({ leads }) => {
   ];
 
   const renderCard = (stat: typeof stats[0]) => (
-    <Card sx={stat.tooltip ? { cursor: "help" } : undefined}>
-      <CardContent>
+    <Card sx={{ height: "100%", ...(stat.tooltip ? { cursor: "help" } : {}) }}>
+      <CardContent sx={{ py: 2, "&:last-child": { pb: 2 } }}>
         <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
           <Box
             sx={{
@@ -79,16 +90,50 @@ const LeadsStats: React.FC<LeadsStatsProps> = ({ leads }) => {
           >
             {stat.icon}
           </Box>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="caption" color="text.secondary">
             {stat.title}
           </Typography>
         </Box>
-        <Typography variant="h4" component="div">
+        <Typography variant="h5" component="div">
           {stat.value}
         </Typography>
       </CardContent>
     </Card>
   );
+
+  const renderSourceDiagram = () => {
+    const sources = Object.entries(sourceDistribution).sort((a, b) => b[1] - a[1]);
+    const maxCount = Math.max(...sources.map(([, count]) => count), 1);
+    const maxHeight = 40;
+
+    return (
+      <Card sx={{ height: "100%" }}>
+        <CardContent sx={{ py: 2, "&:last-child": { pb: 2 } }}>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: "block" }}>
+            {t("leads.stats.sourceDistribution")}
+          </Typography>
+          <Box sx={{ display: "flex", alignItems: "flex-end", gap: 0.5, height: maxHeight }}>
+            {sources.map(([source, count]) => {
+              const barHeight = Math.round((count / maxCount) * maxHeight);
+              return (
+                <Tooltip key={source} title={`${t(`leads.sources.${source}`)}: ${count}`} arrow>
+                  <Box
+                    sx={{
+                      width: 12,
+                      height: barHeight,
+                      minHeight: 4,
+                      backgroundColor: LeadSourceColors[source as keyof typeof LeadSourceColors] || "#9E9E9E",
+                      borderRadius: "2px 2px 0 0",
+                    }}
+                  />
+                </Tooltip>
+              );
+            })}
+          </Box>
+        </CardContent>
+      </Card>
+    );
+  };
 
   return (
     <Grid container spacing={2}>
@@ -96,7 +141,7 @@ const LeadsStats: React.FC<LeadsStatsProps> = ({ leads }) => {
         <Grid size={{
           xs: 12,
           sm: 6,
-          md: 2.4,
+          md: 2,
         }} key={index}>
           {stat.tooltip ? (
             <Tooltip title={stat.tooltip} arrow>
@@ -107,6 +152,13 @@ const LeadsStats: React.FC<LeadsStatsProps> = ({ leads }) => {
           )}
         </Grid>
       ))}
+      <Grid size={{
+        xs: 12,
+        sm: 6,
+        md: 2,
+      }}>
+        {renderSourceDiagram()}
+      </Grid>
     </Grid>
   );
 };
