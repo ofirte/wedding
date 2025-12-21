@@ -29,6 +29,13 @@ export const PRIORITY_COLORS: Record<string, string> = {
   Low: "#4caf50",
 };
 
+// Priority sort order: High → Medium → Low (0 = highest priority)
+const PRIORITY_SORT_ORDER: Record<string, number> = {
+  High: 0,
+  Medium: 1,
+  Low: 2,
+};
+
 // Format relative due date for display
 export const formatRelativeDueDate = (
   task: DisplayTemplateTask,
@@ -124,6 +131,7 @@ export const createTemplateTaskColumns = (
       id: "priority",
       label: t("common.priority"),
       sortable: true,
+      getSortValue: (row: DisplayTemplateTask) => PRIORITY_SORT_ORDER[row.priority] ?? 999,
       editable: true,
       editType: "select",
       editOptions: PRIORITY_OPTIONS.map((opt) => ({

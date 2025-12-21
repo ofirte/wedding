@@ -12,6 +12,7 @@ interface UpdateTaskOptimisticVariables {
 
 interface UpdateTaskContext {
   previousTasks: Task[] | undefined;
+  previousAllWeddingsTasks: Task[] | undefined;
   weddingId: string | undefined;
 }
 
@@ -41,31 +42,50 @@ export const useUpdateTaskOptimistic = () => {
         // Use explicit weddingId if provided, otherwise fall back to URL param
         const effectiveWeddingId = explicitWeddingId || urlWeddingId;
 
-        // Cancel outgoing refetches
-        await queryClient.cancelQueries({ queryKey: ["tasks", effectiveWeddingId] });
+        // Cancel outgoing refetches for both query key prefixes
+        await queryClient.cancelQueries({ queryKey: ["tasks"] });
+        await queryClient.cancelQueries({ queryKey: ["all-weddings-tasks"] });
 
-        // Snapshot current value for rollback
-        const previousTasks = queryClient.getQueryData<Task[]>([
-          "tasks",
-          effectiveWeddingId,
-        ]);
+        // Snapshot current values for rollback using prefix matching
+        const previousTasksEntries = queryClient.getQueriesData<Task[]>({
+          queryKey: ["tasks"],
+        });
+        const previousAllWeddingsTasksEntries = queryClient.getQueriesData<Task[]>({
+          queryKey: ["all-weddings-tasks"],
+        });
 
-        // Optimistically update the cache
-        queryClient.setQueryData<Task[]>(["tasks", effectiveWeddingId], (old) =>
+        // Optimistically update all matching caches using prefix matching
+        queryClient.setQueriesData<Task[]>({ queryKey: ["tasks"] }, (old) =>
+          old?.map((task) =>
+            task.id === id ? { ...task, ...data } : task
+          )
+        );
+        queryClient.setQueriesData<Task[]>({ queryKey: ["all-weddings-tasks"] }, (old) =>
           old?.map((task) =>
             task.id === id ? { ...task, ...data } : task
           )
         );
 
-        return { previousTasks, weddingId: effectiveWeddingId };
+        return {
+          previousTasks: previousTasksEntries[0]?.[1],
+          previousAllWeddingsTasks: previousAllWeddingsTasksEntries[0]?.[1],
+          weddingId: effectiveWeddingId,
+        };
       },
       // Note: No invalidateQueries here - optimistic update keeps UI in sync
       // and invalidation would interfere with Tab navigation between cells
       onError: (_err, _variables, context) => {
-        if (context?.previousTasks && context?.weddingId) {
-          queryClient.setQueryData(
-            ["tasks", context.weddingId],
+        // Rollback both caches on error using prefix matching
+        if (context?.previousTasks) {
+          queryClient.setQueriesData<Task[]>(
+            { queryKey: ["tasks"] },
             context.previousTasks
+          );
+        }
+        if (context?.previousAllWeddingsTasks) {
+          queryClient.setQueriesData<Task[]>(
+            { queryKey: ["all-weddings-tasks"] },
+            context.previousAllWeddingsTasks
           );
         }
       },

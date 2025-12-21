@@ -1,6 +1,7 @@
 import React, { memo, useState, useCallback, useRef, useEffect } from "react";
 import { Box, TextField, Typography } from "@mui/material";
 import { useTabNavigationOptional } from "../TabNavigationContext";
+import { useTranslation } from "../../../../localization/LocalizationContext";
 
 interface MemoizedEditableCellProps {
   rowId: string | number;
@@ -21,6 +22,10 @@ export const MemoizedEditableCell = memo(({
   const [editValue, setEditValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const tabNav = useTabNavigationOptional();
+  const { language } = useTranslation();
+
+  // Map language to locale for date formatting
+  const dateLocale = language === "he" ? "he-IL" : "en-US";
 
   // Ref to access latest value without causing re-registration
   const valueRef = useRef(value);
@@ -118,7 +123,7 @@ export const MemoizedEditableCell = memo(({
   const displayValue = value ?? (type === "number" ? 0 : "");
 
   const formattedDisplay = type === "date" && displayValue
-    ? new Date(displayValue as string).toLocaleDateString()
+    ? new Date(displayValue as string).toLocaleDateString(dateLocale)
     : String(displayValue);
 
   // Container with consistent sizing - TextField is absolutely positioned to prevent width jumping

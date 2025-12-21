@@ -39,6 +39,13 @@ const STATUS_SORT_ORDER: Record<TaskStatus, number> = {
   completed: 2,
 };
 
+// Priority sort order: High → Medium → Low (0 = highest priority)
+const PRIORITY_SORT_ORDER: Record<string, number> = {
+  High: 0,
+  Medium: 1,
+  Low: 2,
+};
+
 // Get status from task (with backward compatibility)
 export const getTaskStatus = (task: DisplayTask): TaskStatus => {
   if (task.status) return task.status;
@@ -107,7 +114,7 @@ export const createTaskInlineColumns = (
   } = options;
 
   const columns: InlineColumn<DisplayTask>[] = [
-    // Title (main field for inline add)
+    // Title (main field for inline add) - no filter, search bar handles it
     {
       id: "title",
       label: t("tasks.title"),
@@ -117,7 +124,6 @@ export const createTaskInlineColumns = (
       editType: "text",
       width: 220,
       minWidth: 220,
-      filterConfig: { type: "text" },
       render: (row: DisplayTask) => (
         <Tooltip title={row.title && row.title.length > 25 ? row.title : ""}>
           <Box
@@ -237,7 +243,7 @@ export const createTaskInlineColumns = (
       );
     },
     filterConfig: {
-      type: "select",
+      type: "multiselect",
       options: [
         { value: "not_started", label: t("tasks.status.notStarted") },
         { value: "in_progress", label: t("tasks.status.inProgress") },
@@ -251,6 +257,7 @@ export const createTaskInlineColumns = (
     id: "priority",
     label: t("common.priority"),
     sortable: true,
+    getSortValue: (row: DisplayTask) => PRIORITY_SORT_ORDER[row.priority] ?? 999,
     editable: true,
     editType: "select",
     editOptions: PRIORITY_OPTIONS.map((opt) => ({
@@ -261,7 +268,7 @@ export const createTaskInlineColumns = (
     width: 140,
     minWidth: 140,
     filterConfig: {
-      type: "select",
+      type: "multiselect",
       options: PRIORITY_OPTIONS.map((opt) => ({
         ...opt,
         label: t(`tasks.priority.${opt.value.toLowerCase()}`),
