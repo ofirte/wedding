@@ -10,23 +10,31 @@ export const renderCellContent = <T extends { id: string | number }>(
 ) => {
   const rawValue = column.getValue ? column.getValue(row) : (row as any)[column.id];
 
+  // Check conditional editability per row (if defined), otherwise fall back to column.editable
+  const isEditable = column.isEditable ? column.isEditable(row) : column.editable;
+
   // Non-editable column with custom render
-  if (!column.editable) {
+  if (!isEditable) {
     return column.render ? column.render(row) : String(rawValue ?? "");
   }
 
-  // Select type
-  if (column.editType === "select" && column.editOptions) {
-    return (
-      <MemoizedSelectCell
-        rowId={row.id}
-        columnId={column.id}
-        value={rawValue || ""}
-        options={column.editOptions}
-        colorMap={column.editColorMap}
-        onCellUpdate={onCellUpdate}
-      />
-    );
+  // Select type - support dynamic options per row
+  if (column.editType === "select") {
+    const options = column.getEditOptions ? column.getEditOptions(row) : column.editOptions;
+    if (options && options.length > 0) {
+      return (
+        <MemoizedSelectCell
+          rowId={row.id}
+          columnId={column.id}
+          value={rawValue || ""}
+          options={options}
+          colorMap={column.editColorMap}
+          onCellUpdate={onCellUpdate}
+        />
+      );
+    }
+    // No options available, render as non-editable
+    return column.render ? column.render(row) : String(rawValue ?? "");
   }
 
   // Autocomplete type - dropdown with existing values + free text

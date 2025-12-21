@@ -101,6 +101,8 @@ export const createTaskInlineColumns = (
   t: (key: string) => string,
   options: {
     weddingMembers?: WeddingMember[];
+    weddingMembersMap?: Record<string, WeddingMember[]>;
+    currentUserName?: string;
     categoryOptions?: string[];
     showWeddingColumn?: boolean;
     weddings?: Wedding[];
@@ -108,6 +110,8 @@ export const createTaskInlineColumns = (
 ): InlineColumn<DisplayTask>[] => {
   const {
     weddingMembers = [],
+    weddingMembersMap = {},
+    currentUserName,
     categoryOptions = [],
     showWeddingColumn = false,
     weddings = [],
@@ -326,25 +330,62 @@ export const createTaskInlineColumns = (
         : undefined,
   });
 
-  // Assigned To column (only if wedding members available)
-  if (weddingMembers.length > 0) {
+  // Assigned To column
+  // For producer page (showWeddingColumn): show with dynamic options per wedding
+  // For single wedding context: show with static weddingMembers
+  const hasWeddingMembersMap = Object.keys(weddingMembersMap).length > 0;
+  if (weddingMembers.length > 0 || (showWeddingColumn && hasWeddingMembersMap)) {
     columns.push({
       id: "assignedTo",
       label: t("common.assignTo"),
       sortable: true,
       editable: true,
       editType: "select",
-      editOptions: [
+      // Static options for single wedding context (backward compatibility)
+      editOptions: weddingMembers.length > 0 ? [
         { value: "", label: t("common.unassigned") },
         ...weddingMembers.map((m) => ({
           value: m.userId,
           label: m.displayName || m.email || m.userId,
         })),
-      ],
-      width: 140,
-      minWidth: 140,
+      ] : undefined,
+      // Dynamic options for producer page - per wedding
+      getEditOptions: hasWeddingMembersMap ? (row: DisplayTask) => {
+        if (row.taskType === "producer") {
+          return []; // Producer tasks are not editable
+        }
+        const members = weddingMembersMap[row.weddingId || ""] || [];
+        return [
+          { value: "", label: t("common.unassigned") },
+          ...members.map((m) => ({
+            value: m.userId,
+            label: m.displayName || m.email || m.userId,
+          })),
+        ];
+      } : undefined,
+      // Conditional editability: producer tasks are not editable
+      isEditable: hasWeddingMembersMap ? (row: DisplayTask) => row.taskType === "wedding" : undefined,
+      width: 180,
+      minWidth: 180,
       render: (row: DisplayTask) => {
-        const member = weddingMembers.find((m) => m.userId === row.assignedTo);
+        // Producer tasks: show producer name (non-editable)
+        if (row.taskType === "producer") {
+          return (
+            <Chip
+              label={currentUserName || t("common.producer")}
+              size="small"
+              color="secondary"
+              variant="outlined"
+              sx={{ maxWidth: 120, "& .MuiChip-label": { overflow: "hidden", textOverflow: "ellipsis" } }}
+            />
+          );
+        }
+        // Wedding tasks: find member from the appropriate source
+        const members = hasWeddingMembersMap
+          ? (weddingMembersMap[row.weddingId || ""] || [])
+          : weddingMembers;
+        // Only look for member if assignedTo has a value
+        const member = row.assignedTo ? members.find((m) => m.userId === row.assignedTo) : null;
         return member ? (
           <Chip
             label={member.displayName || member.email || member.userId}
@@ -353,20 +394,23 @@ export const createTaskInlineColumns = (
             sx={{ maxWidth: 120, "& .MuiChip-label": { overflow: "hidden", textOverflow: "ellipsis" } }}
           />
         ) : (
-          <Box component="span" sx={{ color: "text.secondary" }}>
-            {t("common.unassigned")}
-          </Box>
+          <Chip
+            label={t("common.unassigned")}
+            size="small"
+            variant="outlined"
+            sx={{ maxWidth: 120, "& .MuiChip-label": { overflow: "hidden", textOverflow: "ellipsis" } }}
+          />
         );
       },
       filterConfig: {
         type: "select",
-        options: [
+        options: weddingMembers.length > 0 ? [
           { value: "", label: t("common.unassigned") },
           ...weddingMembers.map((m) => ({
             value: m.userId,
             label: m.displayName || m.email || m.userId,
           })),
-        ],
+        ] : [{ value: "", label: t("common.unassigned") }],
       },
     });
   }

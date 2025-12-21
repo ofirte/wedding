@@ -29,7 +29,7 @@ import TaskForm from "../tasks/TaskForm";
 import { TaskInlineTable, DisplayTask, ColumnFilterState } from "../tasks/TaskInlineTable";
 import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { useWeddingsDetails } from "../../hooks/wedding/useWeddingsDetails";
+import { useWeddingsDetails, useAllWeddingsMembers } from "../../hooks/wedding";
 import {
   useProducerTasks,
   useCreateProducerTask,
@@ -39,6 +39,7 @@ import {
   useCompleteProducerTask,
 } from "../../hooks/producerTasks";
 import { useUpdateTaskOptimistic } from "../../hooks/tasks/useUpdateTaskOptimistic";
+import { useCurrentUser } from "../../hooks/auth/useCurrentUser";
 
 // Default filters for inline table: exclude completed tasks
 const DEFAULT_TABLE_FILTERS: ColumnFilterState[] = [
@@ -81,6 +82,13 @@ const TasksManagementContent: React.FC = () => {
 
   // Fetch weddings for the form dropdown
   const { data: weddings = [] } = useWeddingsDetails();
+
+  // Fetch wedding members for all weddings (for assignedTo column)
+  const { data: weddingMembersMap = {} } = useAllWeddingsMembers();
+
+  // Get current user for producer task display
+  const { data: currentUser } = useCurrentUser();
+  const currentUserName = currentUser?.displayName || currentUser?.email;
 
   // Combine wedding tasks and producer tasks for unified display
   const allTasks: DisplayTask[] = useMemo(() => {
@@ -258,6 +266,8 @@ const TasksManagementContent: React.FC = () => {
               onBulkDelete={handleBulkDelete}
               showWeddingColumn
               weddings={weddings}
+              weddingMembersMap={weddingMembersMap}
+              currentUserName={currentUserName}
               defaultFilters={DEFAULT_TABLE_FILTERS}
             />
           ) : viewType === "calendar" ? (

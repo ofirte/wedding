@@ -86,6 +86,12 @@ const DSSelectCellInner = <T extends string>(
     return option?.color ?? "#9E9E9E";
   };
 
+  const getLabel = (val: T): string => {
+    // Find matching option and return its label
+    const option = options.find((o) => o.value === val);
+    return option?.label ?? String(val);
+  };
+
   return (
     <Box
       onKeyDownCapture={handleKeyNavigation}
@@ -104,6 +110,8 @@ const DSSelectCellInner = <T extends string>(
         variant="standard"
         disableUnderline
         fullWidth
+        displayEmpty
+        renderValue={(val) => getLabel(val)}
         MenuProps={{
           // Prevent MUI from stealing focus back after dropdown closes
           disableRestoreFocus: true,
