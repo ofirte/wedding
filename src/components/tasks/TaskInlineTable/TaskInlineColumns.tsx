@@ -3,6 +3,7 @@ import { Task, TaskStatus } from "@wedding-plan/types";
 import { InlineColumn } from "../../common/DSInlineTable";
 import { IconButton, Chip, Box, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { DSSelectOption } from "../../common/cells/DSSelectCell";
 
 // Extended task type that includes producer tasks for unified display
@@ -98,6 +99,7 @@ const getStatusChipColor = (status: TaskStatus): "default" | "primary" | "succes
 
 export const createTaskInlineColumns = (
   onDelete: (task: DisplayTask) => void,
+  onDuplicate: (task: DisplayTask) => void,
   t: (key: string) => string,
   options: {
     weddingMembers?: WeddingMember[];
@@ -422,18 +424,29 @@ export const createTaskInlineColumns = (
     sortable: false,
     editable: false,
     render: (row: DisplayTask) => (
-      <IconButton
-        size="small"
-        color="error"
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete(row);
-        }}
-      >
-        <DeleteIcon fontSize="small" />
-      </IconButton>
+      <Box sx={{ display: "flex", gap: 0.5 }}>
+        <IconButton
+          size="small"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDuplicate(row);
+          }}
+        >
+          <ContentCopyIcon fontSize="small" />
+        </IconButton>
+        <IconButton
+          size="small"
+          color="error"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(row);
+          }}
+        >
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      </Box>
     ),
-    width: 50,
+    width: 90,
   });
 
   return columns;

@@ -597,7 +597,7 @@ export const hebrewTranslations: Translations = {
     inviteesExportFilename: "רשימת מוזמנים",
   },
   tasks: {
-    title: "משימות חתונה",
+    title: "שם המשימה",
     completed: "הושלמו",
     pending: "בהמתנה",
     overdue: "באיחור",

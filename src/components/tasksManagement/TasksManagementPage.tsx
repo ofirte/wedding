@@ -154,6 +154,17 @@ const TasksManagementContent: React.FC = () => {
     }
   };
 
+  const handleDuplicate = (task: DisplayTask) => {
+    const { id, taskType, weddingId, ...taskData } = task;
+    const newTitle = `${task.title} (copy)`;
+
+    if (task.taskType === "producer") {
+      createProducerTask({ ...taskData, title: newTitle });
+    } else {
+      createTask({ task: { ...taskData, title: newTitle }, weddingId: task.weddingId || "" });
+    }
+  };
+
   // Handle inline cell update for table view - uses optimistic updates
   const handleCellUpdate = async (
     _rowId: string | number,
@@ -262,6 +273,7 @@ const TasksManagementContent: React.FC = () => {
               onCellUpdate={handleCellUpdate}
               onAddRowWithType={handleAddRowWithType}
               onDelete={handleDelete}
+              onDuplicate={handleDuplicate}
               onBulkComplete={handleBulkComplete}
               onBulkDelete={handleBulkDelete}
               showWeddingColumn
