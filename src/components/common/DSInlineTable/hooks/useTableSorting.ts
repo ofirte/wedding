@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
-import { Order } from "../types";
+import { Order, InlineColumn } from "../types";
 
 export const useTableSorting = <T extends { id: string | number }>(
   data: T[],
+  columns: InlineColumn<T>[],
   defaultSortField?: string,
   defaultSortOrder: Order = "asc"
 ) => {
@@ -16,9 +17,13 @@ export const useTableSorting = <T extends { id: string | number }>(
 
     const isDefaultSort = !orderBy && defaultSortField;
 
+    // Find the column to check for custom getSortValue
+    const column = columns.find((c) => c.id === sortField);
+
     return [...data].sort((a, b) => {
-      const aValue = (a as any)[sortField];
-      const bValue = (b as any)[sortField];
+      // Use getSortValue if available, otherwise fall back to direct field access
+      const aValue = column?.getSortValue ? column.getSortValue(a) : (a as any)[sortField];
+      const bValue = column?.getSortValue ? column.getSortValue(b) : (b as any)[sortField];
 
       if (aValue === bValue) return 0;
 
@@ -42,7 +47,7 @@ export const useTableSorting = <T extends { id: string | number }>(
       const comparison = aValue < bValue ? -1 : 1;
       return effectiveSortOrder === "asc" ? comparison : -comparison;
     });
-  }, [data, orderBy, order, defaultSortField, defaultSortOrder]);
+  }, [data, columns, orderBy, order, defaultSortField, defaultSortOrder]);
 
   const handleRequestSort = (columnId: string) => {
     const isAsc = orderBy === columnId && order === "asc";

@@ -37,6 +37,7 @@ export interface Translations {
     weddingTask: string;
     producerTask: string;
     selectWedding: string;
+    selectTaskType: string;
     producerTaskDescription: string;
     filters: {
       wedding: string;
@@ -79,6 +80,10 @@ export interface Translations {
     };
     calendar: {
       implementation: string;
+      today: string;
+      back: string;
+      next: string;
+      month: string;
     };
     stats: {
       total: string;
@@ -128,6 +133,7 @@ export interface Translations {
     before: string;
     after: string;
     wedding: string;
+    weddingDate: string;
     template: string;
     selectWedding: string;
     noWeddingsAvailable: string;
@@ -137,6 +143,8 @@ export interface Translations {
     appliedSuccessfully: string;
     savedSuccessfully: string;
     selectFromPreviousTemplates: string;
+    templateDetails: string;
+    descriptionPlaceholder: string;
     noTasksInLibrary: string;
     createNewTask: string;
   };
@@ -207,6 +215,7 @@ export interface Translations {
     groom: string;
     both: string;
     category: string;
+    wedding: string;
     title: string;
     none: string;
     noDescription: string;
@@ -305,6 +314,7 @@ export interface Translations {
     all: string;
     filter: string;
     clearFilters: string;
+    records: string;
     min: string;
     max: string;
     from: string;
@@ -654,6 +664,43 @@ export interface Translations {
     daysLeft: string;
     daysOverdue: string;
     dueToday: string;
+    // Inline table additions
+    addTaskPlaceholder: string;
+    exportFilename: string;
+    noTasks: string;
+    bulkComplete: {
+      button: string;
+      title: string;
+      message: string;
+      confirm: string;
+    };
+    bulkDelete: {
+      button: string;
+      title: string;
+      message: string;
+      confirm: string;
+    };
+    bulkAssign: string;
+    addDescription: string;
+    editDescription: string;
+    descriptionPlaceholder: string;
+    priority: {
+      high: string;
+      medium: string;
+      low: string;
+    };
+    status: {
+      notStarted: string;
+      inProgress: string;
+      completed: string;
+    };
+    views: {
+      label: string;
+      table: string;
+      grouped: string;
+      calendar: string;
+      stats: string;
+    };
   };
   wedding: {
     title: string;
@@ -1474,8 +1521,10 @@ export interface Translations {
       newLeads: string;
       converted: string;
       conversionRate: string;
+      paymentsReceived: string;
       expectedIncome: string;
       expectedIncomeTooltip: string;
+      sourceDistribution: string;
     };
     activityPanel: {
       title: string;

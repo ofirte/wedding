@@ -107,6 +107,7 @@ const LeadsTable: React.FC<LeadsTableProps> = ({ leads, onOpenActivity }) => {
         onAddRow={handleAddRow}
         emptyMessage={t("leads.messages.noLeads")}
         mobileCardTitle={(lead) => lead.name}
+        showExport={true}
       />
       <NotesEditorDrawer
         lead={notesLead}

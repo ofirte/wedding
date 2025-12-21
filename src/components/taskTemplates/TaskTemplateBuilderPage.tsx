@@ -1,11 +1,29 @@
 /**
  * TaskTemplateBuilderPage Component
- * Full-page template builder with task library
- * Replaces the dialog-based approach with a two-panel layout
+ * Refactored template builder with inline table for tasks
+ * Single-panel layout with task library modal
  */
 
-import React, { useState, useMemo, useRef, useEffect } from "react";
-import { Box, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Snackbar, Alert } from "@mui/material";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
+import {
+  Box,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+  Snackbar,
+  Alert,
+  TextField,
+  Paper,
+  IconButton,
+  Breadcrumbs,
+  Link,
+  Container,
+} from "@mui/material";
+import { LibraryBooks as LibraryBooksIcon } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router";
 import { useTranslation } from "../../localization/LocalizationContext";
 import {
@@ -19,10 +37,20 @@ import {
   buildTaskLibraryFromTemplates,
   TaskLibraryItem,
 } from "../../utils/taskTemplateUtils";
-import TaskLibraryPanel from "./TaskLibraryPanel";
-import TemplateBuilderPanel from "./TemplateBuilderPanel";
-import { TaskTemplateFormData, TaskTemplateFormHandle } from "./TaskTemplateForm";
+import DSInlineTable from "../common/DSInlineTable";
+import {
+  createTemplateTaskColumns,
+  DisplayTemplateTask,
+} from "./TemplateTaskColumns";
+import TaskLibraryModal from "./TaskLibraryModal";
+import RelativeDatePopover, { RelativeDateValue } from "./RelativeDatePopover";
 import ApplyTaskTemplateDialog from "./ApplyTaskTemplateDialog";
+import LocalizedNavigationButtons from "../common/LocalizedNavigationButtons";
+import { LocalizedArrowIcon, LocalizedNavigateIcon } from "../common";
+
+// Generate unique local ID for tasks
+let taskIdCounter = 0;
+const generateLocalId = () => `task-${Date.now()}-${++taskIdCounter}`;
 
 const TaskTemplateBuilderPage: React.FC = () => {
   const { t } = useTranslation();
@@ -30,8 +58,25 @@ const TaskTemplateBuilderPage: React.FC = () => {
   const { templateId } = useParams<{ templateId?: string }>();
   const isEditMode = !!templateId;
 
-  // Ref to access form data
-  const formRef = useRef<TaskTemplateFormHandle>(null);
+  // Form state
+  const [templateName, setTemplateName] = useState("");
+  const [templateDescription, setTemplateDescription] = useState("");
+  const [tasks, setTasks] = useState<DisplayTemplateTask[]>([]);
+  const [initialSnapshot, setInitialSnapshot] = useState<string>("");
+
+  // UI state
+  const [libraryModalOpen, setLibraryModalOpen] = useState(false);
+  const [applyDialogOpen, setApplyDialogOpen] = useState(false);
+  const [savedTemplate, setSavedTemplate] = useState<TaskTemplate | null>(null);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const [showApplySuccessSnackbar, setShowApplySuccessSnackbar] = useState(false);
+  const [applySuccessMessage, setApplySuccessMessage] = useState("");
+  const [nameError, setNameError] = useState<string | null>(null);
+
+  // Relative date popover state
+  const [relativeDatePopoverOpen, setRelativeDatePopoverOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<DisplayTemplateTask | null>(null);
 
   // Fetch all templates (for library and for editing)
   const { data: allTemplates = [], isLoading } = useTaskTemplates();
@@ -48,54 +93,55 @@ const TaskTemplateBuilderPage: React.FC = () => {
     return buildTaskLibraryFromTemplates(allTemplates);
   }, [allTemplates]);
 
-  // Prepare initial data for form
-  const initialData = useMemo<Partial<TaskTemplateFormData>>(() => {
+  // Extract category options from tasks
+  const categoryOptions = useMemo(() => {
+    const categories = new Set<string>();
+    tasks.forEach((task) => {
+      if (task.category) categories.add(task.category);
+    });
+    taskLibrary.forEach((task) => {
+      if (task.category) categories.add(task.category);
+    });
+    return Array.from(categories);
+  }, [tasks, taskLibrary]);
+
+  // Initialize form from template
+  useEffect(() => {
     if (isEditMode && templateToEdit) {
-      return {
-        name: templateToEdit.name,
-        description: templateToEdit.description || "",
-        tasks: [...templateToEdit.tasks],
-      };
+      setTemplateName(templateToEdit.name);
+      setTemplateDescription(templateToEdit.description || "");
+      const tasksWithIds = templateToEdit.tasks.map((task) => ({
+        ...task,
+        id: generateLocalId(),
+      }));
+      setTasks(tasksWithIds);
+      // Store initial snapshot for dirty checking
+      setInitialSnapshot(
+        JSON.stringify({
+          name: templateToEdit.name,
+          description: templateToEdit.description || "",
+          tasks: templateToEdit.tasks,
+        })
+      );
+    } else {
+      setInitialSnapshot(JSON.stringify({ name: "", description: "", tasks: [] }));
     }
-    return {
-      name: "",
-      description: "",
-      tasks: [],
-    };
   }, [isEditMode, templateToEdit]);
 
-  // State for apply dialog
-  const [applyDialogOpen, setApplyDialogOpen] = useState(false);
-  const [savedTemplate, setSavedTemplate] = useState<TaskTemplate | null>(null);
-
-  // State for unsaved changes tracking
-  const [isDirty, setIsDirty] = useState(false);
-  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-
-  // State for success feedback
-  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
-  const [showApplySuccessSnackbar, setShowApplySuccessSnackbar] = useState(false);
-  const [applySuccessMessage, setApplySuccessMessage] = useState("");
+  // Check if form is dirty
+  const isDirty = useMemo(() => {
+    const current = JSON.stringify({
+      name: templateName,
+      description: templateDescription,
+      tasks: tasks.map(({ id, ...rest }) => rest),
+    });
+    return current !== initialSnapshot;
+  }, [templateName, templateDescription, tasks, initialSnapshot]);
 
   // Mutations
-  const { mutate: createTemplate, isPending: isCreating } =
-    useCreateTaskTemplate();
-  const { mutate: updateTemplate, isPending: isUpdating } =
-    useUpdateTaskTemplate();
-
+  const { mutate: createTemplate, isPending: isCreating } = useCreateTaskTemplate();
+  const { mutate: updateTemplate, isPending: isUpdating } = useUpdateTaskTemplate();
   const isSubmitting = isCreating || isUpdating;
-
-  // Track isDirty state from form
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (formRef.current) {
-        const currentIsDirty = formRef.current.isDirty();
-        setIsDirty(currentIsDirty);
-      }
-    }, 100); // Check every 100ms
-
-    return () => clearInterval(interval);
-  }, []);
 
   // Warn user before leaving page with unsaved changes
   useEffect(() => {
@@ -105,192 +151,369 @@ const TaskTemplateBuilderPage: React.FC = () => {
         e.returnValue = "";
       }
     };
-
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [isDirty]);
 
-  // Handle adding task from library
-  const handleAddFromLibrary = (task: TaskLibraryItem) => {
-    if (!formRef.current) return;
-
-    // Add task to form via imperative handle
-    const newTask: TaskTemplateItem = {
-      title: task.title,
-      description: task.description,
-      priority: task.priority,
-      category: task.category,
-      relativeDueDate: task.relativeDueDate,
-      relativeDueDateUnit: task.relativeDueDateUnit,
-      relativeDueDateDirection: task.relativeDueDateDirection,
-    };
-
-    formRef.current.addTask(newTask);
-  };
-
-  // Handle save (called from save button)
-  const handleSave = async (andApply = false) => {
-    if (!formRef.current) return;
-
-    // Validate form first
-    const isValid = await formRef.current.validateForm();
-    if (!isValid) return;
-
-    // Get form data
-    const formData = formRef.current.getFormData();
-
-    // Clean tasks - remove undefined fields
-    const cleanedTasks = formData.tasks.map(cleanTaskTemplateItem);
-
-    // Build template data without undefined fields
-    const templatePayload: any = {
-      name: formData.name.trim(),
-      tasks: cleanedTasks,
-    };
-
-    // Only add description if it has a value
-    if (formData.description.trim()) {
-      templatePayload.description = formData.description.trim();
-    }
-
-    if (isEditMode && templateToEdit) {
-      // Update existing template
-      updateTemplate(
-        {
-          id: templateToEdit.id,
-          data: {
-            ...templatePayload,
-            updatedAt: new Date().toISOString(),
-          },
-        },
-        {
-          onSuccess: () => {
-            // Reset form to clear isDirty state
-            if (formRef.current) {
-              formRef.current.resetForm();
-            }
-
-            if (andApply) {
-              // Use the existing template with updated data
-              setSavedTemplate({
-                ...templateToEdit,
-                ...templatePayload,
-                updatedAt: new Date().toISOString(),
-              });
-              setApplyDialogOpen(true);
-            } else {
-              // Show success message instead of navigating
-              setShowSuccessSnackbar(true);
-            }
-          },
-        }
+  // Handle cell update from inline table
+  const handleCellUpdate = useCallback(
+    (rowId: string | number, field: string, value: unknown) => {
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === rowId ? { ...task, [field]: value } : task
+        )
       );
-    } else {
-      // Create new template
-      createTemplate(
-        { template: templatePayload },
-        {
-          onSuccess: (templateId) => {
-            // Reset form to clear isDirty state
-            if (formRef.current) {
-              formRef.current.resetForm();
-            }
+    },
+    []
+  );
 
-            if (andApply) {
-              // Construct the template object
-              setSavedTemplate({
-                id: templateId as string,
-                ...templatePayload,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-              } as TaskTemplate);
-              setApplyDialogOpen(true);
-            } else {
-              // Show success message instead of navigating
-              setShowSuccessSnackbar(true);
-            }
-          },
-        }
+  // Handle delete task
+  const handleDeleteTask = useCallback((task: DisplayTemplateTask) => {
+    setTasks((prev) => prev.filter((t) => t.id !== task.id));
+  }, []);
+
+  // Handle add new task inline
+  const handleAddRow = useCallback(
+    (newRow: Omit<DisplayTemplateTask, "id">, onSuccess?: (id: string | number) => void) => {
+      const newId = generateLocalId();
+      const newTask: DisplayTemplateTask = {
+        ...newRow,
+        id: newId,
+        priority: newRow.priority || "Medium",
+      };
+      setTasks((prev) => [newTask, ...prev]);
+      if (onSuccess) onSuccess(newId);
+    },
+    []
+  );
+
+  // Handle edit relative date
+  const handleEditRelativeDate = useCallback(
+    (task: DisplayTemplateTask) => {
+      setEditingTask(task);
+      setRelativeDatePopoverOpen(true);
+    },
+    []
+  );
+
+  // Handle relative date confirm
+  const handleRelativeDateConfirm = useCallback(
+    (value: RelativeDateValue) => {
+      if (!editingTask) return;
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === editingTask.id
+            ? {
+                ...task,
+                relativeDueDate: value.amount,
+                relativeDueDateUnit: value.unit,
+                relativeDueDateDirection: value.direction,
+              }
+            : task
+        )
       );
-    }
-  };
+      setRelativeDatePopoverOpen(false);
+      setEditingTask(null);
+    },
+    [editingTask]
+  );
 
-  // Handle save and apply
-  const handleSaveAndApply = () => {
-    handleSave(true);
-  };
+  // Handle add from library
+  const handleAddFromLibrary = useCallback((libraryTask: TaskLibraryItem) => {
+    const newTask: DisplayTemplateTask = {
+      id: generateLocalId(),
+      title: libraryTask.title,
+      description: libraryTask.description,
+      priority: libraryTask.priority,
+      category: libraryTask.category,
+      relativeDueDate: libraryTask.relativeDueDate,
+      relativeDueDateUnit: libraryTask.relativeDueDateUnit,
+      relativeDueDateDirection: libraryTask.relativeDueDateDirection,
+    };
+    setTasks((prev) => [newTask, ...prev]);
+  }, []);
+
+  // Validate form
+  const validateForm = useCallback(() => {
+    if (!templateName.trim()) {
+      setNameError(t("taskTemplates.nameRequired"));
+      return false;
+    }
+    setNameError(null);
+    return true;
+  }, [templateName, t]);
+
+  // Handle save
+  const handleSave = useCallback(
+    async (andApply = false) => {
+      if (!validateForm()) return;
+
+      // Clean tasks - remove id and undefined fields
+      const cleanedTasks = tasks.map(({ id, ...task }) =>
+        cleanTaskTemplateItem(task as TaskTemplateItem)
+      );
+
+      const templatePayload: Omit<TaskTemplate, "id" | "createdAt" | "updatedAt" | "createdBy"> = {
+        name: templateName.trim(),
+        tasks: cleanedTasks,
+        ...(templateDescription.trim() && { description: templateDescription.trim() }),
+      };
+
+      if (isEditMode && templateToEdit) {
+        updateTemplate(
+          {
+            id: templateToEdit.id,
+            data: {
+              ...templatePayload,
+              updatedAt: new Date().toISOString(),
+            },
+          },
+          {
+            onSuccess: () => {
+              // Update initial snapshot to mark as clean
+              setInitialSnapshot(
+                JSON.stringify({
+                  name: templateName,
+                  description: templateDescription,
+                  tasks: tasks.map(({ id, ...rest }) => rest),
+                })
+              );
+
+              if (andApply) {
+                setSavedTemplate({
+                  ...templateToEdit,
+                  ...(templatePayload as Partial<TaskTemplate>),
+                  updatedAt: new Date().toISOString(),
+                });
+                setApplyDialogOpen(true);
+              } else {
+                setShowSuccessSnackbar(true);
+              }
+            },
+          }
+        );
+      } else {
+        createTemplate(
+          { template: templatePayload },
+          {
+            onSuccess: (newTemplateId) => {
+              setInitialSnapshot(
+                JSON.stringify({
+                  name: templateName,
+                  description: templateDescription,
+                  tasks: tasks.map(({ id, ...rest }) => rest),
+                })
+              );
+
+              if (andApply) {
+                setSavedTemplate({
+                  id: newTemplateId as string,
+                  name: templatePayload.name as string,
+                  description: templatePayload.description as string | undefined,
+                  tasks: cleanedTasks as TaskTemplateItem[],
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString(),
+                  createdBy: "",
+                });
+                setApplyDialogOpen(true);
+              } else {
+                setShowSuccessSnackbar(true);
+              }
+            },
+          }
+        );
+      }
+    },
+    [
+      validateForm,
+      tasks,
+      templateName,
+      templateDescription,
+      isEditMode,
+      templateToEdit,
+      updateTemplate,
+      createTemplate,
+    ]
+  );
 
   // Handle cancel
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     if (isDirty) {
       setShowCancelConfirm(true);
     } else {
       navigate("/weddings/task-templates");
     }
-  };
+  }, [isDirty, navigate]);
 
-  // Handle confirm cancel (discard changes)
-  const handleConfirmCancel = () => {
-    setShowCancelConfirm(false);
-    navigate("/weddings/task-templates");
-  };
+  // Handle apply success
+  const handleApplySuccess = useCallback(
+    (weddingName: string, taskCount: number) => {
+      const message = t("taskTemplates.appliedSuccessfully", {
+        count: taskCount,
+        weddingName: weddingName,
+      });
+      setApplySuccessMessage(message);
+      setShowApplySuccessSnackbar(true);
+    },
+    [t]
+  );
 
-  // Handle cancel the cancel (continue editing)
-  const handleCancelCancel = () => {
-    setShowCancelConfirm(false);
-  };
-
-  // Handle successful template application
-  const handleApplySuccess = (weddingName: string, taskCount: number) => {
-    const message = t("taskTemplates.appliedSuccessfully", {
-      count: taskCount,
-      weddingName: weddingName
+  // Create columns
+  const columns = useMemo(() => {
+    return createTemplateTaskColumns(handleDeleteTask, t, {
+      categoryOptions,
+      onEditRelativeDate: handleEditRelativeDate,
     });
-    setApplySuccessMessage(message);
-    setShowApplySuccessSnackbar(true);
-  };
+  }, [handleDeleteTask, t, categoryOptions, handleEditRelativeDate]);
+
+  // Default new row values
+  const defaultNewRow = useMemo(
+    () => ({
+      priority: "Medium" as const,
+    }),
+    []
+  );
 
   if (isLoading) {
     return (
-      <Box sx={{ p: 4 }}>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
         <Typography>{t("common.loading")}</Typography>
-      </Box>
+      </Container>
     );
   }
 
   return (
-    <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-      {/* Two-Panel Layout - Fixed Left, Flex Right */}
-      <Box sx={{ flexGrow: 1, overflow: "hidden", display: "flex" }}>
-        {/* Left Panel - Task Library (Fixed Width) */}
-        <Box
-          sx={{
-            width: 320,
-            borderRight: 1,
-            borderColor: "divider",
-            overflow: "auto",
-            flexShrink: 0,
-          }}
-        >
-          <TaskLibraryPanel
-            library={taskLibrary}
-            onAddTask={handleAddFromLibrary}
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* Header with breadcrumbs */}
+      <Box sx={{ mb: 2, display: "flex", alignItems: "center", gap: 2, justifyContent: 'space-between' }}>
+        <Breadcrumbs separator={<LocalizedNavigateIcon fontSize="small" />}>
+          <Link
+            component="button"
+            variant="body2"
+            onClick={handleCancel}
+            color="inherit"
+            underline="hover"
+            sx={{ cursor: "pointer" }}
+          >
+            {t("taskTemplates.title")}
+          </Link>
+          <Typography variant="body2" color="text.primary">
+            {templateName || t("taskTemplates.newTemplate")}
+          </Typography>
+        </Breadcrumbs>
+        <Button
+            startIcon={<LibraryBooksIcon />}
+            onClick={() => setLibraryModalOpen(true)}
+            variant="outlined"
+            size="small"
+          >
+            {t("taskTemplates.selectFromPreviousTemplates")}
+        </Button>
+      </Box>
+
+      {/* Template Config Section */}
+        <Box sx={{ mb:2, display: "flex", gap: 2, flexDirection: { xs: "column", sm: "row" } }}>
+          <TextField
+            label={t("taskTemplates.templateName")}
+            value={templateName}
+            onChange={(e) => {
+              setTemplateName(e.target.value);
+              if (nameError) setNameError(null);
+            }}
+            error={!!nameError}
+            helperText={nameError}
+            required
+            size="small"
+            sx={{ minWidth: 200, flex: { xs: 1, sm: "0 0 250px" } }}
+          />
+          <TextField
+            label={t("taskTemplates.description")}
+            value={templateDescription}
+            onChange={(e) => setTemplateDescription(e.target.value)}
+            size="small"
+            sx={{ flex: 1 }}
+            placeholder={t("taskTemplates.descriptionPlaceholder")}
           />
         </Box>
 
-        {/* Right Panel - Template Form (Flex Fill) */}
-        <Box sx={{ flex: 1, overflow: "auto" }}>
-          <TemplateBuilderPanel
-            ref={formRef}
-            initialData={initialData}
-            onSave={() => handleSave(false)}
-            onSaveAndApply={handleSaveAndApply}
-            onCancel={handleCancel}
-            isSubmitting={isSubmitting}
-            disableSave={!isDirty}
-          />
-        </Box>
-      </Box>
+        <DSInlineTable
+          columns={columns}
+          data={tasks}
+          onCellUpdate={handleCellUpdate}
+          enableInlineAdd
+          addRowPlaceholder={t("taskTemplates.addTask")}
+          addRowField="title"
+          defaultNewRow={defaultNewRow}
+          onAddRow={handleAddRow}
+          emptyMessage={t("taskTemplates.noTasksYet")}
+          showSearch={false}
+          showExport={false}
+        />
+
+      {/* Sticky Footer Actions */}
+      <Paper
+        elevation={3}
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          py: 2,
+          px: 3,
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: 2,
+          zIndex: 1100,
+          borderRadius: 0,
+        }}
+      >
+        <Button onClick={handleCancel} disabled={isSubmitting}>
+          {t("common.cancel")}
+        </Button>
+        {isEditMode && (
+          <Button
+            onClick={() => handleSave(true)}
+            variant="outlined"
+            disabled={isSubmitting || tasks.length === 0}
+          >
+            {t("taskTemplates.applyToWedding")}
+          </Button>
+        )}
+        <Button
+          onClick={() => handleSave(false)}
+          variant="contained"
+          disabled={isSubmitting || tasks.length === 0 || !isDirty}
+        >
+          {isSubmitting ? t("common.saving") : t("common.save")}
+        </Button>
+      </Paper>
+
+      {/* Task Library Modal */}
+      <TaskLibraryModal
+        open={libraryModalOpen}
+        onClose={() => setLibraryModalOpen(false)}
+        library={taskLibrary}
+        onAddTask={handleAddFromLibrary}
+      />
+
+      {/* Relative Date Popover */}
+      <RelativeDatePopover
+        open={relativeDatePopoverOpen}
+        onClose={() => {
+          setRelativeDatePopoverOpen(false);
+          setEditingTask(null);
+        }}
+        onConfirm={handleRelativeDateConfirm}
+        initialValue={
+          editingTask
+            ? {
+                amount: editingTask.relativeDueDate,
+                unit: editingTask.relativeDueDateUnit,
+                direction: editingTask.relativeDueDateDirection,
+              }
+            : undefined
+        }
+      />
 
       {/* Apply Template Dialog */}
       {savedTemplate && (
@@ -306,16 +529,20 @@ const TaskTemplateBuilderPage: React.FC = () => {
       )}
 
       {/* Cancel Confirmation Dialog */}
-      <Dialog open={showCancelConfirm} onClose={handleCancelCancel}>
+      <Dialog open={showCancelConfirm} onClose={() => setShowCancelConfirm(false)}>
         <DialogTitle>{t("common.unsavedChanges")}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {t("common.unsavedChangesMessage")}
-          </DialogContentText>
+          <DialogContentText>{t("common.unsavedChangesMessage")}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelCancel}>{t("common.continueEditing")}</Button>
-          <Button onClick={handleConfirmCancel} color="error" variant="contained">
+          <Button onClick={() => setShowCancelConfirm(false)}>
+            {t("common.continueEditing")}
+          </Button>
+          <Button
+            onClick={() => navigate("/weddings/task-templates")}
+            color="error"
+            variant="contained"
+          >
             {t("common.discardChanges")}
           </Button>
         </DialogActions>
@@ -326,13 +553,12 @@ const TaskTemplateBuilderPage: React.FC = () => {
         open={showSuccessSnackbar}
         autoHideDuration={6000}
         onClose={() => setShowSuccessSnackbar(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert
           onClose={() => setShowSuccessSnackbar(false)}
           severity="success"
           variant="filled"
-          sx={{ width: '100%' }}
         >
           {t("taskTemplates.savedSuccessfully")}
         </Alert>
@@ -343,18 +569,17 @@ const TaskTemplateBuilderPage: React.FC = () => {
         open={showApplySuccessSnackbar}
         autoHideDuration={6000}
         onClose={() => setShowApplySuccessSnackbar(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert
           onClose={() => setShowApplySuccessSnackbar(false)}
           severity="success"
           variant="filled"
-          sx={{ width: '100%' }}
         >
           {applySuccessMessage}
         </Alert>
       </Snackbar>
-    </Box>
+    </Container>
   );
 };
 

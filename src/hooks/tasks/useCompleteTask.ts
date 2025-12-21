@@ -10,8 +10,24 @@ export const useCompleteTask = () => {
   return {
     ...updateInfo,
     mutate: (id: string, completed: boolean, weddingId?: string) =>
-      mutate({ id, data: { completed }, weddingId }),
-    mutateAsync: (id: string, completed: boolean, weddingId?:string) =>
-      mutateAsync({ id, data: { completed }, weddingId }),
+      mutate({
+        id,
+        data: {
+          completed,
+          status: completed ? "completed" : "not_started",
+          completedAt: completed ? new Date().toISOString() : undefined,
+        },
+        weddingId,
+      }),
+    mutateAsync: (id: string, completed: boolean, weddingId?: string) =>
+      mutateAsync({
+        id,
+        data: {
+          completed,
+          status: completed ? "completed" : "not_started",
+          completedAt: completed ? new Date().toISOString() : undefined,
+        },
+        weddingId,
+      }),
   };
 };

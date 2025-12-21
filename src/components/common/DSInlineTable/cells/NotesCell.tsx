@@ -14,9 +14,14 @@ export const MemoizedNotesCell = memo(
   ({ value, onOpenEditor, addTooltip = "Add notes", editTooltip = "Edit notes" }: NotesCellProps) => {
     const hasContent = value && value.trim().length > 0;
     const preview = hasContent ? getHtmlPreview(value, 40) : null;
+    const fullPreview = hasContent ? getHtmlPreview(value, 200) : null;
+
+    // Show full content as tooltip if truncated, otherwise show action hint
+    const isTruncated = hasContent && fullPreview && preview !== fullPreview;
+    const tooltipContent = isTruncated ? fullPreview : (hasContent ? editTooltip : addTooltip);
 
     return (
-      <Tooltip title={hasContent ? editTooltip : addTooltip}>
+      <Tooltip title={tooltipContent}>
         <Box
           onClick={onOpenEditor}
           sx={{
