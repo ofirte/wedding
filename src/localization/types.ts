@@ -667,15 +667,19 @@ export interface Translations {
     addTaskPlaceholder: string;
     exportFilename: string;
     noTasks: string;
-    bulkComplete: string;
-    bulkDelete: string;
+    bulkComplete: {
+      button: string;
+      title: string;
+      message: string;
+      confirm: string;
+    };
+    bulkDelete: {
+      button: string;
+      title: string;
+      message: string;
+      confirm: string;
+    };
     bulkAssign: string;
-    "bulkComplete.title": string;
-    "bulkComplete.message": string;
-    "bulkComplete.confirm": string;
-    "bulkDelete.title": string;
-    "bulkDelete.message": string;
-    "bulkDelete.confirm": string;
     addDescription: string;
     editDescription: string;
     descriptionPlaceholder: string;

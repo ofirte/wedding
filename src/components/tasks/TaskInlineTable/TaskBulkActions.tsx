@@ -38,7 +38,7 @@ const TaskBulkActions: React.FC<TaskBulkActionsProps> = ({
           onClick={onBulkComplete}
           color="success"
         >
-          {t("tasks.bulkComplete")} ({incompleteCount})
+          {t("tasks.bulkComplete.button")} ({incompleteCount})
         </Button>
       )}
       {showAssign && onBulkAssign && (
@@ -58,7 +58,7 @@ const TaskBulkActions: React.FC<TaskBulkActionsProps> = ({
         startIcon={<DeleteIcon />}
         onClick={onBulkDelete}
       >
-        {t("tasks.bulkDelete")} ({selectedRows.length})
+        {t("tasks.bulkDelete.button")} ({selectedRows.length})
       </Button>
     </Stack>
   );

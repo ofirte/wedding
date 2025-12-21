@@ -110,6 +110,7 @@ export const completeProducerTask = async (
 
   const updates: Partial<ProducerTask> = {
     completed,
+    status: completed ? "completed" : "not_started",
     completedAt: completed ? new Date().toISOString() : undefined,
   };
 
