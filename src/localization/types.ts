@@ -398,6 +398,10 @@ export interface Translations {
       description: string;
       createButton: string;
     };
+    deleteWedding: string;
+    deleteConfirmTitle: string;
+    deleteConfirmMessage: string;
+    deleteSuccess: string;
   };
   userManagement: {
     deleteUser: string;

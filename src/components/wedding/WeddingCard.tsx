@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -7,7 +7,14 @@ import {
   Typography,
   Chip,
   Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { format, differenceInDays } from "date-fns";
 import { he, enUS } from "date-fns/locale";
 import { Wedding } from "@wedding-plan/types";
@@ -16,6 +23,7 @@ import { useTranslation } from "../../localization/LocalizationContext";
 interface WeddingCardProps {
   wedding: Wedding;
   onSelect: (weddingId: string) => void;
+  onDelete?: (wedding: Wedding) => void;
   showCountdown?: boolean;
 }
 
@@ -30,14 +38,33 @@ const getCountdownColor = (
 const WeddingCard: React.FC<WeddingCardProps> = ({
   wedding,
   onSelect,
+  onDelete,
   showCountdown = false,
 }) => {
   const { t, language } = useTranslation();
   const dateLocale = language === "he" ? he : enUS;
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const isMenuOpen = Boolean(menuAnchorEl);
 
   const daysLeft = wedding.date
     ? differenceInDays(new Date(wedding.date), new Date())
     : null;
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = (event?: React.MouseEvent) => {
+    event?.stopPropagation();
+    setMenuAnchorEl(null);
+  };
+
+  const handleDeleteClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    handleMenuClose();
+    onDelete?.(wedding);
+  };
 
   return (
     <Card
@@ -66,14 +93,40 @@ const WeddingCard: React.FC<WeddingCardProps> = ({
           <Typography variant="h6" component="h3" sx={{ flex: 1 }}>
             {wedding.name}
           </Typography>
-          {showCountdown && daysLeft !== null && daysLeft >= 0 && (
-            <Chip
-              label={t("weddings.daysLeft", { count: daysLeft })}
-              color={getCountdownColor(daysLeft)}
-              size="small"
-              sx={{ ml: 1, fontWeight: "bold" }}
-            />
-          )}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            {showCountdown && daysLeft !== null && daysLeft >= 0 && (
+              <Chip
+                label={t("weddings.daysLeft", { count: daysLeft })}
+                color={getCountdownColor(daysLeft)}
+                size="small"
+                sx={{ fontWeight: "bold" }}
+              />
+            )}
+            {onDelete && (
+              <>
+                <IconButton
+                  size="small"
+                  onClick={handleMenuOpen}
+                  aria-label="more options"
+                >
+                  <MoreVertIcon fontSize="small" />
+                </IconButton>
+                <Menu
+                  anchorEl={menuAnchorEl}
+                  open={isMenuOpen}
+                  onClose={() => handleMenuClose()}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <MenuItem onClick={handleDeleteClick}>
+                    <ListItemIcon>
+                      <DeleteIcon fontSize="small" color="error" />
+                    </ListItemIcon>
+                    <ListItemText>{t("weddings.deleteWedding")}</ListItemText>
+                  </MenuItem>
+                </Menu>
+              </>
+            )}
+          </Box>
         </Box>
 
         {wedding.date && (

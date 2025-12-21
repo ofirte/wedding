@@ -12,6 +12,10 @@ import {
   AccordionDetails,
   Paper,
   Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -19,8 +23,10 @@ import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router";
 import { useCurrentUser } from "../../hooks/auth/useCurrentUser";
 import { useWeddingsDetails } from "../../hooks/wedding/useWeddingsDetails";
+import { useDeleteWedding } from "../../hooks/wedding/useDeleteWedding";
 
 import { useTranslation } from "../../localization/LocalizationContext";
+import { useSnackbar } from "../../hooks/common/useSnackbar";
 import WeddingCard from "./WeddingCard";
 import { Wedding } from "@wedding-plan/types";
 import { CreateWeddingDialog } from "./CreateWeddingDialog";
@@ -29,6 +35,7 @@ import { WeddingsEmptyState } from "./WeddingsEmptyState";
 const WeddingsPage: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { showSnackbar } = useSnackbar();
   const {
     data: currentUser,
     isLoading: isUserLoading,
@@ -44,6 +51,32 @@ const WeddingsPage: React.FC = () => {
   };
   const [isCreateWeddingDialogOpen, setIsCreateWeddingDialogOpen] =
     useState(false);
+  const [weddingToDelete, setWeddingToDelete] = useState<Wedding | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const { mutate: deleteWedding, isPending: isDeleting } = useDeleteWedding({
+    onSuccess: () => {
+      setIsDeleteDialogOpen(false);
+      setWeddingToDelete(null);
+      showSnackbar(t("weddings.deleteSuccess"), "success");
+    },
+  });
+
+  const handleDeleteClick = (wedding: Wedding) => {
+    setWeddingToDelete(wedding);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (weddingToDelete) {
+      deleteWedding(weddingToDelete.id);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteDialogOpen(false);
+    setWeddingToDelete(null);
+  };
 
   const { upcomingWeddings, archivedWeddings } = useMemo(() => {
     const today = new Date();
@@ -159,6 +192,7 @@ const WeddingsPage: React.FC = () => {
                     <WeddingCard
                       wedding={wedding}
                       onSelect={handleWeddingSelect}
+                      onDelete={handleDeleteClick}
                       showCountdown
                     />
                   </Grid>
@@ -209,6 +243,7 @@ const WeddingsPage: React.FC = () => {
                         <WeddingCard
                           wedding={wedding}
                           onSelect={handleWeddingSelect}
+                          onDelete={handleDeleteClick}
                         />
                       </Grid>
                     ))}
@@ -226,6 +261,36 @@ const WeddingsPage: React.FC = () => {
           handleWeddingSelect(weddingId);
         }}
       />
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={isDeleteDialogOpen}
+        onClose={handleCancelDelete}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>{t("weddings.deleteConfirmTitle")}</DialogTitle>
+        <DialogContent>
+          <Typography>
+            {t("weddings.deleteConfirmMessage", {
+              weddingName: weddingToDelete?.name || "",
+            })}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete} disabled={isDeleting}>
+            {t("common.cancel")}
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            color="error"
+            variant="contained"
+            disabled={isDeleting}
+          >
+            {t("common.delete")}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

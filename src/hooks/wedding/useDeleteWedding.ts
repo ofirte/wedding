@@ -1,14 +1,30 @@
-import { useMutation, UseMutationOptions } from "@tanstack/react-query";
-import {  deleteWedding } from "../../api/wedding/weddingApi";
+import {
+  useMutation,
+  UseMutationOptions,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { deleteWedding } from "../../api/wedding/weddingApi";
 
 // @TODO: not ready, should be soft delete, and handle maybe removing wedding from users who are members
 export const useDeleteWedding = (
-  options?: UseMutationOptions<void, unknown, string, unknown>
+  options?: Omit<UseMutationOptions<void, unknown, string, unknown>, "mutationFn">
 ) => {
+  const queryClient = useQueryClient();
+  const { onSuccess, ...restOptions } = options || {};
+
   return useMutation({
     mutationFn: (weddingId: string) => deleteWedding(weddingId),
-    onSuccess: async (_, variables,_onMutateResults, context) => {
-      options?.onSuccess?.(undefined, variables, _onMutateResults , context);
+    onSuccess: (data, weddingId, _onMutateResults, _context) => {
+      // Invalidate all wedding-related queries
+      queryClient.invalidateQueries({ queryKey: ["weddings"] });
+      queryClient.invalidateQueries({
+        queryKey: ["weddingDetails", weddingId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["wedding", weddingId],
+      });
+      onSuccess?.(data, weddingId, _onMutateResults, _context);
     },
+    ...restOptions,
   });
 };
