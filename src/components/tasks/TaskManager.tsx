@@ -193,6 +193,11 @@ const TaskManager: React.FC = () => {
     });
   };
 
+  const handleDuplicate = (task: DisplayTask) => {
+    const { id, taskType, ...taskData } = task;
+    createTask({ task: { ...taskData, title: `${task.title} (copy)` } });
+  };
+
   // Legacy handlers for TaskList
   const handleUpdate = (task: DisplayTask, data: Partial<Task>) => {
     updateTask({ id: task.id, data });
@@ -267,6 +272,7 @@ const TaskManager: React.FC = () => {
                 onCellUpdate={handleCellUpdate}
                 onAddRow={handleAddRow}
                 onDelete={handleDelete}
+                onDuplicate={handleDuplicate}
                 onBulkComplete={handleBulkComplete}
                 onBulkDelete={handleBulkDelete}
                 weddingMembers={weddingMembers}

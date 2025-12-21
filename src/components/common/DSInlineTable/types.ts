@@ -75,7 +75,9 @@ export interface InlineColumn<T extends { id: string | number }> {
   label: string;
   editable?: boolean;
   editType?: EditType;
-  editOptions?: DSSelectOption<string>[]; // For select type
+  editOptions?: DSSelectOption<string>[]; // For select type (static)
+  getEditOptions?: (row: T) => DSSelectOption<string>[]; // For select type (dynamic per row)
+  isEditable?: (row: T) => boolean; // Conditional editability per row
   editColorMap?: Record<string, string>; // Color map for select options
   autocompleteOptions?: string[]; // For autocomplete type - existing values to suggest
   getValue?: (row: T) => any; // Get raw value for editing

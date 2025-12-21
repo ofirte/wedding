@@ -40,11 +40,14 @@ interface TaskInlineTableProps {
     onSuccess?: (newRowId: string | number) => void
   ) => void;
   onDelete: (task: DisplayTask) => void;
+  onDuplicate: (task: DisplayTask) => void;
   onBulkComplete?: (tasks: DisplayTask[]) => void;
   onBulkDelete?: (tasks: DisplayTask[]) => void;
 
   // Configuration
   weddingMembers?: WeddingMember[];
+  weddingMembersMap?: Record<string, WeddingMember[]>;
+  currentUserName?: string;
   categoryOptions?: string[];
   showWeddingColumn?: boolean;
   weddings?: Wedding[];
@@ -63,9 +66,12 @@ const TaskInlineTable: React.FC<TaskInlineTableProps> = ({
   onAddRow,
   onAddRowWithType,
   onDelete,
+  onDuplicate,
   onBulkComplete,
   onBulkDelete,
   weddingMembers = [],
+  weddingMembersMap = {},
+  currentUserName,
   categoryOptions: providedCategoryOptions,
   showWeddingColumn = false,
   weddings = [],
@@ -118,13 +124,15 @@ const TaskInlineTable: React.FC<TaskInlineTableProps> = ({
 
   // Create columns
   const columns = useMemo(() => {
-    return createTaskInlineColumns(onDelete, t, {
+    return createTaskInlineColumns(onDelete, onDuplicate, t, {
       weddingMembers,
+      weddingMembersMap,
+      currentUserName,
       categoryOptions,
       showWeddingColumn,
       weddings,
     });
-  }, [onDelete, t, weddingMembers, categoryOptions, showWeddingColumn, weddings]);
+  }, [onDelete, onDuplicate, t, weddingMembers, weddingMembersMap, currentUserName, categoryOptions, showWeddingColumn, weddings]);
 
   // Wrap onCellUpdate to handle status -> completed sync
   const handleCellUpdate = useCallback(

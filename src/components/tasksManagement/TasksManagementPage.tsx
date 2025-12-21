@@ -29,7 +29,7 @@ import TaskForm from "../tasks/TaskForm";
 import { TaskInlineTable, DisplayTask, ColumnFilterState } from "../tasks/TaskInlineTable";
 import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
 import { useTranslation } from "../../localization/LocalizationContext";
-import { useWeddingsDetails } from "../../hooks/wedding/useWeddingsDetails";
+import { useWeddingsDetails, useAllWeddingsMembers } from "../../hooks/wedding";
 import {
   useProducerTasks,
   useCreateProducerTask,
@@ -39,6 +39,7 @@ import {
   useCompleteProducerTask,
 } from "../../hooks/producerTasks";
 import { useUpdateTaskOptimistic } from "../../hooks/tasks/useUpdateTaskOptimistic";
+import { useCurrentUser } from "../../hooks/auth/useCurrentUser";
 
 // Default filters for inline table: exclude completed tasks
 const DEFAULT_TABLE_FILTERS: ColumnFilterState[] = [
@@ -81,6 +82,13 @@ const TasksManagementContent: React.FC = () => {
 
   // Fetch weddings for the form dropdown
   const { data: weddings = [] } = useWeddingsDetails();
+
+  // Fetch wedding members for all weddings (for assignedTo column)
+  const { data: weddingMembersMap = {} } = useAllWeddingsMembers();
+
+  // Get current user for producer task display
+  const { data: currentUser } = useCurrentUser();
+  const currentUserName = currentUser?.displayName || currentUser?.email;
 
   // Combine wedding tasks and producer tasks for unified display
   const allTasks: DisplayTask[] = useMemo(() => {
@@ -143,6 +151,17 @@ const TasksManagementContent: React.FC = () => {
       completeProducerTask({ id: task.id, completed });
     } else {
       completeTask(task.id, completed, task.weddingId || "");
+    }
+  };
+
+  const handleDuplicate = (task: DisplayTask) => {
+    const { id, taskType, weddingId, ...taskData } = task;
+    const newTitle = `${task.title} (copy)`;
+
+    if (task.taskType === "producer") {
+      createProducerTask({ ...taskData, title: newTitle });
+    } else {
+      createTask({ task: { ...taskData, title: newTitle }, weddingId: task.weddingId || "" });
     }
   };
 
@@ -254,10 +273,13 @@ const TasksManagementContent: React.FC = () => {
               onCellUpdate={handleCellUpdate}
               onAddRowWithType={handleAddRowWithType}
               onDelete={handleDelete}
+              onDuplicate={handleDuplicate}
               onBulkComplete={handleBulkComplete}
               onBulkDelete={handleBulkDelete}
               showWeddingColumn
               weddings={weddings}
+              weddingMembersMap={weddingMembersMap}
+              currentUserName={currentUserName}
               defaultFilters={DEFAULT_TABLE_FILTERS}
             />
           ) : viewType === "calendar" ? (
