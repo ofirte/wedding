@@ -30,7 +30,7 @@ import {
   Celebration as WeddingIcon,
   Assignment as TaskIcon,
 } from "@mui/icons-material";
-import { Task, ProducerTask, Wedding } from "@wedding-plan/types";
+import { Task, ProducerTask, Wedding, TaskStatus } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { useWeddingMembers } from "../../hooks/wedding";
 import { useCurrentUser } from "src/hooks/auth";
@@ -42,11 +42,17 @@ interface TaskFormData {
   dueDate: string;
   category: string;
   assignedTo: string;
-  completed: boolean;
+  status: TaskStatus;
   // Producer context fields
   formTaskType: "wedding" | "producer";
   selectedWeddingId: string;
 }
+
+// Helper to get task status (with backward compatibility for completed boolean)
+const getTaskStatus = (task: Partial<Task>): TaskStatus => {
+  if (task.status) return task.status;
+  return task.completed ? "completed" : "not_started";
+};
 
 interface TaskFormProps {
   onAddTask: (task: Omit<Task, "id"> | Task, weddingId?: string) => void;
@@ -86,7 +92,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
     dueDate: "",
     category: "",
     assignedTo: "",
-    completed: false,
+    status: "not_started",
     formTaskType: "wedding",
     selectedWeddingId: "",
   };
@@ -110,7 +116,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
             dueDate: initialTask.dueDate || "",
             category: initialTask.category || "",
             assignedTo: initialTask.assignedTo || "",
-            completed: initialTask.completed || false,
+            status: getTaskStatus(initialTask),
             formTaskType: taskTypeProp || "wedding",
             selectedWeddingId: "",
           }
@@ -194,7 +200,8 @@ const TaskForm: React.FC<TaskFormProps> = ({
         title: data.title.trim(),
         description: data.description.trim(),
         priority: data.priority,
-        completed: data.completed,
+        status: data.status,
+        completed: data.status === "completed",
         dueDate: data.dueDate || undefined,
         category: data.category || undefined,
         assignedTo: data.assignedTo || undefined,
@@ -209,7 +216,8 @@ const TaskForm: React.FC<TaskFormProps> = ({
             title: data.title.trim(),
             description: data.description.trim(),
             priority: data.priority,
-            completed: false,
+            status: data.status,
+            completed: data.status === "completed",
             dueDate: data.dueDate || undefined,
             category: data.category || undefined,
           });
@@ -220,7 +228,8 @@ const TaskForm: React.FC<TaskFormProps> = ({
           title: data.title.trim(),
           description: data.description.trim(),
           priority: data.priority,
-          completed: false,
+          status: data.status,
+          completed: data.status === "completed",
           createdAt: new Date().toISOString(),
           dueDate: data.dueDate || undefined,
           category: data.category || undefined,
@@ -493,39 +502,42 @@ const TaskForm: React.FC<TaskFormProps> = ({
                 </Grid>
               )}
 
-              {mode === "edit" && (
-                <Grid size={{ xs: 12, md: 4, sm: 6 }}>
-                  <Controller
-                    name="completed"
-                    control={control}
-                    render={({ field }) => (
-                      <FormControl component="fieldset" fullWidth>
-                        <FormLabel component="legend">
-                          {t("common.status")}
-                        </FormLabel>
-                        <RadioGroup
-                          row
-                          value={field.value.toString()}
-                          onChange={(e) =>
-                            field.onChange(e.target.value === "true")
-                          }
-                        >
-                          <FormControlLabel
-                            value="false"
-                            control={<Radio />}
-                            label={t("common.inProgress")}
-                          />
-                          <FormControlLabel
-                            value="true"
-                            control={<Radio />}
-                            label={t("common.completed")}
-                          />
-                        </RadioGroup>
-                      </FormControl>
-                    )}
-                  />
-                </Grid>
-              )}
+              <Grid size={{ xs: 12, md: 6, sm: 6 }}>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl component="fieldset" fullWidth>
+                      <FormLabel component="legend">
+                        {t("common.status")}
+                      </FormLabel>
+                      <RadioGroup
+                        row
+                        value={field.value}
+                        onChange={(e) =>
+                          field.onChange(e.target.value as TaskStatus)
+                        }
+                      >
+                        <FormControlLabel
+                          value="not_started"
+                          control={<Radio />}
+                          label={t("tasks.status.notStarted")}
+                        />
+                        <FormControlLabel
+                          value="in_progress"
+                          control={<Radio />}
+                          label={t("tasks.status.inProgress")}
+                        />
+                        <FormControlLabel
+                          value="completed"
+                          control={<Radio />}
+                          label={t("tasks.status.completed")}
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  )}
+                />
+              </Grid>
 
               <Grid size={{ xs: 12 }}>
                 <Box sx={{ display: "flex", gap: 2 }}>

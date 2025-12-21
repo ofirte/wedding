@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Box, Typography, Paper, alpha, useTheme } from "@mui/material";
+import { Box, Typography, Paper, alpha, useTheme, Tooltip, Chip } from "@mui/material";
 import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { he, enUS } from "date-fns/locale";
@@ -9,7 +9,16 @@ import { Task, Wedding } from "@wedding-plan/types";
 import { useWeddingsDetails } from "src/hooks/wedding";
 import { stringToColor } from "src/utils/ColorUtils";
 import { useTasksManagement } from "../TasksManagementContext";
+import { PRIORITY_COLORS } from "../../tasks/TaskInlineTable/TaskInlineColumns";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+
+// Helper to strip HTML and truncate text for description preview
+const truncateText = (text: string, maxLength: number): string => {
+  const plainText = text.replace(/<[^>]*>/g, "");
+  return plainText.length > maxLength
+    ? plainText.slice(0, maxLength) + "..."
+    : plainText;
+};
 
 // Custom event interface extending Task with wedding info
 interface TaskEvent extends Event {
@@ -20,7 +29,7 @@ interface TaskEvent extends Event {
 
 const TasksCalendarView: React.FC = () => {
   const theme = useTheme();
-  const { language, isRtl } = useTranslation();
+  const { language, isRtl, t } = useTranslation();
   const [currentDate, setCurrentDate] = useState(new Date());
   const { filterTasks } = useTasksManagement();
 
@@ -54,10 +63,10 @@ const TasksCalendarView: React.FC = () => {
     );
   }, [weddingsDetails]);
 
-  // Transform tasks into calendar events, excluding completed tasks
+  // Transform tasks into calendar events (status filter handles completed)
   const events: TaskEvent[] = useMemo(() => {
     return tasks
-      .filter((task) => task.dueDate && !task.completed)
+      .filter((task) => task.dueDate)
       .map((task) => ({
         title: task.title,
         start: new Date(task.dueDate!),
@@ -85,19 +94,87 @@ const TasksCalendarView: React.FC = () => {
     };
   };
 
-  // Custom event component
+  // Helper to get translated status label
+  const getStatusLabel = (task: Task): string => {
+    if (task.status === "completed" || task.completed)
+      return t("tasks.status.completed");
+    if (task.status === "in_progress") return t("tasks.status.inProgress");
+    return t("tasks.status.notStarted");
+  };
+
+  // Helper to get translated priority label
+  const getPriorityLabel = (priority: string): string => {
+    if (priority === "High") return t("tasks.priority.high");
+    if (priority === "Medium") return t("tasks.priority.medium");
+    if (priority === "Low") return t("tasks.priority.low");
+    return priority;
+  };
+
+  // Custom event component with priority indicator and tooltip
   const EventComponent = ({ event }: { event: TaskEvent }) => (
-    <Box
-      sx={{
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        whiteSpace: "nowrap",
-        fontSize: "0.7rem",
-        fontWeight: 500,
-      }}
+    <Tooltip
+      title={
+        <Box sx={{ p: 0.5 }}>
+          <Typography variant="subtitle2" fontWeight={600}>
+            {event.task.title}
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1, mt: 0.5, alignItems: "center" }}>
+            <Chip
+              size="small"
+              label={getPriorityLabel(event.task.priority)}
+              sx={{
+                bgcolor: PRIORITY_COLORS[event.task.priority] || "#9e9e9e",
+                color: "white",
+                height: 20,
+                fontSize: "0.65rem",
+              }}
+            />
+            <Typography variant="caption">{getStatusLabel(event.task)}</Typography>
+          </Box>
+          {event.task.description && (
+            <Typography
+              variant="caption"
+              sx={{ mt: 0.5, display: "block", color: "grey.300" }}
+            >
+              {truncateText(event.task.description, 100)}
+            </Typography>
+          )}
+          <Typography
+            variant="caption"
+            sx={{ mt: 0.5, display: "block", fontStyle: "italic" }}
+          >
+            {event.weddingName}
+          </Typography>
+        </Box>
+      }
+      arrow
+      placement="top"
     >
-      {event.task.title}
-    </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 0.5,
+          overflow: "hidden",
+        }}
+      >
+        <Box
+          sx={{
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            flexShrink: 0,
+            bgcolor: PRIORITY_COLORS[event.task.priority] || "#9e9e9e",
+          }}
+        />
+        <Typography
+          noWrap
+          sx={{ fontSize: "0.7rem", fontWeight: 500, lineHeight: 1.2 }}
+        >
+          {event.task.title}
+        </Typography>
+      </Box>
+    </Tooltip>
   );
 
   if (isLoadingTasks || isLoadingWeddings) {
@@ -197,6 +274,12 @@ const TasksCalendarView: React.FC = () => {
             defaultView="month"
             popup
             popupOffset={{ x: 10, y: 10 }}
+            messages={{
+              today: t("tasksManagement.calendar.today"),
+              previous: t("tasksManagement.calendar.back"),
+              next: t("tasksManagement.calendar.next"),
+              month: t("tasksManagement.calendar.month"),
+            }}
           />
         </Box>
       </Paper>

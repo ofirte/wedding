@@ -102,6 +102,8 @@ export interface DSInlineTableProps<T extends { id: string | number }> {
   emptyMessage?: string;
   // Default sort field when no column sorting is applied (e.g., "createdAt")
   defaultSortField?: string;
+  // Default filters to apply on initial render
+  defaultFilters?: ColumnFilterState[];
   // Selection props
   showSelectColumn?: boolean;
   selectedRows?: T[];

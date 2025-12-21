@@ -52,6 +52,10 @@ export const hebrewTranslations: Translations = {
     },
     calendar: {
       implementation: "יישום לוח שנה יגיע בקרוב",
+      today: "היום",
+      back: "הקודם",
+      next: "הבא",
+      month: "חודש",
     },
     stats: {
       total: "סך משימות",

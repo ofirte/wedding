@@ -12,7 +12,9 @@ import { styled } from "@mui/material/styles";
 import { TableRows, List } from "@mui/icons-material";
 import TaskList from "./TaskList";
 import TaskSummary from "./TaskSummary";
-import { TaskInlineTable, DisplayTask } from "./TaskInlineTable";
+import { TaskInlineTable, DisplayTask, ColumnFilterState } from "./TaskInlineTable";
+import TasksFiltersBar from "../tasksManagement/filters/TasksFiltersBar";
+import { TaskFilter } from "../tasksManagement/types";
 import useTasks from "../../hooks/tasks/useTasks";
 import { useCreateTask } from "../../hooks/tasks/useCreateTask";
 import { useUpdateTask } from "../../hooks/tasks/useUpdateTask";
@@ -21,8 +23,31 @@ import { useDeleteTask } from "../../hooks/tasks/useDeleteTask";
 import { useAssignTask } from "../../hooks/tasks/useAssignTask";
 import { useCompleteTask } from "../../hooks/tasks/useCompleteTask";
 import { useWeddingMembers } from "../../hooks/wedding";
-import { Task } from "@wedding-plan/types";
+import { Task, TaskStatus } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
+
+// Default filters for list view: exclude completed tasks
+const defaultFilters: TaskFilter = {
+  status: ["not_started", "in_progress"],
+  priority: null,
+  wedding: null,
+  searchText: "",
+};
+
+// Default filters for inline table: exclude completed tasks
+const DEFAULT_TABLE_FILTERS: ColumnFilterState[] = [
+  {
+    columnId: "status",
+    type: "multiselect",
+    value: { values: ["not_started", "in_progress"] },
+  },
+];
+
+// Helper to get task status (with backward compatibility for completed boolean)
+const getTaskStatus = (task: Task): TaskStatus => {
+  if (task.status) return task.status;
+  return task.completed ? "completed" : "not_started";
+};
 
 type ViewType = "table" | "list";
 
@@ -38,6 +63,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const TaskManager: React.FC = () => {
   const { t } = useTranslation();
   const [viewType, setViewType] = useState<ViewType>("table");
+  const [filters, setFilters] = useState<TaskFilter>(defaultFilters);
 
   const { data: tasks, isLoading } = useTasks();
   const { data: weddingMembers = [] } = useWeddingMembers();
@@ -65,13 +91,51 @@ const TaskManager: React.FC = () => {
     setViewType("list");
   };
 
-  // Convert tasks to DisplayTask format
-  const displayTasks: DisplayTask[] = useMemo(() => {
+  // Filter tasks based on current filters
+  const filterTasks = useMemo(() => {
+    return (tasksToFilter: Task[]) => {
+      return tasksToFilter.filter((task) => {
+        // Filter by status (multiselect)
+        if (filters.status?.length) {
+          const taskStatus = getTaskStatus(task);
+          if (!filters.status.includes(taskStatus)) {
+            return false;
+          }
+        }
+
+        // Filter by priority (multiselect)
+        if (
+          filters.priority?.length &&
+          !filters.priority.includes(task.priority as "High" | "Medium" | "Low")
+        ) {
+          return false;
+        }
+
+        // Filter by search text
+        if (
+          filters.searchText &&
+          !task.title.toLowerCase().includes(filters.searchText.toLowerCase())
+        ) {
+          return false;
+        }
+
+        return true;
+      });
+    };
+  }, [filters]);
+
+  // Convert all tasks to DisplayTask format (for table view)
+  const allDisplayTasks: DisplayTask[] = useMemo(() => {
     return (tasks ?? []).map((task) => ({
       ...task,
       taskType: "wedding" as const,
     }));
   }, [tasks]);
+
+  // Apply filters for list view
+  const displayTasks: DisplayTask[] = useMemo(() => {
+    return filterTasks(allDisplayTasks);
+  }, [allDisplayTasks, filterTasks]);
 
   // Handle view change
   const handleViewChange = (
@@ -179,6 +243,16 @@ const TaskManager: React.FC = () => {
             </ToggleButtonGroup>
           </Box>
 
+          {/* List Filters */}
+          {viewType === "list" && (
+            <Box sx={{mb: 2}}>
+              <TasksFiltersBar
+                filters={filters}
+                onFiltersChange={setFilters}
+                hideWeddingFilter
+              />
+            </Box>)
+          }
           {/* Content based on view type */}
           <Box>
             {isUpdating && viewType === "list" && (
@@ -189,13 +263,14 @@ const TaskManager: React.FC = () => {
 
             {viewType === "table" ? (
               <TaskInlineTable
-                tasks={displayTasks}
+                tasks={allDisplayTasks}
                 onCellUpdate={handleCellUpdate}
                 onAddRow={handleAddRow}
                 onDelete={handleDelete}
                 onBulkComplete={handleBulkComplete}
                 onBulkDelete={handleBulkDelete}
                 weddingMembers={weddingMembers}
+                defaultFilters={DEFAULT_TABLE_FILTERS}
               />
             ) : (
               <TaskList

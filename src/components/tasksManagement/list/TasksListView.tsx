@@ -115,6 +115,9 @@ const TasksListView: React.FC<TasksListViewProps> = ({
       );
     }, [filteredTasks, now, twoWeeks, sevenDaysAgo]);
 
+  // Check if completed tasks should be shown
+  const showCompleted = filters.status?.includes("completed");
+
   const tasksList = [{
     title: 'tasksManagement.list.overdueTitle',
     tasks: overdueTasks
@@ -123,8 +126,13 @@ const TasksListView: React.FC<TasksListViewProps> = ({
     tasks: upcomingTasks
   }, {
     title: 'tasksManagement.list.laterTitle',
-    tasks: laterTasks 
-  }]
+    tasks: laterTasks
+  },
+  // Include completed section when completed status is selected
+  ...(showCompleted ? [{
+    title: 'tasksManagement.list.completedTitle',
+    tasks: allCompletedTasks
+  }] : [])]
 
   if (isLoadingTasks) {
     return (
@@ -135,8 +143,12 @@ const TasksListView: React.FC<TasksListViewProps> = ({
       </Box>
     );
   }
-  // If filtered to show only completed tasks
-  if (filters.status === "completed") {
+  // Check if showing only completed tasks (completed selected, others not)
+  const showOnlyCompleted = filters.status?.includes("completed") &&
+    !filters.status?.includes("not_started") &&
+    !filters.status?.includes("in_progress");
+
+  if (showOnlyCompleted) {
     return (
       <Box>
         <Typography variant="h6" gutterBottom>
@@ -152,7 +164,7 @@ const TasksListView: React.FC<TasksListViewProps> = ({
       </Box>
     );
   }
-  console.log(tasksList)
+
   return (
     <Box>
       {/* Overdue Tasks */}

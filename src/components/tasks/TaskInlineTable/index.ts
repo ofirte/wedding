@@ -13,3 +13,4 @@ export {
 } from "./TaskInlineColumns";
 export type { DisplayTask } from "./TaskInlineColumns";
 export type { TaskTypePopoverProps } from "./TaskTypePopover";
+export type { ColumnFilterState } from "../../common/DSInlineTable/types";

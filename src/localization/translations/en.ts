@@ -52,6 +52,10 @@ export const englishTranslations: Translations = {
     },
     calendar: {
       implementation: "Calendar implementation coming soon",
+      today: "Today",
+      back: "Back",
+      next: "Next",
+      month: "Month",
     },
     stats: {
       total: "Total Tasks",

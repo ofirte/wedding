@@ -6,7 +6,7 @@ import React, {
   ReactNode,
 } from "react";
 import { ViewType, TaskFilter } from "./types";
-import { Task } from "@wedding-plan/types";
+import { Task, TaskStatus } from "@wedding-plan/types";
 
 interface TasksManagementContextType {
   viewType: ViewType;
@@ -18,20 +18,23 @@ interface TasksManagementContextType {
   ) => (Task & { weddingId?: string })[];
 }
 
+// Default filters: exclude completed tasks
 const defaultFilters: TaskFilter = {
-  wedding: null,
+  status: ["not_started", "in_progress"],
   priority: null,
-  status: "all",
+  wedding: null,
   searchText: "",
-  dateRange: {
-    start: null,
-    end: null,
-  },
 };
 
 const TasksManagementContext = createContext<
   TasksManagementContextType | undefined
 >(undefined);
+
+// Helper to get task status (with backward compatibility for completed boolean)
+const getTaskStatus = (task: Task): TaskStatus => {
+  if (task.status) return task.status;
+  return task.completed ? "completed" : "not_started";
+};
 
 export const TasksManagementProvider: React.FC<{ children: ReactNode }> = ({
   children,
@@ -41,13 +44,15 @@ export const TasksManagementProvider: React.FC<{ children: ReactNode }> = ({
   const filterTasks = useMemo(
     () => (tasks: (Task & { weddingId?: string })[]) => {
       return tasks.filter((task: Task & { weddingId?: string }) => {
-        // Filter by wedding (only apply to tasks that have a weddingId)
-        // Producer tasks (no weddingId) should always pass through
-        if (filters.wedding && task.weddingId && task.weddingId !== filters.wedding) {
-          return false;
+        // Filter by status (multiselect)
+        if (filters.status?.length) {
+          const taskStatus = getTaskStatus(task);
+          if (!filters.status.includes(taskStatus)) {
+            return false;
+          }
         }
 
-        // Filter by priority
+        // Filter by priority (multiselect)
         if (
           filters.priority?.length &&
           !filters.priority.includes(task.priority as "High" | "Medium" | "Low")
@@ -55,17 +60,10 @@ export const TasksManagementProvider: React.FC<{ children: ReactNode }> = ({
           return false;
         }
 
-        // Filter by status
-        if (filters.status !== "all") {
-          if (filters.status === "completed" && !task.completed) {
-            return false;
-          }
-          if (filters.status === "unassigned" && task.assignedTo) {
-            return false;
-          }
-          if (filters.status === "inProgress" && !task.assignedTo) {
-            return false;
-          }
+        // Filter by wedding (only apply to tasks that have a weddingId)
+        // Producer tasks (no weddingId) should always pass through
+        if (filters.wedding && task.weddingId && task.weddingId !== filters.wedding) {
+          return false;
         }
 
         // Filter by search text
@@ -74,23 +72,6 @@ export const TasksManagementProvider: React.FC<{ children: ReactNode }> = ({
           !task.title.toLowerCase().includes(filters.searchText.toLowerCase())
         ) {
           return false;
-        }
-
-        // Filter by date range
-        if (task.dueDate) {
-          const dueDate = new Date(task.dueDate);
-          if (
-            filters.dateRange.start &&
-            dueDate < new Date(filters.dateRange.start)
-          ) {
-            return false;
-          }
-          if (
-            filters.dateRange.end &&
-            dueDate > new Date(filters.dateRange.end)
-          ) {
-            return false;
-          }
         }
 
         return true;

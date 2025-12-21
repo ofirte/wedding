@@ -15,7 +15,7 @@ import {
   ExpandLess as ExpandLessIcon,
   Person as PersonIcon,
 } from "@mui/icons-material";
-import { Task } from "@wedding-plan/types";
+import { Task, TaskStatus } from "@wedding-plan/types";
 import { differenceInDays, startOfDay } from "date-fns";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { TaskBadge } from "./TaskBadge";
@@ -28,6 +28,25 @@ import {
 import { useWeddingsDetails } from "../../hooks/wedding/useWeddingsDetails";
 import { stringToColor } from "../../utils/ColorUtils";
 import { useParams } from "react-router";
+
+// Helper to get task status (with backward compatibility for completed boolean)
+const getTaskStatus = (task: Task): TaskStatus => {
+  if (task.status) return task.status;
+  return task.completed ? "completed" : "not_started";
+};
+
+// Status chip configuration
+const getStatusConfig = (status: TaskStatus) => {
+  switch (status) {
+    case "completed":
+      return { color: "success.main", bgColor: "rgba(76, 175, 80, 0.1)" };
+    case "in_progress":
+      return { color: "info.main", bgColor: "rgba(33, 150, 243, 0.1)" };
+    case "not_started":
+    default:
+      return { color: "text.secondary", bgColor: "rgba(158, 158, 158, 0.1)" };
+  }
+};
 
 interface TaskListItemProps {
   task: Task & { weddingId?: string; taskType?: "wedding" | "producer" };
@@ -151,6 +170,25 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({
             flexWrap: "wrap",
           }}
         >
+          {/* Status Badge */}
+          {(() => {
+            const status = getTaskStatus(task);
+            const statusConfig = getStatusConfig(status);
+            const statusKey = status === "not_started" ? "notStarted" : status === "in_progress" ? "inProgress" : "completed";
+            return (
+              <Chip
+                label={t(`tasks.status.${statusKey}`)}
+                size="small"
+                sx={{
+                  height: 22,
+                  fontSize: "0.7rem",
+                  bgcolor: statusConfig.bgColor,
+                  color: statusConfig.color,
+                  fontWeight: 600,
+                }}
+              />
+            );
+          })()}
           {/* Producer Task Badge */}
           {task.taskType === "producer" && (
             <Chip

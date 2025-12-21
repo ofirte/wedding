@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useCallback, useEffect } from "react";
 import { Task } from "@wedding-plan/types";
 import DSInlineTable from "../../common/DSInlineTable";
+import { ColumnFilterState } from "../../common/DSInlineTable/types";
 import { createTaskInlineColumns, DisplayTask } from "./TaskInlineColumns";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import TaskBulkActions from "./TaskBulkActions";
@@ -52,6 +53,8 @@ interface TaskInlineTableProps {
   emptyMessage?: string;
   showExport?: boolean;
   exportFilename?: string;
+  // Default filters to apply on initial render
+  defaultFilters?: ColumnFilterState[];
 }
 
 const TaskInlineTable: React.FC<TaskInlineTableProps> = ({
@@ -69,6 +72,7 @@ const TaskInlineTable: React.FC<TaskInlineTableProps> = ({
   emptyMessage,
   showExport = true,
   exportFilename,
+  defaultFilters,
 }) => {
   const { t } = useTranslation();
   const [selectedRows, setSelectedRows] = useState<DisplayTask[]>([]);
@@ -251,6 +255,7 @@ const TaskInlineTable: React.FC<TaskInlineTableProps> = ({
         showSearch
         searchFields={["title", "description", "category"]}
         defaultSortField="createdAt"
+        defaultFilters={defaultFilters}
         showSelectColumn={enableBulkActions}
         selectedRows={selectedRows}
         onSelectionChange={handleSelectionChange}

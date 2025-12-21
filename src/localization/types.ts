@@ -80,6 +80,10 @@ export interface Translations {
     };
     calendar: {
       implementation: string;
+      today: string;
+      back: string;
+      next: string;
+      month: string;
     };
     stats: {
       total: string;

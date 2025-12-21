@@ -1,12 +1,8 @@
-export type ViewType = "table" | "calendar" | "list" | "stats";
+export type ViewType = "table" | "calendar" | "list";
 
 export interface TaskFilter {
-  wedding: string | null;
+  status: ("not_started" | "in_progress" | "completed")[] | null;
   priority: ("High" | "Medium" | "Low")[] | null;
-  status: "unassigned" | "inProgress" | "completed" | "all";
+  wedding: string | null;
   searchText: string;
-  dateRange: {
-    start: string | null;
-    end: string | null;
-  };
 }

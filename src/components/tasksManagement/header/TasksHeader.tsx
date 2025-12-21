@@ -8,9 +8,10 @@ import {
   alpha,
 } from "@mui/material";
 import { ViewType } from "../types";
-import { CalendarMonth, List, Insights, TableRows } from "@mui/icons-material";
+import { CalendarMonth, List, TableRows } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
+import { useProducerTasks } from "../../../hooks/producerTasks";
 
 interface TasksHeaderProps {
   currentView: ViewType;
@@ -22,7 +23,11 @@ const TasksHeader: React.FC<TasksHeaderProps> = ({
   onViewChange,
 }) => {
   const { t } = useTranslation();
-  const { data: tasks = [] } = useAllWeddingsTasks();
+  const { data: weddingTasks = [] } = useAllWeddingsTasks();
+  const { data: producerTasks = [] } = useProducerTasks();
+
+  // Combine wedding and producer tasks for stats
+  const allTasks = useMemo(() => [...weddingTasks, ...producerTasks], [weddingTasks, producerTasks]);
 
   // Calculate stats for compact display
   const stats = useMemo(() => {
@@ -30,11 +35,11 @@ const TasksHeader: React.FC<TasksHeaderProps> = ({
     const twoWeeks = new Date();
     twoWeeks.setDate(twoWeeks.getDate() + 14);
 
-    const overdue = tasks.filter(
+    const overdue = allTasks.filter(
       (task) => !task.completed && task.dueDate && new Date(task.dueDate) < now
     ).length;
 
-    const upcoming = tasks.filter(
+    const upcoming = allTasks.filter(
       (task) =>
         !task.completed &&
         task.dueDate &&
@@ -42,17 +47,17 @@ const TasksHeader: React.FC<TasksHeaderProps> = ({
         new Date(task.dueDate) <= twoWeeks
     ).length;
 
-    const later = tasks.filter(
+    const later = allTasks.filter(
       (task) =>
         !task.completed &&
         task.dueDate &&
         new Date(task.dueDate) > twoWeeks
     ).length;
 
-    const completed = tasks.filter((task) => task.completed).length;
+    const completed = allTasks.filter((task) => task.completed).length;
 
     return { overdue, upcoming, later, completed };
-  }, [tasks]);
+  }, [allTasks]);
 
   const handleViewChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -78,53 +83,61 @@ const TasksHeader: React.FC<TasksHeaderProps> = ({
           {t("tasksManagement.title")}
         </Typography>
 
-        {/* Compact Status Chips */}
-        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+        {/* Status Chips - more prominent styling */}
+        <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap" }}>
           {stats.overdue > 0 && (
             <Chip
               label={`${stats.overdue} ${t("tasksManagement.list.overdueTitle")}`}
-              size="small"
               sx={{
-                bgcolor: (theme) => alpha(theme.palette.error.main, 0.1),
-                color: "error.main",
-                fontWeight: 600,
-                fontSize: "0.75rem",
+                bgcolor: (theme) => alpha(theme.palette.error.main, 0.15),
+                color: "error.dark",
+                fontWeight: 700,
+                fontSize: "0.8rem",
+                py: 0.5,
+                borderRadius: 2,
+                border: (theme) => `1px solid ${alpha(theme.palette.error.main, 0.3)}`,
               }}
             />
           )}
           {stats.upcoming > 0 && (
             <Chip
               label={`${stats.upcoming} ${t("tasksManagement.list.upcomingTitle")}`}
-              size="small"
               sx={{
-                bgcolor: (theme) => alpha(theme.palette.info.main, 0.1),
-                color: "info.main",
-                fontWeight: 600,
-                fontSize: "0.75rem",
+                bgcolor: (theme) => alpha(theme.palette.info.main, 0.15),
+                color: "info.dark",
+                fontWeight: 700,
+                fontSize: "0.8rem",
+                py: 0.5,
+                borderRadius: 2,
+                border: (theme) => `1px solid ${alpha(theme.palette.info.main, 0.3)}`,
               }}
             />
           )}
           {stats.later > 0 && (
             <Chip
               label={`${stats.later} ${t("tasksManagement.list.laterTitle")}`}
-              size="small"
               sx={{
-                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
-                color: "primary.main",
-                fontWeight: 600,
-                fontSize: "0.75rem",
+                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.15),
+                color: "primary.dark",
+                fontWeight: 700,
+                fontSize: "0.8rem",
+                py: 0.5,
+                borderRadius: 2,
+                border: (theme) => `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
               }}
             />
           )}
           {stats.completed > 0 && (
             <Chip
               label={`${stats.completed} ${t("common.completed")}`}
-              size="small"
               sx={{
-                bgcolor: (theme) => alpha(theme.palette.success.main, 0.1),
-                color: "success.main",
-                fontWeight: 600,
-                fontSize: "0.75rem",
+                bgcolor: (theme) => alpha(theme.palette.success.main, 0.15),
+                color: "success.dark",
+                fontWeight: 700,
+                fontSize: "0.8rem",
+                py: 0.5,
+                borderRadius: 2,
+                border: (theme) => `1px solid ${alpha(theme.palette.success.main, 0.3)}`,
               }}
             />
           )}
@@ -145,9 +158,6 @@ const TasksHeader: React.FC<TasksHeaderProps> = ({
         </ToggleButton>
         <ToggleButton value="calendar" aria-label="calendar view">
           <CalendarMonth />
-        </ToggleButton>
-        <ToggleButton value="stats" aria-label="stats view">
-          <Insights />
         </ToggleButton>
       </ToggleButtonGroup>
     </Box>

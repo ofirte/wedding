@@ -14,9 +14,10 @@ import { DSSelectOption } from "../../cells/DSSelectCell";
 
 export const useTableFiltering = <T extends { id: string | number }>(
   data: T[],
-  columns: InlineColumn<T>[]
+  columns: InlineColumn<T>[],
+  defaultFilters: ColumnFilterState[] = []
 ) => {
-  const [filterStates, setFilterStates] = useState<ColumnFilterState[]>([]);
+  const [filterStates, setFilterStates] = useState<ColumnFilterState[]>(defaultFilters);
 
   // Resolve filter configs - compute dynamic options
   const resolvedFilterConfigs = useMemo((): ResolvedColumnFilterConfig<T>[] => {

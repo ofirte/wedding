@@ -26,8 +26,7 @@ import { useAssignTask } from "../../hooks/tasks/useAssignTask";
 import { useCompleteTask } from "../../hooks/tasks/useCompleteTask";
 import { Task, ProducerTask } from "@wedding-plan/types";
 import TaskForm from "../tasks/TaskForm";
-import TaskSummary from "../tasks/TaskSummary";
-import { TaskInlineTable, DisplayTask } from "../tasks/TaskInlineTable";
+import { TaskInlineTable, DisplayTask, ColumnFilterState } from "../tasks/TaskInlineTable";
 import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { useWeddingsDetails } from "../../hooks/wedding/useWeddingsDetails";
@@ -41,8 +40,17 @@ import {
 } from "../../hooks/producerTasks";
 import { useUpdateTaskOptimistic } from "../../hooks/tasks/useUpdateTaskOptimistic";
 
+// Default filters for inline table: exclude completed tasks
+const DEFAULT_TABLE_FILTERS: ColumnFilterState[] = [
+  {
+    columnId: "status",
+    type: "multiselect",
+    value: { values: ["not_started", "in_progress"] },
+  },
+];
+
 const TasksManagementContent: React.FC = () => {
-  const { viewType, setViewType, filters, setFilters, filterTasks } =
+  const { viewType, setViewType, filters, setFilters } =
     useTasksManagement();
   const { t } = useTranslation();
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -89,8 +97,6 @@ const TasksManagementContent: React.FC = () => {
 
     return [...weddingDisplayTasks, ...producerDisplayTasks];
   }, [weddingTasks, producerTasks]);
-
-  const filteredTasks = filterTasks(allTasks);
 
   const isCreating = isCreatingTask || isCreatingProducerTask;
 
@@ -252,11 +258,10 @@ const TasksManagementContent: React.FC = () => {
               onBulkDelete={handleBulkDelete}
               showWeddingColumn
               weddings={weddings}
+              defaultFilters={DEFAULT_TABLE_FILTERS}
             />
           ) : viewType === "calendar" ? (
             <TasksCalendarView />
-          ) : viewType === "stats" ? (
-            <TaskSummary tasks={filteredTasks} />
           ) : (
             <TasksListView
               onUpdate={handleUpdate}

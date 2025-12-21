@@ -37,6 +37,7 @@ const DSInlineTable = <T extends { id: string | number }>({
   searchFields = [],
   emptyMessage,
   defaultSortField,
+  defaultFilters = [],
   showSelectColumn = false,
   selectedRows = [],
   onSelectionChange,
@@ -86,7 +87,7 @@ const DSInlineTable = <T extends { id: string | number }>({
     clearAllFilters,
     getFilterState,
     getResolvedFilterConfig,
-  } = useTableFiltering(data, columns);
+  } = useTableFiltering(data, columns, defaultFilters);
 
   const { searchQuery, setSearchQuery, filteredData, searchPlaceholder } =
     useTableSearch(filterOutputData, searchFields, columns, t);
