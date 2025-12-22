@@ -10,6 +10,7 @@ import { useWeddingsDetails } from "src/hooks/wedding";
 import { stringToColor } from "src/utils/ColorUtils";
 import { useTasksManagement } from "../TasksManagementContext";
 import { PRIORITY_COLORS } from "../../tasks/TaskInlineTable/TaskInlineColumns";
+import { getTaskStatus } from "../../tasks/taskUtils";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 // Helper to strip HTML and truncate text for description preview
@@ -96,9 +97,9 @@ const TasksCalendarView: React.FC = () => {
 
   // Helper to get translated status label
   const getStatusLabel = (task: Task): string => {
-    if (task.status === "completed" || task.completed)
-      return t("tasks.status.completed");
-    if (task.status === "in_progress") return t("tasks.status.inProgress");
+    const status = getTaskStatus(task);
+    if (status === "completed") return t("tasks.status.completed");
+    if (status === "in_progress") return t("tasks.status.inProgress");
     return t("tasks.status.notStarted");
   };
 

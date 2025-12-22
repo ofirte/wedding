@@ -6,6 +6,7 @@ import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
 import { Task } from "@wedding-plan/types";
 import { useTasksManagement } from "../TasksManagementContext";
 import { useProducerTasks } from "../../../hooks/producerTasks";
+import { isTaskCompleted } from "../../tasks/taskUtils";
 
 interface TasksListViewProps {
   // Unified callbacks - routing based on taskType is handled by parent
@@ -74,7 +75,7 @@ const TasksListView: React.FC<TasksListViewProps> = ({
       return filteredTasks.reduce<TaskGroups>(
         (acc, task) => {
           // Handle completed tasks separately
-          if (task.completed) {
+          if (isTaskCompleted(task)) {
             acc.allCompletedTasks.push(task);
             // Add to recently completed if completed in last 7 days
             if (task.completedAt) {

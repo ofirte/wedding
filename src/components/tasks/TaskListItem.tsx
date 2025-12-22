@@ -24,16 +24,12 @@ import {
   getPriorityBorderColor,
   getTaskBackgroundTint,
   getPriorityBadgeColor,
+  getTaskStatus,
+  isTaskCompleted,
 } from "./taskUtils";
 import { useWeddingsDetails } from "../../hooks/wedding/useWeddingsDetails";
 import { stringToColor } from "../../utils/ColorUtils";
 import { useParams } from "react-router";
-
-// Helper to get task status (with backward compatibility for completed boolean)
-const getTaskStatus = (task: Task): TaskStatus => {
-  if (task.status) return task.status;
-  return task.completed ? "completed" : "not_started";
-};
 
 // Status chip configuration
 const getStatusConfig = (status: TaskStatus) => {
@@ -131,8 +127,8 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({
           sx={{ display: "flex", alignItems: "center" }}
         >
           <Checkbox
-            checked={task.completed}
-            onChange={() => onToggleComplete(task.id, task.completed)}
+            checked={isTaskCompleted(task)}
+            onChange={() => onToggleComplete(task.id, isTaskCompleted(task))}
             size="small"
             sx={{
               "&.Mui-checked": {
@@ -149,8 +145,8 @@ export const TaskListItem: React.FC<TaskListItemProps> = ({
             sx={{
               fontWeight: 600,
               fontSize: "14px",
-              textDecoration: task.completed ? "line-through" : "none",
-              color: task.completed ? "text.secondary" : "text.primary",
+              textDecoration: isTaskCompleted(task) ? "line-through" : "none",
+              color: isTaskCompleted(task) ? "text.secondary" : "text.primary",
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",

@@ -15,6 +15,7 @@ import useTasks from "../../hooks/tasks/useTasks";
 import { useWeddingDate } from "../../hooks/wedding/useWeddingDate";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { gridColumns } from "../../utils/ResponsiveUtils";
+import { isTaskCompleted } from "../tasks/taskUtils";
 
 // Utility function to format currency
 const formatCurrency = (amount: number): string => {
@@ -54,7 +55,7 @@ const StatCards: React.FC<StatCardsProps> = () => {
   };
 
   const totalTasks = tasks?.length || 0;
-  const completedTasks = tasks?.filter((task) => task.completed).length || 0;
+  const completedTasks = tasks?.filter((task) => isTaskCompleted(task)).length || 0;
   const percentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
   const taskStats = {

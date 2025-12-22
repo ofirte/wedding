@@ -8,6 +8,7 @@ import {
 } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
+import { isTaskCompleted } from "../../tasks/taskUtils";
 
 interface StatsCardProps {
   icon: React.ReactNode;
@@ -43,18 +44,18 @@ const TasksStatsBar: React.FC = () => {
 
     const total = tasks.length;
     const overdue = tasks.filter(
-      (task) => !task.completed && task.dueDate && new Date(task.dueDate) < now
+      (task) => !isTaskCompleted(task) && task.dueDate && new Date(task.dueDate) < now
     ).length;
     const thisWeek = tasks.filter(
       (task) =>
-        !task.completed &&
+        !isTaskCompleted(task) &&
         task.dueDate &&
         new Date(task.dueDate) >= now &&
         new Date(task.dueDate) <= nextWeek
     ).length;
     const completed = total
       ? Math.round(
-          (tasks.filter((task) => task.completed).length / total) * 100
+          (tasks.filter((task) => isTaskCompleted(task)).length / total) * 100
         )
       : 0;
     const activeWeddings = new Set(tasks.map((task) => task.weddingId)).size;

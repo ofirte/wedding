@@ -9,8 +9,8 @@ export {
   PRIORITY_OPTIONS,
   PRIORITY_COLORS,
   STATUS_COLORS,
-  getTaskStatus,
 } from "./TaskInlineColumns";
+export { getTaskStatus } from "../taskUtils";
 export type { DisplayTask } from "./TaskInlineColumns";
 export type { TaskTypePopoverProps } from "./TaskTypePopover";
 export type { ColumnFilterState } from "../../common/DSInlineTable/types";

@@ -42,17 +42,11 @@ interface TaskFormData {
   dueDate: string;
   category: string;
   assignedTo: string;
-  status: TaskStatus;
+  status: "not_started" | "in_progress" | "completed";
   // Producer context fields
   formTaskType: "wedding" | "producer";
   selectedWeddingId: string;
 }
-
-// Helper to get task status (with backward compatibility for completed boolean)
-const getTaskStatus = (task: Partial<Task>): TaskStatus => {
-  if (task.status) return task.status;
-  return task.completed ? "completed" : "not_started";
-};
 
 interface TaskFormProps {
   onAddTask: (task: Omit<Task, "id"> | Task, weddingId?: string) => void;
@@ -116,7 +110,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
             dueDate: initialTask.dueDate || "",
             category: initialTask.category || "",
             assignedTo: initialTask.assignedTo || "",
-            status: getTaskStatus(initialTask),
+            status: initialTask.status || (initialTask.completed ? "completed" : "not_started"),
             formTaskType: taskTypeProp || "wedding",
             selectedWeddingId: "",
           }

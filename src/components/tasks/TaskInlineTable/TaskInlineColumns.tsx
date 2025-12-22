@@ -5,6 +5,7 @@ import { IconButton, Chip, Box, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { DSSelectOption } from "../../common/cells/DSSelectCell";
+import { getTaskStatus } from "../taskUtils";
 
 // Extended task type that includes producer tasks for unified display
 export interface DisplayTask extends Task {
@@ -45,13 +46,6 @@ const PRIORITY_SORT_ORDER: Record<string, number> = {
   High: 0,
   Medium: 1,
   Low: 2,
-};
-
-// Get status from task (with backward compatibility)
-export const getTaskStatus = (task: DisplayTask): TaskStatus => {
-  if (task.status) return task.status;
-  // Backward compatibility: derive from completed boolean
-  return task.completed ? "completed" : "not_started";
 };
 
 interface WeddingMember {

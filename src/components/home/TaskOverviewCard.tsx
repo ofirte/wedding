@@ -22,6 +22,7 @@ import useTasks from "../../hooks/tasks/useTasks";
 import { Task } from "@wedding-plan/types";
 import { useCompleteTask } from "../../hooks/tasks/useCompleteTask";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { isTaskCompleted } from "../tasks/taskUtils";
 
 // Styled LinearProgress for better visualization
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -89,7 +90,7 @@ const DateChip = styled(Chip)(({ theme }) => ({
 }));
 
 const calculateTaskImportance = (task: Task): number => {
-  if (task.completed) return 0;
+  if (isTaskCompleted(task)) return 0;
 
   let score =
     PRIORITY_WEIGHTS[task.priority as keyof typeof PRIORITY_WEIGHTS] || 0;
@@ -119,7 +120,7 @@ const calculateTaskImportance = (task: Task): number => {
 // Function to get most important tasks
 const getMostImportantTasks = (tasks: Task[], limit: number = 4): Task[] => {
   return tasks
-    .filter((task) => !task.completed)
+    .filter((task) => !isTaskCompleted(task))
     .map((task) => ({ ...task, importance: calculateTaskImportance(task) }))
     .sort((a, b) => b.importance - a.importance)
     .slice(0, limit)
@@ -142,7 +143,7 @@ const TaskOverviewCard: React.FC = () => {
   };
 
   const totalTasks = tasks?.length ?? 0;
-  const completedTasks = tasks?.filter((task) => task.completed).length ?? 0;
+  const completedTasks = tasks?.filter((task) => isTaskCompleted(task)).length ?? 0;
   const percentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
   const inProgressTasks =
@@ -323,22 +324,22 @@ const TaskOverviewCard: React.FC = () => {
                     <Box
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleTaskComplete(task.id, !task.completed);
+                        handleTaskComplete(task.id, !isTaskCompleted(task));
                       }}
                       sx={{
                         cursor: "pointer",
-                        color: task.completed
+                        color: isTaskCompleted(task)
                           ? "success.main"
                           : "text.disabled",
                         transition: "color 0.2s ease",
                         "&:hover": {
-                          color: task.completed
+                          color: isTaskCompleted(task)
                             ? "success.dark"
                             : "primary.main",
                         },
                       }}
                     >
-                      {task.completed ? (
+                      {isTaskCompleted(task) ? (
                         <CheckIcon fontSize="small" />
                       ) : (
                         <UncheckIcon fontSize="small" />
@@ -360,10 +361,10 @@ const TaskOverviewCard: React.FC = () => {
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
-                          textDecoration: task.completed
+                          textDecoration: isTaskCompleted(task)
                             ? "line-through"
                             : "none",
-                          opacity: task.completed ? 0.6 : 1,
+                          opacity: isTaskCompleted(task) ? 0.6 : 1,
                         }}
                       >
                         {task.title}

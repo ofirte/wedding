@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import { DisplayTask } from "./TaskInlineColumns";
+import { isTaskCompleted } from "../taskUtils";
 
 interface TaskBulkCompleteDialogProps {
   open: boolean;
@@ -26,7 +27,7 @@ const TaskBulkCompleteDialog: React.FC<TaskBulkCompleteDialogProps> = ({
   const { t } = useTranslation();
 
   // Count only incomplete tasks
-  const incompleteCount = selectedRows.filter((t) => !t.completed).length;
+  const incompleteCount = selectedRows.filter((t) => !isTaskCompleted(t)).length;
 
   return (
     <Dialog open={open} onClose={onClose}>

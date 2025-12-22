@@ -12,6 +12,7 @@ import { CalendarMonth, List, TableRows } from "@mui/icons-material";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
 import { useProducerTasks } from "../../../hooks/producerTasks";
+import { isTaskCompleted } from "../../tasks/taskUtils";
 
 interface TasksHeaderProps {
   currentView: ViewType;
@@ -36,12 +37,12 @@ const TasksHeader: React.FC<TasksHeaderProps> = ({
     twoWeeks.setDate(twoWeeks.getDate() + 14);
 
     const overdue = allTasks.filter(
-      (task) => !task.completed && task.dueDate && new Date(task.dueDate) < now
+      (task) => !isTaskCompleted(task) && task.dueDate && new Date(task.dueDate) < now
     ).length;
 
     const upcoming = allTasks.filter(
       (task) =>
-        !task.completed &&
+        !isTaskCompleted(task) &&
         task.dueDate &&
         new Date(task.dueDate) >= now &&
         new Date(task.dueDate) <= twoWeeks
@@ -49,12 +50,12 @@ const TasksHeader: React.FC<TasksHeaderProps> = ({
 
     const later = allTasks.filter(
       (task) =>
-        !task.completed &&
+        !isTaskCompleted(task) &&
         task.dueDate &&
         new Date(task.dueDate) > twoWeeks
     ).length;
 
-    const completed = allTasks.filter((task) => task.completed).length;
+    const completed = allTasks.filter((task) => isTaskCompleted(task)).length;
 
     return { overdue, upcoming, later, completed };
   }, [allTasks]);

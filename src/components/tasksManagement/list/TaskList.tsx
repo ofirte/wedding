@@ -17,6 +17,7 @@ import { useTranslation } from "../../../localization/LocalizationContext";
 import { Task } from "@wedding-plan/types";
 import { useWeddingsDetails } from "src/hooks/wedding";
 import { stringToColor } from "src/utils/ColorUtils";
+import { isTaskCompleted } from "../../tasks/taskUtils";
 
 interface TaskListProps {
   tasks: (Task & { weddingId: string })[];
@@ -80,7 +81,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
               </Box>
             }
           >
-            <Checkbox checked={task.completed} edge="start" />
+            <Checkbox checked={isTaskCompleted(task)} edge="start" />
             <ListItemText
               primary={
                 <Box
@@ -94,7 +95,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
                   <Typography
                     variant="body1"
                     sx={{
-                      textDecoration: task.completed ? "line-through" : "none",
+                      textDecoration: isTaskCompleted(task) ? "line-through" : "none",
                       fontWeight: 500,
                     }}
                   >
@@ -103,16 +104,16 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
                   {/* Status Badge */}
                   <Chip
                     label={
-                      task.completed
+                      isTaskCompleted(task)
                         ? t("common.completed")
                         : task.assignedTo
                         ? t("common.inProgress")
                         : t("common.unassigned")
                     }
                     size="small"
-                    variant={task.completed ? "filled" : "outlined"}
+                    variant={isTaskCompleted(task) ? "filled" : "outlined"}
                     color={
-                      task.completed
+                      isTaskCompleted(task)
                         ? "success"
                         : task.assignedTo
                         ? "primary"

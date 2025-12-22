@@ -23,8 +23,9 @@ import { useDeleteTask } from "../../hooks/tasks/useDeleteTask";
 import { useAssignTask } from "../../hooks/tasks/useAssignTask";
 import { useCompleteTask } from "../../hooks/tasks/useCompleteTask";
 import { useWeddingMembers } from "../../hooks/wedding";
-import { Task, TaskStatus } from "@wedding-plan/types";
+import { Task } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
+import { getTaskStatus } from "./taskUtils";
 
 // Default filters for list view: exclude completed tasks
 const defaultFilters: TaskFilter = {
@@ -42,12 +43,6 @@ const DEFAULT_TABLE_FILTERS: ColumnFilterState[] = [
     value: { values: ["not_started", "in_progress"] },
   },
 ];
-
-// Helper to get task status (with backward compatibility for completed boolean)
-const getTaskStatus = (task: Task): TaskStatus => {
-  if (task.status) return task.status;
-  return task.completed ? "completed" : "not_started";
-};
 
 type ViewType = "table" | "list";
 

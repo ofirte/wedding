@@ -6,7 +6,8 @@ import React, {
   ReactNode,
 } from "react";
 import { ViewType, TaskFilter } from "./types";
-import { Task, TaskStatus } from "@wedding-plan/types";
+import { Task } from "@wedding-plan/types";
+import { getTaskStatus } from "../tasks/taskUtils";
 
 interface TasksManagementContextType {
   viewType: ViewType;
@@ -30,12 +31,6 @@ const TasksManagementContext = createContext<
   TasksManagementContextType | undefined
 >(undefined);
 
-// Helper to get task status (with backward compatibility for completed boolean)
-const getTaskStatus = (task: Task): TaskStatus => {
-  if (task.status) return task.status;
-  return task.completed ? "completed" : "not_started";
-};
-
 export const TasksManagementProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
@@ -47,6 +42,7 @@ export const TasksManagementProvider: React.FC<{ children: ReactNode }> = ({
         // Filter by status (multiselect)
         if (filters.status?.length) {
           const taskStatus = getTaskStatus(task);
+          console.log("Filtering task", task.id, "with status", taskStatus);
           if (!filters.status.includes(taskStatus)) {
             return false;
           }

@@ -8,6 +8,7 @@ import TaskBulkActions from "./TaskBulkActions";
 import TaskBulkCompleteDialog from "./TaskBulkCompleteDialog";
 import TaskBulkDeleteDialog from "./TaskBulkDeleteDialog";
 import TaskTypePopover from "./TaskTypePopover";
+import { isTaskCompleted } from "../taskUtils";
 
 interface WeddingMember {
   userId: string;
@@ -174,7 +175,7 @@ const TaskInlineTable: React.FC<TaskInlineTableProps> = ({
 
   const handleBulkCompleteConfirm = useCallback(() => {
     if (onBulkComplete) {
-      const incompleteTasks = selectedRows.filter((t) => !t.completed);
+      const incompleteTasks = selectedRows.filter((t) => !isTaskCompleted(t));
       onBulkComplete(incompleteTasks);
     }
     setSelectedRows([]);

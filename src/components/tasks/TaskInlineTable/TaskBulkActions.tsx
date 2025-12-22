@@ -5,6 +5,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useTranslation } from "../../../localization/LocalizationContext";
 import { DisplayTask } from "./TaskInlineColumns";
+import { isTaskCompleted } from "../taskUtils";
 
 interface TaskBulkActionsProps {
   selectedRows: DisplayTask[];
@@ -26,7 +27,7 @@ const TaskBulkActions: React.FC<TaskBulkActionsProps> = ({
   if (selectedRows.length === 0) return null;
 
   // Count incomplete tasks for complete button
-  const incompleteCount = selectedRows.filter((t) => !t.completed).length;
+  const incompleteCount = selectedRows.filter((t) => !isTaskCompleted(t)).length;
 
   return (
     <Stack direction="row" spacing={1} alignItems="center">

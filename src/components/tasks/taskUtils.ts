@@ -1,4 +1,20 @@
-import { Task } from "@wedding-plan/types";
+import { Task, TaskStatus, ProducerTask } from "@wedding-plan/types";
+
+/**
+ * Get task status with backward compatibility for legacy tasks
+ * Prefers explicit status field, falls back to completed boolean
+ */
+export const getTaskStatus = (task: Task | ProducerTask): TaskStatus => {
+  if (task.status) return task.status;
+  return task.completed === true ? "completed" : "not_started";
+};
+
+/**
+ * Check if a task is completed using status field (with legacy fallback)
+ */
+export const isTaskCompleted = (task: Task | ProducerTask): boolean => {
+  return getTaskStatus(task) === "completed";
+};
 
 /**
  * Get border color based on task priority
@@ -36,7 +52,7 @@ export const getPriorityBadgeColor = (priority: string): string => {
  * Get background tint based on task status and due date
  */
 export const getTaskBackgroundTint = (task: Task): string => {
-  if (task.completed) {
+  if (isTaskCompleted(task)) {
     return "rgba(109, 169, 122, 0.05)"; // Light green tint
   }
 
@@ -67,8 +83,10 @@ export const getTaskBackgroundTint = (task: Task): string => {
  */
 export const sortTasks = (tasks: Task[]): Task[] => {
   return [...tasks].sort((a, b) => {
-    if (!a.completed && b.completed) return -1;
-    if (a.completed && !b.completed) return 1;
+    const aCompleted = isTaskCompleted(a);
+    const bCompleted = isTaskCompleted(b);
+    if (!aCompleted && bCompleted) return -1;
+    if (aCompleted && !bCompleted) return 1;
     if (!a.assignedTo && b.assignedTo) return -1;
     if (a.assignedTo && !b.assignedTo) return 1;
     return 0;
