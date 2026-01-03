@@ -33,7 +33,7 @@ const TaskFilterBar: React.FC<TaskFilterBarProps> = ({
   onFiltersChange,
 }) => {
   const { t } = useTranslation();
-    const { data: tasks, isLoading } = useTasks();
+    const { data: tasks } = useTasks();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 

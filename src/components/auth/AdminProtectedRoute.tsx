@@ -12,9 +12,7 @@ interface AdminProtectedRouteProps {
  * Protected route that ensures only admin users can access
  * Checks if the user has admin role in their claims
  */
-const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = ({
-  redirectPath = "/weddings",
-}) => {
+const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = () => {
   const { role, isClaimsLoading } = useAuth();
 
   if (isClaimsLoading) {

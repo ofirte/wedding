@@ -41,7 +41,7 @@ const DynamicRSVPForm: React.FC<DynamicRSVPFormProps> = ({
   // Simple helper functions like the original
   const getNextUnansweredQuestion = (data: Record<string, any>) => {
     // Get currently visible questions based on attendance
-    const currentlyVisible = questions.filter((question, index) => {
+    const currentlyVisible = questions.filter((_question, index) => {
       // Always show first question (attendance)
       if (index === 0) return true;
 

@@ -19,7 +19,7 @@ type SummaryProps = {
   totalBudget?: number;
 };
 
-const BudgetSummary: React.FC<SummaryProps> = ({ totals, totalBudget = 0 }) => {
+const BudgetSummary: React.FC<SummaryProps> = ({ totals }) => {
   const { t } = useTranslation();
 
   // Format currency

@@ -1,10 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getGlobalTemplates } from "../../api/globalTemplates";
 
-interface UseGlobalTemplatesOptions {
-  syncApprovalStatus?: boolean; // For future compatibility with approval status sync
-}
-
 /**
  * Hook to fetch global templates from both Twilio and Firebase
  * Returns only templates that exist in both sources (intersection)

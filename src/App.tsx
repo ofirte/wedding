@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
 import { Outlet } from "react-router";

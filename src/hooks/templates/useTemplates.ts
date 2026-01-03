@@ -12,7 +12,7 @@ export const useTemplates = (options?: any) => {
 
   // Call both hooks unconditionally (Rules of Hooks)
   const weddingTemplatesResult = useWeddingTemplates(options);
-  const globalTemplatesResult = useGlobalTemplates(options);
+  const globalTemplatesResult = useGlobalTemplates();
 
   // Return the appropriate result based on context
   return isAdminContext ? globalTemplatesResult : weddingTemplatesResult;

@@ -37,7 +37,7 @@ export const InvitationsTable: React.FC<InvitationsTableProps> = ({
 
   const { mutate: resendInvitation, isPending: isResending } =
     useResendInvitation({
-      onSuccess: (data) => {
+      onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["invitations"] });
         onSuccess?.(t("invitations.resendSuccess"));
       },

@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Stack, Typography, Button } from "@mui/material";
 import { Download as DownloadIcon, PersonAdd as PersonAddIcon, CheckCircle as CheckCircleIcon } from "@mui/icons-material";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import { Table, Invitee } from "@wedding-plan/types";
 import { useTranslation } from "../../localization/LocalizationContext";
 import SeatingStats from "./SeatingStats";

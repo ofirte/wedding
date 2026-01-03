@@ -171,7 +171,7 @@ const ManageSidebar: React.FC<ManageSidebarProps> = ({
 
       <Divider />
       <List sx={{ py: 1, flexGrow: 1 }}>
-        {menuItems.map((item, index) => {
+        {menuItems.map((item) => {
           const isActive = isMenuItemActive(item.path);
           const styles = getMenuItemStyles(isActive);
           return (
@@ -209,7 +209,7 @@ const ManageSidebar: React.FC<ManageSidebarProps> = ({
             </Typography>
           </Box>
           <List sx={{ py: 0, pb: 1 }}>
-            {adminMenuItems.map((item, index) => {
+            {adminMenuItems.map((item) => {
               const isActive = isMenuItemActive(item.path);
               const styles = getMenuItemStyles(isActive);
 

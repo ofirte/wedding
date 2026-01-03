@@ -69,7 +69,7 @@ const TaskCard = styled(Box)(({ theme }) => ({
   },
 }));
 
-const PriorityChip = styled(Chip)(({ theme }) => ({
+const PriorityChip = styled(Chip)(() => ({
   height: 20,
   fontSize: "0.65rem",
   fontWeight: 600,
@@ -79,7 +79,7 @@ const PriorityChip = styled(Chip)(({ theme }) => ({
   },
 }));
 
-const DateChip = styled(Chip)(({ theme }) => ({
+const DateChip = styled(Chip)(() => ({
   height: 20,
   fontSize: "0.65rem",
   "& .MuiChip-label": {

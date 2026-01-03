@@ -1,4 +1,3 @@
-import React from "react";
 import { InlineColumn } from "./types";
 import { MemoizedEditableCell, MemoizedSelectCell, MemoizedAutocompleteCell } from "./cells";
 

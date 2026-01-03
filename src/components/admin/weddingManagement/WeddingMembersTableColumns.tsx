@@ -1,5 +1,4 @@
 import { Box, Stack } from "@mui/system";
-import React from "react";
 import { UserInfo } from "src/hooks/auth/useUsersInfo";
 
 import { Avatar, Button, Chip, Typography } from "@mui/material";

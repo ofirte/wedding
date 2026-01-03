@@ -383,7 +383,7 @@ const TaskTemplateBuilderPage: React.FC = () => {
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Header with breadcrumbs */}
       <Box sx={{ mb: 2, display: "flex", alignItems: "center", gap: 2, justifyContent: 'space-between' }}>
-        <Breadcrumbs separator={<LocalizedNavigateIcon fontSize="small" />}>
+        <Breadcrumbs>
           <Link
             component="button"
             variant="body2"

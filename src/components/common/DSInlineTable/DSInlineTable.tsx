@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, forwardRef } from "react";
+import { useCallback, useRef, forwardRef } from "react";
 import {
   Table,
   TableBody,
