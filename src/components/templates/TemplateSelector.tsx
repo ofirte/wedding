@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useTranslation } from "../../localization/LocalizationContext";
 import { TemplateDocument } from "@wedding-plan/types";

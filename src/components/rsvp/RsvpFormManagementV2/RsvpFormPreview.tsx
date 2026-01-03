@@ -284,7 +284,6 @@ const RsvpFormPreview: React.FC = () => {
             >
               <RSVPFormQuestionCard
                 question={question}
-                questionNumber={index + 1}
                 value={formValues[question.id]}
                 isOpen={openQuestionId === question.id}
                 isClickable={true}

@@ -100,7 +100,7 @@ const RSVPStatusTab: React.FC = () => {
     setIsDialogOpen(false);
   };
 
-  const handleFilteredDataChange = (data: any[]) => {
+  const handleFilteredDataChange = (_data: any[]) => {
     // Optional: Track displayed data after DSTable filtering
   };
 

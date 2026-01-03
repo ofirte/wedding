@@ -4,7 +4,6 @@ import {
   Button,
   Typography,
   Paper,
-  Grid,
   TextField,
   Tabs,
   Tab,
@@ -84,7 +83,7 @@ const SetupWeddingPage: React.FC = () => {
     }
   }, [searchParams]);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
     setError(null);
   };

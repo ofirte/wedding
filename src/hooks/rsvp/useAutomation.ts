@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-import { useSendAutomations } from "./useSendAutomations";
 import { useWeddingQuery } from "../common";
 import { fetchSendAutomation } from "src/api/rsvp/sendAutomationsApi";
 import { SendMessagesAutomation } from "@wedding-plan/types";

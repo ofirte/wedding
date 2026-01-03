@@ -37,7 +37,6 @@ interface UseDynamicRSVPTableColumnsProps {
  */
 export const useDynamicRSVPTableColumns = ({
   selectedTemplate,
-  sentMessages,
   isAdmin,
 }: UseDynamicRSVPTableColumnsProps): Column<InviteeWithDynamicRSVP>[] => {
   const { t } = useTranslation();

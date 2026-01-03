@@ -21,8 +21,6 @@ import {
 import {
   Close as CloseIcon,
   Delete as DeleteIcon,
-  TextFields as TextFieldsIcon,
-  Image as ImageIcon,
   Edit as EditIcon,
   Save as SaveIcon,
   Cancel as CancelIcon,

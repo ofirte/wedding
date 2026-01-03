@@ -19,10 +19,8 @@ const SeatingToolbar: React.FC<SeatingToolbarProps> = ({
   invitees,
   onOpenAssignment,
   onExport,
-  isSaving = false,
 }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { weddingId } = useParams<{ weddingId: string }>();
 
   const handleOpenAttendanceTracker = () => {

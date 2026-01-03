@@ -2,7 +2,6 @@ import React from "react";
 import { WeddingRSVPConfig } from "@wedding-plan/types";
 import RsvpFormManagementContainer from "../RsvpFormManagementV2/rsvpFormManagementContainer";
 import AutomationMessagesSchedulerContainer from "../AutomationMessagesScheduler/AutomationMessagesSchedulerContainer";
-import { useAllAutomationsApproved } from "../../../hooks/rsvp";
 
 export interface StepConfig {
   id: string;

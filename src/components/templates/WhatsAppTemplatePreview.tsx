@@ -21,7 +21,6 @@ interface WhatsAppTemplatePreviewProps {
 const WhatsAppTemplatePreview: React.FC<WhatsAppTemplatePreviewProps> = ({
   template,
   scheduledTime,
-  automationName,
   showHeader = true,
 }) => {
   const { language } = useTranslation();

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   CheckCircle as CheckCircleIcon,
   Schedule as ScheduleIcon,

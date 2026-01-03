@@ -8,10 +8,9 @@ interface UseGlobalTemplatesOptions {
 /**
  * Hook to fetch global templates from both Twilio and Firebase
  * Returns only templates that exist in both sources (intersection)
- * @param options Configuration options
  * @returns Query result object for combined global templates
  */
-export const useGlobalTemplates = (options: UseGlobalTemplatesOptions = {}) => {
+export const useGlobalTemplates = () => {
 
   const query = useQuery({
     queryKey: ["globalTemplates"],

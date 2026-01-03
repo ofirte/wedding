@@ -42,19 +42,20 @@ export const formatPhoneNumber = (phoneNumber: string): string => {
 export const displayPhoneNumber = (phoneNumber: string): string => {
   const formatted = formatPhoneNumber(phoneNumber);
 
-  if (formatted.length === 10) {
-    // US format: XXX-XXX-XXXX
-    return `${formatted.substring(0, 3)}-${formatted.substring(
-      3,
-      6
-    )}-${formatted.substring(6)}`;
-  } else if (formatted.length === 10 && formatted.startsWith("0")) {
+  if (formatted.length === 10 && formatted.startsWith("0")) {
     // Israeli format: 0XX-XXX-XXXX
     return `${formatted.substring(0, 3)}-${formatted.substring(
       3,
       6
     )}-${formatted.substring(6)}`;
   }
+  else if (formatted.length === 10) {
+    // US format: XXX-XXX-XXXX
+    return `${formatted.substring(0, 3)}-${formatted.substring(
+      3,
+      6
+    )}-${formatted.substring(6)}`;
+  } 
 
   // Return formatted digits if we can't make a nice display format
   return formatted;

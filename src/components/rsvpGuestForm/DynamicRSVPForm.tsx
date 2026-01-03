@@ -68,7 +68,7 @@ const DynamicRSVPForm: React.FC<DynamicRSVPFormProps> = ({
   };
 
   // Get visible questions based on attendance answer
-  const visibleQuestions = questions.filter((question, index) => {
+  const visibleQuestions = questions.filter((question) => {
     // Always show attendance question (should be first)
     if (question.id === "attendance") return true;
 
@@ -300,7 +300,7 @@ const DynamicRSVPForm: React.FC<DynamicRSVPFormProps> = ({
       )}
 
       <Box component="form" onSubmit={handleSubmit} ref={questionsRef}>
-        {visibleQuestions.map((question, index) =>
+        {visibleQuestions.map((question) =>
           renderQuestionCard(
             question,
             questions.findIndex((q) => q.id === question.id)

@@ -1,4 +1,3 @@
-import React from "react";
 import { Column } from "../common/DSTable";
 import { Chip, Box, Typography } from "@mui/material";
 import {

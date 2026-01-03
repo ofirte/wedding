@@ -2,10 +2,9 @@
  * Column definitions for the Template Task inline table
  */
 
-import React from "react";
 import { TaskTemplateItem } from "@wedding-plan/types";
 import { InlineColumn } from "../common/DSInlineTable";
-import { IconButton, Chip, Box, Tooltip } from "@mui/material";
+import { IconButton, Box, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { DSSelectOption } from "../common/cells/DSSelectCell";

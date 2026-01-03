@@ -34,7 +34,7 @@ export const useDeleteLead = () => {
       console.log("Lead deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["leads"] });
     },
-    onError: (error, variables, context) => {
+    onError: (error, _variables, context) => {
       console.error("Error deleting lead:", error);
       // Rollback to the previous value on error
       if (context?.previousLeads) {

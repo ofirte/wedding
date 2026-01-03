@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { db } from "../api/firebaseConfig";
 import { collection, getDocs, setDoc, doc } from "firebase/firestore";
 import initialData from "../initialData.json";

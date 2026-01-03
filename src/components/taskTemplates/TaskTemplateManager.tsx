@@ -8,11 +8,9 @@ import { useNavigate } from "react-router";
 import {
   Box,
   Container,
-  Paper,
   Typography,
   Fab,
   IconButton,
-  Chip,
   Tooltip,
   Snackbar,
   Alert,
@@ -30,7 +28,6 @@ import {
 } from "../../hooks/taskTemplates";
 import DSTable from "../common/DSTable";
 import ApplyTaskTemplateDialog from "./ApplyTaskTemplateDialog";
-import { formatRelativeDueDate } from "../../utils/taskTemplateUtils";
 
 const TaskTemplateManager: React.FC = () => {
   const { t } = useTranslation();
@@ -43,7 +40,7 @@ const TaskTemplateManager: React.FC = () => {
   const [applySuccessMessage, setApplySuccessMessage] = useState("");
 
   // Fetch templates
-  const { data: templates = [], isLoading } = useTaskTemplates();
+  const { data: templates = [] } = useTaskTemplates();
 
   // Delete mutation
   const { mutate: deleteTemplate } = useDeleteTaskTemplate();

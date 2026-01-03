@@ -91,7 +91,7 @@ export const useUpdateLead = () => {
     },
     // Note: No invalidateQueries here - optimistic update keeps UI in sync
     // and invalidation would interfere with Tab navigation between cells
-    onError: (error, variables, context) => {
+    onError: (error, _variables, context) => {
       console.error("Error updating lead:", error);
       // Rollback to the previous value on error
       if (context?.previousLeads) {

@@ -58,13 +58,6 @@ const RelativeDatePicker: React.FC<RelativeDatePickerProps> = ({
     onDirectionChange(value === '' ? undefined : value);
   };
 
-  // Helper to clear all fields
-  const clearAll = () => {
-    onAmountChange(undefined);
-    onUnitChange(undefined);
-    onDirectionChange(undefined);
-  };
-
   return (
     <Box>
       <Grid container spacing={1}>

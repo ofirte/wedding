@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import useAllWeddingsTasks from "src/hooks/tasks/useAllWeddingsTasks";
 
 const TasksManagement: FC = () => {

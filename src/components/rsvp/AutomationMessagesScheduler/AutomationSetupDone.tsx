@@ -1,6 +1,6 @@
 import { Typography, Paper, Fade } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { FC } from "react";
+import { FC } from "react";
 import { useTranslation } from "src/localization/LocalizationContext";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 

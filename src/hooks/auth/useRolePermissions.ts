@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { WeddingRole, WeddingRoles } from "@wedding-plan/types";
-import { useCurrentUser } from "./useCurrentUser";
 import { useAuth } from "./AuthContext";
 
 /**

@@ -44,7 +44,7 @@ export const useInitializeNewUser = (
       });
       return result.data;
     },
-    onSuccess: (data, variables) => {
+    onSuccess: () => {
       // Invalidate user claims and current user queries to refresh the data
       queryClient.invalidateQueries({ queryKey: ["userClaims"] });
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });

@@ -13,7 +13,6 @@ const ResponseRateRatio: React.FC<ResponseRateRatioProps> = ({
   responded,
   notResponded,
   total,
-  rate,
 }) => {
   const { t } = useTranslation();
 

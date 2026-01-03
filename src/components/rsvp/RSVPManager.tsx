@@ -85,7 +85,7 @@ const RSVPManager: FC = () => {
     : TabValue.RSVP_STATUS;
   // Update URL when tab changes
   const handleTabChange = (
-    event: React.SyntheticEvent,
+    _event: React.SyntheticEvent,
     newValue: TabValueType
   ) => {
     const newSearchParams = new URLSearchParams(searchParams);

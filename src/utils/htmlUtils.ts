@@ -5,7 +5,7 @@ export function htmlToPlainText(html: string): string {
   if (!html) return "";
 
   // Replace block-level elements and line breaks with spaces before parsing
-  let processed = html
+  const processed = html
     .replace(/<br\s*\/?>/gi, " ")
     .replace(/<\/p>/gi, " ")
     .replace(/<\/li>/gi, " ")

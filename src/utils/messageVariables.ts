@@ -123,7 +123,7 @@ export const generatePaymentLink = (
     typeof window !== "undefined"
       ? window.location.origin
       : "https://weddingplanstudio.web.app";
-  let link = `${origin}/payment/${weddingId}`;
+  const link = `${origin}/payment/${weddingId}`;
 
   const params = new URLSearchParams();
   if (guestId) params.append("guest", guestId);

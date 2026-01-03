@@ -39,7 +39,7 @@ export const useUpdateUserRole = (
       const result = await setUserRole({ userId, role: role as WeddingRole });
       return result.data as UpdateUserRoleResponse;
     },
-    onSuccess: (data, variables) => {
+    onSuccess: () => {
       // Invalidate user queries to refresh the data
       queryClient.invalidateQueries({ queryKey: ["users"] });
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });

@@ -24,8 +24,7 @@ interface TaskListProps {
 
 const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
   const { t, language } = useTranslation();
-  const { data: weddingsDetails, isLoading: isLoadingWeddings } =
-    useWeddingsDetails();
+  const { data: weddingsDetails } = useWeddingsDetails();
 
   const dateLocale = useMemo(() => (language === "he" ? he : enUS), [language]);
 

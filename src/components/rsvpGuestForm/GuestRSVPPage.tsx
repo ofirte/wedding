@@ -96,7 +96,7 @@ const GuestRSVPPage: React.FC = () => {
         };
 
         // Add deleteField() for all other questions that exist in the result
-        Object.entries(result).forEach(([key, value]) => {
+        Object.entries(result).forEach(([key]) => {
           if (
             key !== "attendance" &&
             key !== "isSubmitted" &&

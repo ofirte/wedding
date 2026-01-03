@@ -1,7 +1,6 @@
 import { Box, LinearProgress, styled, Typography } from "@mui/material";
 import { Task } from "@wedding-plan/types";
 import { useTasksStats } from "src/hooks/tasks/useTasksStats";
-import { useTranslation } from "src/localization/LocalizationContext";
 type TasksProgressBarProps = {
   tasks: Task[];
 };

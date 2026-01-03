@@ -19,7 +19,6 @@ interface RSVPFormQuestionCardProps {
 
 const RSVPFormQuestionCard: React.FC<RSVPFormQuestionCardProps> = ({
   question,
-  questionNumber,
   value,
   isOpen,
   isClickable,

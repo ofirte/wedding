@@ -60,7 +60,7 @@ const TasksHeader: React.FC<TasksHeaderProps> = ({
   }, [allTasks]);
 
   const handleViewChange = (
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     newView: ViewType | null
   ) => {
     if (newView !== null) {

@@ -46,7 +46,6 @@ const CreateTemplateForm: React.FC<CreateTemplateFormProps> = ({
   onClose,
   onSubmit,
   isSubmitting,
-  weddingId,
 }) => {
   const { t, language: environmentLanguage } = useTranslation();
   const [templateName, setTemplateName] = useState("");

@@ -37,7 +37,7 @@ const QuestionSelector: React.FC<QuestionSelectorProps> = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleTabChange = (
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     newValue: string
   ) => {
     if (newValue !== null) {

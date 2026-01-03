@@ -18,7 +18,6 @@ import {
   Alert,
   TextField,
   Paper,
-  IconButton,
   Breadcrumbs,
   Link,
   Container,
@@ -45,8 +44,6 @@ import {
 import TaskLibraryModal from "./TaskLibraryModal";
 import RelativeDatePopover, { RelativeDateValue } from "./RelativeDatePopover";
 import ApplyTaskTemplateDialog from "./ApplyTaskTemplateDialog";
-import LocalizedNavigationButtons from "../common/LocalizedNavigationButtons";
-import { LocalizedArrowIcon, LocalizedNavigateIcon } from "../common";
 
 // Generate unique local ID for tasks
 let taskIdCounter = 0;
