@@ -66,13 +66,14 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "emulate": "firebase emulators:start --only functions --inspect-functions",
     "watch": "pnpm --filter functions build:watch",
-    "update-types": "pnpm --filter @wedding-plan/types build && pnpm --filter @wedding-plan/types pack --pack-destination ../functions && pnpm --filter functions install ./wedding-plan-types-1.0.0.tgz",
+    "update-types": "pnpm --filter @wedding-plan/types build && cd shared && pnpm pack --pack-destination ../functions && cd .. && pnpm --filter functions install ./wedding-plan-types-1.0.0.tgz",
     "deploy:dev": "pnpm --filter @wedding-plan/types build && pnpm build:dev && firebase use wedding-c89a1 && firebase deploy --only hosting:development",
     "deploy:prod": "pnpm --filter @wedding-plan/types build && pnpm build:prod && firebase use wedding-prod-f13a0 && firebase deploy --only hosting:production -P production",
-    "deploy:functions:prod": "pnpm --filter @wedding-plan/types build && pnpm --filter @wedding-plan/types pack --pack-destination ../functions && pnpm --filter functions install ./wedding-plan-types-1.0.0.tgz && pnpm --filter functions build && firebase use wedding-prod-f13a0 && firebase deploy --only functions",
+    "deploy:functions:dev": "pnpm --filter @wedding-plan/types build && cd shared && pnpm pack --pack-destination ../functions && cd .. && pnpm --filter functions install ./wedding-plan-types-1.0.0.tgz && pnpm --filter functions build && firebase use wedding-c89a1 && firebase deploy --only functions",
+    "deploy:functions:prod": "pnpm --filter @wedding-plan/types build && cd shared && pnpm pack --pack-destination ../functions && cd .. && pnpm --filter functions install ./wedding-plan-types-1.0.0.tgz && pnpm --filter functions build && firebase use wedding-prod-f13a0 && firebase deploy --only functions",
     "migrate-wedding": "node migrateWedding.cjs",
-    "deploy:prod:both": "pnpm --filter @wedding-plan/types build && pnpm --filter @wedding-plan/types pack --pack-destination ../functions && pnpm --filter functions install ./wedding-plan-types-1.0.0.tgz && pnpm build:prod && pnpm --filter functions build && firebase deploy --only hosting:production,functions -P production",
-    "deploy:dev:both": "pnpm --filter @wedding-plan/types build && pnpm --filter @wedding-plan/types pack --pack-destination ../functions && pnpm --filter functions install ./wedding-plan-types-1.0.0.tgz && pnpm build:dev && pnpm --filter functions build && firebase use wedding-c89a1 && firebase deploy --only hosting:development,functions -P development"
+    "deploy:prod:both": "pnpm --filter @wedding-plan/types build && cd shared && pnpm pack --pack-destination ../functions && cd .. && pnpm --filter functions install ./wedding-plan-types-1.0.0.tgz && pnpm build:prod && pnpm --filter functions build && firebase deploy --only hosting:production,functions -P production",
+    "deploy:dev:both": "pnpm --filter @wedding-plan/types build && cd shared && pnpm pack --pack-destination ../functions && cd .. && pnpm --filter functions install ./wedding-plan-types-1.0.0.tgz && pnpm build:dev && pnpm --filter functions build && firebase use wedding-c89a1 && firebase deploy --only hosting:development,functions -P development"
   },
   "browserslist": {
     "production": [

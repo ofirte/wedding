@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { Routes, Route } from "react-router";
 import App from "./App";
 import WeddingInviteTable from "./components/invitees/InviteList";

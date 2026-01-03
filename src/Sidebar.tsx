@@ -239,7 +239,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             </Typography>
           </Box>
           <List sx={{ py: 0, pb: 1 }}>
-            {adminMenuItems.map((item, index) => {
+            {adminMenuItems.map((item) => {
               const isActive = isMenuItemActive(item.path);
               const styles = getMenuItemStyles(isActive);
 

@@ -1,4 +1,3 @@
-import React from "react";
 import { Invitee } from "@wedding-plan/types";
 import { InlineColumn } from "../common/DSInlineTable";
 import { IconButton, Typography } from "@mui/material";

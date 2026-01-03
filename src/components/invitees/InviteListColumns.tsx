@@ -1,6 +1,4 @@
-import React from "react";
 import { Invitee } from "@wedding-plan/types";
-import Typography from "@mui/material/Typography";
 import { Column } from "../common/DSTable";
 
 export const createColumns = (

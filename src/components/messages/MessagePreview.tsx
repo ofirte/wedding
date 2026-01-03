@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useCallback } from "react";
+import { FC, useMemo, useCallback } from "react";
 import { Box, Typography, TextField } from "@mui/material";
 import { useTranslation } from "../../localization/LocalizationContext";
 import {

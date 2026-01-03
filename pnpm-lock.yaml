@@ -214,8 +214,8 @@ importers:
         specifier: ^8.1.4
         version: 8.1.6
       '@wedding-plan/types':
-        specifier: workspace:*
-        version: link:../shared
+        specifier: file:wedding-plan-types-1.0.0.tgz
+        version: file:functions/wedding-plan-types-1.0.0.tgz(typescript@4.9.5)
       firebase-admin:
         specifier: ^12.6.0
         version: 12.7.0(encoding@0.1.13)
@@ -234,7 +234,7 @@ importers:
         version: 4.3.0
       firebase-functions-test:
         specifier: ^3.1.0
-        version: 3.4.1(firebase-admin@12.7.0(encoding@0.1.13))(firebase-functions@6.6.0(firebase-admin@12.7.0(encoding@0.1.13)))(jest@27.5.1(ts-node@10.9.2(@types/node@22.19.3)(typescript@4.9.5)))
+        version: 3.4.1(firebase-admin@12.7.0(encoding@0.1.13))(firebase-functions@6.6.0(firebase-admin@12.7.0(encoding@0.1.13)))(jest@27.5.1(ts-node@10.9.2(@types/node@16.18.126)(typescript@4.9.5)))
       typescript:
         specifier: ^4.9.0
         version: 4.9.5
@@ -1974,6 +1974,12 @@ packages:
 
   '@vitest/utils@1.6.1':
     resolution: {integrity: sha512-jOrrUvXM4Av9ZWiG1EajNto0u96kWAhJ1LmPmJhXXQx/32MecEKd10pOLYgS2BQx1TgkGhloPU1ArDW2vvaY6g==}
+
+  '@wedding-plan/types@file:functions/wedding-plan-types-1.0.0.tgz':
+    resolution: {integrity: sha512-TVYALMLWBB7kXVFrFOKdSV1Sdn0W0mwaNG/LHxvUurTwyld5d++kTKZkYVN6qy1B4Ua+jJNuY3Mk4da81mf3TA==, tarball: file:functions/wedding-plan-types-1.0.0.tgz}
+    version: 1.0.0
+    peerDependencies:
+      typescript: '>=4.0.0'
 
   abab@2.0.6:
     resolution: {integrity: sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==}
@@ -5768,7 +5774,7 @@ snapshots:
       jest-util: 27.5.1
       slash: 3.0.0
 
-  '@jest/core@27.5.1(ts-node@10.9.2(@types/node@22.19.3)(typescript@4.9.5))':
+  '@jest/core@27.5.1(ts-node@10.9.2(@types/node@16.18.126)(typescript@4.9.5))':
     dependencies:
       '@jest/console': 27.5.1
       '@jest/reporters': 27.5.1
@@ -5782,7 +5788,7 @@ snapshots:
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 27.5.1
-      jest-config: 27.5.1(ts-node@10.9.2(@types/node@22.19.3)(typescript@4.9.5))
+      jest-config: 27.5.1(ts-node@10.9.2(@types/node@16.18.126)(typescript@4.9.5))
       jest-haste-map: 27.5.1
       jest-message-util: 27.5.1
       jest-regex-util: 27.5.1
@@ -6798,6 +6804,10 @@ snapshots:
       loupe: 2.3.7
       pretty-format: 29.7.0
 
+  '@wedding-plan/types@file:functions/wedding-plan-types-1.0.0.tgz(typescript@4.9.5)':
+    dependencies:
+      typescript: 4.9.5
+
   abab@2.0.6: {}
 
   abort-controller@3.0.0:
@@ -7679,12 +7689,12 @@ snapshots:
       - encoding
       - supports-color
 
-  firebase-functions-test@3.4.1(firebase-admin@12.7.0(encoding@0.1.13))(firebase-functions@6.6.0(firebase-admin@12.7.0(encoding@0.1.13)))(jest@27.5.1(ts-node@10.9.2(@types/node@22.19.3)(typescript@4.9.5))):
+  firebase-functions-test@3.4.1(firebase-admin@12.7.0(encoding@0.1.13))(firebase-functions@6.6.0(firebase-admin@12.7.0(encoding@0.1.13)))(jest@27.5.1(ts-node@10.9.2(@types/node@16.18.126)(typescript@4.9.5))):
     dependencies:
       '@types/lodash': 4.17.21
       firebase-admin: 12.7.0(encoding@0.1.13)
       firebase-functions: 6.6.0(firebase-admin@12.7.0(encoding@0.1.13))
-      jest: 27.5.1(ts-node@10.9.2(@types/node@22.19.3)(typescript@4.9.5))
+      jest: 27.5.1(ts-node@10.9.2(@types/node@16.18.126)(typescript@4.9.5))
       lodash: 4.17.21
       ts-deepmerge: 2.0.7
 
@@ -8148,16 +8158,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  jest-cli@27.5.1(ts-node@10.9.2(@types/node@22.19.3)(typescript@4.9.5)):
+  jest-cli@27.5.1(ts-node@10.9.2(@types/node@16.18.126)(typescript@4.9.5)):
     dependencies:
-      '@jest/core': 27.5.1(ts-node@10.9.2(@types/node@22.19.3)(typescript@4.9.5))
+      '@jest/core': 27.5.1(ts-node@10.9.2(@types/node@16.18.126)(typescript@4.9.5))
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.11
       import-local: 3.2.0
-      jest-config: 27.5.1(ts-node@10.9.2(@types/node@22.19.3)(typescript@4.9.5))
+      jest-config: 27.5.1(ts-node@10.9.2(@types/node@16.18.126)(typescript@4.9.5))
       jest-util: 27.5.1
       jest-validate: 27.5.1
       prompts: 2.4.2
@@ -8169,7 +8179,7 @@ snapshots:
       - ts-node
       - utf-8-validate
 
-  jest-config@27.5.1(ts-node@10.9.2(@types/node@22.19.3)(typescript@4.9.5)):
+  jest-config@27.5.1(ts-node@10.9.2(@types/node@16.18.126)(typescript@4.9.5)):
     dependencies:
       '@babel/core': 7.28.5
       '@jest/test-sequencer': 27.5.1
@@ -8196,7 +8206,7 @@ snapshots:
       slash: 3.0.0
       strip-json-comments: 3.1.1
     optionalDependencies:
-      ts-node: 10.9.2(@types/node@22.19.3)(typescript@4.9.5)
+      ts-node: 10.9.2(@types/node@16.18.126)(typescript@4.9.5)
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -8465,11 +8475,11 @@ snapshots:
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  jest@27.5.1(ts-node@10.9.2(@types/node@22.19.3)(typescript@4.9.5)):
+  jest@27.5.1(ts-node@10.9.2(@types/node@16.18.126)(typescript@4.9.5)):
     dependencies:
-      '@jest/core': 27.5.1(ts-node@10.9.2(@types/node@22.19.3)(typescript@4.9.5))
+      '@jest/core': 27.5.1(ts-node@10.9.2(@types/node@16.18.126)(typescript@4.9.5))
       import-local: 3.2.0
-      jest-cli: 27.5.1(ts-node@10.9.2(@types/node@22.19.3)(typescript@4.9.5))
+      jest-cli: 27.5.1(ts-node@10.9.2(@types/node@16.18.126)(typescript@4.9.5))
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -9663,6 +9673,25 @@ snapshots:
 
   ts-deepmerge@2.0.7: {}
 
+  ts-node@10.9.2(@types/node@16.18.126)(typescript@4.9.5):
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      '@tsconfig/node10': 1.0.12
+      '@tsconfig/node12': 1.0.11
+      '@tsconfig/node14': 1.0.3
+      '@tsconfig/node16': 1.0.4
+      '@types/node': 16.18.126
+      acorn: 8.15.0
+      acorn-walk: 8.3.4
+      arg: 4.1.3
+      create-require: 1.1.1
+      diff: 4.0.2
+      make-error: 1.3.6
+      typescript: 4.9.5
+      v8-compile-cache-lib: 3.0.1
+      yn: 3.1.1
+    optional: true
+
   ts-node@10.9.2(@types/node@16.18.126)(typescript@5.9.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
@@ -9680,25 +9709,6 @@ snapshots:
       typescript: 5.9.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-
-  ts-node@10.9.2(@types/node@22.19.3)(typescript@4.9.5):
-    dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@tsconfig/node10': 1.0.12
-      '@tsconfig/node12': 1.0.11
-      '@tsconfig/node14': 1.0.3
-      '@tsconfig/node16': 1.0.4
-      '@types/node': 22.19.3
-      acorn: 8.15.0
-      acorn-walk: 8.3.4
-      arg: 4.1.3
-      create-require: 1.1.1
-      diff: 4.0.2
-      make-error: 1.3.6
-      typescript: 4.9.5
-      v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
-    optional: true
 
   tsconfck@3.1.6(typescript@5.9.3):
     optionalDependencies:

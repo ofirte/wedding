@@ -1,4 +1,3 @@
-import React from "react";
 import { Lead, LeadStatus, LeadSource } from "@wedding-plan/types";
 import { InlineColumn } from "../common/DSInlineTable";
 import { DSSelectOption } from "../common/cells/DSSelectCell";

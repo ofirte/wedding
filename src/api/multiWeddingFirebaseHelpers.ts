@@ -66,7 +66,7 @@ class MultiWeddingFirebaseService {
 
       const unsubscribe = onSnapshot(
         subCollectionRef,
-        (snapshot) => {
+        (_snapshot) => {
 
 
           // Get data from all weddings

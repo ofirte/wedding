@@ -296,7 +296,7 @@ export const generalFirebase = new GeneralFirebaseService();
  */
 export const createGeneralCollectionAPI = <T extends { id?: string }>(
   collectionName: string,
-  softDeleteField?: string
+  _softDeleteField?: string
 ) => {
   return {
     /**

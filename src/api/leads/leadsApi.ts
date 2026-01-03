@@ -1,10 +1,9 @@
 import {
   createGeneralCollectionAPI,
-  generalFirebase,
 } from "../generalFirebaseHelpers";
 import { Lead, LeadEvent } from "@wedding-plan/types";
 import { auth } from "../firebaseConfig";
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 
 // Create basic CRUD operations for leads using the general collection API
@@ -179,22 +178,4 @@ export const fetchLeadEvents = async (leadId: string): Promise<LeadEvent[]> => {
     id: doc.id,
     ...doc.data(),
   })) as LeadEvent[];
-};
-
-/**
- * Subscribe to real-time updates for leads
- */
-export const subscribeToLeads = (
-  callback: (leads: Lead[]) => void,
-  errorCallback?: (error: Error) => void
-): (() => void) => {
-  const producerId = getCurrentProducerId();
-
-  // We need to create a custom subscription with a query filter
-  // Since createGeneralCollectionAPI doesn't support filtered subscriptions,
-  // we'll use generalFirebase directly
-  const collectionRef = generalFirebase.getCollectionRef<Lead>("leads");
-  const q = query(collectionRef, where("producerId", "==", producerId));
-
-  return generalFirebase.listenToCollection<Lead>("leads", callback, errorCallback);
 };

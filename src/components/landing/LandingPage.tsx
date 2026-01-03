@@ -20,7 +20,6 @@ import {
   PhotoCamera as PhotoCameraIcon,
   MusicNote as MusicNoteIcon,
   Email as EmailIcon,
-  Phone as PhoneIcon,
   LocationOn as LocationOnIcon,
   WhatsApp as WhatsAppIcon,
 } from "@mui/icons-material";
