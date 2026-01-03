@@ -11,8 +11,6 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react({
         jsxRuntime: 'automatic',
-        // Enable emotion for Material-UI
-        jsxImportSource: '@emotion/react',
         babel: {
           plugins: ['@emotion/babel-plugin'],
         },
@@ -27,6 +25,7 @@ export default defineConfig(({ mode }) => {
         '@shared': path.resolve(__dirname, './shared'),
         '@wedding-plan/types': path.resolve(__dirname, './shared'),
       },
+      dedupe: ['react', 'react-dom', '@emotion/react', '@emotion/styled'],
     },
 
     // Define global constants for backwards compatibility
@@ -104,16 +103,26 @@ export default defineConfig(({ mode }) => {
       include: [
         'react',
         'react-dom',
+        'react/jsx-runtime',
+        'react/jsx-dev-runtime',
         'react-router',
         '@mui/material',
+        '@mui/material/TextField',
+        '@mui/material/Box',
         '@emotion/react',
         '@emotion/styled',
+        '@emotion/cache',
+        'stylis',
         'firebase/app',
         'firebase/auth',
         'firebase/firestore',
         'firebase/storage',
         'firebase/functions',
       ],
+      esbuildOptions: {
+        // Prevent esbuild from treating React 19 JSX as external
+        jsx: 'automatic',
+      },
     },
   };
 });

@@ -4,18 +4,18 @@
  */
 
 // Model exports
-export * from "./users";
-export * from "./wedding";
-export * from "./invitation";
-export * from "./invitee";
-export * from "./budget";
-export * from "./task";
-export * from "./taskTemplate";
-export * from "./sentMessages";
-export * from "./template";
-export * from "./sendMessagesAutomation";
-export * from "./rsvpConfig";
-export * from "./seating";
-export * from "./payment";
-export * from "./lead";
-export * from "./producerTask";
+export * from "./users.js";
+export * from "./wedding.js";
+export * from "./invitation.js";
+export * from "./invitee.js";
+export * from "./budget.js";
+export * from "./task.js";
+export * from "./taskTemplate.js";
+export * from "./sentMessages.js";
+export * from "./template.js";
+export * from "./sendMessagesAutomation.js";
+export * from "./rsvpConfig.js";
+export * from "./seating.js";
+export * from "./payment.js";
+export * from "./lead.js";
+export * from "./producerTask.js";

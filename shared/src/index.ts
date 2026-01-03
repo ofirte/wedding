@@ -4,7 +4,7 @@
  */
 
 // API types (request/response for Firebase Functions)
-export * from "./api";
+export * from "./api/index.js";
 
 // Model types (entity models)
-export * from "./models";
+export * from "./models/index.js";
