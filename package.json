@@ -24,7 +24,7 @@
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@types/uuid": "^10.0.0",
-    "@wedding-plan/types": "file:shared",
+    "@wedding-plan/types": "workspace:*",
     "ajv": "^8.17.1",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
@@ -49,29 +49,28 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "start:dev": "concurrently \"cd shared && npm run dev\" \"react-scripts start\"",
-    "enulate": "firebase emulators:start --only functions --inspect-functions",
-    "watch": "cd ./functions && tsc --watch",
-    "update-types": "cd shared && npm run build && npm pack --pack-destination ../functions && cd ../functions && npm install ./wedding-plan-types-1.0.0.tgz",
-    "build:dev": "env-cmd -f .env.development react-scripts build",
-    "build:prod": "env-cmd -f .env.production react-scripts build",
-    "eject": "react-scripts eject",
-    "deploy:dev": "cd shared && npm run build && cd .. && npm run build:dev && firebase use wedding-c89a1 && firebase deploy --only hosting:development",
-    "deploy:prod": "cd shared && npm run build && cd .. && npm run build:prod && firebase use wedding-prod-f13a0 && firebase deploy --only hosting:production -P production",
-    "deploy:functions:prod": "cd shared && npm run build && npm pack --pack-destination ../functions && cd ../functions && npm install ./wedding-plan-types-1.0.0.tgz && npm run build && firebase use wedding-prod-f13a0 && firebase deploy --only functions",
+    "dev": "vite",
+    "start": "vite",
+    "start:dev": "concurrently \"pnpm --filter @wedding-plan/types dev\" \"vite\"",
+    "build": "tsc && vite build",
+    "build:dev": "tsc && vite build --mode development",
+    "build:prod": "tsc && vite build --mode production",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "coverage": "vitest run --coverage",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "emulate": "firebase emulators:start --only functions --inspect-functions",
+    "watch": "pnpm --filter functions build:watch",
+    "update-types": "pnpm --filter @wedding-plan/types build && pnpm --filter @wedding-plan/types pack --pack-destination ../functions && pnpm --filter functions install ./wedding-plan-types-1.0.0.tgz",
+    "deploy:dev": "pnpm --filter @wedding-plan/types build && pnpm build:dev && firebase use wedding-c89a1 && firebase deploy --only hosting:development",
+    "deploy:prod": "pnpm --filter @wedding-plan/types build && pnpm build:prod && firebase use wedding-prod-f13a0 && firebase deploy --only hosting:production -P production",
+    "deploy:functions:prod": "pnpm --filter @wedding-plan/types build && pnpm --filter @wedding-plan/types pack --pack-destination ../functions && pnpm --filter functions install ./wedding-plan-types-1.0.0.tgz && pnpm --filter functions build && firebase use wedding-prod-f13a0 && firebase deploy --only functions",
     "migrate-wedding": "node migrateWedding.cjs",
-    "deploy:prod:both": "cd shared && npm run build && npm pack --pack-destination ../functions && cd ../functions && npm install ./wedding-plan-types-1.0.0.tgz && cd .. && npm run build:prod && cd functions && npm run build && cd .. && firebase deploy --only hosting:production,functions -P production",
-    "deploy:dev:both": "cd shared && npm run build && npm pack --pack-destination ../functions && cd ../functions && npm install ./wedding-plan-types-1.0.0.tgz && cd .. && npm run build:dev && cd functions && npm run build && cd .. && firebase use wedding-c89a1 && firebase deploy --only hosting:development,functions -P development"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "rules": {
-      "react-hooks/exhaustive-deps": "off"
-    }
+    "deploy:prod:both": "pnpm --filter @wedding-plan/types build && pnpm --filter @wedding-plan/types pack --pack-destination ../functions && pnpm --filter functions install ./wedding-plan-types-1.0.0.tgz && pnpm build:prod && pnpm --filter functions build && firebase deploy --only hosting:production,functions -P production",
+    "deploy:dev:both": "pnpm --filter @wedding-plan/types build && pnpm --filter @wedding-plan/types pack --pack-destination ../functions && pnpm --filter functions install ./wedding-plan-types-1.0.0.tgz && pnpm build:dev && pnpm --filter functions build && firebase use wedding-c89a1 && firebase deploy --only hosting:development,functions -P development"
   },
   "browserslist": {
     "production": [
@@ -86,13 +85,26 @@
     ]
   },
   "devDependencies": {
+    "@emotion/babel-plugin": "^11.12.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.20",
+    "@types/node": "^20.0.0",
     "@types/react-big-calendar": "^1.16.3",
     "@types/stylis": "^4.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "@vitest/ui": "^1.2.0",
     "concurrently": "^9.2.1",
-    "env-cmd": "^10.1.0",
+    "eslint": "^8.0.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "jsdom": "^24.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite": "^5.0.0",
+    "vite-plugin-checker": "^0.6.4",
+    "vite-tsconfig-paths": "^4.3.1",
+    "vitest": "^1.2.0"
   }
 }

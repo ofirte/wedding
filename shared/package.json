@@ -4,6 +4,12 @@
   "description": "Shared TypeScript types for Wedding Plan application",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "files": [
     "dist"
   ],
@@ -11,7 +17,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "prepare": "npm run clean && npm run build"
+    "prepare": "pnpm run clean && pnpm run build"
   },
   "keywords": [
     "typescript",
